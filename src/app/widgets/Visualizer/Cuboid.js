@@ -18,7 +18,9 @@ class Cuboid {
       dy, // height
       dz, // depth
     );
-    const edges = new THREE.EdgesGeometry(geometry);
+    const hasFaces = !geometry.isGeometry || geometry.faces.length > 0;
+    const edges = hasFaces ? new THREE.EdgesGeometry(geometry) : new THREE.BufferGeometry();
+    geometry.dispose();
 
     let material;
 
@@ -40,7 +42,7 @@ class Cuboid {
 
     const lineSegments = new THREE.LineSegments(edges, material);
 
-    if (dashed) {
+    if (dashed && (edges.getAttribute('position')?.count || 0) > 0) {
       // Computes an array of distance values which are necessary for LineDashedMaterial.
       lineSegments.computeLineDistances();
     }

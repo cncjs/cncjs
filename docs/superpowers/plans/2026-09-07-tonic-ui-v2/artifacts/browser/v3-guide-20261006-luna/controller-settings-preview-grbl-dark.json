@@ -1,0 +1,490 @@
+{
+  "task": "V3-GV focused single-controller visual replay",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment; model environment variables are not exposed"
+  },
+  "theme": "dark",
+  "runnerPid": 61318,
+  "sourceContext": {
+    "dirtySourceFiles": [
+      "src/app/containers/app/Header.jsx",
+      "src/app/containers/app/MainPage.jsx",
+      "src/app/containers/app/SideNav.jsx",
+      "src/app/containers/app/components/NavLink.jsx",
+      "src/app/pages/About/components/AlertButtonLink.jsx",
+      "src/app/pages/Administration/Commands/Commands.jsx",
+      "src/app/pages/Administration/Events/Events.js",
+      "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx",
+      "src/app/pages/Administration/Machines/Machines.jsx",
+      "src/app/pages/Administration/Macros/Macros.jsx",
+      "src/app/pages/Administration/Users/Users.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx",
+      "src/app/pages/Administration/components/FieldInput.jsx",
+      "src/app/pages/Administration/components/FieldTextarea.jsx",
+      "src/app/pages/Workspace/Workspace.jsx",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx",
+      "src/app/sagas/app/index.js",
+      "src/app/widgets/Autolevel/LandingView.jsx",
+      "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+      "src/app/widgets/Axes/Settings/MDI/TableRecords.jsx",
+      "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx",
+      "src/app/widgets/Axes/Settings/index.jsx",
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx",
+      "src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx",
+      "src/app/widgets/Marlin/Controller.jsx",
+      "src/app/widgets/Visualizer/index.jsx"
+    ],
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "visualizerSourceSha256": "0e3be41eaee0eacf6ba9e095d8a6e1f3d5fd082d4ebc0ac0caa937af0d8ba53e",
+    "fixture": "R6 incoming state/settings fixture replay filtered to one active controller only; fresh empty browser context"
+  },
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "Playwright bundled Chromium",
+    "headless": true,
+    "viewport": "1440x900",
+    "dpr": 1,
+    "environment": {
+      "colorScheme": "dark",
+      "devicePixelRatio": 1,
+      "webgl": {
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "webgpuAvailable": true
+    }
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events appended after the actual connection:open event",
+    "injected": [],
+    "pollingGetCount": 10,
+    "websocketUpgradeClosed": 1,
+    "suppressedGrblControllerEvents": 0,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:change",
+        "controller": null
+      },
+      {
+        "pollingGet": 6,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 7,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "connection:close",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:change",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": []
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1958,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL\nManufacturer: Grbl Simulator",
+      "actualConnectionOpenForwarded": true,
+      "fixtureEventsAppended": 0,
+      "pollingGetCount": 6,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "live Grbl simulator state/settings and semantic widget colors",
+      "status": "passed",
+      "durationMs": 977,
+      "source": "actual owned synthetic Grbl simulator, not an injected R6 fixture",
+      "stateAndSettingsEvents": [
+        "controller:settings",
+        "controller:state"
+      ],
+      "visibleBodyValues": "Grbl Status Reports State – Feed Rate – Spindle – Tool Number – Modal Groups Motion Rapid Move (G0) Coordinate P1 (G54) Plane XY Plane (G17) Distance Absolute (G90) Feed Rate Units/Min (G94) Units Millimeters (G21) Program Program Stop (M0) Spindle Spindle Off (M5) Coolant Coolant Off (M9)",
+      "screenshot": "controller-grbl-dark-1440x900.png",
+      "visualEvidence": {
+        "rect": {
+          "x": 84,
+          "y": 188,
+          "width": 335,
+          "height": 619
+        },
+        "visibleTextLeaves": [
+          {
+            "found": true,
+            "text": "Status Reports",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "State",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Feed Rate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Spindle",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Tool Number",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Modal Groups",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Motion",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Rapid Move (G0)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Coordinate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "P1 (G54)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Plane",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "XY Plane (G17)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Distance",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Absolute (G90)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Feed Rate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Units/Min (G94)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Units",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Millimeters (G21)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Program",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Program Stop (M0)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Spindle",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Spindle Off (M5)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px"
+          },
+          {
+            "found": true,
+            "text": "Coolant",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "14px"
+          },
+          {
+            "found": true,
+            "text": "Coolant Off (M9)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgba(0, 0, 0, 0)",
+            "fontSize": "12px"
+          }
+        ],
+        "icons": [
+          {
+            "found": true,
+            "dataIcon": "bars",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.64)"
+          },
+          {
+            "found": true,
+            "dataIcon": "chevron-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "rgb(166, 197, 252)"
+          },
+          {
+            "found": true,
+            "dataIcon": "ellipsis-vertical",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)"
+          },
+          {
+            "found": true,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)"
+          },
+          {
+            "found": true,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)"
+          }
+        ]
+      },
+      "settingsPreviewEvidence": {
+        "found": true,
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "1px",
+        "contrastRatio": 12.722854488142998,
+        "previewText": "{ \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "rect": {
+          "x": 329,
+          "y": 239,
+          "width": 782,
+          "height": 450
+        },
+        "panelText": "Refresh { \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "screenshot": "screenshots/controller-settings-preview-grbl-dark-1440x900.png",
+        "theme": "dark",
+        "controller": "Grbl"
+      }
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 229,
+      "disconnected": true
+    }
+  ],
+  "settingsPreviewScreenshots": [
+    "screenshots/controller-settings-preview-grbl-dark-1440x900.png"
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "outgoingCommands": [],
+  "status": "passed",
+  "completedAt": "2026-10-06T13:43:31.537Z"
+}

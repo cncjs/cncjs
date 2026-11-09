@@ -1,0 +1,829 @@
+- generic [ref=f3e1] [box=0,0,1440,900]:
+  - generic [ref=f3e4] [box=0,0,1440,900]:
+    - banner "Application header" [ref=f3e5] [box=0,0,1440,48]:
+      - generic [ref=f3e6] [box=0,0,287,48]:
+        - button [ref=f3e7] [cursor=pointer] [box=16,4,40,40]
+        - button "CNCjs 2.0.0-dev - View release notes" [ref=f3e10] [cursor=pointer] [box=64,8,106,32]:
+          - generic [ref=f3e11] [box=72,8,90,32]: CNCjs
+        - generic [ref=f3e13] [box=170,18,14,12]: en
+        - generic [ref=f3e15] [box=201,14,70,20]: Workspace
+      - button [ref=f3e18] [cursor=pointer] [box=1392,8,32,32]:
+        - img [aria-hidden] [ref=f3e20] [box=1396,12,24,24]: 
+    - navigation [ref=f3e22] [box=0,48,72,852]:
+      - generic [ref=f3e23] [box=0,48,72,72]: Workspace
+      - generic [ref=f3e28] [cursor=pointer] [box=0,120,72,72]: Administration
+    - main [ref=f3e33] [box=72,0,1368,900]:
+      - generic [ref=f3e38] [box=72,48,1368,852]:
+        - generic [ref=f3e39] [box=72,48,360,852]:
+          - generic [ref=f3e41] [box=84,60,335,31]:
+            - button "Hide left panel" [ref=f3e43] [cursor=pointer] [box=84,60,36,31]:
+              - img [aria-hidden] [ref=f3e44] [box=93,68,18,14]: 
+            - button "Manage Widgets (1)" [ref=f3e47] [cursor=pointer] [box=130,60,210,31]:
+              - img [aria-hidden] [ref=f3e48] [box=159,68,16,14]: 
+              - text: Manage Widgets (1)
+            - generic [ref=f3e51] [box=349,60,70,31]:
+              - button "Collapse all left panel widgets" [ref=f3e52] [cursor=pointer] [box=349,60,36,31]:
+                - img [aria-hidden] [ref=f3e53] [box=358,68,18,14]: 
+              - button "Expand all left panel widgets" [ref=f3e55] [cursor=pointer] [box=384,60,36,31]:
+                - img [aria-hidden] [ref=f3e56] [box=393,68,18,14]: 
+          - generic [ref=f3e59] [box=84,-351,335,1935]:
+            - region "Connection widget" [ref=f3e61] [box=84,-351,335,499]:
+              - generic [ref=f3e62] [box=84,-351,335,38]:
+                - generic [ref=f3e63] [box=85,-350,333,36]:
+                  - button [ref=f3e65] [box=97,-341,24,17]:
+                    - img [aria-hidden] [ref=f3e66] [box=97,-341,20,16]: 
+                  - text: Connection
+                - toolbar "Widget controls" [ref=f3e68] [box=344,-350,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e69] [cursor=pointer] [box=344,-350,37,36]:
+                    - img [aria-hidden] [ref=f3e70] [box=353,-341,20,16]: 
+                  - generic [ref=f3e72] [box=381,-350,37,36]:
+                    - button "More options" [ref=f3e74] [cursor=pointer] [box=381,-350,37,36]:
+                      - img [aria-hidden] [ref=f3e75] [box=390,-341,20,16]: 
+                    - text: 
+              - generic [ref=f3e78] [box=85,-313,333,460]:
+                - generic [ref=f3e80] [box=97,-301,265,32]:
+                  - button "Grbl" [disabled] [box=97,-301,52,32]
+                  - button "Marlin" [disabled] [ref=f3e81] [box=149,-301,64,32]
+                  - button "Smoothie" [disabled] [ref=f3e82] [box=214,-301,85,32]
+                  - button "TinyG" [disabled] [ref=f3e83] [box=299,-301,63,32]
+                - generic [ref=f3e85] [box=97,-253,201,32]:
+                  - button "Serial Port" [disabled] [box=97,-253,117,32]:
+                    - img [aria-hidden] [box=110,-244,18,14]: 
+                    - text: Serial Port
+                  - button "Wi-Fi" [disabled] [ref=f3e86] [box=214,-253,84,32]:
+                    - img [aria-hidden] [ref=f3e87] [box=227,-244,18,14]: 
+                    - text: Wi-Fi
+                - generic [ref=f3e89] [box=97,-205,309,66]:
+                  - generic [ref=f3e90] [box=97,-205,309,20]: Serial port
+                  - generic [ref=f3e91] [box=97,-177,309,38]:
+                    - generic [ref=f3e92] [box=97,-177,279,38]:
+                      - generic [box=97,-177,279,38]:
+                        - generic [box=97,-177,279,38]:
+                          - generic [box=98,-168,240,20]:
+                            - generic [box=108,-168,110,20]:
+                              - img [aria-hidden] [box=108,-165,18,14]: 
+                              - text: /tmp/ttyGRBL
+                            - textbox [disabled] [box=7,-158,0,0]
+                    - img [aria-hidden] [ref=f3e94] [box=388,-165,18,14]: 
+                - generic [ref=f3e96] [box=97,-123,309,66]:
+                  - generic [ref=f3e97] [box=97,-123,309,20]: Baud rate
+                  - generic [ref=f3e98] [box=97,-95,309,38]:
+                    - generic [ref=f3e99] [box=97,-95,279,38]:
+                      - generic [box=97,-95,279,38]:
+                        - generic [box=97,-95,279,38]:
+                          - generic [box=98,-86,240,20]:
+                            - generic [box=108,-86,46,20]: "115200"
+                            - textbox [disabled] [box=7,-76,0,0]
+                    - img [aria-hidden] [ref=f3e101] [box=388,-83,18,14]: 
+                - generic [ref=f3e103] [box=97,-41,309,20]: Set DTR line status upon opening
+                - generic [ref=f3e105] [box=97,-5,309,20]: Set RTS line status upon opening
+                - generic [ref=f3e107] [box=97,31,309,20]: Use RTS/CTS flow control
+                - generic [ref=f3e109] [box=97,67,309,20]: Connect automatically
+                - button "Close" [ref=f3e111] [cursor=pointer] [box=97,103,86,32]:
+                  - img [aria-hidden] [ref=f3e112] [box=110,112,16,14]: 
+                  - text: Close
+            - region "Console widget" [ref=f3e115] [box=84,156,335,294]:
+              - generic [ref=f3e116] [box=84,156,335,38]:
+                - generic [ref=f3e117] [box=85,157,333,36]:
+                  - button [ref=f3e119] [box=97,166,24,17]:
+                    - img [aria-hidden] [ref=f3e120] [box=97,166,20,16]: 
+                  - text: Console
+                - toolbar "Widget controls" [ref=f3e122] [box=270,157,148,36]:
+                  - button "Clear console" [ref=f3e123] [cursor=pointer] [box=270,157,37,36]:
+                    - img [aria-hidden] [ref=f3e124] [box=279,166,20,16]: 
+                  - button "Collapse" [expanded] [ref=f3e126] [cursor=pointer] [box=307,157,37,36]:
+                    - img [aria-hidden] [ref=f3e127] [box=316,166,20,16]: 
+                  - button "Enter full screen" [ref=f3e129] [cursor=pointer] [box=344,157,37,36]:
+                    - img [aria-hidden] [ref=f3e130] [box=353,166,20,16]: 
+                  - generic [ref=f3e132] [box=381,157,37,36]:
+                    - button "More options" [ref=f3e134] [cursor=pointer] [box=381,157,37,36]:
+                      - img [aria-hidden] [ref=f3e135] [box=390,166,20,16]: 
+                    - text:      
+              - log "Console output" [ref=f3e138] [box=85,194,333,255]:
+                - generic [ref=f3e141] [box=88,194,2286,255]:
+                  - generic [box=88,194,0,0]:
+                    - textbox "Terminal input" [box=-139898,194,0,0]
+            - region "Grbl widget" [ref=f3e147] [box=84,458,335,744]:
+              - generic [ref=f3e148] [box=84,458,335,38]:
+                - generic [ref=f3e149] [box=85,459,333,36]:
+                  - button [ref=f3e151] [box=97,468,24,17]:
+                    - img [aria-hidden] [ref=f3e152] [box=97,468,20,16]: 
+                  - text: Grbl
+                - toolbar "Widget controls" [ref=f3e154] [box=288,459,130,36]:
+                  - button "Grbl controller info" [ref=f3e155] [cursor=pointer] [box=288,459,23,36]:
+                    - generic [ref=f3e156] [box=297,468,6,16]: 
+                  - button "Grbl commands" [ref=f3e159] [cursor=pointer] [box=311,459,33,36]:
+                    - generic [ref=f3e160] [box=320,468,16,16]: 
+                  - button "Collapse" [expanded] [ref=f3e161] [cursor=pointer] [box=344,459,37,36]:
+                    - img [aria-hidden] [ref=f3e162] [box=353,468,20,16]: 
+                  - generic [ref=f3e164] [box=381,459,37,36]:
+                    - button "More options" [ref=f3e166] [cursor=pointer] [box=381,459,37,36]:
+                      - img [aria-hidden] [ref=f3e167] [box=390,468,20,16]: 
+                    - text:   
+              - generic [ref=f3e170] [box=85,496,333,705]:
+                - generic [ref=f3e171] [box=97,508,309,122]:
+                  - generic [ref=f3e172] [box=97,508,309,46]:
+                    - generic [ref=f3e173] [box=97,521,14,20]: F
+                    - generic [ref=f3e174] [box=119,516,45,30]: 100%
+                    - generic [ref=f3e175] [box=172,508,155,46]:
+                      - button "-10%" [ref=f3e176] [cursor=pointer] [box=172,508,46,46]:
+                        - img [aria-hidden] [ref=f3e177] [box=188,516,15,12]: 
+                      - button "-1%" [ref=f3e180] [cursor=pointer] [box=217,508,37,46]:
+                        - img [aria-hidden] [ref=f3e181] [box=229,517,13,11]: 
+                      - button "1%" [ref=f3e184] [cursor=pointer] [box=253,508,33,46]:
+                        - img [aria-hidden] [ref=f3e185] [box=263,517,13,11]: 
+                      - button "10%" [ref=f3e188] [cursor=pointer] [box=285,508,42,46]:
+                        - img [aria-hidden] [ref=f3e189] [box=299,516,15,12]: 
+                    - generic "Reset feed rate override" [ref=f3e192] [box=335,521,18,20]:
+                      - img [aria-hidden] [ref=f3e193] [box=335,524,18,14]: 
+                  - generic [ref=f3e195] [box=97,554,309,46]:
+                    - generic [ref=f3e196] [box=97,567,14,20]: S
+                    - generic [ref=f3e197] [box=119,562,45,30]: 100%
+                    - generic [ref=f3e198] [box=172,554,155,46]:
+                      - button "-10%" [ref=f3e199] [cursor=pointer] [box=172,554,46,46]:
+                        - img [aria-hidden] [ref=f3e200] [box=188,562,15,12]: 
+                      - button "-1%" [ref=f3e203] [cursor=pointer] [box=217,554,37,46]:
+                        - img [aria-hidden] [ref=f3e204] [box=229,563,13,11]: 
+                      - button "1%" [ref=f3e207] [cursor=pointer] [box=253,554,33,46]:
+                        - img [aria-hidden] [ref=f3e208] [box=263,563,13,11]: 
+                      - button "10%" [ref=f3e211] [cursor=pointer] [box=285,554,42,46]:
+                        - img [aria-hidden] [ref=f3e212] [box=299,562,15,12]: 
+                    - generic "Reset spindle override" [ref=f3e215] [box=335,567,18,20]:
+                      - img [aria-hidden] [ref=f3e216] [box=335,570,18,14]: 
+                  - generic [ref=f3e218] [box=97,600,309,30]:
+                    - generic [ref=f3e219] [box=97,605,14,20]: R
+                    - generic [ref=f3e220] [box=119,600,45,30]: 100%
+                    - generic [ref=f3e221] [box=172,601,131,28]:
+                      - button "25%" [ref=f3e222] [cursor=pointer] [box=172,601,42,28]
+                      - button "50%" [ref=f3e224] [cursor=pointer] [box=213,601,42,28]
+                      - button "100%" [ref=f3e226] [cursor=pointer] [box=254,601,49,28]
+                    - img [aria-hidden] [ref=f3e228] [box=311,608,18,14]: 
+                - generic [ref=f3e230] [box=97,646,309,543]:
+                  - generic [ref=f3e232] [box=98,647,307,185]:
+                    - button "Status Reports" [expanded] [ref=f3e233] [box=98,647,307,33]:
+                      - generic [ref=f3e235] [box=110,653,283,20]:
+                        - generic [ref=f3e236] [box=110,653,266,20]: Status Reports
+                        - img [aria-hidden] [ref=f3e238] [box=376,656,18,14]: 
+                    - generic [ref=f3e243] [box=110,692,159,128]:
+                      - generic [ref=f3e244] [box=110,692,159,34]:
+                        - generic "State" [ref=f3e246] [box=110,694,79,20]
+                        - generic [ref=f3e247] [box=189,692,79,34]: Idle
+                      - generic [ref=f3e249] [box=110,726,159,34]:
+                        - generic "Feed Rate" [ref=f3e251] [box=110,728,79,20]
+                        - generic [ref=f3e252] [box=189,726,79,34]: "0"
+                      - generic [ref=f3e254] [box=110,760,159,34]:
+                        - generic "Spindle" [ref=f3e256] [box=110,762,79,20]
+                        - generic [ref=f3e257] [box=189,760,79,34]: "0"
+                      - generic [ref=f3e259] [box=110,794,159,26]:
+                        - generic "Tool Number" [ref=f3e261] [box=110,796,79,20]
+                        - generic [ref=f3e262] [box=189,794,79,26]: –
+                  - generic [ref=f3e265] [box=98,833,307,355]:
+                    - button "Modal Groups" [expanded] [ref=f3e266] [box=98,833,307,33]:
+                      - generic [ref=f3e268] [box=110,839,283,20]:
+                        - generic [ref=f3e269] [box=110,839,266,20]: Modal Groups
+                        - img [aria-hidden] [ref=f3e271] [box=376,842,18,14]: 
+                    - generic [ref=f3e276] [box=110,878,264,298]:
+                      - generic [ref=f3e277] [box=110,878,264,34]:
+                        - generic "Motion" [ref=f3e279] [box=110,880,132,20]
+                        - generic [ref=f3e280] [box=242,878,132,34]: Rapid Move (G0)
+                      - generic [ref=f3e282] [box=110,912,264,34]:
+                        - generic "Coordinate" [ref=f3e284] [box=110,914,132,20]
+                        - generic [ref=f3e285] [box=242,912,132,34]: P1 (G54)
+                      - generic [ref=f3e287] [box=110,946,264,34]:
+                        - generic "Plane" [ref=f3e289] [box=110,948,132,20]
+                        - generic [ref=f3e290] [box=242,946,132,34]: XY Plane (G17)
+                      - generic [ref=f3e292] [box=110,980,264,34]:
+                        - generic "Distance" [ref=f3e294] [box=110,982,132,20]
+                        - generic [ref=f3e295] [box=242,980,132,34]: Absolute (G90)
+                      - generic [ref=f3e297] [box=110,1014,264,34]:
+                        - generic "Feed Rate" [ref=f3e299] [box=110,1016,132,20]
+                        - generic [ref=f3e300] [box=242,1014,132,34]: Units/Min (G94)
+                      - generic [ref=f3e302] [box=110,1048,264,34]:
+                        - generic "Units" [ref=f3e304] [box=110,1050,132,20]
+                        - generic [ref=f3e305] [box=242,1048,132,34]: Millimeters (G21)
+                      - generic [ref=f3e307] [box=110,1082,264,34]:
+                        - generic "Program" [ref=f3e309] [box=110,1084,132,20]
+                        - generic [ref=f3e310] [box=242,1082,132,34]: Program Stop (M0)
+                      - generic [ref=f3e312] [box=110,1116,264,34]:
+                        - generic "Spindle" [ref=f3e314] [box=110,1118,132,20]
+                        - generic [ref=f3e315] [box=242,1116,132,34]: Spindle Off (M5)
+                      - generic [ref=f3e317] [box=110,1150,264,26]:
+                        - generic "Coolant" [ref=f3e319] [box=110,1152,132,20]
+                        - generic "Coolant Off (M9)" [ref=f3e322] [box=263,1153,102,20]
+            - region "Marlin widget" [ref=f3e324] [box=84,1210,335,38]:
+              - generic [ref=f3e325] [box=84,1210,335,38]:
+                - generic [ref=f3e326] [box=85,1211,333,36]:
+                  - button [ref=f3e328] [box=97,1220,24,17]:
+                    - img [aria-hidden] [ref=f3e329] [box=97,1220,20,16]: 
+                  - text: Marlin
+                - toolbar "Widget controls" [ref=f3e331] [box=381,1211,37,36]:
+                  - generic [ref=f3e332] [box=381,1211,37,36]:
+                    - button "More options" [ref=f3e334] [cursor=pointer] [box=381,1211,37,36]:
+                      - img [aria-hidden] [ref=f3e335] [box=390,1220,20,16]: 
+                    - text:   
+            - region "Smoothie widget" [ref=f3e338] [box=84,1256,335,38]:
+              - generic [ref=f3e339] [box=84,1256,335,38]:
+                - generic [ref=f3e340] [box=85,1257,333,36]:
+                  - button [ref=f3e342] [box=97,1266,24,17]:
+                    - img [aria-hidden] [ref=f3e343] [box=97,1266,20,16]: 
+                  - text: Smoothie
+                - toolbar "Widget controls" [ref=f3e345] [box=381,1257,37,36]:
+                  - generic [ref=f3e346] [box=381,1257,37,36]:
+                    - button "More options" [ref=f3e348] [cursor=pointer] [box=381,1257,37,36]:
+                      - img [aria-hidden] [ref=f3e349] [box=390,1266,20,16]: 
+                    - text:   
+            - region "TinyG widget" [ref=f3e352] [box=84,1302,335,38]:
+              - generic [ref=f3e353] [box=84,1302,335,38]:
+                - generic [ref=f3e354] [box=85,1303,333,36]:
+                  - button [ref=f3e356] [box=97,1312,24,17]:
+                    - img [aria-hidden] [ref=f3e357] [box=97,1312,20,16]: 
+                  - text: TinyG
+                - toolbar "Widget controls" [ref=f3e359] [box=381,1303,37,36]:
+                  - generic [ref=f3e360] [box=381,1303,37,36]:
+                    - button "More options" [ref=f3e362] [cursor=pointer] [box=381,1303,37,36]:
+                      - img [aria-hidden] [ref=f3e363] [box=390,1312,20,16]: 
+                    - text:   
+            - region "Webcam widget" [ref=f3e366] [box=84,1348,335,236]:
+              - generic [ref=f3e367] [box=84,1348,335,38]:
+                - generic [ref=f3e368] [box=85,1349,333,36]:
+                  - button [ref=f3e370] [box=97,1358,24,17]:
+                    - img [aria-hidden] [ref=f3e371] [box=97,1358,20,16]: 
+                  - text: Webcam
+                - toolbar "Widget controls" [ref=f3e373] [box=270,1349,148,36]:
+                  - button "Enable Webcam" [ref=f3e374] [cursor=pointer] [box=270,1349,37,36]:
+                    - img [aria-hidden] [ref=f3e375] [box=279,1358,20,16]: 
+                  - button "Refresh webcam" [box=307,1349,37,36]:
+                    - img [aria-hidden] [box=316,1358,20,16]: 
+                  - button "Collapse" [expanded] [ref=f3e377] [cursor=pointer] [box=344,1349,37,36]:
+                    - img [aria-hidden] [ref=f3e378] [box=353,1358,20,16]: 
+                  - generic [ref=f3e380] [box=381,1349,37,36]:
+                    - button "More options" [ref=f3e382] [cursor=pointer] [box=381,1349,37,36]:
+                      - img [aria-hidden] [ref=f3e383] [box=390,1358,20,16]: 
+                    - text:    
+              - generic [ref=f3e385] [box=84,1386,335,198]: Webcam is off
+        - region "3D Visualizer widget" [ref=f3e391] [box=432,48,648,852]:
+          - generic [ref=f3e393] [box=442,53,628,38]:
+            - generic [ref=f3e394] [box=442,58,29,28]: Grbl
+            - generic [ref=f3e395] [box=481,58,50,28]: Idle
+            - generic [ref=f3e396] [box=814,53,256,38]:
+              - button "G54 (P1)" [ref=f3e399] [cursor=pointer] [box=814,53,107,38]
+              - generic [ref=f3e401] [box=926,53,144,38]:
+                - generic [ref=f3e402] [box=926,53,144,38]:
+                  - button "3D View options" [ref=f3e403] [cursor=pointer] [box=926,53,111,38]:
+                    - generic [aria-hidden] [ref=f3e404] [box=939,63,18,16]: 
+                    - text: 3D View
+                  - button [ref=f3e405] [cursor=pointer] [box=1036,53,34,38]
+                - text:      
+          - generic [ref=f3e407] [box=432,96,648,804]:
+            - generic [ref=f3e408] [box=716,197,81,93]:
+              - generic [ref=f3e409] [box=716,197,81,48]: 
+              - generic [ref=f3e411] [box=716,260,81,20]: 3D rendering
+            - generic [ref=f3e413] [box=442,107,628,38]:
+              - generic [ref=f3e414] [box=442,107,169,38]:
+                - button "Upload G-code" [ref=f3e415] [cursor=pointer] [box=442,107,134,38]
+                - generic [ref=f3e416] [box=575,107,36,38]:
+                  - button [ref=f3e418] [cursor=pointer] [box=575,107,36,38]:
+                    - generic [aria-hidden] [ref=f3e419] [box=588,117,10,16]: 
+                  - text: 
+              - generic [ref=f3e421] [box=619,107,145,38]:
+                - button "Run" [disabled] [ref=f3e422] [box=619,107,38,38]:
+                  - generic [aria-hidden] [ref=f3e423] [box=632,117,12,16]: 
+                - button "Pause" [disabled] [ref=f3e424] [box=656,107,36,38]:
+                  - generic [aria-hidden] [ref=f3e425] [box=669,117,10,16]: 
+                - button "Stop" [disabled] [ref=f3e426] [box=691,107,38,38]:
+                  - generic [aria-hidden] [ref=f3e427] [box=704,117,12,16]: 
+                - button "Close G-code file" [disabled] [ref=f3e428] [box=728,107,36,38]:
+                  - generic [aria-hidden] [ref=f3e429] [box=741,117,10,16]: 
+        - generic [ref=f3e430] [box=1080,48,360,852]:
+          - generic [ref=f3e432] [box=1093,60,335,31]:
+            - generic [ref=f3e434] [box=1093,60,70,31]:
+              - button "Collapse all right panel widgets" [ref=f3e435] [cursor=pointer] [box=1093,60,36,31]:
+                - img [aria-hidden] [ref=f3e436] [box=1102,68,18,14]: 
+              - button "Expand all right panel widgets" [ref=f3e438] [cursor=pointer] [box=1128,60,36,31]:
+                - img [aria-hidden] [ref=f3e439] [box=1137,68,18,14]: 
+            - button "Manage Widgets (1)" [ref=f3e442] [cursor=pointer] [box=1173,60,210,31]:
+              - img [aria-hidden] [ref=f3e443] [box=1203,68,16,14]: 
+              - text: Manage Widgets (1)
+            - button "Hide right panel" [ref=f3e446] [cursor=pointer] [box=1393,60,36,31]:
+              - img [aria-hidden] [ref=f3e447] [box=1402,68,18,14]: 
+          - generic [ref=f3e450] [box=1093,103,335,3581]:
+            - region "Axes widget" [ref=f3e452] [box=1093,103,335,556]:
+              - generic [ref=f3e453] [box=1093,103,335,38]:
+                - generic [ref=f3e454] [box=1094,104,333,36]:
+                  - button [ref=f3e456] [box=1106,113,24,17]:
+                    - img [aria-hidden] [ref=f3e457] [box=1106,113,20,16]: 
+                  - text: Axes
+                - toolbar "Widget controls" [ref=f3e459] [box=1254,104,173,36]:
+                  - button "Toggle keypad jogging" [ref=f3e460] [cursor=pointer] [box=1254,104,37,36]:
+                    - img [aria-hidden] [ref=f3e461] [box=1263,113,20,16]: 
+                  - button "Toggle manual data input mode" [ref=f3e463] [cursor=pointer] [box=1291,104,62,36]: MDI
+                  - button "Collapse" [expanded] [ref=f3e464] [cursor=pointer] [box=1353,104,37,36]:
+                    - img [aria-hidden] [ref=f3e465] [box=1362,113,20,16]: 
+                  - generic [ref=f3e467] [box=1390,104,37,36]:
+                    - button "More options" [ref=f3e469] [cursor=pointer] [box=1390,104,37,36]:
+                      - img [aria-hidden] [ref=f3e470] [box=1399,113,20,16]: 
+                    - text:    
+              - generic [ref=f3e473] [box=1106,149,309,501]:
+                - table [ref=f3e475] [box=1106,149,309,223]:
+                  - rowgroup [ref=f3e476] [box=1108,151,305,42]:
+                    - row [ref=f3e477] [box=1108,151,305,42]:
+                      - columnheader "Axis" [ref=f3e478] [box=1108,151,32,42]
+                      - columnheader "Machine Position" [ref=f3e479] [box=1142,151,89,42]
+                      - columnheader "Work Position" [ref=f3e480] [box=1233,151,132,42]
+                      - columnheader [ref=f3e481] [box=1367,151,46,42]:
+                        - button "Select work coordinate system" [ref=f3e484] [cursor=pointer] [box=1367,153,46,38]:
+                          - generic [aria-hidden] [ref=f3e485] [box=1380,163,20,16]: 
+                  - rowgroup [ref=f3e486] [box=1108,195,305,175]:
+                    - row [ref=f3e487] [box=1108,195,305,57]:
+                      - cell "X mm" [ref=f3e488] [box=1108,195,32,57]:
+                        - generic [ref=f3e489] [box=1108,204,32,20]: X
+                        - generic [ref=f3e490] [box=1108,224,32,20]: mm
+                      - 'cell "0.000 Go to zero: X Home: X" [ref=f3e491] [box=1142,195,89,57]':
+                        - generic [ref=f3e492] [box=1142,195,89,30]: "0.000"
+                        - generic [ref=f3e494] [box=1142,226,89,26]:
+                          - 'button "Go to zero: X" [disabled] [ref=f3e495] [box=1171,230,24,18]'
+                          - 'button "Home: X" [ref=f3e496] [cursor=pointer] [box=1203,230,24,18]'
+                      - cell "0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets" [ref=f3e497] [box=1233,195,132,57]:
+                        - generic [ref=f3e498] [box=1233,195,132,30]: "0.000"
+                        - generic [ref=f3e500] [box=1233,226,132,26]:
+                          - button "Move X backward" [ref=f3e501] [cursor=pointer] [box=1241,230,24,18]
+                          - button "Move X forward" [ref=f3e502] [cursor=pointer] [box=1273,230,24,18]
+                          - button "Zero out X work offsets" [ref=f3e503] [cursor=pointer] [box=1305,230,24,18]
+                          - button "Set X work offsets" [ref=f3e504] [cursor=pointer] [box=1337,230,24,18]
+                      - cell [ref=f3e505] [box=1367,195,46,57]:
+                        - button "X axis actions" [ref=f3e508] [cursor=pointer] [box=1367,205,46,38]:
+                          - generic [aria-hidden] [ref=f3e509] [box=1380,215,20,16]: 
+                    - row [ref=f3e510] [box=1108,254,305,57]:
+                      - cell "Y mm" [ref=f3e511] [box=1108,254,32,57]:
+                        - generic [ref=f3e512] [box=1108,263,32,20]: "Y"
+                        - generic [ref=f3e513] [box=1108,283,32,20]: mm
+                      - 'cell "0.000 Go to zero: Y Home: Y" [ref=f3e514] [box=1142,254,89,57]':
+                        - generic [ref=f3e515] [box=1142,254,89,30]: "0.000"
+                        - generic [ref=f3e517] [box=1142,285,89,26]:
+                          - 'button "Go to zero: Y" [disabled] [ref=f3e518] [box=1171,289,24,18]'
+                          - 'button "Home: Y" [ref=f3e519] [cursor=pointer] [box=1203,289,24,18]'
+                      - cell "0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets" [ref=f3e520] [box=1233,254,132,57]:
+                        - generic [ref=f3e521] [box=1233,254,132,30]: "0.000"
+                        - generic [ref=f3e523] [box=1233,285,132,26]:
+                          - button "Move Y backward" [ref=f3e524] [cursor=pointer] [box=1241,289,24,18]
+                          - button "Move Y forward" [ref=f3e525] [cursor=pointer] [box=1273,289,24,18]
+                          - button "Zero out Y work offsets" [ref=f3e526] [cursor=pointer] [box=1305,289,24,18]
+                          - button "Set Y work offsets" [ref=f3e527] [cursor=pointer] [box=1337,289,24,18]
+                      - cell [ref=f3e528] [box=1367,254,46,57]:
+                        - button "Y axis actions" [ref=f3e531] [cursor=pointer] [box=1367,264,46,38]:
+                          - generic [aria-hidden] [ref=f3e532] [box=1380,274,20,16]: 
+                    - row [ref=f3e533] [box=1108,313,305,57]:
+                      - cell "Z mm" [ref=f3e534] [box=1108,313,32,57]:
+                        - generic [ref=f3e535] [box=1108,322,32,20]: Z
+                        - generic [ref=f3e536] [box=1108,342,32,20]: mm
+                      - 'cell "0.000 Go to zero: Z Home: Z" [ref=f3e537] [box=1142,313,89,57]':
+                        - generic [ref=f3e538] [box=1142,313,89,30]: "0.000"
+                        - generic [ref=f3e540] [box=1142,344,89,26]:
+                          - 'button "Go to zero: Z" [disabled] [ref=f3e541] [box=1171,348,24,18]'
+                          - 'button "Home: Z" [ref=f3e542] [cursor=pointer] [box=1203,348,24,18]'
+                      - cell "0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets" [ref=f3e543] [box=1233,313,132,57]:
+                        - generic [ref=f3e544] [box=1233,313,132,30]: "0.000"
+                        - generic [ref=f3e546] [box=1233,344,132,26]:
+                          - button "Move Z backward" [ref=f3e547] [cursor=pointer] [box=1241,348,24,18]
+                          - button "Move Z forward" [ref=f3e548] [cursor=pointer] [box=1273,348,24,18]
+                          - button "Zero out Z work offsets" [ref=f3e549] [cursor=pointer] [box=1305,348,24,18]
+                          - button "Set Z work offsets" [ref=f3e550] [cursor=pointer] [box=1337,348,24,18]
+                      - cell [ref=f3e551] [box=1367,313,46,57]:
+                        - button "Z axis actions" [ref=f3e554] [cursor=pointer] [box=1367,323,46,38]:
+                          - generic [aria-hidden] [ref=f3e555] [box=1380,333,20,16]: 
+                - generic [ref=f3e557] [box=1106,382,309,124]:
+                  - generic [ref=f3e558] [box=1106,382,195,124]:
+                    - generic [ref=f3e560] [box=1106,382,195,32]:
+                      - button "Move X negative Y positive" [ref=f3e563] [cursor=pointer] [box=1106,382,44,32]:
+                        - generic [aria-hidden] [ref=f3e564] [box=1117,386,23,23]: 
+                      - button "Move Y positive" [ref=f3e567] [cursor=pointer] [box=1155,382,44,32]:
+                        - generic [ref=f3e568] [box=1166,383,11,30]: "Y"
+                        - generic [ref=f3e569] [box=1177,383,10,30]: +
+                      - button "Move X positive Y positive" [ref=f3e572] [cursor=pointer] [box=1204,382,44,32]:
+                        - generic [aria-hidden] [ref=f3e573] [box=1214,386,23,23]: 
+                      - button "Move Z positive" [ref=f3e576] [cursor=pointer] [box=1252,382,44,32]:
+                        - generic [ref=f3e577] [box=1264,383,10,30]: Z
+                        - generic [ref=f3e578] [box=1274,383,10,30]: +
+                    - generic [ref=f3e580] [box=1106,419,195,32]:
+                      - button "Move X negative" [ref=f3e583] [cursor=pointer] [box=1106,419,44,32]:
+                        - generic [ref=f3e584] [box=1118,420,11,30]: X
+                        - generic [ref=f3e585] [box=1128,420,10,30]: "-"
+                      - button "X 0 Y 0" [ref=f3e588] [cursor=pointer] [box=1155,419,44,32]:
+                        - generic [ref=f3e589] [box=1156,420,11,30]: X
+                        - generic [box=1167,436,10,0]: "0"
+                        - generic [ref=f3e590] [box=1177,420,11,30]: "Y"
+                        - generic [box=1187,436,10,0]: "0"
+                      - button "Move X positive" [ref=f3e593] [cursor=pointer] [box=1204,419,44,32]:
+                        - generic [ref=f3e594] [box=1215,420,11,30]: X
+                        - generic [ref=f3e595] [box=1226,420,10,30]: +
+                      - button "Z 0" [ref=f3e598] [cursor=pointer] [box=1252,419,44,32]:
+                        - generic [ref=f3e599] [box=1264,420,10,30]: Z
+                        - generic [box=1274,436,10,0]: "0"
+                    - generic [ref=f3e601] [box=1106,456,195,32]:
+                      - button "Move X negative Y negative" [ref=f3e604] [cursor=pointer] [box=1106,456,44,32]:
+                        - generic [aria-hidden] [ref=f3e605] [box=1117,460,23,23]: 
+                      - button "Move Y negative" [ref=f3e608] [cursor=pointer] [box=1155,456,44,32]:
+                        - generic [ref=f3e609] [box=1166,457,11,30]: "Y"
+                        - generic [ref=f3e610] [box=1177,457,10,30]: "-"
+                      - button "Move X positive Y negative" [ref=f3e613] [cursor=pointer] [box=1204,456,44,32]:
+                        - generic [aria-hidden] [ref=f3e614] [box=1214,460,23,23]: 
+                      - button "Move Z negative" [ref=f3e617] [cursor=pointer] [box=1252,456,44,32]:
+                        - generic [ref=f3e618] [box=1264,457,10,30]: Z
+                        - generic [ref=f3e619] [box=1274,457,10,30]: "-"
+                  - generic [ref=f3e620] [box=1301,382,114,124]:
+                    - button "G21 (mm)" [ref=f3e624] [cursor=pointer] [box=1301,382,114,38]
+                    - button [ref=f3e629] [cursor=pointer] [box=1301,425,114,38]:
+                      - text: "1"
+                      - subscript [ref=f3e630] [box=1366,441,20,14]: mm
+                    - generic [ref=f3e633] [box=1301,468,114,38]:
+                      - button "Decrease step size" [ref=f3e635] [cursor=pointer] [box=1301,468,40,38]:
+                        - generic [aria-hidden] [ref=f3e636] [box=1314,478,14,16]: 
+                      - button "Increase step size" [ref=f3e638] [cursor=pointer] [box=1358,468,40,38]:
+                        - generic [aria-hidden] [ref=f3e639] [box=1371,478,14,16]: +
+                - generic [ref=f3e640] [box=1106,511,309,139]:
+                  - button "xy" [ref=f3e642] [cursor=pointer] [box=1106,511,74,31]
+                  - button "Z 3mm" [ref=f3e644] [cursor=pointer] [box=1185,511,74,31]
+                  - button "Z 4mm" [ref=f3e646] [cursor=pointer] [box=1263,511,74,31]
+                  - button "xyz" [ref=f3e648] [cursor=pointer] [box=1342,511,74,31]
+                  - button "Continue" [ref=f3e650] [cursor=pointer] [box=1106,547,100,31]
+                  - button "Pause" [ref=f3e652] [cursor=pointer] [box=1211,547,100,31]
+                  - button "FORCE" [ref=f3e654] [cursor=pointer] [box=1315,547,100,31]
+                  - button "Home XY" [ref=f3e656] [cursor=pointer] [box=1106,583,231,31]
+                  - button "G92 Z0" [ref=f3e658] [cursor=pointer] [box=1342,583,74,31]
+                  - button "100" [ref=f3e660] [cursor=pointer] [box=1106,619,47,31]
+                  - button "90" [ref=f3e662] [cursor=pointer] [box=1158,619,47,31]
+                  - button "80" [ref=f3e664] [cursor=pointer] [box=1211,619,47,31]
+                  - button "180" [ref=f3e666] [cursor=pointer] [box=1263,619,47,31]
+                  - button "G90" [ref=f3e668] [cursor=pointer] [box=1315,619,47,31]
+                  - button "G91" [ref=f3e670] [cursor=pointer] [box=1368,619,47,31]
+            - region "G-code widget" [ref=f3e672] [box=1093,667,335,303]:
+              - generic [ref=f3e673] [box=1093,667,335,38]:
+                - generic [ref=f3e674] [box=1094,668,333,36]:
+                  - button [ref=f3e676] [box=1106,677,24,17]:
+                    - img [aria-hidden] [ref=f3e677] [box=1106,677,20,16]: 
+                  - text: G-code
+                - toolbar "Widget controls" [ref=f3e679] [box=1353,668,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e680] [cursor=pointer] [box=1353,668,37,36]:
+                    - img [aria-hidden] [ref=f3e681] [box=1362,677,20,16]: 
+                  - generic [ref=f3e683] [box=1390,668,37,36]:
+                    - button "More options" [ref=f3e685] [cursor=pointer] [box=1390,668,37,36]:
+                      - img [aria-hidden] [ref=f3e686] [box=1399,677,20,16]: 
+                    - text:   
+              - generic [ref=f3e690] [box=1106,717,309,240]:
+                - generic [ref=f3e692] [box=1106,717,309,104]:
+                  - generic [ref=f3e693] [box=1106,717,309,28]:
+                    - generic [ref=f3e694] [box=1106,717,26,28]: Axis
+                    - generic [ref=f3e695] [box=1132,717,93,28]: Min
+                    - generic [ref=f3e696] [box=1225,717,93,28]: Max
+                    - generic [ref=f3e697] [box=1318,717,97,28]: Dimension
+                  - generic [ref=f3e698] [box=1106,745,309,28]:
+                    - generic [ref=f3e699] [box=1106,745,26,28]: X
+                    - generic [ref=f3e700] [box=1132,745,93,28]: 0.000 mm
+                    - generic [ref=f3e701] [box=1225,745,93,28]: 0.000 mm
+                    - generic [ref=f3e702] [box=1318,745,97,28]: 0.000 mm
+                  - generic [ref=f3e703] [box=1106,773,309,28]:
+                    - generic [ref=f3e704] [box=1106,773,26,28]: "Y"
+                    - generic [ref=f3e705] [box=1132,773,93,28]: 0.000 mm
+                    - generic [ref=f3e706] [box=1225,773,93,28]: 0.000 mm
+                    - generic [ref=f3e707] [box=1318,773,97,28]: 0.000 mm
+                  - generic [ref=f3e708] [box=1106,801,309,20]:
+                    - generic [ref=f3e709] [box=1106,801,26,20]: Z
+                    - generic [ref=f3e710] [box=1132,801,93,20]: 0.000 mm
+                    - generic [ref=f3e711] [box=1225,801,93,20]: 0.000 mm
+                    - generic [ref=f3e712] [box=1318,801,97,20]: 0.000 mm
+                - generic [ref=f3e713] [box=1106,837,309,40]:
+                  - generic [ref=f3e714] [box=1106,837,155,40]:
+                    - generic [ref=f3e715] [box=1106,837,155,20]: Sent
+                    - generic [ref=f3e716] [box=1106,857,155,20]: 0 / 7
+                  - generic [ref=f3e717] [box=1261,837,155,40]:
+                    - generic [ref=f3e718] [box=1261,837,155,20]: Received
+                    - generic [ref=f3e719] [box=1261,857,155,20]: 0 / 7
+                - generic [ref=f3e720] [box=1106,877,309,40]:
+                  - generic [ref=f3e721] [box=1106,877,155,40]:
+                    - generic [ref=f3e722] [box=1106,877,155,20]: Start Time
+                    - generic [ref=f3e723] [box=1106,897,155,20]: –
+                  - generic [ref=f3e724] [box=1261,877,155,40]:
+                    - generic [ref=f3e725] [box=1261,877,155,20]: Elapsed Time
+                    - generic [ref=f3e726] [box=1261,897,155,20]: –
+                - generic [ref=f3e727] [box=1106,917,309,40]:
+                  - generic [ref=f3e728] [box=1106,917,155,40]:
+                    - generic [ref=f3e729] [box=1106,917,155,20]: Finish Time
+                    - generic [ref=f3e730] [box=1106,937,155,20]: –
+                  - generic [ref=f3e731] [box=1261,917,155,40]:
+                    - generic [ref=f3e732] [box=1261,917,155,20]: Remaining Time
+                    - generic [ref=f3e733] [box=1261,937,155,20]: –
+            - region "Macro widget" [ref=f3e735] [box=1093,978,335,124]:
+              - generic [ref=f3e736] [box=1093,978,335,38]:
+                - generic [ref=f3e737] [box=1094,979,333,36]:
+                  - button [ref=f3e739] [box=1106,988,24,17]:
+                    - img [aria-hidden] [ref=f3e740] [box=1106,988,20,16]: 
+                  - text: Macro
+                - toolbar "Widget controls" [ref=f3e742] [box=1353,979,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e743] [cursor=pointer] [box=1353,979,37,36]:
+                    - img [aria-hidden] [ref=f3e744] [box=1362,988,20,16]: 
+                  - generic [ref=f3e746] [box=1390,979,37,36]:
+                    - button "More options" [ref=f3e748] [cursor=pointer] [box=1390,979,37,36]:
+                      - img [aria-hidden] [ref=f3e749] [box=1399,988,20,16]: 
+                    - text:   
+              - generic [ref=f3e752] [box=1094,1016,333,85]:
+                - generic [ref=f3e753] [box=1094,1016,333,49]:
+                  - button "New macro" [ref=f3e755] [cursor=pointer] [box=1106,1024,80,32]:
+                    - img [aria-hidden] [ref=f3e756] [box=1119,1033,18,14]: +
+                    - text: New
+                  - generic [ref=f3e758] [box=1280,1024,135,32]:
+                    - button "Export" [ref=f3e759] [cursor=pointer] [box=1280,1024,92,32]:
+                      - img [aria-hidden] [ref=f3e760] [box=1293,1033,18,14]: 
+                      - text: Export
+                    - button "Refresh" [ref=f3e762] [cursor=pointer] [box=1372,1024,44,32]:
+                      - img [aria-hidden] [ref=f3e763] [box=1385,1033,18,14]: 
+                - generic [ref=f3e765] [box=1094,1065,333,36]: Loading...
+            - region [ref=f3e768] [box=1093,1110,335,356]:
+              - generic [ref=f3e769] [box=1093,1110,335,38]:
+                - generic [ref=f3e770] [box=1094,1111,333,36]:
+                  - button "" [ref=f3e772] [box=1106,1120,22,17]
+                  - text: Autolevel
+                - toolbar "Widget controls" [ref=f3e774] [box=1373,1111,54,36]:
+                  - button "" [ref=f3e775] [cursor=pointer] [box=1373,1111,33,36]
+                  - generic [ref=f3e777] [box=1406,1111,21,36]:
+                    - button "" [ref=f3e779] [cursor=pointer] [box=1406,1111,21,36]
+                    - text:   
+              - generic [ref=f3e783] [box=1104,1158,313,297]:
+                - generic [ref=f3e784] [box=1104,1158,313,144]:
+                  - generic [ref=f3e785] [box=1120,1174,281,20]:
+                    - img "Target" [ref=f3e786] [box=1120,1174,27,20]: 🎯
+                    - text: PROBE NEW SURFACE
+                  - generic [ref=f3e787] [box=1120,1202,281,34]: Set up the probe area and probe the work surface to generate height compensation data.
+                  - button "Start New Probe" [ref=f3e788] [cursor=pointer] [box=1120,1248,143,38]
+                - generic [ref=f3e789] [box=1104,1312,313,144]:
+                  - generic [ref=f3e790] [box=1120,1328,281,20]:
+                    - img "Wrench" [ref=f3e791] [box=1120,1328,27,20]: 🔧
+                    - text: APPLY COMPENSATION
+                  - generic [ref=f3e792] [box=1120,1356,281,34]: Load a previously saved .probe file and apply it to your G-code.
+                  - button "Load Probe Data" [ref=f3e793] [cursor=pointer] [box=1120,1401,147,38]
+            - region "Probe widget" [ref=f3e795] [box=1093,1474,335,579]:
+              - generic [ref=f3e796] [box=1093,1474,335,38]:
+                - generic [ref=f3e797] [box=1094,1475,333,36]:
+                  - button [ref=f3e799] [box=1106,1484,24,17]:
+                    - img [aria-hidden] [ref=f3e800] [box=1106,1484,20,16]: 
+                  - text: Probe
+                - toolbar "Widget controls" [ref=f3e802] [box=1353,1475,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e803] [cursor=pointer] [box=1353,1475,37,36]:
+                    - img [aria-hidden] [ref=f3e804] [box=1362,1484,20,16]: 
+                  - generic [ref=f3e806] [box=1390,1475,37,36]:
+                    - button "More options" [ref=f3e808] [cursor=pointer] [box=1390,1475,37,36]:
+                      - img [aria-hidden] [ref=f3e809] [box=1399,1484,20,16]: 
+                    - text:   
+              - generic [ref=f3e812] [box=1094,1512,333,540]:
+                - generic [ref=f3e814] [box=1106,1524,309,59]:
+                  - generic [ref=f3e815] [box=1106,1524,309,20]: Probe Axis
+                  - generic [ref=f3e817] [box=1106,1552,155,31]:
+                    - button "Z" [ref=f3e818] [cursor=pointer] [box=1106,1552,52,31]
+                    - button "X" [ref=f3e819] [cursor=pointer] [box=1157,1552,52,31]
+                    - button "Y" [ref=f3e820] [cursor=pointer] [box=1208,1552,52,31]
+                - generic [ref=f3e822] [box=1106,1599,309,79]:
+                  - generic [ref=f3e823] [box=1106,1599,309,48]:
+                    - generic [ref=f3e824] [box=1106,1599,309,20]: "Probe Command: G38.2"
+                    - generic [ref=f3e826] [box=1114,1630,18,14]:
+                      - img [aria-hidden] [ref=f3e827] [box=1116,1630,14,14]: 
+                      - img [aria-hidden] [ref=f3e829] [box=1120,1630,5,14]: 
+                  - generic [ref=f3e833] [box=1106,1647,247,31]:
+                    - button "G38.2" [ref=f3e834] [cursor=pointer] [box=1106,1647,63,31]
+                    - button "G38.3" [ref=f3e835] [cursor=pointer] [box=1168,1647,63,31]
+                    - button "G38.4" [ref=f3e836] [cursor=pointer] [box=1229,1647,63,31]
+                    - button "G38.5" [ref=f3e837] [cursor=pointer] [box=1291,1647,63,31]
+                - generic [ref=f3e838] [box=1106,1694,309,59]:
+                  - generic [ref=f3e839] [box=1106,1694,309,20]: Probe Depth
+                  - generic [ref=f3e840] [box=1106,1722,309,31]:
+                    - spinbutton [ref=f3e841] [box=1106,1722,269,31]: "10"
+                    - generic [ref=f3e842] [box=1374,1722,41,31]: mm
+                - generic [ref=f3e844] [box=1106,1769,309,59]:
+                  - generic [ref=f3e845] [box=1106,1769,309,20]: Probe Feedrate
+                  - generic [ref=f3e846] [box=1106,1797,309,31]:
+                    - spinbutton [ref=f3e847] [box=1106,1797,242,31]: "20"
+                    - generic [ref=f3e848] [box=1347,1797,68,31]: mm/min
+                - generic [ref=f3e850] [box=1106,1844,309,59]:
+                  - generic [ref=f3e851] [box=1106,1844,309,20]: Touch Plate Thickness
+                  - generic [ref=f3e852] [box=1106,1872,309,31]:
+                    - spinbutton [ref=f3e853] [box=1106,1872,269,31]: "10"
+                    - generic [ref=f3e854] [box=1374,1872,41,31]: mm
+                - generic [ref=f3e856] [box=1106,1919,309,59]:
+                  - generic [ref=f3e857] [box=1106,1919,309,20]: Retraction Distance
+                  - generic [ref=f3e858] [box=1106,1947,309,31]:
+                    - spinbutton [ref=f3e859] [box=1106,1947,269,31]: "4"
+                    - generic [ref=f3e860] [box=1374,1947,41,31]: mm
+                - button "Probe Axis Z" [ref=f3e863] [cursor=pointer] [box=1106,1994,117,38]
+            - region "Tool widget" [ref=f3e865] [box=1093,2061,335,940]:
+              - generic [ref=f3e866] [box=1093,2061,335,38]:
+                - generic [ref=f3e867] [box=1094,2062,333,36]:
+                  - button [ref=f3e869] [box=1106,2071,14,17]:
+                    - generic [aria-hidden] [ref=f3e870] [box=1106,2071,14,16]: 
+                  - text: Tool
+                - toolbar "Widget controls" [ref=f3e871] [box=1340,2062,87,36]:
+                  - button "Refresh tool configuration" [ref=f3e872] [cursor=pointer] [box=1340,2062,33,36]:
+                    - generic [aria-hidden] [ref=f3e873] [box=1349,2071,16,16]: 
+                  - button "Collapse" [expanded] [ref=f3e874] [cursor=pointer] [box=1373,2062,33,36]:
+                    - generic [aria-hidden] [ref=f3e875] [box=1382,2071,16,16]: 
+                  - generic [ref=f3e876] [box=1406,2062,21,36]:
+                    - button "More options" [ref=f3e878] [cursor=pointer] [box=1406,2062,21,36]:
+                      - generic [aria-hidden] [ref=f3e879] [box=1415,2071,4,16]: 
+                    - text:  
+              - generic [ref=f3e881] [box=1104,2109,313,881]:
+                - generic [ref=f3e882] [box=1104,2109,313,58]:
+                  - text: Tool Change Policy
+                  - generic [ref=f3e885] [box=1105,2132,274,32]:
+                    - generic [ref=f3e886] [box=1115,2138,51,20]: Select...
+                    - textbox [ref=f3e889] [box=1115,2140,2,16]
+                - generic [ref=f3e895] [box=1104,2167,313,823]:
+                  - generic [ref=f3e896] [box=1104,2167,313,222]:
+                    - text: Tool Change Position
+                    - generic [ref=f3e897] [box=1104,2187,313,202]:
+                      - generic [ref=f3e898] [box=1104,2187,313,62]:
+                        - generic [ref=f3e899] [box=1104,2187,189,62]:
+                          - generic [ref=f3e900] [box=1104,2187,189,20]: X
+                          - spinbutton [ref=f3e901] [box=1104,2207,189,22]: "0.000"
+                          - generic [ref=f3e902] [box=1104,2229,189,20]: mm
+                        - button "Use the current machine position as the tool change position." [ref=f3e903] [box=1301,2187,34,62]
+                      - generic [ref=f3e904] [box=1104,2257,313,62]:
+                        - generic [ref=f3e905] [box=1104,2257,189,62]:
+                          - generic [ref=f3e906] [box=1104,2257,189,20]: "Y"
+                          - spinbutton [ref=f3e907] [box=1104,2277,189,22]: "0.000"
+                          - generic [ref=f3e908] [box=1104,2299,189,20]: mm
+                        - button "Use the current machine position as the tool change position." [ref=f3e909] [box=1301,2257,34,62]
+                      - generic [ref=f3e910] [box=1104,2327,313,62]:
+                        - generic [ref=f3e911] [box=1104,2327,189,62]:
+                          - generic [ref=f3e912] [box=1104,2327,189,20]: Z
+                          - spinbutton [ref=f3e913] [box=1104,2347,189,22]: "0.000"
+                          - generic [ref=f3e914] [box=1104,2369,189,20]: mm
+                        - button "Use the current machine position as the tool change position." [ref=f3e915] [box=1301,2327,34,62]
+                  - generic [ref=f3e916] [box=1104,2389,313,222]:
+                    - text: Tool Probe Position
+                    - generic [ref=f3e917] [box=1104,2409,313,202]:
+                      - generic [ref=f3e918] [box=1104,2409,313,62]:
+                        - generic [ref=f3e919] [box=1104,2409,189,62]:
+                          - generic [ref=f3e920] [box=1104,2409,189,20]: X
+                          - spinbutton [ref=f3e921] [box=1104,2429,189,22]: "0.000"
+                          - generic [ref=f3e922] [box=1104,2452,189,20]: mm
+                        - button "Use the current machine position as the tool probe position." [ref=f3e923] [box=1301,2409,34,62]
+                      - generic [ref=f3e924] [box=1104,2480,313,62]:
+                        - generic [ref=f3e925] [box=1104,2480,189,62]:
+                          - generic [ref=f3e926] [box=1104,2480,189,20]: "Y"
+                          - spinbutton [ref=f3e927] [box=1104,2500,189,22]: "0.000"
+                          - generic [ref=f3e928] [box=1104,2522,189,20]: mm
+                        - button "Use the current machine position as the tool probe position." [ref=f3e929] [box=1301,2480,34,62]
+                      - generic [ref=f3e930] [box=1104,2550,313,62]:
+                        - generic [ref=f3e931] [box=1104,2550,189,62]:
+                          - generic [ref=f3e932] [box=1104,2550,189,20]: Z
+                          - spinbutton [ref=f3e933] [box=1104,2570,189,22]: "0.000"
+                          - generic [ref=f3e934] [box=1104,2592,189,20]: mm
+                        - button "Use the current machine position as the tool probe position." [ref=f3e935] [box=1301,2550,34,62]
+                  - generic [ref=f3e936] [box=1104,2612,313,378]:
+                    - generic [ref=f3e937] [box=1104,2612,313,67]:
+                      - text: Probe Command
+                      - toolbar [ref=f3e938] [box=1104,2632,313,22]:
+                        - generic [ref=f3e939] [box=1104,2632,313,22]:
+                          - button "G38.2" [ref=f3e940] [box=1104,2632,54,22]
+                          - button "G38.3" [ref=f3e941] [box=1158,2632,54,22]
+                          - button "G38.4" [ref=f3e942] [box=1212,2632,54,22]
+                          - button "G38.5" [ref=f3e943] [box=1266,2632,54,22]
+                      - paragraph [ref=f3e944] [box=1104,2659,313,20]: G38.3 probe toward workpiece, stop on contact
+                    - generic [ref=f3e945] [box=1104,2693,313,104]:
+                      - generic [ref=f3e947] [box=1104,2693,308,62]:
+                        - text: Probe Distance
+                        - generic [ref=f3e948] [box=1104,2713,308,42]:
+                          - spinbutton [ref=f3e949] [box=1104,2713,189,22]: "0.185"
+                          - generic [ref=f3e950] [box=1104,2735,308,20]: mm
+                      - generic [ref=f3e952] [box=1109,2755,308,42]:
+                        - text: Probe Feedrate
+                        - generic [ref=f3e953] [box=1109,2775,308,22]:
+                          - spinbutton [ref=f3e954] [box=1109,2775,189,22]: "0"
+                          - text: mm/min
+                    - generic [ref=f3e957] [box=1104,2797,308,42]:
+                      - text: Touch Plate Height
+                      - generic [ref=f3e958] [box=1104,2817,308,22]:
+                        - spinbutton [ref=f3e959] [box=1104,2817,189,22]: "0"
+                        - text: mm
+                    - generic [ref=f3e960] [box=1104,2839,313,151]:
+                      - generic [ref=f3e961] [box=1104,2839,313,25]:
+                        - generic [ref=f3e962] [box=1104,2842,142,20]: Tool Probe Commands
+                        - button "" [ref=f3e964] [cursor=pointer] [box=1254,2841,24,16]
+                      - generic [ref=f3e966] [box=1104,2864,313,126]: ; Probe the tool G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance] ; Pause for 1 second %wait 1 ; Set tool length offset G43.1 Z[posz - touch_plate_height]
+            - region "Spindle widget" [ref=f3e968] [box=1093,3009,335,288]:
+              - generic [ref=f3e969] [box=1093,3009,335,38]:
+                - generic [ref=f3e970] [box=1094,3010,333,36]:
+                  - button [ref=f3e972] [box=1106,3019,24,17]:
+                    - img [aria-hidden] [ref=f3e973] [box=1106,3019,20,16]: 
+                  - text: Spindle
+                - toolbar "Widget controls" [ref=f3e975] [box=1353,3010,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e976] [cursor=pointer] [box=1353,3010,37,36]:
+                    - img [aria-hidden] [ref=f3e977] [box=1362,3019,20,16]: 
+                  - generic [ref=f3e979] [box=1390,3010,37,36]:
+                    - button "More options" [ref=f3e981] [cursor=pointer] [box=1390,3010,37,36]:
+                      - img [aria-hidden] [ref=f3e982] [box=1399,3019,20,16]: 
+                    - text:   
+              - generic [ref=f3e986] [box=1106,3059,309,209]:
+                - generic [ref=f3e987] [box=1106,3059,309,59]:
+                  - generic [ref=f3e988] [box=1106,3059,309,20]: Coolant
+                  - generic [ref=f3e991] [box=1106,3087,206,31]:
+                    - button "M7" [ref=f3e992] [cursor=pointer] [box=1106,3087,69,31]
+                    - button "M8" [ref=f3e993] [cursor=pointer] [box=1174,3087,69,31]
+                    - button "M9" [ref=f3e994] [cursor=pointer] [box=1242,3087,70,31]:
+                      - img [aria-hidden] [ref=f3e995] [box=1254,3095,18,14]: 
+                      - text: M9
+                - generic [ref=f3e997] [box=1106,3134,309,59]:
+                  - generic [ref=f3e998] [box=1106,3134,309,20]: Spindle
+                  - generic [ref=f3e1001] [box=1106,3162,206,31]:
+                    - button "M3" [ref=f3e1002] [cursor=pointer] [box=1106,3162,69,31]:
+                      - img [aria-hidden] [ref=f3e1003] [box=1118,3170,18,14]: 
+                      - text: M3
+                    - button "M4" [ref=f3e1005] [cursor=pointer] [box=1174,3162,69,31]:
+                      - img [aria-hidden] [ref=f3e1006] [box=1187,3170,18,14]: 
+                      - text: M4
+                    - button "M5" [ref=f3e1008] [cursor=pointer] [box=1243,3162,69,31]:
+                      - img [aria-hidden] [ref=f3e1009] [box=1255,3170,18,14]: 
+                      - text: M5
+                - generic [ref=f3e1011] [box=1106,3209,309,59]:
+                  - generic [ref=f3e1012] [box=1106,3209,309,20]: Spindle Speed
+                  - generic [ref=f3e1015] [box=1106,3237,206,31]:
+                    - spinbutton [ref=f3e1016] [box=1106,3237,158,31]: "1000"
+                    - generic [ref=f3e1017] [box=1263,3237,49,31]: RPM
+            - region "Laser widget" [ref=f3e1020] [box=1093,3305,335,379]:
+              - generic [ref=f3e1021] [box=1093,3305,335,38]:
+                - generic [ref=f3e1022] [box=1094,3306,333,36]:
+                  - button [ref=f3e1024] [box=1106,3315,24,17]:
+                    - img [aria-hidden] [ref=f3e1025] [box=1106,3315,20,16]: 
+                  - text: Laser
+                - toolbar "Widget controls" [ref=f3e1027] [box=1353,3306,74,36]:
+                  - button "Collapse" [expanded] [ref=f3e1028] [cursor=pointer] [box=1353,3306,37,36]:
+                    - img [aria-hidden] [ref=f3e1029] [box=1362,3315,20,16]: 
+                  - generic [ref=f3e1031] [box=1390,3306,37,36]:
+                    - button "More options" [ref=f3e1033] [cursor=pointer] [box=1390,3306,37,36]:
+                      - img [aria-hidden] [ref=f3e1034] [box=1399,3315,20,16]: 
+                    - text:   
+              - generic [ref=f3e1037] [box=1094,3343,333,340]:
+                - generic [ref=f3e1038] [box=1106,3355,309,74]:
+                  - generic [ref=f3e1039] [box=1106,3355,309,20]: Laser Intensity Control
+                  - generic [ref=f3e1040] [box=1106,3383,309,46]:
+                    - img [aria-hidden] [ref=f3e1041] [box=1106,3399,18,14]: 
+                    - generic [ref=f3e1043] [box=1132,3391,45,30]: 100%
+                    - generic [ref=f3e1044] [box=1185,3383,155,46]:
+                      - button "-10%" [ref=f3e1045] [cursor=pointer] [box=1185,3383,46,46]:
+                        - img [aria-hidden] [ref=f3e1046] [box=1200,3391,15,12]: 
+                      - button "-1%" [ref=f3e1049] [cursor=pointer] [box=1230,3383,37,46]:
+                        - img [aria-hidden] [ref=f3e1050] [box=1241,3392,13,11]: 
+                      - button "1%" [ref=f3e1053] [cursor=pointer] [box=1265,3383,33,46]:
+                        - img [aria-hidden] [ref=f3e1054] [box=1275,3392,13,11]: 
+                      - button "10%" [ref=f3e1057] [cursor=pointer] [box=1298,3383,42,46]:
+                        - img [aria-hidden] [ref=f3e1058] [box=1311,3391,15,12]: 
+                    - generic "Reset" [ref=f3e1061] [box=1348,3396,18,20]:
+                      - img [aria-hidden] [ref=f3e1062] [box=1348,3399,18,14]: 
+                - generic [ref=f3e1065] [box=1107,3446,307,224]:
+                  - button "Laser Test" [expanded] [ref=f3e1066] [box=1107,3446,307,33]:
+                    - generic [ref=f3e1068] [box=1119,3452,283,20]:
+                      - generic [ref=f3e1069] [box=1119,3452,266,20]: Laser Test
+                      - img [aria-hidden] [ref=f3e1071] [box=1385,3455,18,14]: 
+                  - generic [ref=f3e1075] [box=1107,3479,307,191]:
+                    - generic [ref=f3e1077] [box=1119,3491,283,120]:
+                      - generic [ref=f3e1078] [box=1119,3491,283,46]:
+                        - generic "Power (%)" [ref=f3e1080] [box=1119,3491,98,20]
+                        - generic [ref=f3e1081] [box=1217,3491,185,46]:
+                          - generic [ref=f3e1082] [box=1229,3491,173,20]: 0%
+                          - slider [ref=f3e1086] [box=1222,3506,14,14]
+                      - generic [ref=f3e1087] [box=1119,3537,283,43]:
+                        - generic "Test duration" [ref=f3e1089] [box=1119,3542,98,20]
+                        - generic [ref=f3e1091] [box=1229,3537,173,31]:
+                          - spinbutton "Test duration in milliseconds" [ref=f3e1092] [box=1229,3537,137,31]: "0"
+                          - generic [ref=f3e1093] [box=1365,3537,37,31]: ms
+                      - generic [ref=f3e1095] [box=1119,3580,283,31]:
+                        - generic "Maximum value" [ref=f3e1097] [box=1119,3585,98,20]
+                        - generic [ref=f3e1099] [box=1229,3580,173,31]:
+                          - generic [ref=f3e1100] [box=1229,3580,27,31]: S
+                          - spinbutton "Maximum S value" [ref=f3e1102] [box=1255,3580,147,31]: "1000"
+                    - generic [ref=f3e1103] [box=1119,3627,283,31]:
+                      - button "Laser Test" [ref=f3e1104] [cursor=pointer] [box=1119,3627,82,31]
+                      - button "Laser Off" [ref=f3e1105] [cursor=pointer] [box=1209,3627,75,31]
+  - iframe [ref=f3e1106] [box=0,0,1440,900]:
+    - generic [ref=f4e2] [box=0,0,1440,900]:
+      - generic [ref=f4e3] [box=32,32,1344,43]: "Uncaught runtime errors:"
+      - button "Dismiss" [ref=f4e4] [cursor=pointer] [box=1394,0,46,48]: ×
+      - generic [ref=f4e6] [box=32,107,1376,250]:
+        - generic [ref=f4e7] [box=48,123,1344,26]: ERROR
+        - generic [ref=f4e8] [box=48,165,1344,168]: "str.split is not a function TypeError: str.split is not a function at parseStringSync (webpack-internal:///../../node_modules/gcode-interpreter/node_modules/gcode-parser/dist/esm/index.js:261:19) at Interpreter.loadFromStringSync (webpack-internal:///../../node_modules/gcode-interpreter/dist/esm/Interpreter.js:168:79) at GCodeVisualizer.render (webpack-internal:///./widgets/Visualizer/GCodeVisualizer.js:115:16) at Visualizer.load (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:1382:38) at eval (webpack-internal:///./widgets/Visualizer/index.jsx:350:30)"
+  - iframe [active] [ref=f3e1107] [box=0,0,1440,900]:
+    - generic [ref=f5e2] [box=0,0,1440,900]:
+      - generic [ref=f5e3] [box=0,0,1440,40]: Error 1 of 1
+      - generic [ref=f5e5] [box=0,40,1440,82]:
+        - heading "TypeError" [level=3] [ref=f5e6] [box=24,56,1392,23]
+        - text: str.split is not a function
+      - heading "Call Stack" [level=4] [ref=f5e8] [box=24,138,1392,22]
+      - generic [ref=f5e9] [box=24,168,1392,172]:
+        - code [ref=f5e10] [box=24,167,125,18]: parseStringSync
+        - generic [ref=f5e11] [box=24,185,1392,14]: node_modules/gcode-interpreter/node_modules/gcode-parser/dist/esm/index.js:261:19
+        - code [ref=f5e12] [box=24,202,242,18]: Interpreter.loadFromStringSync
+        - generic [ref=f5e13] [box=24,220,1392,14]: node_modules/gcode-interpreter/dist/esm/Interpreter.js:168:79
+        - code [ref=f5e14] [box=24,237,179,18]: GCodeVisualizer.render
+        - generic [ref=f5e15] [box=24,255,1392,14]: widgets/Visualizer/GCodeVisualizer.js:115:16
+        - code [ref=f5e16] [box=24,273,125,18]: Visualizer.load
+        - generic [ref=f5e17] [box=24,291,1392,14]: widgets/Visualizer/Visualizer.jsx:1382:38
+        - code [ref=f5e18] [box=24,308,39,18]: eval
+        - generic [ref=f5e19] [box=24,326,1392,14]: widgets/Visualizer/index.jsx:350:30
+      - button "× Close" [ref=f5e22] [cursor=pointer] [box=0,860,1440,40]

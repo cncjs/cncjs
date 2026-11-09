@@ -1,0 +1,930 @@
+{
+  "task": "V3-GV focused single-controller visual replay",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment; model environment variables are not exposed"
+  },
+  "theme": "light",
+  "runnerPid": 29683,
+  "sourceContext": {
+    "dirtySourceFiles": [
+      "src/app/containers/app/Header.jsx",
+      "src/app/containers/app/MainPage.jsx",
+      "src/app/containers/app/SideNav.jsx",
+      "src/app/containers/app/components/NavLink.jsx",
+      "src/app/pages/About/components/AlertButtonLink.jsx",
+      "src/app/pages/Administration/Commands/Commands.jsx",
+      "src/app/pages/Administration/Events/Events.js",
+      "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx",
+      "src/app/pages/Administration/Machines/Machines.jsx",
+      "src/app/pages/Administration/Macros/Macros.jsx",
+      "src/app/pages/Administration/Users/Users.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx",
+      "src/app/pages/Administration/components/FieldInput.jsx",
+      "src/app/pages/Administration/components/FieldTextarea.jsx",
+      "src/app/pages/Workspace/Workspace.jsx",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx",
+      "src/app/sagas/app/index.js",
+      "src/app/widgets/Autolevel/LandingView.jsx",
+      "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+      "src/app/widgets/Axes/Settings/MDI/TableRecords.jsx",
+      "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx",
+      "src/app/widgets/Axes/Settings/index.jsx",
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx",
+      "src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx",
+      "src/app/widgets/Marlin/Controller.jsx",
+      "src/app/widgets/Visualizer/index.jsx"
+    ],
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "visualizerSourceSha256": "0e3be41eaee0eacf6ba9e095d8a6e1f3d5fd082d4ebc0ac0caa937af0d8ba53e",
+    "fixture": "R6 incoming state/settings fixture replay filtered to one active controller only; fresh empty browser context"
+  },
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "Playwright bundled Chromium",
+    "headless": true,
+    "viewport": "1440x900",
+    "dpr": 1,
+    "environment": {
+      "colorScheme": "light",
+      "devicePixelRatio": 1,
+      "webgl": {
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "webgpuAvailable": true
+    }
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events appended after the actual connection:open event",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "Marlin",
+        "payloadBytes": 79,
+        "payloadSha256": "732e457a21307d2c92b4a9e69cbe72de134010aabc30dac25cccdee1e5e85d97",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:state",
+        "controller": "Marlin",
+        "payloadBytes": 231,
+        "payloadSha256": "6fda8f0646d6d2d872141d93607f9286782987d1bc39d05966fae532582e30ea",
+        "pollingGet": 5
+      }
+    ],
+    "pollingGetCount": 10,
+    "websocketUpgradeClosed": 1,
+    "suppressedGrblControllerEvents": 0,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:change",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "fixture:batch",
+        "controller": "Marlin",
+        "afterActualConnectionOpen": true
+      },
+      {
+        "pollingGet": 6,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 7,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "connection:close",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:change",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": [],
+    "pollingRelayError": "Error: route.fetch: Request context disposed.\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:8080/socket.io/?token=[redacted]&EIO=3&transport=polling&t=Q4GL4U8&sid=8c_XoZ7ZUm3dxz1fAAAJ\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,"
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1971,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL\nManufacturer: Grbl Simulator",
+      "actualConnectionOpenForwarded": true,
+      "fixtureEventsAppended": 2,
+      "pollingGetCount": 6,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 477,
+      "bodyExcerpt": "Marlin F 92% -10% -1% 1% 10% E 88% -10% -1% 1% 10% Heater Control Extruder °C Heated Bed °C Extruder Temperature 201°C / 220°C Heated Bed Temperature 59°C / 65°C Extruder Power 45 Heated Bed Power 17 Status Reports Modal Groups",
+      "expectedBodyText": [
+        "Extruder Temperature",
+        "201°C / 220°C"
+      ],
+      "visibleBodyValuesFound": true,
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "feedrate",
+        "spindle",
+        "ovF",
+        "ovS",
+        "extruder",
+        "heatedBed",
+        "modal"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "baudrate",
+        "max_feedrate"
+      ],
+      "screenshot": "controller-marlin-light-1440x900.png",
+      "visualEvidence": {
+        "rect": {
+          "x": 84,
+          "y": 268,
+          "width": 335,
+          "height": 459
+        },
+        "visibleTextLeaves": [
+          {
+            "found": true,
+            "text": "F",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "24px",
+            "rect": {
+              "x": 80,
+              "y": 324,
+              "width": 14,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "92%",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 94,
+              "y": 320,
+              "width": 36,
+              "height": 28
+            }
+          },
+          {
+            "found": true,
+            "text": "-10%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 159,
+              "y": 324,
+              "width": 30,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "-1%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "10.56px",
+            "rect": {
+              "x": 228,
+              "y": 324,
+              "width": 20,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "1%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "10.56px",
+            "rect": {
+              "x": 287,
+              "y": 324,
+              "width": 15,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "10%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 343,
+              "y": 324,
+              "width": 24,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "E",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "24px",
+            "rect": {
+              "x": 79,
+              "y": 364,
+              "width": 14,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "88%",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 94,
+              "y": 360,
+              "width": 37,
+              "height": 28
+            }
+          },
+          {
+            "found": true,
+            "text": "-10%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 159,
+              "y": 364,
+              "width": 30,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "-1%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "10.56px",
+            "rect": {
+              "x": 228,
+              "y": 364,
+              "width": 20,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "1%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "10.56px",
+            "rect": {
+              "x": 287,
+              "y": 364,
+              "width": 15,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "10%",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "background": "color(srgb 0.54902 0.54902 0.54902 / 0.16)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 343,
+              "y": 364,
+              "width": 24,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Heater Control",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0 0 0 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 414,
+              "width": 95,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "Extruder",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 129,
+              "y": 444,
+              "width": 55,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "°C",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 263,
+              "y": 442,
+              "width": 40,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Heated Bed",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 127,
+              "y": 474,
+              "width": 56,
+              "height": 40
+            }
+          },
+          {
+            "found": true,
+            "text": "°C",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 263,
+              "y": 482,
+              "width": 40,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Extruder Temperature",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 97,
+              "y": 528,
+              "width": 124,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "201°C / 220°C",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 221,
+              "y": 526,
+              "width": 185,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Heated Bed Temperature",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 97,
+              "y": 556,
+              "width": 124,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "59°C / 65°C",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 221,
+              "y": 554,
+              "width": 185,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Extruder Power",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 97,
+              "y": 583,
+              "width": 124,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "45",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 237,
+              "y": 576,
+              "width": 15,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Heated Bed Power",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 97,
+              "y": 609,
+              "width": 124,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "17",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0.435294 0.435294 0.435294 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 237,
+              "y": 602,
+              "width": 12,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Status Reports",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0 0 0 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 646,
+              "width": 96,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "Modal Groups",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "color(srgb 0 0 0 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 686,
+              "width": 90,
+              "height": 16
+            }
+          }
+        ],
+        "icons": [
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "bars",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 97,
+              "y": 277,
+              "width": 20,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "chevron-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "rgb(5, 72, 198)",
+            "rect": {
+              "x": 393,
+              "y": 271,
+              "width": 18,
+              "height": 14
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ellipsis-vertical",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 335,
+              "y": 278,
+              "width": 20,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-down",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 144,
+              "y": 328,
+              "width": 15,
+              "height": 12
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-down",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 214,
+              "y": 329,
+              "width": 13,
+              "height": 11
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 274,
+              "y": 329,
+              "width": 13,
+              "height": 11
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 328,
+              "y": 328,
+              "width": 15,
+              "height": 12
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-rotate-left",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 393,
+              "y": 327,
+              "width": 18,
+              "height": 14
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-down",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 144,
+              "y": 368,
+              "width": 15,
+              "height": 12
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-down",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 215,
+              "y": 369,
+              "width": 13,
+              "height": 11
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 274,
+              "y": 369,
+              "width": 13,
+              "height": 11
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 328,
+              "y": 368,
+              "width": 15,
+              "height": 12
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "arrow-rotate-left",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.64)",
+            "rect": {
+              "x": 393,
+              "y": 367,
+              "width": 18,
+              "height": 14
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 0 0 0 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 414,
+              "width": 16,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": null,
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 0 0 0 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 97,
+              "y": 442,
+              "width": 24,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": null,
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 0 0 0 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 97,
+              "y": 482,
+              "width": 24,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 0 0 0 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 646,
+              "width": 16,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 0 0 0 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 686,
+              "width": 16,
+              "height": 16
+            }
+          }
+        ],
+        "warningIndicators": []
+      },
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "Marlin connected widget collapse and fullscreen view actions",
+      "status": "passed",
+      "durationMs": 406,
+      "collapsedExpanded": "false",
+      "expandedRestored": true,
+      "fullscreen": {
+        "position": "fixed",
+        "width": 1380,
+        "height": 852
+      },
+      "exited": true,
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 303,
+      "disconnected": true
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400447400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400447400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400447400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400447400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "outgoingCommands": [],
+  "status": "passed",
+  "completedAt": "2026-10-06T08:28:41.442Z"
+}

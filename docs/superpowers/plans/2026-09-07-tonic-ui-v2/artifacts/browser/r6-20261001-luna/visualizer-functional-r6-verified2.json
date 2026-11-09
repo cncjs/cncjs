@@ -1,0 +1,120 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true,
+    "viewportChangesDuringWorkspaceEntry": 0
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/pivot-rectangle.gcode",
+    "bytes": 86,
+    "expectedLines": 7,
+    "sha256": "a4226f3bbd40ff4a0f369926de69830409b75b76bac8bf0eb4afd52ae52f55ad",
+    "knownBounds": {
+      "min": {
+        "x": 10,
+        "y": 20,
+        "z": -2
+      },
+      "max": {
+        "x": 50,
+        "y": 60,
+        "z": 0
+      },
+      "center": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      }
+    }
+  },
+  "profiles": {
+    "profileA": "R6 pivot A 1790905606473",
+    "limitsA": {
+      "xmin": 0,
+      "xmax": 200,
+      "ymin": -100,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "profileB": "R6 pivot B 1790905606473",
+    "limitsB": {
+      "xmin": -100,
+      "xmax": 0,
+      "ymin": 50,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "cleanedUp": true
+  },
+  "gates": [
+    {
+      "name": "create-two-synthetic-machine-profiles",
+      "status": "failed",
+      "durationMs": 30695,
+      "error": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Add', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "connect-simulator-and-select-profile-a",
+      "status": "failed",
+      "durationMs": 12031,
+      "error": "Error: Timed out waiting for engine hidden Admin Visualizer engine; last state: null"
+    },
+    {
+      "name": "pivot-gcode-and-profile-transition-six-scenarios",
+      "status": "failed",
+      "durationMs": 12003,
+      "error": "TimeoutError: locator.isEnabled: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: 'Upload G-code', exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "camera-positions-zoom-and-projection",
+      "status": "failed",
+      "durationMs": 12002,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: '3D View', exact: true }).last()\u001b[22m\n"
+    },
+    {
+      "name": "limits-grid-coordinate-system-and-tool-toggles",
+      "status": "failed",
+      "durationMs": 1,
+      "error": "TypeError: Cannot read properties of null (reading 'limitsVisible')"
+    },
+    {
+      "name": "controller-driven-visualizer-unit-changes",
+      "status": "failed",
+      "durationMs": 12002,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Axes widget', exact: true }).getByRole('button', { name: /G21 \\(mm\\)|G20 \\(inch\\)/ }).first()\u001b[22m\n"
+    },
+    {
+      "name": "probe-area-ui-entry",
+      "status": "failed",
+      "durationMs": 12002,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: 'Top View', exact: true })\u001b[22m\n"
+    }
+  ],
+  "cncUnitCommands": [],
+  "cncCommandEventCount": 0,
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

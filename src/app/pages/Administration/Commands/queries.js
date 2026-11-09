@@ -7,9 +7,10 @@ const useFetchCommandsQuery = (options) => {
   const query = options?.meta?.query;
   return useQuery({
     queryKey: [...API_COMMANDS_QUERY_KEY, query].filter(Boolean),
-    queryFn: async ({ queryKey, meta }) => {
-      const url = meta.query
-        ? 'api/commands?' + meta.query
+    queryFn: async ({ meta }) => {
+      const query = meta?.query;
+      const url = query
+        ? 'api/commands?' + query
         : 'api/commands';
       const response = await axios.get(url);
       return response.data;

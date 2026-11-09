@@ -1,22 +1,20 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import { Box } from '@tonic-ui/react';
 
+/**
+ * @param {{value?: number | string}} props
+ * @returns {JSX.Element}
+ */
 function PositionLabel({ value }) {
-  value = String(value);
+  const [integer, decimal] = String(value).split('.');
+
   return (
-    <div style={{ fontSize: 24, padding: 5, textAlign: 'right' }}>
-      <span>{value.split('.')[0]}</span>
-      <span>.</span>
-      <span>{value.split('.')[1]}</span>
-    </div>
+    <Box sx={{ fontSize: 24, padding: 5, textAlign: 'right' }}>
+      <Box sx={{ display: 'inline' }}>{integer}</Box>
+      <Box sx={{ display: 'inline' }}>.</Box>
+      <Box sx={{ display: 'inline' }}>{decimal}</Box>
+    </Box>
   );
 }
-
-PositionLabel.propTypes = {
-  value: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ])
-};
 
 export default PositionLabel;

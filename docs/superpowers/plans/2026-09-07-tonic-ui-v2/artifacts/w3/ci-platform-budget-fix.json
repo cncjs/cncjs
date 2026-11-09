@@ -1,0 +1,508 @@
+{
+  "conclusion": "",
+  "headSha": "b0612c796e3ddf6aa445933a66047a8aa83db6f5",
+  "jobs": [
+    {
+      "completedAt": "2026-10-02T14:40:37Z",
+      "conclusion": "success",
+      "databaseId": 110880950558,
+      "name": "build-macos-arm64 (24.x)",
+      "startedAt": "2026-10-02T14:29:11Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-02T14:29:12Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-02T14:29:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:13Z",
+          "conclusion": "success",
+          "name": "Get architecture",
+          "number": 2,
+          "startedAt": "2026-10-02T14:29:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:16Z",
+          "conclusion": "success",
+          "name": "Checkout code",
+          "number": 3,
+          "startedAt": "2026-10-02T14:29:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:17Z",
+          "conclusion": "success",
+          "name": "Setup Node.js 24.x",
+          "number": 4,
+          "startedAt": "2026-10-02T14:29:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:17Z",
+          "conclusion": "success",
+          "name": "Environment variables",
+          "number": 5,
+          "startedAt": "2026-10-02T14:29:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:19Z",
+          "conclusion": "success",
+          "name": "Install Yarn package manager",
+          "number": 6,
+          "startedAt": "2026-10-02T14:29:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:35:30Z",
+          "conclusion": "success",
+          "name": "Install necessary dependencies and perform initial checks",
+          "number": 7,
+          "startedAt": "2026-10-02T14:29:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:35:30Z",
+          "conclusion": "skipped",
+          "name": "Run \"build\" script",
+          "number": 8,
+          "startedAt": "2026-10-02T14:35:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:38:27Z",
+          "conclusion": "success",
+          "name": "Run \"build-latest\" script",
+          "number": 9,
+          "startedAt": "2026-10-02T14:35:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:31Z",
+          "conclusion": "success",
+          "name": "Build macOS binaries",
+          "number": 10,
+          "startedAt": "2026-10-02T14:38:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:31Z",
+          "conclusion": "success",
+          "name": "Prepare release assets",
+          "number": 11,
+          "startedAt": "2026-10-02T14:40:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:31Z",
+          "conclusion": "skipped",
+          "name": "Release",
+          "number": 12,
+          "startedAt": "2026-10-02T14:40:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:32Z",
+          "conclusion": "success",
+          "name": "Post Setup Node.js 24.x",
+          "number": 23,
+          "startedAt": "2026-10-02T14:40:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:32Z",
+          "conclusion": "success",
+          "name": "Post Checkout code",
+          "number": 24,
+          "startedAt": "2026-10-02T14:40:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:40:35Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-02T14:40:32Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/cheton/cncjs/actions/runs/37020178338/job/110880950558"
+    },
+    {
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "databaseId": 110880950911,
+      "name": "build-macos-x64 (24.x)",
+      "startedAt": "2026-10-02T14:29:07Z",
+      "status": "in_progress",
+      "steps": [
+        {
+          "completedAt": "2026-10-02T14:29:09Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-02T14:29:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:09Z",
+          "conclusion": "success",
+          "name": "Get architecture",
+          "number": 2,
+          "startedAt": "2026-10-02T14:29:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:13Z",
+          "conclusion": "success",
+          "name": "Checkout code",
+          "number": 3,
+          "startedAt": "2026-10-02T14:29:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:15Z",
+          "conclusion": "success",
+          "name": "Setup Node.js 24.x",
+          "number": 4,
+          "startedAt": "2026-10-02T14:29:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:15Z",
+          "conclusion": "success",
+          "name": "Environment variables",
+          "number": 5,
+          "startedAt": "2026-10-02T14:29:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:18Z",
+          "conclusion": "success",
+          "name": "Install Yarn package manager",
+          "number": 6,
+          "startedAt": "2026-10-02T14:29:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:42Z",
+          "conclusion": "success",
+          "name": "Install necessary dependencies and perform initial checks",
+          "number": 7,
+          "startedAt": "2026-10-02T14:29:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:42Z",
+          "conclusion": "skipped",
+          "name": "Run \"build\" script",
+          "number": 8,
+          "startedAt": "2026-10-02T14:39:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Run \"build-latest\" script",
+          "number": 9,
+          "startedAt": "2026-10-02T14:39:42Z",
+          "status": "in_progress"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Build macOS binaries",
+          "number": 10,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Prepare release assets",
+          "number": 11,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Release",
+          "number": 12,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Post Setup Node.js 24.x",
+          "number": 23,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Post Checkout code",
+          "number": 24,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        }
+      ],
+      "url": "https://github.com/cheton/cncjs/actions/runs/37020178338/job/110880950911"
+    },
+    {
+      "completedAt": "2026-10-02T14:39:09Z",
+      "conclusion": "success",
+      "databaseId": 110880950957,
+      "name": "build-windows (24.x)",
+      "startedAt": "2026-10-02T14:29:07Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-02T14:29:10Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-02T14:29:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:18Z",
+          "conclusion": "success",
+          "name": "Prepare VC++ Runtime",
+          "number": 2,
+          "startedAt": "2026-10-02T14:29:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:26Z",
+          "conclusion": "success",
+          "name": "Checkout code",
+          "number": 3,
+          "startedAt": "2026-10-02T14:29:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:30Z",
+          "conclusion": "success",
+          "name": "Setup Node.js 24.x",
+          "number": 4,
+          "startedAt": "2026-10-02T14:29:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:30Z",
+          "conclusion": "success",
+          "name": "Environment variables",
+          "number": 5,
+          "startedAt": "2026-10-02T14:29:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:34Z",
+          "conclusion": "success",
+          "name": "Install Yarn package manager",
+          "number": 6,
+          "startedAt": "2026-10-02T14:29:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:36:01Z",
+          "conclusion": "success",
+          "name": "Install necessary dependencies and perform initial checks",
+          "number": 7,
+          "startedAt": "2026-10-02T14:29:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:36:01Z",
+          "conclusion": "skipped",
+          "name": "Run \"build\" script",
+          "number": 8,
+          "startedAt": "2026-10-02T14:36:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:37:48Z",
+          "conclusion": "success",
+          "name": "Run \"build-latest\" script",
+          "number": 9,
+          "startedAt": "2026-10-02T14:36:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:04Z",
+          "conclusion": "success",
+          "name": "Build Windows binaries",
+          "number": 10,
+          "startedAt": "2026-10-02T14:37:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:04Z",
+          "conclusion": "success",
+          "name": "Prepare release assets",
+          "number": 11,
+          "startedAt": "2026-10-02T14:39:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:04Z",
+          "conclusion": "skipped",
+          "name": "Release",
+          "number": 12,
+          "startedAt": "2026-10-02T14:39:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:04Z",
+          "conclusion": "success",
+          "name": "Post Setup Node.js 24.x",
+          "number": 23,
+          "startedAt": "2026-10-02T14:39:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:07Z",
+          "conclusion": "success",
+          "name": "Post Checkout code",
+          "number": 24,
+          "startedAt": "2026-10-02T14:39:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:39:07Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-02T14:39:07Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/cheton/cncjs/actions/runs/37020178338/job/110880950957"
+    },
+    {
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "databaseId": 110880951054,
+      "name": "build-linux (24.x)",
+      "startedAt": "2026-10-02T14:29:08Z",
+      "status": "in_progress",
+      "steps": [
+        {
+          "completedAt": "2026-10-02T14:29:10Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-02T14:29:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:12Z",
+          "conclusion": "success",
+          "name": "Checkout code",
+          "number": 2,
+          "startedAt": "2026-10-02T14:29:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:13Z",
+          "conclusion": "success",
+          "name": "Setup Node.js 24.x",
+          "number": 3,
+          "startedAt": "2026-10-02T14:29:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:13Z",
+          "conclusion": "success",
+          "name": "Environment variables",
+          "number": 4,
+          "startedAt": "2026-10-02T14:29:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:29:15Z",
+          "conclusion": "success",
+          "name": "Install Yarn package manager",
+          "number": 5,
+          "startedAt": "2026-10-02T14:29:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:33:51Z",
+          "conclusion": "success",
+          "name": "Install necessary dependencies and perform initial checks",
+          "number": 6,
+          "startedAt": "2026-10-02T14:29:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:33:51Z",
+          "conclusion": "skipped",
+          "name": "Run \"build\" script",
+          "number": 7,
+          "startedAt": "2026-10-02T14:33:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:35:50Z",
+          "conclusion": "success",
+          "name": "Run \"build-latest\" script",
+          "number": 8,
+          "startedAt": "2026-10-02T14:33:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-02T14:41:19Z",
+          "conclusion": "success",
+          "name": "Build Linux binaries",
+          "number": 9,
+          "startedAt": "2026-10-02T14:35:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Prepare release assets",
+          "number": 10,
+          "startedAt": "2026-10-02T14:41:19Z",
+          "status": "in_progress"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Release",
+          "number": 11,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Post Setup Node.js 24.x",
+          "number": 21,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        },
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "name": "Post Checkout code",
+          "number": 22,
+          "startedAt": "0001-01-01T00:00:00Z",
+          "status": "pending"
+        }
+      ],
+      "url": "https://github.com/cheton/cncjs/actions/runs/37020178338/job/110880951054"
+    }
+  ],
+  "status": "in_progress",
+  "url": "https://github.com/cheton/cncjs/actions/runs/37020178338"
+}

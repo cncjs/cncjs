@@ -1,0 +1,312 @@
+{
+  "browser": "151.0.7922.34",
+  "frontend": "http://127.0.0.1:8082",
+  "websocket": [
+    {
+      "event": "opened",
+      "path": "/ws",
+      "hasTokenQuery": false
+    },
+    {
+      "event": "opened",
+      "path": "/ws",
+      "hasTokenQuery": false
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "direction": "received",
+      "frames": {
+        "kind": "binary",
+        "bytes": 0
+      }
+    },
+    {
+      "event": "opened",
+      "path": "/socket.io/",
+      "hasTokenQuery": true
+    }
+  ],
+  "socketHttp": [
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": [
+        {
+          "kind": "protocol",
+          "packetType": "0{"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "requestFrames": [
+        {
+          "kind": "event",
+          "name": "getPorts"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "requestFrames": [
+        {
+          "kind": "event",
+          "name": "getBaudRates"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": [
+        {
+          "kind": "protocol",
+          "packetType": "40"
+        },
+        {
+          "kind": "event",
+          "name": "startup"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": [
+        {
+          "kind": "ack",
+          "id": "0",
+          "error": false,
+          "resultCount": 3
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": [
+        {
+          "kind": "ack",
+          "id": "1",
+          "error": false,
+          "resultCount": 8
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "requestFrames": [
+        {
+          "kind": "event",
+          "name": "getPorts"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "requestFrames": []
+    },
+    {
+      "method": "GET",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": [
+        {
+          "kind": "ack",
+          "id": "2",
+          "error": false,
+          "resultCount": 3
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/socket.io/",
+      "status": 200,
+      "responseFrames": []
+    }
+  ],
+  "api": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/mdi",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tool",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead.",
+    "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+    "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+    "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button \n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.",
+    "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup \n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem",
+    "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Widget \n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/s",
+    "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header \n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_mod",
+    "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `Dropdown`.  \n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal",
+    "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu \n    at div\n    at div\n    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)\n    at div\n    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48",
+    "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen \n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at Uncontrol",
+    "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator \n    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)\n    at div\n    at render\n    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)\n    at div\n    at render\n    at Control (webpack-internal:///.",
+    "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack",
+    "Warning: Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s=\"%s\" or %s={value.toString()}.%s true compact compact true compact \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/",
+    "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n  ",
+    "Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div \n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/component",
+    "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+    "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+    "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///.",
+    "THREE.DirectGeometry: Faceless geometries are not supported.",
+    "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+  ],
+  "state": {
+    "hash": "#/workspace",
+    "baselineMetrics": {
+      "renders": 4,
+      "loads": 0
+    },
+    "connectionText": [
+      "Connection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nSet DTR line status upon opening\nSet RTS line status upon opening\nUse RTS/CTS flow control\nConnect automatically\nOpen"
+    ],
+    "selectText": "Choose a port",
+    "openDisabled": true
+  }
+}

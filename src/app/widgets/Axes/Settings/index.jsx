@@ -1,184 +1,170 @@
-import { ensureArray } from 'ensure-type';
-import styled from 'styled-components';
-import noop from 'lodash/noop';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import api from '@app/api';
-import { Button } from '@app/components/Buttons';
-import Modal from '@app/components/Modal';
-import { Nav, NavItem } from '@app/components/Navs';
+import {
+  Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@tonic-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
 import i18n from '@app/lib/i18n';
+import { useMdiQuery, useSaveMdiMutation } from '../queries';
+import { createSettingsDraft, normalizeGeneral } from './draft';
 import General from './General';
 import MDI from './MDI';
 import ShuttleXpress from './ShuttleXpress';
-import {
-  DEFAULT_AXES
-} from '../constants';
 
-const TabContent = styled.div`
-    padding: 10px 15px;
-    min-height: 240px;
-`;
+/**
+ * @param {{
+ *   config: { get: (key: string, fallback?: unknown) => unknown, set: (key: string, value: unknown) => void },
+ *   onSave?: (event: Event) => void,
+ *   onCancel?: (event: Event) => void
+ * }} props
+ * @returns {JSX.Element}
+ */
+function Settings({ config, onSave = () => {}, onCancel = () => {} }) {
+  const mdiQuery = useMdiQuery();
+  const saveMdi = useSaveMdiMutation();
+  const saving = saveMdi.isPending ?? saveMdi.isLoading ?? false;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [draft, setDraft] = useState(() => ({
+    ...createSettingsDraft(config),
+    mdiRecords: null,
+  }));
+  const [error, setError] = useState(null);
+  const submitLock = useRef(false);
+  const mdiInitialized = useRef(false);
 
-const TabPane = styled.div`
-    display: ${props => (props.active ? 'block' : 'none')};
-`;
+  useEffect(() => {
+    if (mdiInitialized.current || !mdiQuery.data || !Array.isArray(mdiQuery.data.records)) {
+      return;
+    }
 
-class Settings extends Component {
-  static propTypes = {
-    config: PropTypes.object.isRequired,
-    onSave: PropTypes.func,
-    onCancel: PropTypes.func
+    mdiInitialized.current = true;
+    setDraft(currentDraft => ({
+      ...currentDraft,
+      mdiRecords: mdiQuery.data.records.map(record => ({ ...record })),
+    }));
+  }, [mdiQuery.data]);
+
+  const updateGeneral = general => setDraft(currentDraft => ({ ...currentDraft, general }));
+  const updateShuttleXpress = shuttleXpress => setDraft(currentDraft => ({ ...currentDraft, shuttleXpress }));
+  const updateMdiRecords = mdiRecords => setDraft(currentDraft => ({ ...currentDraft, mdiRecords }));
+  const close = event => {
+    if (!saving && !submitLock.current) {
+      onCancel(event);
+    }
   };
+  const save = async (event) => {
+    if (saving || submitLock.current || draft.mdiRecords === null) {
+      return;
+    }
 
-  static defaultProps = {
-    onSave: noop,
-    onCancel: noop
-  };
+    submitLock.current = true;
+    setError(null);
+    const snapshot = {
+      general: {
+        axes: [...draft.general.axes],
+        imperialJogDistances: [...draft.general.imperialJogDistances],
+        metricJogDistances: [...draft.general.metricJogDistances],
+      },
+      shuttleXpress: { ...draft.shuttleXpress },
+      mdiRecords: draft.mdiRecords.map(record => ({ ...record })),
+    };
 
-  config = this.props.config;
+    try {
+      await saveMdi.mutateAsync({ records: snapshot.mdiRecords });
+      const normalizedGeneral = normalizeGeneral(snapshot.general);
 
-  node = {
-    general: null,
-    mdi: null,
-    shuttleXpress: null
-  };
-
-  state = {
-    activeKey: 'general',
-
-    // General
-    general: {
-      axes: this.config.get('axes', DEFAULT_AXES),
-      jog: {
-        imperial: {
-          distances: ensureArray(this.config.get('jog.imperial.distances', []))
-        },
-        metric: {
-          distances: ensureArray(this.config.get('jog.metric.distances', []))
-        }
-      }
-    },
-
-    // ShuttleXpress
-    shuttleXpress: {
-      feedrateMin: this.config.get('shuttle.feedrateMin'),
-      feedrateMax: this.config.get('shuttle.feedrateMax'),
-      hertz: this.config.get('shuttle.hertz'),
-      overshoot: this.config.get('shuttle.overshoot')
+      config.set('axes', normalizedGeneral.axes);
+      config.set('jog.imperial.distances', normalizedGeneral.imperialJogDistances);
+      config.set('jog.metric.distances', normalizedGeneral.metricJogDistances);
+      config.set('shuttle.feedrateMin', snapshot.shuttleXpress.feedrateMin);
+      config.set('shuttle.feedrateMax', snapshot.shuttleXpress.feedrateMax);
+      config.set('shuttle.hertz', snapshot.shuttleXpress.hertz);
+      config.set('shuttle.overshoot', snapshot.shuttleXpress.overshoot);
+      onSave(event);
+    } catch (saveError) {
+      setError(saveError);
+    } finally {
+      submitLock.current = false;
     }
   };
 
-  save = () => {
-    // MDI
-    const { records } = this.node.mdi.state;
-    api.mdi.bulkUpdate({ records: records })
-      .then(() => {
-        // TODO
-      })
-      .catch(() => {
-        // TODO
-      });
+  const errorMessage = error?.message || i18n._('An unexpected error has occurred.');
+  const mdiReady = draft.mdiRecords !== null && !mdiQuery.isLoading && !mdiQuery.isError;
 
-    // General
-    const {
-      axes = DEFAULT_AXES,
-      imperialJogDistances,
-      metricJogDistances
-    } = this.node.general.value;
-
-    this.config.set('axes', ensureArray(axes));
-    this.config.set('jog.imperial.distances', ensureArray(imperialJogDistances));
-    this.config.set('jog.metric.distances', ensureArray(metricJogDistances));
-
-    // ShuttleXpress
-    const { feedrateMin, feedrateMax, hertz, overshoot } = this.node.shuttleXpress.state;
-    this.config.set('shuttle.feedrateMin', feedrateMin);
-    this.config.set('shuttle.feedrateMax', feedrateMax);
-    this.config.set('shuttle.hertz', hertz);
-    this.config.set('shuttle.overshoot', overshoot);
-  };
-
-  render() {
-    const { general, shuttleXpress } = this.state;
-
-    return (
-      <Modal
-        disableOverlayClick
-        size="md"
-        onClose={this.props.onCancel}
-      >
-        <Modal.Header>
-          <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body padding={false}>
-          <Nav
-            navStyle="tabs"
-            activeKey={this.state.activeKey}
-            onSelect={eventKey => {
-              this.setState({ activeKey: eventKey });
-            }}
-            style={{
-              marginTop: 15,
-              paddingLeft: 15
-            }}
-          >
-            <NavItem eventKey="general">{i18n._('General')}</NavItem>
-            <NavItem eventKey="mdi">{i18n._('Custom Commands')}</NavItem>
-            <NavItem eventKey="shuttleXpress">{i18n._('ShuttleXpress')}</NavItem>
-          </Nav>
-          <TabContent>
-            <TabPane active={this.state.activeKey === 'general'}>
-              <General
-                ref={node => {
-                  this.node.general = node;
-                }}
-                axes={general.axes}
-                imperialJogDistances={general.jog.imperial.distances}
-                metricJogDistances={general.jog.metric.distances}
-              />
-            </TabPane>
-            <TabPane active={this.state.activeKey === 'mdi'}>
-              <MDI
-                ref={node => {
-                  this.node.mdi = node;
-                }}
-              />
-            </TabPane>
-            <TabPane active={this.state.activeKey === 'shuttleXpress'}>
-              <ShuttleXpress
-                ref={node => {
-                  this.node.shuttleXpress = node;
-                }}
-                feedrateMin={shuttleXpress.feedrateMin}
-                feedrateMax={shuttleXpress.feedrateMax}
-                hertz={shuttleXpress.hertz}
-                overshoot={shuttleXpress.overshoot}
-              />
-            </TabPane>
-          </TabContent>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={this.props.onCancel}
-          >
+  return (
+    <Modal
+      closeOnInteractOutside={false}
+      isClosable={!saving}
+      isOpen
+      onClose={close}
+      size="md"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{i18n._('Axes Settings')}</ModalHeader>
+        <ModalBody padding={false}>
+          <Tabs index={activeIndex} onChange={setActiveIndex}>
+            <TabList aria-label={i18n._('Axes Settings')}>
+              <Tab index={0}>{i18n._('General')}</Tab>
+              <Tab index={1}>{i18n._('Custom Commands')}</Tab>
+              <Tab index={2}>{i18n._('ShuttleXpress')}</Tab>
+            </TabList>
+            <TabPanels px="3x" py="2x" minHeight="240px">
+              <TabPanel index={0}>
+                {activeIndex === 0 && <General value={draft.general} onChange={updateGeneral} />}
+              </TabPanel>
+              <TabPanel index={1}>
+                {activeIndex === 1 && (
+                  <>
+                    {mdiQuery.isError && (
+                      <Box role="alert" color="error.text" mb="2x">
+                        {i18n._('An unexpected error has occurred.')}
+                        <Button size="sm" onClick={() => mdiQuery.refetch()}>
+                          {i18n._('Retry')}
+                        </Button>
+                      </Box>
+                    )}
+                    <MDI
+                      records={draft.mdiRecords || []}
+                      loading={mdiQuery.isLoading}
+                      error={mdiQuery.isError}
+                      onRecordsChange={updateMdiRecords}
+                    />
+                  </>
+                )}
+              </TabPanel>
+              <TabPanel index={2}>
+                {activeIndex === 2 && <ShuttleXpress value={draft.shuttleXpress} onChange={updateShuttleXpress} />}
+              </TabPanel>
+              {error && (
+                <Box role="alert" color="error.text" mt="2x">
+                  {errorMessage}
+                </Box>
+              )}
+            </TabPanels>
+          </Tabs>
+        </ModalBody>
+        <ModalFooter gap="2x">
+          <Button disabled={saving} onClick={close}>
             {i18n._('Cancel')}
           </Button>
-          <Button
-            btnStyle="primary"
-            onClick={event => {
-              this.save();
-
-              // Update parent state
-              this.props.onSave(event);
-            }}
-          >
+          <Button variant="primary" disabled={saving || !mdiReady} onClick={save}>
             {i18n._('Save Changes')}
           </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }
 
 export default Settings;

@@ -1,0 +1,1405 @@
+~/Code/cncjs/cncjs-cheton/src ~/Code/cncjs/cncjs-cheton
+Successfully compiled 2 files with Babel (1215ms).
+Successfully compiled 6 files with Babel (1097ms).
+~/Code/cncjs/cncjs-cheton
+Successfully compiled 126 files with Babel (2866ms).
+(node:1860) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+assets by info 44.2 MiB [immutable]
+  assets by path *.ttf 641 KiB
+    asset b1a653db79258eeccc5d0bb8726f6600.ttf 388 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf] (auxiliary name: main)
+    asset 450a5c898f0b184b968b971eaf7c5fa4.ttf 182 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.ttf] (auxiliary name: main)
+    asset 3cd9fb8fcec4ad0f99d4062cd547a4ba.ttf 60.9 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf] (auxiliary name: main)
+    asset e314b618134d5be20996d79e7245160b.ttf 9.9 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.ttf] (auxiliary name: main)
+  assets by path *.woff2 277 KiB
+    asset 41c0f706d8ce93933771be0292757b92.woff2 147 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2] (auxiliary name: main)
+    asset 3ac6859b28be946745f95de1136a7251.woff2 105 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2] (auxiliary name: main)
+    asset 1f3772178d9e5bed38a6ca738d28cd4b.woff2 24.6 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2] (auxiliary name: main)
+  asset main.a825aaf7ec4a0bb57d7f.bundle.js 43.3 MiB [emitted] [immutable] (name: main)
+asset main.css 345 KiB [emitted] (name: main)
+asset index.html 1.07 KiB [emitted]
+Entrypoint main 43.6 MiB (917 KiB) = main.css 345 KiB main.a825aaf7ec4a0bb57d7f.bundle.js 43.3 MiB 7 auxiliary assets
+cached modules 18.9 MiB (javascript) 325 KiB (css/mini-extract) 579 KiB (runtime) [cached] 4887 modules
+orphan modules 319 KiB [orphan] 38 modules
+runtime modules 32.8 KiB 18 modules
+modules by layer 98.4 KiB
+  modules by path ./components/ 53 KiB
+    ./components/GridSystem/index.styl 2.3 KiB [built] [code generated]
+    ./components/Card/styles/index.styl 1.57 KiB [built] [code generated]
+    + 17 modules
+  modules by path ./widgets/ 41.2 KiB 16 modules
+  modules by path ./pages/Workspace/*.styl 2.11 KiB
+    ./pages/Workspace/index.styl 1.3 KiB [built] [code generated]
+    ./pages/Workspace/widgets.styl 822 bytes [built] [code generated]
+  ./styles/vendor.styl 713 bytes [built] [code generated]
+  ../package.json 1.45 KiB [built]
+webpack 5.75.0 compiled successfully in 2170 ms
+[i18next-scanner] transform: count=12, file="__deprecated/TopNav.old/QuickAccessToolbar.jsx"
+[i18next-scanner] transform: count=12, file="__deprecated/TopNav.old/TopNav.jsx"
+[i18next-scanner] transform: count=1, file="components/BaseTable/BaseTable.jsx"
+[i18next-scanner] transform: count=2, file="components/TablePagination/TablePagination.js"
+[i18next-scanner] transform: count=10, file="config/routes.js"
+[i18next-scanner] transform: count=5, file="containers/app/App.jsx"
+[i18next-scanner] transform: count=15, file="containers/app/Header.jsx"
+[i18next-scanner] transform: count=8, file="containers/app/LoginPage.jsx"
+[i18next-scanner] transform: count=4, file="containers/app/modals/CorruptedWorkspaceSettingsModal.jsx"
+[i18next-scanner] transform: count=39, file="lib/gcode-text.js"
+[i18next-scanner] transform: count=2, file="lib/units.js"
+[i18next-scanner] transform: count=4, file="lib/validations.jsx"
+[i18next-scanner] transform: count=11, file="pages/About/About.jsx"
+[i18next-scanner] transform: count=12, file="pages/Administration/Commands/Commands.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Commands/drawers/CreateCommandDrawer.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Commands/drawers/UpdateCommandDrawer.jsx"
+[i18next-scanner] transform: count=3, file="pages/Administration/components/TablePagination.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Events/drawers/CreateEventDrawer.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Events/drawers/UpdateEventDrawer.jsx"
+[i18next-scanner] transform: count=12, file="pages/Administration/Events/Events.js"
+[i18next-scanner] transform: count=10, file="pages/Administration/GeneralSettings/GeneralSettings.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Machines/drawers/CreateMachineDrawer.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Machines/drawers/UpdateMachineDrawer.jsx"
+[i18next-scanner] transform: count=5, file="pages/Administration/Machines/Machines.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Macros/drawers/CreateMacroDrawer.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Macros/drawers/UpdateMacroDrawer.jsx"
+[i18next-scanner] transform: count=6, file="pages/Administration/Macros/Macros.jsx"
+[i18next-scanner] transform: count=4, file="pages/Administration/modals/ConfirmBulkDeleteRecordsModal.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Users/drawers/CreateUserDrawer.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Users/drawers/UpdateUserDrawer.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Users/Users.jsx"
+[i18next-scanner] transform: count=1, file="pages/Administration/validations.js"
+[i18next-scanner] transform: count=4, file="pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx"
+[i18next-scanner] transform: count=4, file="pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx"
+[i18next-scanner] transform: count=6, file="pages/Administration/WorkspaceSettings/WorkspaceSettings.jsx"
+[i18next-scanner] transform: count=3, file="pages/Workspace/modals/FeederPaused.jsx"
+[i18next-scanner] transform: count=2, file="pages/Workspace/modals/FeederWait.jsx"
+[i18next-scanner] transform: count=3, file="pages/Workspace/modals/ServerDisconnected.jsx"
+[i18next-scanner] transform: count=8, file="pages/Workspace/PrimaryWidgets.jsx"
+[i18next-scanner] transform: count=8, file="pages/Workspace/SecondaryWidgets.jsx"
+[i18next-scanner] transform: count=2, file="pages/Workspace/widget-manager/WidgetListItem.jsx"
+[i18next-scanner] transform: count=37, file="pages/Workspace/widget-manager/WidgetManager.jsx"
+[i18next-scanner] transform: count=16, file="pages/Workspace/Workspace.jsx"
+[i18next-scanner] transform: count=29, file="widgets/Autolevel/ApplyView.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Autolevel/index.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Autolevel/LandingView.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Autolevel/ProbeAreaDiagram.jsx"
+[i18next-scanner] transform: count=26, file="widgets/Autolevel/SetupProbeView.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Autolevel/StartProbeModal.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Autolevel/StopProbeModal.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Autolevel/TestProbeModal.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Autolevel/ZProbeDiagram.jsx"
+[i18next-scanner] transform: count=155, file="widgets/Axes/DisplayPanel.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Axes/index.jsx"
+[i18next-scanner] transform: count=23, file="widgets/Axes/Keypad.jsx"
+[i18next-scanner] transform: count=12, file="widgets/Axes/KeypadOverlay.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Axes/Settings/General.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Axes/Settings/index.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Axes/Settings/MDI/CreateRecord.jsx"
+[i18next-scanner] transform: count=14, file="widgets/Axes/Settings/MDI/TableRecords.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Axes/Settings/MDI/UpdateRecord.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Axes/Settings/ShuttleXpress.jsx"
+[i18next-scanner] transform: count=28, file="widgets/Connection/Connection.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Connection/index.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Console/Console.jsx"
+[i18next-scanner] transform: count=15, file="widgets/Console/index.jsx"
+[i18next-scanner] transform: count=2, file="widgets/Custom/Custom.jsx"
+[i18next-scanner] transform: count=12, file="widgets/Custom/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Custom/modals/SettingsModal.jsx"
+[i18next-scanner] transform: count=12, file="widgets/GCode/GCodeStats.jsx"
+[i18next-scanner] transform: count=9, file="widgets/GCode/index.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Grbl/FeedOverride.jsx"
+[i18next-scanner] transform: count=19, file="widgets/Grbl/index.jsx"
+[i18next-scanner] transform: count=19, file="widgets/Grbl/ModalGroups.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Grbl/modals/ControllerModal.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Grbl/QueueReports.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Grbl/RapidOverride.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Grbl/SpindleOverride.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Grbl/StatusReports.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Laser/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Laser/LaserIntensityOverride.jsx"
+[i18next-scanner] transform: count=10, file="widgets/Laser/LaserTest.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Macro/index.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Macro/Macro.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Macro/modals/ConfirmDeleteMacro.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Macro/modals/EditMacro.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Macro/modals/LoadMacro.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Macro/modals/NewMacro.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Macro/modals/RunMacro.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Marlin/Controller.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Marlin/index.jsx"
+[i18next-scanner] transform: count=41, file="widgets/Marlin/Marlin.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Probe/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Probe/modals/ProbeModal.jsx"
+[i18next-scanner] transform: count=18, file="widgets/Probe/Probe.jsx"
+[i18next-scanner] transform: count=4, file="widgets/shared/validations.js"
+[i18next-scanner] transform: count=4, file="widgets/Smoothie/Controller.jsx"
+[i18next-scanner] transform: count=14, file="widgets/Smoothie/index.jsx"
+[i18next-scanner] transform: count=28, file="widgets/Smoothie/Smoothie.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Spindle/index.jsx"
+[i18next-scanner] transform: count=10, file="widgets/Spindle/Spindle.jsx"
+[i18next-scanner] transform: count=3, file="widgets/TinyG/Controller.jsx"
+[i18next-scanner] transform: count=17, file="widgets/TinyG/index.jsx"
+[i18next-scanner] transform: count=38, file="widgets/TinyG/TinyG.jsx"
+[i18next-scanner] transform: count=8, file="widgets/Tool/index.jsx"
+[i18next-scanner] transform: count=40, file="widgets/Tool/Tool.jsx"
+[i18next-scanner] transform: count=2, file="widgets/Visualizer/Dashboard.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Visualizer/index.jsx"
+[i18next-scanner] transform: count=1, file="widgets/Visualizer/Loading.jsx"
+[i18next-scanner] transform: count=17, file="widgets/Visualizer/Notifications.js"
+[i18next-scanner] transform: count=17, file="widgets/Visualizer/PrimaryToolbar.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Visualizer/ProbeVisualization.js"
+[i18next-scanner] transform: count=3, file="widgets/Visualizer/renderer.jsx"
+[i18next-scanner] transform: count=1, file="widgets/Visualizer/Rendering.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Visualizer/SecondaryToolbar.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Visualizer/WatchDirectory.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Visualizer/WorkflowControl.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Webcam/index.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Webcam/modals/SettingsModal.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Webcam/Webcam.jsx"
+(node:2409) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[simulator] [grbl-server] Grbl Simulator - TCP Server
+[simulator] [grbl-server] Listening on port 53496
+[app] <w> [webpack-dev-server] "hot: true" automatically applies HMR plugin, you don't have to add it manually to your webpack configuration.
+[app] <i> [webpack-dev-server] [HPM] Proxy created: /api  -> http://localhost:8000
+[app] <i> [webpack-dev-server] [HPM] Proxy created: /socket.io  -> http://localhost:8000
+[app] <s> [webpack.Progress] 3% setup watch run
+[app] <s> [webpack.Progress] 3% setup watch run webpack-cli
+[app] <s> [webpack.Progress] 3% setup watch run ESLintWebpackPlugin_1
+[app] <s> [webpack.Progress] 3% setup watch run webpack-dev-middleware
+[app] <s> [webpack.Progress] 3% setup watch run
+[app] <s> [webpack.Progress] 4% setup normal module factory
+[app] <s> [webpack.Progress] 4% setup normal module factory
+[app] <s> [webpack.Progress] 5% setup context module factory
+[app] <s> [webpack.Progress] 5% setup context module factory
+[app] <s> [webpack.Progress] 6% setup before compile
+[app] <s> [webpack.Progress] 6% setup before compile ProgressPlugin
+[app] <s> [webpack.Progress] 6% setup before compile ProgressPlugin
+[app] <s> [webpack.Progress] 6% setup before compile
+[app] <s> [webpack.Progress] 7% setup compile
+[app] <s> [webpack.Progress] 7% setup compile ExternalsPlugin
+[app] <s> [webpack.Progress] 7% setup compile
+[app] <s> [webpack.Progress] 8% setup compilation
+[app] <s> [webpack.Progress] 8% setup compilation mini-css-extract-plugin
+[app] <s> [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin
+[app] <s> [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin
+[app] <s> [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin
+[app] <s> [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin
+[app] <s> [webpack.Progress] 8% setup compilation FetchCompileWasmPlugin
+[app] <s> [webpack.Progress] 8% setup compilation FetchCompileAsyncWasmPlugin
+[app] <s> [webpack.Progress] 8% setup compilation WorkerPlugin
+[app] <s> [webpack.Progress] 8% setup compilation SplitChunksPlugin
+[app] <s> [webpack.Progress] 8% setup compilation ResolverCachePlugin
+[app] <s> [webpack.Progress] 8% setup compilation HtmlWebpackPlugin
+[app] <s> [webpack.Progress] 8% setup compilation
+[app] <s> [webpack.Progress] 9% setup compilation
+[app] <s> [webpack.Progress] 9% setup compilation ProgressPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefinePlugin
+[app] <s> [webpack.Progress] 9% setup compilation HotModuleReplacementPlugin
+[app] <s> [webpack.Progress] 9% setup compilation LoaderOptionsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation mini-css-extract-plugin
+[app] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefinePlugin
+[app] <s> [webpack.Progress] 9% setup compilation ProvidePlugin
+[app] <s> [webpack.Progress] 9% setup compilation ReactRefreshPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ChunkPrefetchPreloadPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ModuleInfoHeaderPlugin
+[app] <s> [webpack.Progress] 9% setup compilation EvalSourceMapDevToolPlugin
+[app] <s> [webpack.Progress] 9% setup compilation JavascriptModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation JsonModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation AssetModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RuntimePlugin
+[app] <s> [webpack.Progress] 9% setup compilation InferAsyncModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DataUriPlugin
+[app] <s> [webpack.Progress] 9% setup compilation FileUriPlugin
+[app] <s> [webpack.Progress] 9% setup compilation CompatibilityPlugin
+[app] <s> [webpack.Progress] 9% setup compilation HarmonyModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation AMDPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RequireJsStuffPlugin
+[app] <s> [webpack.Progress] 9% setup compilation CommonJsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[app] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[app] <s> [webpack.Progress] 9% setup compilation NodeStuffPlugin
+[app] <s> [webpack.Progress] 9% setup compilation APIPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ExportsInfoApiPlugin
+[app] <s> [webpack.Progress] 9% setup compilation WebpackIsIncludedPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ConstPlugin
+[app] <s> [webpack.Progress] 9% setup compilation UseStrictPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RequireIncludePlugin
+[app] <s> [webpack.Progress] 9% setup compilation RequireEnsurePlugin
+[app] <s> [webpack.Progress] 9% setup compilation RequireContextPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ImportPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RequireContextPlugin
+[app] <s> [webpack.Progress] 9% setup compilation SystemPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ImportMetaPlugin
+[app] <s> [webpack.Progress] 9% setup compilation URLPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefaultStatsFactoryPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefaultStatsPresetPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefaultStatsPrinterPlugin
+[app] <s> [webpack.Progress] 9% setup compilation JavascriptMetaInfoPlugin
+[app] <s> [webpack.Progress] 9% setup compilation EnsureChunkConditionsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RemoveEmptyChunksPlugin
+[app] <s> [webpack.Progress] 9% setup compilation MergeDuplicateChunksPlugin
+[app] <s> [webpack.Progress] 9% setup compilation SideEffectsFlagPlugin
+[app] <s> [webpack.Progress] 9% setup compilation FlagDependencyExportsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation NamedModuleIdsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation NamedChunkIdsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation DefinePlugin
+[app] <s> [webpack.Progress] 9% setup compilation TemplatedPathPlugin
+[app] <s> [webpack.Progress] 9% setup compilation RecordIdsPlugin
+[app] <s> [webpack.Progress] 9% setup compilation WarnCaseSensitiveModulesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation AddBuildDependenciesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation AddBuildDependenciesPlugin
+[app] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[app] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ProvidePlugin
+[app] <s> [webpack.Progress] 9% setup compilation ProgressPlugin
+[app] <s> [webpack.Progress] 9% setup compilation ESLintWebpackPlugin_1
+[server] 2026-09-13T11:43:47.736Z - [32minfo[39m init Loading configuration from "/tmp/cncjs-browser-test.cncrc"
+[server] 2026-09-13T11:43:47.737Z - [32minfo[39m init Watching "/tmp/cncjs-browser-watch" for file changes
+[server] 2026-09-13T11:43:47.737Z - [32minfo[39m init Starting a proxy server to proxy all requests starting with /widget to https://cncjs.github.io/cncjs-widget-boilerplate/v1/
+[server] 2026-09-13T11:43:47.738Z - [34mdebug[39m init > route=/widget
+[server] 2026-09-13T11:43:47.738Z - [34mdebug[39m init > routeWithoutTrailingSlash=/widget
+[server] 2026-09-13T11:43:47.738Z - [34mdebug[39m init > target=https://cncjs.github.io/cncjs-widget-boilerplate/v1/
+[server] 2026-09-13T11:43:47.738Z - [34mdebug[39m init > targetPathname=/cncjs-widget-boilerplate/v1/
+[server] 2026-09-13T11:43:47.738Z - [34mdebug[39m init > proxyPathPattern=RegExp(/^\/cncjs-widget-boilerplate\/v1\/widget/i)
+[server] 2026-09-13T11:43:47.739Z - [34mdebug[39m app app.settings: {"x-powered-by":false,"etag":"weak","env":"development","query parser":"extended","subdomain offset":2,"trust proxy":true,"views":["/Users/cheton_wu/Code/cncjs/cncjs-cheton/output/cncjs/app","/Users/cheton_wu/Code/cncjs/cncjs-cheton/output/cncjs/server/views"],"jsonp callback name":"callback","verbose errors":true,"view cache":false,"case sensitive routing":true,"strict routing":false,"view engine":"html"}
+[server] 🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙
+[server] 2026-09-13T11:43:47.750Z - [34mdebug[39m app assets: name=app, asset={"routes":[""],"path":"/Users/cheton_wu/Code/cncjs/cncjs-cheton/output/cncjs/app","maxAge":0}
+[server] 2026-09-13T11:43:47.750Z - [34mdebug[39m app > route=app /
+[server] (node:2857) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+[server] (Use `node --trace-deprecation ...` to show where the warning was created)
+[server] 2026-09-13T11:43:47.752Z - [34mdebug[39m service-engine Available controllers: Grbl,Marlin,Smoothie,TinyG
+[app] <s> [webpack.Progress] 9% setup compilation
+[app] <s> [webpack.Progress] 10% building
+[app] <s> [webpack.Progress] 10% building 0/1 entries 0/0 dependencies 0/0 modules
+[app] <i> [webpack-dev-server] Project is running at:
+[app] <i> [webpack-dev-server] Loopback: http://localhost:8080/, http://[::1]:8080/
+[app] <i> [webpack-dev-server] On Your Network (IPv4): http://192.168.0.195:8080/
+[app] <i> [webpack-dev-server] Content not from webpack is served from '/Users/cheton_wu/Code/cncjs/cncjs-cheton/output/cncjs/app' directory
+[server] 2026-09-13T11:43:47.792Z - [31merror[39m init Can't resolve host name: Error: getaddrinfo ENOTFOUND tw-cheton-m4
+[server]     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26) {
+[server]   errno: -3008,
+[server]   code: 'ENOTFOUND',
+[server]   syscall: 'getaddrinfo',
+[server]   hostname: 'tw-cheton-m4'
+[server] }
+[app] <s> [webpack.Progress] 10% building 1/4 entries 40/45 dependencies 21/26 modules
+[app] <s> [webpack.Progress] 10% building 2/4 entries 43/45 dependencies 27/29 modules
+[app] <s> [webpack.Progress] 41% building 3/4 entries 9463/9737 dependencies 2304/2766 modules
+[app] <s> [webpack.Progress] 64% building 4/4 entries 16161/16161 dependencies 4491/4491 modules
+[app] <s> [webpack.Progress] 65% building
+[app] <s> [webpack.Progress] 69% building finish
+[app] <s> [webpack.Progress] 69% building finish ReactRefreshPlugin
+[app] <s> [webpack.Progress] 65% building 5/5 entries 16497/16497 dependencies 4572/4572 modules
+[app] <s> [webpack.Progress] 69% building finish
+[app] <s> [webpack.Progress] 70% sealing finish module graph
+[app] <s> [webpack.Progress] 70% sealing finish module graph ResolverCachePlugin
+[app] <s> [webpack.Progress] 70% sealing finish module graph InferAsyncModulesPlugin
+[app] <s> [webpack.Progress] 70% sealing finish module graph FlagDependencyExportsPlugin
+[app] <s> [webpack.Progress] 70% sealing finish module graph ESLintWebpackPlugin_1
+[app] <s> [webpack.Progress] 70% sealing finish module graph
+[app] <s> [webpack.Progress] 70% sealing plugins
+[app] <s> [webpack.Progress] 70% sealing plugins WarnCaseSensitiveModulesPlugin
+[app] <s> [webpack.Progress] 70% sealing plugins
+[app] <s> [webpack.Progress] 71% sealing dependencies optimization
+[app] <s> [webpack.Progress] 71% sealing dependencies optimization SideEffectsFlagPlugin
+[app] <s> [webpack.Progress] 71% sealing dependencies optimization
+[app] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[app] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[app] <s> [webpack.Progress] 72% sealing chunk graph
+[app] <s> [webpack.Progress] 72% sealing chunk graph
+[app] <s> [webpack.Progress] 73% sealing after chunk graph
+[app] <s> [webpack.Progress] 73% sealing after chunk graph
+[app] <s> [webpack.Progress] 73% sealing optimizing
+[app] <s> [webpack.Progress] 73% sealing optimizing
+[app] <s> [webpack.Progress] 74% sealing module optimization
+[app] <s> [webpack.Progress] 74% sealing module optimization
+[app] <s> [webpack.Progress] 75% sealing after module optimization
+[app] <s> [webpack.Progress] 75% sealing after module optimization
+[app] <s> [webpack.Progress] 75% sealing chunk optimization
+[app] <s> [webpack.Progress] 75% sealing chunk optimization EnsureChunkConditionsPlugin
+[app] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[app] <s> [webpack.Progress] 75% sealing chunk optimization MergeDuplicateChunksPlugin
+[app] <s> [webpack.Progress] 75% sealing chunk optimization SplitChunksPlugin
+[app] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[app] <s> [webpack.Progress] 75% sealing chunk optimization
+[app] <s> [webpack.Progress] 76% sealing after chunk optimization
+[app] <s> [webpack.Progress] 76% sealing after chunk optimization
+[app] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[app] <s> [webpack.Progress] 77% sealing module and chunk tree optimization PersistentChildCompilerSingletonPlugin
+[app] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[app] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[app] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[app] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[app] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[app] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[app] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[app] <s> [webpack.Progress] 79% sealing module reviving
+[app] <s> [webpack.Progress] 79% sealing module reviving RecordIdsPlugin
+[app] <s> [webpack.Progress] 79% sealing module reviving
+[app] <s> [webpack.Progress] 80% sealing before module ids
+[app] <s> [webpack.Progress] 80% sealing before module ids
+[app] <s> [webpack.Progress] 80% sealing module ids
+[app] <s> [webpack.Progress] 80% sealing module ids NamedModuleIdsPlugin
+[app] <s> [webpack.Progress] 80% sealing module ids
+[app] <s> [webpack.Progress] 81% sealing module id optimization
+[app] <s> [webpack.Progress] 81% sealing module id optimization
+[app] <s> [webpack.Progress] 82% sealing module id optimization
+[app] <s> [webpack.Progress] 82% sealing module id optimization
+[app] <s> [webpack.Progress] 82% sealing chunk reviving
+[app] <s> [webpack.Progress] 82% sealing chunk reviving RecordIdsPlugin
+[app] <s> [webpack.Progress] 82% sealing chunk reviving
+[app] <s> [webpack.Progress] 83% sealing before chunk ids
+[app] <s> [webpack.Progress] 83% sealing before chunk ids
+[app] <s> [webpack.Progress] 84% sealing chunk ids
+[app] <s> [webpack.Progress] 84% sealing chunk ids NamedChunkIdsPlugin
+[app] <s> [webpack.Progress] 84% sealing chunk ids
+[app] <s> [webpack.Progress] 84% sealing chunk id optimization
+[app] <s> [webpack.Progress] 84% sealing chunk id optimization
+[app] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[app] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[app] <s> [webpack.Progress] 86% sealing record modules
+[app] <s> [webpack.Progress] 86% sealing record modules RecordIdsPlugin
+[app] <s> [webpack.Progress] 86% sealing record modules
+[app] <s> [webpack.Progress] 86% sealing record chunks
+[app] <s> [webpack.Progress] 86% sealing record chunks RecordIdsPlugin
+[app] <s> [webpack.Progress] 86% sealing record chunks
+[app] <s> [webpack.Progress] 87% sealing module hashing
+[app] <s> [webpack.Progress] 87% sealing module hashing
+[app] <s> [webpack.Progress] 87% sealing code generation
+[app] <s> [webpack.Progress] 87% sealing code generation
+[app] <s> [webpack.Progress] 88% sealing runtime requirements
+[app] <s> [webpack.Progress] 88% sealing runtime requirements
+[app] <s> [webpack.Progress] 89% sealing hashing
+[app] <s> [webpack.Progress] 89% sealing hashing
+[app] <s> [webpack.Progress] 89% sealing after hashing
+[app] <s> [webpack.Progress] 89% sealing after hashing
+[app] <s> [webpack.Progress] 90% sealing record hash
+[app] <s> [webpack.Progress] 90% sealing record hash
+[app] <s> [webpack.Progress] 91% sealing module assets processing
+[app] <s> [webpack.Progress] 91% sealing module assets processing
+[app] <s> [webpack.Progress] 91% sealing chunk assets processing
+[app] <s> [webpack.Progress] 91% sealing chunk assets processing
+[app] <s> [webpack.Progress] 92% sealing asset processing
+[app] <s> [webpack.Progress] 92% sealing asset processing HotModuleReplacementPlugin
+[app] <s> [webpack.Progress] 92% sealing asset processing ESLintWebpackPlugin_1
+[app] <s> [webpack.Progress] 92% sealing asset processing PersistentChildCompilerSingletonPlugin
+[app] <s> [webpack.Progress] 92% sealing asset processing HtmlWebpackPlugin
+[app] <s> [webpack.Progress] 92% sealing asset processing
+[app] <s> [webpack.Progress] 93% sealing after asset optimization
+[app] <s> [webpack.Progress] 93% sealing after asset optimization
+[app] <s> [webpack.Progress] 93% sealing recording
+[app] <s> [webpack.Progress] 93% sealing recording HotModuleReplacementPlugin
+[app] <s> [webpack.Progress] 93% sealing recording
+[app] <s> [webpack.Progress] 94% sealing after seal
+[app] <s> [webpack.Progress] 94% sealing after seal
+[app] <s> [webpack.Progress] 95% emitting emit
+[app] <s> [webpack.Progress] 95% emitting emit DevMiddleware
+[app] <s> [webpack.Progress] 95% emitting emit CleanPlugin
+[app] <s> [webpack.Progress] 95% emitting emit
+[app] <s> [webpack.Progress] 98% emitting after emit
+[app] <s> [webpack.Progress] 98% emitting after emit
+[app] <s> [webpack.Progress] 99% done plugins
+[app] <s> [webpack.Progress] 99% done plugins IdleFileCachePlugin
+[app] <s> [webpack.Progress] 99% done plugins webpack-dev-server
+[app] <s> [webpack.Progress] 99% done plugins webpack-dev-middleware
+[app] <s> [webpack.Progress] 99% done plugins
+[app] <s> [webpack.Progress] 99% 
+[app] 
+[app] <s> [webpack.Progress] 99% cache store build dependencies
+[app] <s> [webpack.Progress] 99% cache store build dependencies IdleFileCachePlugin
+[app] <s> [webpack.Progress] 99% cache store build dependencies
+[app] <s> [webpack.Progress] 99% cache begin idle
+[app] <s> [webpack.Progress] 99% cache begin idle IdleFileCachePlugin
+[app] <s> [webpack.Progress] 99% cache begin idle
+[app] <s> [webpack.Progress] 100% 
+[app] 
+[app] assets by status 917 KiB [cached] 7 assets
+[app] assets by path . 43.9 MiB
+[app]   asset main.d0c0f446aff68702264e.bundle.js 43.6 MiB [emitted] [immutable] (name: main)
+[app]   asset main.css 345 KiB [compared for emit] (name: main)
+[app]   asset index.html 1.05 KiB [emitted]
+[app] Entrypoint main 43.9 MiB (917 KiB) = main.css 345 KiB main.d0c0f446aff68702264e.bundle.js 43.6 MiB 7 auxiliary assets
+[app] cached modules 18.7 MiB (javascript) 325 KiB (css/mini-extract) [cached] 4572 modules
+[app] runtime modules 32.8 KiB 18 modules
+[app] webpack 5.75.0 compiled successfully in 1155 ms
+[simulator] [serial-bridge] Grbl Simulator - Serial Bridge
+[simulator] [serial-bridge] Creating virtual serial device at "/tmp/ttyGRBL"
+[simulator] [serial-bridge] Bridging to TCP port 53496
+[simulator] [grbl-server] [2026-09-13T11:43:49.686Z] Client connected: ::ffff:127.0.0.1:53498
+[simulator] 
+[simulator] Virtual serial device available:
+[simulator]   /tmp/ttyGRBL
+[simulator] 
+[simulator] To connect cncjs, add the following configuration to "~/.cncrc":
+[simulator]   {
+[simulator]     "ports": [
+[simulator]       {
+[simulator]         "path": "/tmp/ttyGRBL",
+[simulator]         "manufacturer": "Grbl Simulator"
+[simulator]       }
+[simulator]     ]
+[simulator]   }
+[simulator] 
+[simulator] Press Ctrl+C to stop all services
+[simulator] 
+[server] 2026-09-13T11:43:51.078Z - [34mdebug[39m service-engine New connection from 127.0.0.1: id=ViCUO4VkjsXP6HG1AAAA, user.id=, user.name=
+[server] (node:2857) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+[server] 2026-09-13T11:45:06.137Z - [34mdebug[39m service-engine Disconnected from 127.0.0.1: id=ViCUO4VkjsXP6HG1AAAA, user.id=, user.name=
+[server] Error: ENOENT: no such file or directory, open '/Users/cheton_wu/Code/cncjs/cncjs-cheton/output/cncjs/app/favicon.ico'
+[server] 2026-09-13T11:45:07.159Z - [34mdebug[39m service-engine New connection from 127.0.0.1: id=QzhLEWNW7QGFyL8dAAAB, user.id=, user.name=
+[server] 2026-09-13T11:45:08.457Z - [34mdebug[39m service-engine socket.getPorts(): id=QzhLEWNW7QGFyL8dAAAB
+[server] 2026-09-13T11:45:08.828Z - [34mdebug[39m service-engine socket.open("Grbl", "serial", {"path":"/tmp/ttyGRBL","baudRate":115200,"rtscts":false,"pin":{"dtr":null,"rts":null}}): id=QzhLEWNW7QGFyL8dAAAB
+[server] 2026-09-13T11:45:08.831Z - [34mdebug[39m controller:Grbl Add socket connection: id=QzhLEWNW7QGFyL8dAAAB
+[server] 2026-09-13T11:45:08.837Z - [34mdebug[39m controller:Grbl Connection established: type="serial", options={"baudRate":115200,"dataBits":8,"stopBits":1,"parity":"none","rtscts":false,"xon":false,"xoff":false,"xany":false,"path":"/tmp/ttyGRBL"}
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $$ -> $0=10\r\n$1=25\r\n$2=0\r\n$3=0\r\n$4=0\r\n$5=0\r\n$6=0\r\n$10=1\r\n$11=0.01\r\n$12=0.002\r\n$13=0\r\
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[app] (node:2858) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+[app] (Use `node --trace-deprecation ...` to show where the warning was created)
+[server] 2026-09-13T11:45:27.899Z - [34mdebug[39m service-engine New connection from 127.0.0.1: id=YgSEsGAf8wtlfeK9AAAC, user.id=, user.name=
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[server] 2026-09-13T11:45:28.120Z - [34mdebug[39m service-engine socket.getPorts(): id=YgSEsGAf8wtlfeK9AAAC
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|Ov:100,100,100>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] CMD: $G -> [GC:G0 G54 G17 G90 G94 G21 G40 G49 M0 M5 M9 F0.0 S0]\r\nok\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0>\r\n
+[simulator] [grbl-server] [::ffff:127.0.0.1:53498] RT: ? -> <Idle|MPos:0.000,0.000,0.000|FS:0.0,0|WCO:0.000,0.000,0.000>\r\n

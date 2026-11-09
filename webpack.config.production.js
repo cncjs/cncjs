@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const appTemplate = require('./scripts/app-template');
 const path = require('path');
 const { boolean } = require('boolean');
 const dotenv = require('dotenv');
@@ -38,7 +39,9 @@ module.exports = {
     ],
     vendor: findImports([
       'src/app/**/*.{js,jsx}',
-      '!src/app/**/*.development.js'
+      '!src/app/**/*.development.js',
+      '!src/app/**/__tests__/**',
+      '!src/app/test/**'
     ], { flatten: true }),
   },
   output: {
@@ -139,6 +142,9 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
+    new webpack.DefinePlugin({
+      'process.env.SUPPRESS_WEBGL_WARNING': JSON.stringify('0'),
+    }),
     new ESLintPlugin({
       extensions: ['js', 'jsx'],
       exclude: [
@@ -151,7 +157,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, 'src/app/index.tmpl.html'),
+      templateContent: () => appTemplate(path.resolve(__dirname, 'src/app/index.tmpl.html')),
     }),
   ].filter(Boolean),
   resolve: {

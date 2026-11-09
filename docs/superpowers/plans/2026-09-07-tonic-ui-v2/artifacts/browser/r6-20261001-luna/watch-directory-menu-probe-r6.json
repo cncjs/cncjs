@@ -1,0 +1,20 @@
+{
+  "browser": "Playwright 1.63.0 bundled Chromium 153.0.8010.12, headless, viewport 1440x900, DPR 1",
+  "preconditions": {
+    "simulatorConnected": true,
+    "uploadOptionsEnabled": true
+  },
+  "beforeBrowse": {
+    "menuItemLabels": [
+      "Browse..."
+    ],
+    "menuCount": 1
+  },
+  "afterBrowse": {
+    "dialogCount": 1,
+    "namedTreeVisible": true,
+    "topLevelRows": 0
+  },
+  "screenshot": "watch-directory-modal-r6.png",
+  "note": "Read-only interaction probe; dialog opened through Upload G-code options > Browse... and loaded the temporary watch-root listing."
+}

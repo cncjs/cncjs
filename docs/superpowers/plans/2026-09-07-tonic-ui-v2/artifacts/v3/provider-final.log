@@ -1,0 +1,12 @@
+PASS src/app/__tests__/GlobalProvider.test.jsx
+  ✓ returns to the live system theme after leaving an initially automatic appearance (424 ms)
+  ✓ stops following the system when returning to an initially explicit appearance (401 ms)
+  ✓ provides CSS variable definitions for semantic tokens and both color modes (10 ms)
+  ✓ restores the host color scheme when the application unmounts (9 ms)
+  ✓ resolves semantic foreground colors after the automatic theme changes (8 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        1.678 s
+Ran all test suites matching /src\/app\/__tests__\/GlobalProvider.test.jsx/i.

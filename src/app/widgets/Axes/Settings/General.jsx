@@ -1,328 +1,143 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Box,
+  Button,
+  Checkbox,
+  Grid,
+  Input,
   Space,
   TextLabel,
 } from '@tonic-ui/react';
-import { ensureArray } from 'ensure-type';
-import _includes from 'lodash/includes';
-import _set from 'lodash/set';
-import PropTypes from 'prop-types';
-import _uniqueId from 'lodash/uniqueId';
-import React, { Component } from 'react';
-import ForEach from 'react-foreach';
-import { Button } from '@app/components/Buttons';
-import { Checkbox } from '@app/components/Checkbox';
-import FormGroup from '@app/components/FormGroup';
-import { Container, Row, Col } from '@app/components/GridSystem';
+import React from 'react';
 import i18n from '@app/lib/i18n';
 
+const AXES = ['x', 'y', 'z', 'a', 'b', 'c'];
+const AXIS_LABELS = {
+  x: 'X-axis',
+  y: 'Y-axis',
+  z: 'Z-axis',
+  a: 'A-axis',
+  b: 'B-axis',
+  c: 'C-axis',
+};
 const IMPERIAL_JOG_DISTANCES_MAX = 5;
 const METRIC_JOG_DISTANCES_MAX = 5;
 
-class General extends Component {
-  static propTypes = {
-    axes: PropTypes.array.isRequired,
-    imperialJogDistances: PropTypes.array.isRequired,
-    metricJogDistances: PropTypes.array.isRequired
-  };
+/**
+ * @param {{
+ *   value: {
+ *     axes: string[],
+ *     imperialJogDistances: Array<string|number>,
+ *     metricJogDistances: Array<string|number>
+ *   },
+ *   onChange: (value: object) => void
+ * }} props
+ * @returns {JSX.Element}
+ */
+function General({ value, onChange }) {
+  const update = nextValue => onChange({ ...value, ...nextValue });
+  const toggleAxis = axis => (event) => {
+    const axes = value.axes.filter(currentAxis => currentAxis !== axis);
 
-  field = {
-    axisX: null,
-    axisY: null,
-    axisZ: null,
-    axisA: null,
-    axisB: null,
-    axisC: null
-  };
-
-  state = {
-    imperialJogDistances: ensureArray(this.props.imperialJogDistances),
-    metricJogDistances: ensureArray(this.props.metricJogDistances)
-  };
-
-  get value() {
-    // Axes
-    const axes = [];
-    axes.push('x');
-    this.field.axisY.checked && axes.push('y');
-    this.field.axisZ.checked && axes.push('z');
-    this.field.axisA.checked && axes.push('a');
-    this.field.axisB.checked && axes.push('b');
-    this.field.axisC.checked && axes.push('c');
-
-    // Imperial Jog Distance
-    const imperialJogDistances = [];
-    for (let i = 0; i < this.state.imperialJogDistances.length; ++i) {
-      const value = Number(this.state.imperialJogDistances[i]);
-      if (value > 0) {
-        imperialJogDistances.push(value);
-      }
+    if (event.target.checked) {
+      axes.push(axis);
     }
 
-    // Metric Jog Distance
-    const metricJogDistances = [];
-    for (let i = 0; i < this.state.metricJogDistances.length; ++i) {
-      const value = Number(this.state.metricJogDistances[i]);
-      if (value > 0) {
-        metricJogDistances.push(value);
-      }
-    }
-
-    return {
-      axes,
-      imperialJogDistances,
-      metricJogDistances
-    };
-  }
-
-  withFieldRef = (key) => (node) => {
-    _set(this.field, key, node);
+    update({ axes: AXES.filter(currentAxis => currentAxis === 'x' || axes.includes(currentAxis)) });
   };
+  const updateDistance = (unit, index) => (event) => {
+    const key = unit === 'metric' ? 'metricJogDistances' : 'imperialJogDistances';
+    const distances = value[key].map((distance, distanceIndex) => (
+      distanceIndex === index ? event.target.value : distance
+    ));
 
-  addMetricJogDistance = () => (event) => {
-    this.setState(state => ({
-      metricJogDistances: state.metricJogDistances.concat('')
-    }));
+    update({ [key]: distances });
   };
-
-  changeMetricJogDistance = (targetIndex) => (event) => {
-    const targetValue = event.target.value;
-
-    this.setState(state => ({
-      metricJogDistances: state.metricJogDistances.map((value, index) => {
-        if (index === targetIndex) {
-          return targetValue;
-        }
-        return value;
-      })
-    }));
+  const addDistance = unit => () => {
+    const key = unit === 'metric' ? 'metricJogDistances' : 'imperialJogDistances';
+    update({ [key]: value[key].concat('') });
   };
-
-  removeMetricJogDistance = (index) => (event) => {
-    this.setState(state => {
-      const metricJogDistances = [...state.metricJogDistances];
-      // Remove the array element at the index
-      metricJogDistances.splice(index, 1);
-
-      return {
-        metricJogDistances: metricJogDistances
-      };
-    });
+  const removeDistance = (unit, index) => () => {
+    const key = unit === 'metric' ? 'metricJogDistances' : 'imperialJogDistances';
+    update({ [key]: value[key].filter((distance, distanceIndex) => distanceIndex !== index) });
   };
-
-  addImperialJogDistance = () => (event) => {
-    this.setState(state => ({
-      imperialJogDistances: state.imperialJogDistances.concat('')
-    }));
-  };
-
-  changeImperialJogDistance = (targetIndex) => (event) => {
-    const targetValue = event.target.value;
-
-    this.setState(state => ({
-      imperialJogDistances: state.imperialJogDistances.map((value, index) => {
-        if (index === targetIndex) {
-          return targetValue;
-        }
-        return value;
-      })
-    }));
-  };
-
-  removeImperialJogDistance = (index) => (event) => {
-    this.setState(state => {
-      const imperialJogDistances = [...state.imperialJogDistances];
-      // Remove the array element at the index
-      imperialJogDistances.splice(index, 1);
-
-      return {
-        imperialJogDistances: imperialJogDistances
-      };
-    });
-  };
-
-  render() {
-    const { axes } = this.props;
-    const { imperialJogDistances, metricJogDistances } = this.state;
+  const renderDistanceEditor = (unit, label, distances, max) => {
+    const keyCounts = {};
 
     return (
-      <Container>
-        <FormGroup>
-          <TextLabel mb="2x">
-            {i18n._('Axes')}
-          </TextLabel>
-          <Row>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisX')}
-                  checked
-                  disabled
+      <Box>
+        <TextLabel mb="2x">{label}</TextLabel>
+        <Box>
+          {distances.map((distance, index) => {
+            const occurrence = keyCounts[distance] || 0;
+            keyCounts[distance] = occurrence + 1;
+
+            return (
+              <Grid
+                key={`${unit}-${String(distance)}-${occurrence}`}
+                templateColumns="1fr auto"
+                gap="2x"
+                mb="2x"
+              >
+                <Input
+                  aria-label={`${label} ${index + 1}`}
+                  type="number"
+                  value={distance}
+                  onChange={updateDistance(unit, index)}
+                />
+                <Button
+                  aria-label={i18n._('Remove')}
+                  size="sm"
+                  onClick={removeDistance(unit, index)}
                 >
-                  <Space width={8} />
-                  {i18n._('X-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisY')}
-                  defaultChecked={_includes(axes, 'y')}
-                >
-                  <Space width={8} />
-                  {i18n._('Y-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisZ')}
-                  defaultChecked={_includes(axes, 'z')}
-                >
-                  <Space width={8} />
-                  {i18n._('Z-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisA')}
-                  defaultChecked={_includes(axes, 'a')}
-                >
-                  <Space width={8} />
-                  {i18n._('A-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisB')}
-                  defaultChecked={_includes(axes, 'b')}
-                >
-                  <Space width={8} />
-                  {i18n._('B-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-            <Col xs={4}>
-              <FormGroup>
-                <Checkbox
-                  ref={this.withFieldRef('axisC')}
-                  defaultChecked={_includes(axes, 'c')}
-                >
-                  <Space width={8} />
-                  {i18n._('C-axis')}
-                </Checkbox>
-              </FormGroup>
-            </Col>
-          </Row>
-        </FormGroup>
-        <FormGroup>
-          <Row>
-            <Col>
-              <TextLabel mb="2x">
-                {i18n._('Custom Jog Distance (mm)')}
-              </TextLabel>
-              <Row>
-                <Col>
-                  <ForEach items={metricJogDistances}>
-                    {(value, index) => (
-                      <FormGroup key={_uniqueId()}>
-                        <Row>
-                          <Col>
-                            <input
-                              type="number"
-                              className="form-control"
-                              defaultValue={value}
-                              onChange={this.changeMetricJogDistance(index)}
-                            />
-                          </Col>
-                          <Col>
-                            <Space width={8} />
-                            <Button
-                              btnStyle="default"
-                              compact
-                              onClick={this.removeMetricJogDistance(index)}
-                            >
-                              <FontAwesomeIcon icon="times" />
-                            </Button>
-                          </Col>
-                        </Row>
-                      </FormGroup>
-                    )}
-                  </ForEach>
-                  {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX && (
-                    <Button
-                      btnStyle="default"
-                      onClick={this.addMetricJogDistance()}
-                    >
-                      <FontAwesomeIcon icon="plus" />
-                      <Space width={8} />
-                      {i18n._('Add')}
-                    </Button>
-                  )}
-                </Col>
-              </Row>
-            </Col>
-            <Col width="auto">
-              <Space width={24} />
-            </Col>
-            <Col>
-              <TextLabel mb="2x">
-                {i18n._('Custom Jog Distance (inches)')}
-              </TextLabel>
-              <Row>
-                <Col>
-                  <ForEach items={imperialJogDistances}>
-                    {(value, index) => (
-                      <FormGroup key={_uniqueId()}>
-                        <Row>
-                          <Col>
-                            <input
-                              type="number"
-                              className="form-control"
-                              defaultValue={value}
-                              onChange={this.changeImperialJogDistance(index)}
-                            />
-                          </Col>
-                          <Col>
-                            <Space width={8} />
-                            <Button
-                              btnStyle="default"
-                              compact
-                              onClick={this.removeImperialJogDistance(index)}
-                            >
-                              <FontAwesomeIcon icon="times" />
-                            </Button>
-                          </Col>
-                        </Row>
-                      </FormGroup>
-                    )}
-                  </ForEach>
-                  {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX && (
-                    <Button
-                      btnStyle="default"
-                      onClick={this.addImperialJogDistance()}
-                    >
-                      <FontAwesomeIcon icon="plus" />
-                      <Space width={8} />
-                      {i18n._('Add')}
-                    </Button>
-                  )}
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </FormGroup>
-      </Container>
+                  <FontAwesomeIcon icon="times" />
+                </Button>
+              </Grid>
+            );
+          })}
+          {distances.length < max && (
+            <Button onClick={addDistance(unit)}>
+              <FontAwesomeIcon icon="plus" />
+              <Space width="2x" />
+              {i18n._('Add')}
+            </Button>
+          )}
+        </Box>
+      </Box>
     );
-  }
+  };
+
+  return (
+    <Box>
+      <TextLabel mb="2x">{i18n._('Axes')}</TextLabel>
+      <Grid templateColumns="repeat(3, minmax(0, 1fr))" gap="2x" mb="4x">
+        {AXES.map(axis => (
+          <Checkbox
+            key={axis}
+            checked={value.axes.includes(axis)}
+            disabled={axis === 'x'}
+            onChange={toggleAxis(axis)}
+          >
+            {i18n._(AXIS_LABELS[axis])}
+          </Checkbox>
+        ))}
+      </Grid>
+      <Grid templateColumns="repeat(2, minmax(0, 1fr))" gap="4x">
+        {renderDistanceEditor(
+          'metric',
+          i18n._('Custom Jog Distance (mm)'),
+          value.metricJogDistances,
+          METRIC_JOG_DISTANCES_MAX
+        )}
+        {renderDistanceEditor(
+          'imperial',
+          i18n._('Custom Jog Distance (inches)'),
+          value.imperialJogDistances,
+          IMPERIAL_JOG_DISTANCES_MAX
+        )}
+      </Grid>
+    </Box>
+  );
 }
 
 export default General;

@@ -1,0 +1,511 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "camera": "Chromium synthetic camera device"
+  },
+  "gates": [
+    {
+      "name": "Webcam settings Save Cancel and restore without external camera",
+      "status": "passed",
+      "durationMs": 1322,
+      "cameraBefore": {
+        "width": 640,
+        "height": 480,
+        "hasStream": true
+      },
+      "originalDisabled": "Enable Webcam",
+      "prior": {
+        "local": true,
+        "stream": false,
+        "url": ""
+      },
+      "afterCancel": {
+        "local": true,
+        "stream": false,
+        "url": ""
+      },
+      "persistedStream": {
+        "local": false,
+        "stream": true,
+        "url": "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2220%22%3E%3Crect width=%2240%22 height=%2220%22 fill=%22%2300aa88%22/%3E%3C/svg%3E"
+      },
+      "savedLocalCamera": {
+        "width": 640,
+        "height": 480,
+        "hasStream": true
+      },
+      "externalCameraUsed": false
+    },
+    {
+      "name": "Webcam size and transform controls respond to pointer; fullscreen enters and exits",
+      "status": "passed",
+      "durationMs": 681,
+      "videoBox": {
+        "x": 85,
+        "y": 655.3125,
+        "width": 333,
+        "height": 249.75
+      },
+      "initialScale": "1",
+      "nextScale": "1.3",
+      "transformed": {
+        "transform": "matrix(0, 1, -1, 0, -216.445, -162.328)",
+        "width": "432.891px"
+      },
+      "normalizedPriorRotations": [],
+      "restoredScale": "1",
+      "restoredRotation": "matrix(1, 0, 0, 1, -166.5, -124.875)",
+      "restoredDisabled": true,
+      "fullscreen": {
+        "box": {
+          "x": 60,
+          "y": 48,
+          "width": 1380,
+          "height": 852,
+          "top": 48,
+          "right": 1440,
+          "bottom": 900,
+          "left": 60
+        },
+        "classes": "components-Widget-index__widget--pzPdi components-Widget-index__widget-fullscreen--2J-us css-1et0url-Box eecupy40"
+      },
+      "restoredNormal": true,
+      "controlBarVisibleOnHover": true
+    },
+    {
+      "name": "Console displays streamed status output, scrolls, clears, and changes fullscreen geometry",
+      "status": "passed",
+      "durationMs": 11441,
+      "beforeLines": 0,
+      "afterLines": 0,
+      "parserReplyCount": 45,
+      "clipboardBytes": 3017,
+      "beforeScroll": {
+        "top": 2178,
+        "height": 270,
+        "full": 2448
+      },
+      "afterScroll": {
+        "top": 1278,
+        "height": 270,
+        "full": 2448
+      },
+      "afterClearScroll": {
+        "top": 0,
+        "height": 270,
+        "full": 270
+      },
+      "scrollRows": {
+        "top": 2178,
+        "height": 270,
+        "full": 2448
+      },
+      "beforeFullscreen": {
+        "x": 84,
+        "y": 631,
+        "width": 335,
+        "height": 309
+      },
+      "fullscreen": {
+        "x": 60,
+        "y": 48,
+        "width": 1380,
+        "height": 852
+      },
+      "cleared": true,
+      "observedQueryCount": 45
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMo"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0044d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0044d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0044d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    }
+  ],
+  "outgoingCommands": [
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    },
+    {
+      "event": "writeln",
+      "name": "writeln",
+      "category": "read",
+      "command": "$G",
+      "transport": "polling"
+    }
+  ]
+}

@@ -1,0 +1,1579 @@
+[    1394ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading disabled, Progress enabled, Overlay enabled. @ webpack-internal:///../../node_modules/webpack-dev-server/client/modules/logger/index.js:576
+[    1396ms] [LOG] [HMR] Waiting for update signal from WDS... @ webpack-internal:///../../node_modules/webpack/hot/log.js:23
+[    1482ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:29889
+[    2004ms] [INFO] 🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙 @ webpack-internal:///../../node_modules/i18next/dist/esm/i18next.js:1805
+[    2014ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2014ms] [LOG] %c action     color: #03A9F4; font-weight: bold {payload: Object, type: 088910b5-5d03-426b-b592-30d3e796fe22:APP_INIT} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2014ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2046ms] [ERROR] ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead. @ webpack-internal:///../../node_modules/@tonic-ui/utils/dist/esm/shared.js:230
+[    2113ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8080/favicon.ico:0
+[    2169ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2169ms] [LOG] %c action     color: #03A9F4; font-weight: bold {payload: Object, type: 088910b5-5d03-426b-b592-30d3e796fe22:APP_INIT_SUCCESS} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2169ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    2190ms] [ERROR] Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead. @ webpack-internal:///../../node_modules/@tonic-ui/utils/dist/esm/shared.js:230
+[    2190ms] [ERROR] Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead. @ webpack-internal:///../../node_modules/@tonic-ui/utils/dist/esm/shared.js:230
+[    2222ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button 
+    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Row (webpack-internal:///./components/GridSystem/Row.jsx:46:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    2225ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup 
+    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Row (webpack-internal:///./components/GridSystem/Row.jsx:46:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    2232ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header 
+    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:48:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    2237ms] [ERROR] Warning: Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s 
+
+Check the render method of `Dropdown`.  
+    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)
+    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)
+    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)
+    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:48:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react/cjs/react.development.js:209
+[    2242ms] [ERROR] Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu 
+    at div
+    at div
+    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)
+    at div
+    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48:5)
+    at DropdownMenu (webpack-internal:///./components/Dropdown/DropdownMenu.jsx:55:5)
+    at div
+    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)
+    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)
+    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)
+    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:48:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    2242ms] [ERROR] Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen 
+    at div
+    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)
+    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)
+    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)
+    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:48:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    2299ms] [ERROR] Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s 
+
+Check the render method of `WidgetWrapper`. 
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4004ms] [ERROR] Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle 
+    at button
+    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)
+    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)
+    at div
+    at div
+    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)
+    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)
+    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at PrimaryToolbar (webpack-internal:///./widgets/Visualizer/PrimaryToolbar.jsx:95:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:197:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at DefaultWidgets (webpack-internal:///./pages/Workspace/DefaultWidgets.jsx:40:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4011ms] [ERROR] Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s 
+
+Check the render method of `VisualizerWidget`. 
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:197:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at DefaultWidgets (webpack-internal:///./pages/Workspace/DefaultWidgets.jsx:40:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4036ms] [ERROR] Warning: Received `%s` for a non-boolean attribute `%s`.
+
+If you want to write it to the DOM, pass a string instead: %s="%s" or %s={value.toString()}.%s true compact compact true compact 
+    at button
+    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)
+    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)
+    at div
+    at div
+    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)
+    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)
+    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)
+    at th
+    at tr
+    at thead
+    at table
+    at div
+    at P (webpack-internal:///../../node_modules/styled-components/dist/styled-components.browser.esm.js:30:19658)
+    at DisplayPanel (webpack-internal:///./widgets/Axes/DisplayPanel.jsx:189:5)
+    at div
+    at Axes (webpack-internal:///./widgets/Axes/Axes.jsx:24:21)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at AxesWidget (webpack-internal:///./widgets/Axes/index.jsx:104:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4089ms] [ERROR] Warning: The result of getSnapshot should be cached to avoid an infinite loop%s 
+    at Macro (webpack-internal:///./widgets/Macro/Macro.jsx:89:27)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at ModalProvider (webpack-internal:///./components/Modal/ModalContext.js:41:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at MacroWidget (webpack-internal:///./widgets/Macro/index.jsx:59:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4100ms] [ERROR] Warning: Failed %s type: %s%s prop Invalid prop `btnStyle` of value `flat` supplied to `Button`, expected one of ["default","primary","secondary","success","danger","warning","info","light","dark","link"]. 
+    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)
+    at LandingView (webpack-internal:///./widgets/Autolevel/LandingView.jsx:24:22)
+    at div
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at AutolevelWidget (webpack-internal:///./widgets/Autolevel/index.jsx:96:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react/cjs/react.development.js:209
+[    4113ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s InputGroup 
+    at InputGroup (webpack-internal:///./components/InputGroup/InputGroup.jsx:59:18)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at _c
+    at Field (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:706:26)
+    at ReactFinalForm (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:166:20)
+    at Probe (webpack-internal:///./widgets/Probe/Probe.jsx:76:27)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at ModalProvider (webpack-internal:///./components/Modal/ModalContext.js:41:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ProbeWidget (webpack-internal:///./widgets/Probe/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4132ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Center 
+    at Center (webpack-internal:///./components/Center/index.jsx:31:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at _c
+    at LaserIntensityOverride (webpack-internal:///./widgets/Laser/LaserIntensityOverride.jsx:48:20)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at LaserWidget (webpack-internal:///./widgets/Laser/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4133ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Card 
+    at Card (webpack-internal:///./components/Card/Card.jsx:34:24)
+    at P (webpack-internal:///../../node_modules/styled-components/dist/styled-components.browser.esm.js:30:19658)
+    at div
+    at Center (webpack-internal:///./components/Center/index.jsx:31:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at _c
+    at LaserIntensityOverride (webpack-internal:///./widgets/Laser/LaserIntensityOverride.jsx:48:20)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at LaserWidget (webpack-internal:///./widgets/Laser/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4137ms] [ERROR] Warning: Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://reactjs.org/link/setstate-in-render%s Provider CollapsibleCard CollapsibleCard 
+    at CollapsibleCard (webpack-internal:///./components/CollapsibleCard/CollapsibleCard.jsx:53:28)
+    at LaserTest (webpack-internal:///./widgets/Laser/LaserTest.jsx:54:26)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at LaserWidget (webpack-internal:///./widgets/Laser/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4139ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s CardHeader 
+    at CardHeader (webpack-internal:///./components/Card/CardHeader.jsx:34:24)
+    at div
+    at Hoverable (webpack-internal:///./components/Hoverable/Hoverable.jsx:40:5)
+    at P (webpack-internal:///../../node_modules/styled-components/dist/styled-components.browser.esm.js:30:19658)
+    at Clickable
+    at Header (webpack-internal:///./components/CollapsibleCard/Header.jsx:33:23)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at Resolver (webpack-internal:///./components/Card/Resolver.jsx:17:23)
+    at Card (webpack-internal:///./components/Card/Card.jsx:34:24)
+    at CollapsibleCard (webpack-internal:///./components/CollapsibleCard/CollapsibleCard.jsx:53:28)
+    at LaserTest (webpack-internal:///./widgets/Laser/LaserTest.jsx:54:26)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at LaserWidget (webpack-internal:///./widgets/Laser/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4141ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s CardBody 
+    at CardBody (webpack-internal:///./components/Card/CardBody.jsx:34:24)
+    at div
+    at div
+    at AnimateHeight (webpack-internal:///../../node_modules/react-animate-height/lib/AnimateHeight.js:111:5)
+    at Body (webpack-internal:///./components/CollapsibleCard/Body.jsx:26:23)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at Resolver (webpack-internal:///./components/Card/Resolver.jsx:17:23)
+    at Card (webpack-internal:///./components/Card/Card.jsx:34:24)
+    at CollapsibleCard (webpack-internal:///./components/CollapsibleCard/CollapsibleCard.jsx:53:28)
+    at LaserTest (webpack-internal:///./widgets/Laser/LaserTest.jsx:54:26)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at LaserWidget (webpack-internal:///./widgets/Laser/index.jsx:52:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at SecondaryWidgets (webpack-internal:///./pages/Workspace/SecondaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4146ms] [ERROR] Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div 
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4161ms] [ERROR] Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s 
+    at Dashboard (webpack-internal:///./widgets/Visualizer/Dashboard.jsx:70:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:197:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at DefaultWidgets (webpack-internal:///./pages/Workspace/DefaultWidgets.jsx:40:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4239ms] [ERROR] ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead. @ webpack-internal:///../../node_modules/@tonic-ui/utils/dist/esm/shared.js:230
+[    4256ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4256ms] [LOG] %c action     color: #03A9F4; font-weight: bold {payload: Object, type: serialport:FETCH_PORTS.REQUEST} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4256ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4259ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4260ms] [LOG] %c action     color: #03A9F4; font-weight: bold {payload: Object, type: serialport:FETCH_BAUD_RATES.REQUEST} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4260ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4269ms] [ERROR] Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator 
+    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)
+    at div
+    at render
+    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)
+    at div
+    at render
+    at Control (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1127:24)
+    at div
+    at render
+    at SelectContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:827:24)
+    at Select (webpack-internal:///../../node_modules/react-select/dist/Select-5d18b8d9.browser.esm.js:1079:90)
+    at StateManager (webpack-internal:///../../node_modules/react-select/dist/stateManager-2f2b6f5b.browser.esm.js:43:92)
+    at Field (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:706:26)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Row (webpack-internal:///./components/GridSystem/Row.jsx:46:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at _c
+    at Field (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:706:26)
+    at ReactFinalForm (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:166:20)
+    at div
+    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)
+    at Container (webpack-internal:///./components/GridSystem/Container.jsx:55:5)
+    at Connection (webpack-internal:///./widgets/Connection/Connection.jsx:346:26)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Widget (webpack-internal:///./components/Widget/Widget.jsx:44:5)
+    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)
+    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)
+    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)
+    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:48:5)
+    at WidgetWrapper (webpack-internal:///./pages/Workspace/Widget.jsx:90:5)
+    at div
+    at div
+    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)
+    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:85:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)
+    at div
+    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:131:5)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at main
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)
+    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)
+    at div
+    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)
+    at Layout (webpack-internal:///./containers/app/App.jsx:60:83)
+    at App (webpack-internal:///./containers/app/App.jsx:91:29)
+    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)
+    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)
+    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)
+    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)
+    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)
+    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)
+    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)
+    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)
+    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)
+    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:37:103)
+    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:11:20)
+    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)
+    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:17:23)
+    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)
+    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:21:23)
+    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)
+    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)
+    at GlobalProvider (webpack-internal:///./context.jsx:69:23) @ webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:85
+[    4354ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4354ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4354ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4355ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4355ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4355ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4355ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4356ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4357ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4357ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[    4433ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4433ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: serialport:FETCH_BAUD_RATES.SUCCESS, payload: Object, @@redux-saga/SAGA_ACTION: true} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4434ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4492ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4492ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: serialport:FETCH_PORTS.SUCCESS, payload: Object, @@redux-saga/SAGA_ACTION: true} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[    4492ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66116ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66116ms] [LOG] %c action     color: #03A9F4; font-weight: bold {payload: Object, type: connection:OPEN_CONNECTION.REQUEST} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66116ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66155ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66155ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_FEEDER_STATUS, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66155ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66157ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66157ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_SENDER_STATUS, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66157ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66158ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66158ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_WORKFLOW_STATE, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66158ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66160ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66160ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: connection:UPDATE_CONNECTION, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66160ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66161ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66161ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: serialport:UPDATE_CONNECTION_STATUS, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66161ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66422ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66422ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66422ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66423ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66442ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66443ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_CONTROLLER_SETTINGS, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66443ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66496ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66497ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66498ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66505ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66506ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_CONTROLLER_STATE, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66506ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   66588ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66588ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66589ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66590ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66590ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   66590ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68416ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ webpack-internal:///../../node_modules/xterm/lib/xterm.js:0
+[   68635ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68636ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_CONTROLLER_SETTINGS, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68636ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68661ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68662ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68670ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68670ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_CONTROLLER_STATE, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68670ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68713ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68714ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68887ms] [LOG] %c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68887ms] [LOG] %c action     color: #03A9F4; font-weight: bold {type: controller:UPDATE_CONTROLLER_STATE, payload: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68887ms] [LOG] %c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object} @ webpack-internal:///../../node_modules/redux-logger/dist/redux-logger.js:0
+[   68924ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68924ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68924ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444
+[   68925ms] [WARNING] Warning: the "btnSize" prop is deprecated. Use "lg|md|sm|xs" instead. @ webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:444

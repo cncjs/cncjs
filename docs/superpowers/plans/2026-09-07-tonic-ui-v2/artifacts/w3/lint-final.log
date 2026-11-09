@@ -1,0 +1,188 @@
+[i18nlint] Linting src/app/i18n/ja/controller.json
+[stylint] src/app/pages/Workspace/widgets.styl
+[stylint] 4:15 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/pages/Workspace/widgets.styl
+[stylint] 4:2 valid warning property is not valid
+[stylint]
+[stylint] src/app/widgets/Autolevel/ApplyView.styl
+[stylint] 9:17 leadingZero warning leading zeros for decimal points are unnecessary
+[stylint]
+[stylint] src/app/widgets/Autolevel/ApplyView.styl
+[stylint] 55:10 none warning 0 is preferred over none
+[stylint]
+[stylint] src/app/widgets/Autolevel/LandingView.styl
+[stylint] 5:12 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Autolevel/LandingView.styl
+[stylint] 5:2 valid warning property is not valid
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 5:26 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 6:32 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 6:26 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 6:32 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 7:34 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 7:28 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 7:34 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 8:35 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 8:29 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 8:35 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 9:32 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 15:26 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 16:32 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 16:26 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 16:32 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 17:34 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 17:28 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 17:34 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 18:35 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 18:29 colons warning missing colon between property and value
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 18:35 semicolons warning missing semicolon
+[stylint]
+[stylint] src/app/widgets/Visualizer/widget.styl
+[stylint] 19:32 brackets warning always use brackets when defining selectors
+[stylint]
+[stylint] Stylint: 0 Errors.
+[stylint] Stylint: 28 Warnings.
+[i18nlint] Linting src/app/i18n/ja/resource.json
+[stylint] yarn run stylint exited with code 0
+[i18nlint] Linting src/app/i18n/ja/gcode.json
+[i18nlint] Linting src/app/i18n/it/controller.json
+[i18nlint] Linting src/app/i18n/it/resource.json
+[i18nlint] Linting src/app/i18n/it/gcode.json
+[i18nlint] Linting src/app/i18n/cs/controller.json
+[i18nlint] Linting src/app/i18n/cs/resource.json
+[i18nlint] Linting src/app/i18n/cs/gcode.json
+[i18nlint] Linting src/app/i18n/ru/controller.json
+[i18nlint] Linting src/app/i18n/ru/resource.json
+[i18nlint] Linting src/app/i18n/ru/gcode.json
+[i18nlint] Linting src/app/i18n/zh-cn/controller.json
+[i18nlint] Linting src/app/i18n/zh-cn/resource.json
+[i18nlint] Linting src/app/i18n/zh-cn/gcode.json
+[i18nlint] Linting src/app/i18n/pt/controller.json
+[i18nlint] Linting src/app/i18n/pt/resource.json
+[i18nlint] Linting src/app/i18n/pt/gcode.json
+[i18nlint] Linting src/app/i18n/uk/controller.json
+[i18nlint] Linting src/app/i18n/uk/resource.json
+[i18nlint] Linting src/app/i18n/uk/gcode.json
+[i18nlint] Linting src/app/i18n/zh-tw/controller.json
+[i18nlint] Linting src/app/i18n/zh-tw/resource.json
+[i18nlint] Linting src/app/i18n/zh-tw/gcode.json
+[i18nlint] Linting src/app/i18n/pt-br/controller.json
+[i18nlint] Linting src/app/i18n/pt-br/resource.json
+[i18nlint] Linting src/app/i18n/pt-br/gcode.json
+[i18nlint] Linting src/app/i18n/hu/controller.json
+[i18nlint] Linting src/app/i18n/hu/resource.json
+[i18nlint] Linting src/app/i18n/hu/gcode.json
+[i18nlint] Linting src/app/i18n/nl/controller.json
+[i18nlint] Linting src/app/i18n/nl/resource.json
+[i18nlint] Linting src/app/i18n/nl/gcode.json
+[i18nlint] Linting src/app/i18n/nb/controller.json
+[i18nlint] Linting src/app/i18n/nb/resource.json
+[i18nlint] Linting src/app/i18n/nb/gcode.json
+[i18nlint] Linting src/app/i18n/de/controller.json
+[i18nlint] Linting src/app/i18n/de/resource.json
+[i18nlint] Linting src/app/i18n/de/gcode.json
+[i18nlint] Linting src/app/i18n/fr/controller.json
+[i18nlint] Linting src/app/i18n/fr/resource.json
+[i18nlint] Linting src/app/i18n/fr/gcode.json
+[i18nlint] Linting src/app/i18n/es/controller.json
+[i18nlint] Linting src/app/i18n/es/resource.json
+[i18nlint] Linting src/app/i18n/es/gcode.json
+[i18nlint] Linting src/app/i18n/en/controller.json
+[i18nlint] Linting src/app/i18n/en/resource.json
+[i18nlint] Linting src/app/i18n/en/gcode.json
+[i18nlint] Linting src/app/i18n/tr/controller.json
+[i18nlint] Linting src/app/i18n/tr/resource.json
+[i18nlint] Linting src/app/i18n/tr/gcode.json
+[i18nlint] Linting src/server/i18n/ja/config.json
+[i18nlint] Linting src/server/i18n/ja/resource.json
+[i18nlint] Linting src/server/i18n/it/config.json
+[i18nlint] Linting src/server/i18n/it/resource.json
+[i18nlint] Linting src/server/i18n/cs/config.json
+[i18nlint] Linting src/server/i18n/cs/resource.json
+[i18nlint] Linting src/server/i18n/ru/config.json
+[i18nlint] Linting src/server/i18n/ru/resource.json
+[i18nlint] Linting src/server/i18n/zh-cn/config.json
+[i18nlint] Linting src/server/i18n/zh-cn/resource.json
+[i18nlint] Linting src/server/i18n/pt/config.json
+[i18nlint] Linting src/server/i18n/pt/resource.json
+[i18nlint] Linting src/server/i18n/uk/resource.json
+[i18nlint] Linting src/server/i18n/zh-tw/config.json
+[i18nlint] Linting src/server/i18n/zh-tw/resource.json
+[i18nlint] Linting src/server/i18n/pt-br/config.json
+[i18nlint] Linting src/server/i18n/pt-br/resource.json
+[i18nlint] Linting src/server/i18n/hu/config.json
+[i18nlint] Linting src/server/i18n/hu/resource.json
+[i18nlint] Linting src/server/i18n/nl/config.json
+[i18nlint] Linting src/server/i18n/nl/resource.json
+[i18nlint] Linting src/server/i18n/nb/config.json
+[i18nlint] Linting src/server/i18n/nb/resource.json
+[i18nlint] Linting src/server/i18n/de/config.json
+[i18nlint] Linting src/server/i18n/de/resource.json
+[i18nlint] Linting src/server/i18n/fr/config.json
+[i18nlint] Linting src/server/i18n/fr/resource.json
+[i18nlint] Linting src/server/i18n/es/config.json
+[i18nlint] Linting src/server/i18n/es/resource.json
+[i18nlint] Linting src/server/i18n/en/config.json
+[i18nlint] Linting src/server/i18n/en/resource.json
+[i18nlint] Linting src/server/i18n/tr/config.json
+[i18nlint] Linting src/server/i18n/tr/resource.json
+[i18nlint] yarn run i18nlint exited with code 0
+[eslint]
+[eslint] /Users/cheton/Code/cncjs/cncjs-cheton/src/app/hooks/useForceUpdate.js
+[eslint]   4:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state
+[eslint]
+[eslint] /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx
+[eslint]   92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state
+[eslint]
+[eslint] /Users/cheton/Code/cncjs/cncjs-cheton/src/app/widgets/Axes/DisplayPanel.jsx
+[eslint]   279:1  warning  Function 'DisplayPanel' has too many lines (1221). Maximum allowed is 1024  max-lines-per-function
+[eslint]
+[eslint] /Users/cheton/Code/cncjs/cncjs-cheton/src/app/widgets/Connection/Connection.jsx
+[eslint]   164:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state
+[eslint]
+[eslint] ✖ 4 problems (0 errors, 4 warnings)
+[eslint]
+[eslint] yarn run eslint exited with code 0

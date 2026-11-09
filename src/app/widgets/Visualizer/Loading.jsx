@@ -1,16 +1,15 @@
+import { Box, Spinner, Text } from '@tonic-ui/react';
 import React from 'react';
 import i18n from '@app/lib/i18n';
-import styles from './loader.styl';
 
-export default function() {
+export default function Loading() {
   return (
-    <div className={styles.loader}>
-      <div className={styles.loaderIcon}>
-        <i className="fa fa-spinner fa-spin" />
-      </div>
-      <div className={styles.loaderText}>
-        {i18n._('Loading...')}
-      </div>
-    </div>
+    <Box
+      position="absolute" top={100} left="50%"
+      transform="translateX(-50%)" textAlign="center" role="status"
+    >
+      <Spinner size="md" mx="auto" aria-hidden="true" />
+      <Text mt={15} mb={10}>{i18n._('Loading...')}</Text>
+    </Box>
   );
 }

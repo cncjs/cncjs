@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  Box,
   Button,
   Drawer,
   DrawerContent,
@@ -9,39 +8,31 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
+  FormControl,
   Spinner,
   Switch,
   Text,
   TextLabel,
 } from '@tonic-ui/react';
-import memoize from 'micro-memoize';
-import React, { useCallback } from 'react';
-import { Field, Form } from 'react-final-form';
-import FormGroup from '@app/components/FormGroup';
-import {
-  InlineToastContainer,
-  InlineToasts,
-  useInlineToasts,
-} from '@app/components/InlineToasts';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import React, { useCallback, useEffect } from 'react';
+import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
-import * as validations from '@app/pages/Administration/validations';
 import {
   API_EVENTS_QUERY_KEY,
   useReadEventQuery,
   useUpdateEventMutation,
 } from '../queries';
 
-const getMemoizedState = memoize(state => ({ ...state }));
-
 const UpdateEventDrawer = ({
   id,
   onClose,
   ...rest
 }) => {
-  const { toasts, notify: notifyToast } = useInlineToasts();
+  const notifyToast = useToast();
   const queryClient = useQueryClient();
   const readEventQuery = useReadEventQuery({
     meta: {
@@ -67,12 +58,33 @@ const UpdateEventDrawer = ({
       });
     },
   });
-  const initialValues = getMemoizedState({
-    enabled: readEventQuery.data?.enabled,
-    name: readEventQuery.data?.name,
-    trigger: readEventQuery.data?.trigger,
-    action: readEventQuery.data?.action,
+  const methods = useForm({
+    defaultValues: {
+      enabled: false,
+      name: '',
+      trigger: '',
+      action: '',
+    },
+    mode: 'onSubmit',
   });
+  const {
+    reset,
+    handleSubmit,
+  } = methods;
+
+  // Populate the form once the record loads. `reset` does not run validation,
+  // so no invalid state flashes when the edit form opens.
+  useEffect(() => {
+    if (readEventQuery.data) {
+      reset({
+        enabled: readEventQuery.data.enabled,
+        name: readEventQuery.data.name,
+        trigger: readEventQuery.data.trigger,
+        action: readEventQuery.data.action,
+      });
+    }
+  }, [readEventQuery.data, reset]);
+
   const handleFormSubmit = useCallback((values) => {
     updateEventMutation.mutate({
       meta: {
@@ -94,121 +106,98 @@ const UpdateEventDrawer = ({
       {...rest}
     >
       <DrawerOverlay />
-      <Form
-        initialValues={initialValues}
-        onSubmit={handleFormSubmit}
-        validate={(values) => {
-          const errors = {};
-          errors.name = validations.required(values.name);
-          errors.trigger = validations.required(values.trigger);
-          errors.action = validations.required(values.action);
-          return errors;
-        }}
-        render={({ form }) => (
-          <DrawerContent>
-            <InlineToastContainer>
-              <InlineToasts toasts={toasts} />
-            </InlineToastContainer>
-            <DrawerHeader>
-              <Text>
-                {i18n._('Event Details')}
-              </Text>
-            </DrawerHeader>
-            <DrawerBody>
-              {readEventQuery.isFetching && (
-                <Spinner />
-              )}
-              {!(readEventQuery.isFetching) && (
-                <>
-                  <FormGroup>
-                    <Flex
-                      alignItems="center"
-                      columnGap="3x"
-                    >
-                      <FieldTextLabel>
-                        {i18n._('Status:')}
-                      </FieldTextLabel>
-                      <Field name="enabled">
-                        {({ input, meta }) => {
-                          return (
-                            <Flex
-                              alignItems="center"
-                              columnGap="2x"
-                            >
-                              <Switch
-                                aria-label="Enable event"
-                                {...input}
-                                checked={input.value}
-                              />
-                              <TextLabel>
-                                {input.value === true ? i18n._('ON') : i18n._('OFF')}
-                              </TextLabel>
-                            </Flex>
-                          );
-                        }}
-                      </Field>
-                    </Flex>
-                  </FormGroup>
-                  <FormGroup>
-                    <Box mb="1x">
-                      <FieldTextLabel required>
-                        {i18n._('Event name:')}
-                      </FieldTextLabel>
-                    </Box>
-                    <FieldInput name="name" />
-                  </FormGroup>
-                  <FormGroup>
-                    <Box mb="1x">
-                      <FieldTextLabel required>
-                        {i18n._('Event trigger:')}
-                      </FieldTextLabel>
-                    </Box>
-                    <FieldInput name="trigger" />
-                  </FormGroup>
-                  <FormGroup>
-                    <Box mb="1x">
-                      <FieldTextLabel required>
-                        {i18n._('Event action:')}
-                      </FieldTextLabel>
-                    </Box>
-                    <FieldTextarea
-                      name="action"
-                      rows="10"
+      <FormProvider {...methods}>
+        <DrawerContent
+          as="form"
+          noValidate
+          onSubmit={handleSubmit(handleFormSubmit)}
+        >
+          <DrawerHeader>
+            <Text>
+              {i18n._('Event Details')}
+            </Text>
+          </DrawerHeader>
+          <DrawerBody>
+            {readEventQuery.isFetching && (
+              <Spinner />
+            )}
+            {!(readEventQuery.isFetching) && (
+              <>
+                <FormControl mb="4x">
+                  <Flex
+                    alignItems="center"
+                    columnGap="3x"
+                  >
+                    <FieldTextLabel>
+                      {i18n._('Status:')}
+                    </FieldTextLabel>
+                    <Controller
+                      name="enabled"
+                      render={({ field }) => (
+                        <Flex
+                          alignItems="center"
+                          columnGap="2x"
+                        >
+                          <Switch
+                            aria-label="Enable event"
+                            checked={!!field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                          <TextLabel>
+                            {field.value === true ? i18n._('ON') : i18n._('OFF')}
+                          </TextLabel>
+                        </Flex>
+                      )}
                     />
-                  </FormGroup>
-                </>
-              )}
-            </DrawerBody>
-            <DrawerFooter>
-              <Flex
-                alignItems="center"
-                columnGap="2x"
+                  </Flex>
+                </FormControl>
+                <FieldInput
+                  name="name"
+                  label={i18n._('Event name:')}
+                  required
+                />
+                <FieldInput
+                  name="trigger"
+                  label={i18n._('Event trigger:')}
+                  required
+                />
+                <FieldTextarea
+                  name="action"
+                  label={i18n._('Event action:')}
+                  required
+                  rows="10"
+                />
+              </>
+            )}
+          </DrawerBody>
+          <DrawerFooter>
+            <Flex
+              alignItems="center"
+              columnGap="2x"
+            >
+              <Button
+                type="button"
+                onClick={onClose}
+                sx={{
+                  minWidth: 80,
+                }}
               >
-                <Button
-                  onClick={onClose}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Cancel')}
-                </Button>
-                <Button
-                  variant="primary"
-                  disabled={isFormDisabled}
-                  onClick={() => {
-                    form.submit();
-                  }}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Save')}
-                </Button>
-              </Flex>
-            </DrawerFooter>
-          </DrawerContent>
-        )}
-      />
+                {i18n._('Cancel')}
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isFormDisabled}
+                sx={{
+                  minWidth: 80,
+                }}
+              >
+                {i18n._('Save')}
+              </Button>
+            </Flex>
+          </DrawerFooter>
+        </DrawerContent>
+      </FormProvider>
     </Drawer>
   );
 };

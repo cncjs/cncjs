@@ -5,7 +5,6 @@ import {
   Stack,
   Text,
   useColorMode,
-  useColorStyle,
   useTheme,
 } from '@tonic-ui/react';
 import { ensureString } from 'ensure-type';
@@ -13,29 +12,23 @@ import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from '@app/config/settings';
 import useToast from '@app/hooks/useToast';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
+import MacroQueryEvents from '@app/queries/MacroQueryEvents';
+import { createSessionQueryBoundary } from '@app/queries/session';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
 
 function Layout(props) {
   const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
-  const { colors, fontSizes, lineHeights } = useTheme();
-  const backgroundColor = colorStyle.background.primary;
-  const color = colorStyle.color.primary;
-  const scrollbarThumbBackgroundColor = colorStyle.color.disabled;
-  const scrollbarThumbHoverBackgroundColor = colorStyle.color.tertiary;
-  const scrollbarThumbHoverBorderColor = colorStyle.color.secondary;
-  const scrollbarTrackBackgroundColor = {
-    light: 'gray:30',
-    dark: 'gray:70',
-  }[colorMode];
+  const theme = useTheme();
+  const { fontSizes, lineHeights } = theme;
 
   return (
     <>
@@ -52,18 +45,18 @@ function Layout(props) {
             height: 8px;
           }
           ::-webkit-scrollbar-track {
-            background-color: ${colors[scrollbarTrackBackgroundColor]};
+            background-color: ${theme.get('colors._component.scrollbar.track.enabled')};
           }
           ::-webkit-scrollbar-thumb {
-            background-color: ${colors[scrollbarThumbBackgroundColor]};
+            background-color: ${theme.get('colors._component.scrollbar.thumb.enabled')};
           }
           ::-webkit-scrollbar-thumb:hover {
-            background-color: ${colors[scrollbarThumbHoverBackgroundColor]};
-            border: 1px solid ${colors[scrollbarThumbHoverBorderColor]};
+            background-color: ${theme.get('colors._component.scrollbar.thumb.hovered')};
+            border: 1px solid ${theme.get('colors.border.secondary')};
           }
           body {
-            background-color: ${colors[backgroundColor]};
-            color: ${colors[color]};
+            background-color: ${theme.get('colors.background.highest')};
+            color: ${theme.get('colors.text.primary')};
             font-size: ${fontSizes.sm};
             line-height: ${lineHeights.sm};
           }
@@ -83,6 +76,9 @@ function App({
 }) {
   const { productName, version } = settings;
   const toast = useToast();
+  const queryClient = useQueryClient();
+
+  useEffect(() => createSessionQueryBoundary(queryClient), [queryClient]);
 
   useEffect(() => {
     const taskMap = new Map();
@@ -195,28 +191,32 @@ function App({
     };
   }, [toast]);
 
-  if (isInitializing) {
-    return null;
-  }
-
-  if (promptUserForCorruptedWorkspaceSettings) {
-    return (
+  let content = null;
+  if (!isInitializing && promptUserForCorruptedWorkspaceSettings) {
+    content = (
       <Layout>
         <CorruptedWorkspaceSettingsModal />
+      </Layout>
+    );
+  } else if (!isInitializing) {
+    content = (
+      <Layout>
+        <Helmet>
+          <title>{`${productName} ${version}`}</title>
+        </Helmet>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/*" element={<MainPage />} />
+        </Routes>
       </Layout>
     );
   }
 
   return (
-    <Layout>
-      <Helmet>
-        <title>{`${productName} ${version}`}</title>
-      </Helmet>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/*" element={<MainPage />} />
-      </Routes>
-    </Layout>
+    <>
+      <MacroQueryEvents />
+      {content}
+    </>
   );
 }
 

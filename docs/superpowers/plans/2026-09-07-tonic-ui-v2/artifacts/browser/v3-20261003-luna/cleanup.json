@@ -1,0 +1,93 @@
+{
+  "task": "V3-V owned lifecycle and fixture cleanup",
+  "status": "passed",
+  "completedAt": "2026-10-06T06:38:12.560Z",
+  "shutdown": {
+    "toolSession": 98385,
+    "signal": "SIGINT",
+    "exitCode": 1,
+    "meaning": "Expected runner interruption after graceful cleanup; owned service lineage exited"
+  },
+  "ownedRuntimeLineagePidsBeforeStop": [
+    34632,
+    34633,
+    34657,
+    34723,
+    34607,
+    34617,
+    34656,
+    34687,
+    34601,
+    34602,
+    34634,
+    34470,
+    34597,
+    34618
+  ],
+  "ownedRuntimeLineagePidsStillRunning": [],
+  "ownedBrowserRunnerPids": [
+    94115,
+    93822,
+    93935,
+    93433,
+    94172,
+    94144,
+    94227,
+    94200,
+    92844
+  ],
+  "ownedBrowserRunnerPidsStillRunning": [],
+  "browserProcessScan": {
+    "runnerScriptProcesses": 0,
+    "headlessChromiumProcesses": 0
+  },
+  "listenersAfterStop": {
+    "8000": 0,
+    "8080": 0,
+    "60565": 0
+  },
+  "serialBridge": {
+    "pidBeforeStop": 34723,
+    "symlink": "/tmp/ttyGRBL",
+    "presentAfterStop": false
+  },
+  "tempFixtureAndConfigCleanup": {
+    "isolatedConfig": {
+      "path": "/tmp/cncjs-v3-visual-KaoUqg/config.cncrc",
+      "existedBeforeRemoval": true,
+      "topLevelKeys": [
+        "secret",
+        "watchDirectory",
+        "ports"
+      ],
+      "resourceLikeKeys": [],
+      "resourceRecordCount": 0,
+      "existsAfterRemoval": false
+    },
+    "watchTree": {
+      "path": "/tmp/cncjs-v3-visual-KaoUqg/watch-tree",
+      "fixtureFilesBeforeRemoval": 4,
+      "existsAfterRemoval": false
+    },
+    "badgeFixture": {
+      "path": "/tmp/cncjs-v3-visual-KaoUqg/AL_part.gcode",
+      "commentOnly": true,
+      "existsAfterRemoval": false
+    },
+    "persistentFixtureOrResourceRecordsAfterCleanup": 0
+  },
+  "evidencePreserved": {
+    "artifactDirectory": "docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-20261003-luna",
+    "report": "report.json",
+    "screenshotsPreserved": true,
+    "runnerJsonPreserved": true,
+    "failedContrastOracleAttemptPreserved": true,
+    "historicalF050CheckpointsPreserved": true,
+    "scratchLogsPreserved": true,
+    "unrelatedTempDirectoriesRemoved": false,
+    "oldR6OrUserProcessesSignaled": false,
+    "scratchLogsSensitiveValuesRedacted": true,
+    "rootPreparedHistoryFilesKept": true
+  },
+  "verification": "Post-cleanup ps checks returned no owned service, lifecycle wrapper, bridge, browser runner, or headless Chromium PIDs; lsof returned no listeners on 8000/8080/60565; /tmp/ttyGRBL was absent."
+}

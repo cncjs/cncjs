@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from 'react-icon-base';
 
+/**
+ * @param {{ color?: string, [key: string]: unknown }} props
+ */
 function Extruder({ color = '#000', ...props }) {
   const stroke = {
     st1: {
@@ -46,9 +48,5 @@ function Extruder({ color = '#000', ...props }) {
     </Icon>
   );
 }
-
-Extruder.propTypes = {
-  color: PropTypes.string
-};
 
 export default Extruder;

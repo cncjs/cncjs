@@ -1,0 +1,15 @@
+{
+  "file": "test/e2e/scenarios/widgets.spec.mjs",
+  "titlePath": [
+    "axes and macro",
+    "axes keeps table padding and visible action icons in normal and fullscreen views"
+  ],
+  "project": "light",
+  "run": "mw7kcunr-1dkg",
+  "shots": [
+    {
+      "artifact": "final-page.png",
+      "name": "final-page"
+    }
+  ]
+}

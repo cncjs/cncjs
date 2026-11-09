@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
   Space,
-  useColorStyle,
 } from '@tonic-ui/react';
 import { InfoOIcon } from '@tonic-ui/react-icons';
 import React, { forwardRef } from 'react';
@@ -19,17 +18,15 @@ const FieldTextLabel = forwardRef((
   },
   ref,
 ) => {
-  const [colorStyle] = useColorStyle();
-
   return (
     <Flex
       ref={ref}
       alignItems="center"
-      color={colorStyle.color.secondary}
+      color="text.secondary"
     >
       {children}
       {!!required && (
-        <Box color={colorStyle.color.error}>*</Box>
+        <Box color="error.text">*</Box>
       )}
       {!!infoTipLabel && (
         <>

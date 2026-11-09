@@ -1,0 +1,34 @@
+{
+  "browserVersion": "151.0.7922.34",
+  "sockets": [],
+  "frames": [],
+  "pollingFrames": [
+    {
+      "direction": "received",
+      "type": "event",
+      "name": "startup",
+      "ackId": null
+    },
+    {
+      "direction": "received",
+      "type": "ack",
+      "ackId": "0",
+      "argCount": 2,
+      "firstArgType": "object",
+      "secondArgArrayLength": 3,
+      "hasSyntheticGrblPath": true
+    },
+    {
+      "direction": "received",
+      "type": "ack",
+      "ackId": "1",
+      "argCount": 2,
+      "firstArgType": "object",
+      "secondArgArrayLength": 8,
+      "hasSyntheticGrblPath": false
+    }
+  ],
+  "serialPortMenuEnabled": true,
+  "connectionText": "Connection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nSet DTR line status upon opening\nSet RTS line status upon opening\nUse RTS/CTS flow control\nConnect automatically\nOpen",
+  "pageErrors": []
+}

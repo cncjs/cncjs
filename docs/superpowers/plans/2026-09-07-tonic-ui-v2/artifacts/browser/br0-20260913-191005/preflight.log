@@ -1,0 +1,13 @@
+timestamp=
+processes:
+41401
+41403
+74744
+74745
+ports:
+tty:
+-rw-r--r--@ 1 cheton_wu  wheel  208 Sep 13 19:00 /tmp/cncjs-browser-test.cncrc
+browser candidates:
+Google Chrome 153.0.8010.36 
+path=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+playwright packages:

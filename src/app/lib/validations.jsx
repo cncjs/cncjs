@@ -1,9 +1,13 @@
 /* eslint react/prop-types: 0 */
+import { Box } from '@tonic-ui/react';
 import React from 'react';
 import i18n from './i18n';
 
+/**
+ * @param {Object} props
+ */
 function Error(props) {
-  return <div {...props} style={{ color: '#A94442' }} />;
+  return <Box {...props} color="error.text" />;
 }
 
 const required = (value, props, components) => {

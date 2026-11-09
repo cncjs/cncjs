@@ -1,0 +1,32 @@
+{
+  "task": "R6 console-error diagnosis",
+  "sourceHead": "ae070b9f plus working-tree fixes",
+  "threeVersion": "0.124.0",
+  "method": "For each dimension, construct BoxGeometry(d,d,d), then EdgesGeometry(box), capturing only the conversion console errors and disposing both geometries.",
+  "cases": [
+    {
+      "dimension": 5e-324,
+      "vertexCount": 1,
+      "faceCount": 0,
+      "errors": [
+        "THREE.DirectGeometry: Faceless geometries are not supported."
+      ]
+    },
+    {
+      "dimension": 0,
+      "vertexCount": 1,
+      "faceCount": 0,
+      "errors": [
+        "THREE.DirectGeometry: Faceless geometries are not supported."
+      ]
+    },
+    {
+      "dimension": 1,
+      "vertexCount": 8,
+      "faceCount": 12,
+      "errors": []
+    }
+  ],
+  "sourceContract": "Both legacy Visualizer and current VisualizerEngine createLimits use abs(range) || Number.MIN_VALUE.",
+  "conclusion": "The zero/subnormal cuboid conversion reproduces the error. Browser call stacks still need to establish why the current startup invokes it more often; this artifact does not close console classification."
+}

@@ -1,0 +1,252 @@
+{
+  "task": "V3-GV focused guide acceptance: navigation states, outside-close confirms, Axes errors/cards/drop, actual settings routes",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "runnerPid": 57811,
+  "assertions": [
+    {
+      "name": "Header and SideNav focus hover active styles at 1440 and 768",
+      "status": "failed",
+      "durationMs": 2740,
+      "error": "Error: SideNav state missing at 1440: {\"navFocus\":{\"tag\":\"A\",\"text\":\"Workspace\",\"aria\":null,\"selected\":\"true\",\"active\":false,\"focus\":false,\"color\":\"color(srgb 0 0 0 / 0.96)\",\"background\":\"color(srgb 0.435294 0.435294 0.435294 / 0.12)\",\"outline\":\"color(srgb 0 0 0 / 0.96) none 3px\",\"outlineColor\":\"color(srgb 0 0 0 / 0.96)\",\"rect\":{\"x\":0,\"y\":48,\"width\":71,\"height\":72}},\"navHover\":{\"tag\":\"A\",\"text\":\"Workspace\",\"aria\":null,\"selected\":\"true\",\"active\":false,\"focus\":false,\"color\":\"color(srgb 0 0 0 / 0.96)\",\"background\":\"color(srgb 0.435294 0.435294 0.435294 / 0.12)\",\"outline\":\"color(srgb 0 0 0 / 0.96) none 3px\",\"outlineColor\":\"color(srgb 0 0 0 / 0.96)\",\"rect\":{\"x\":0,\"y\":48,\"width\":71,\"height\":72}},\"navActive\":{\"tag\":\"A\",\"text\":\"Workspace\",\"aria\":null,\"selected\":\"true\",\"active\":true,\"focus\":false,\"color\":\"color(srgb 0 0 0 / 0.96)\",\"background\":\"color(srgb 0.435294 0.435294 0.435294 / 0.12)\",\"outline\":\"color(srgb 0 0 0 / 0.96) none 3px\",\"outlineColor\":\"color(srgb 0 0 0 / 0.96)\",\"rect\":{\"x\":0,\"y\":48,\"width\":71,\"height\":72}}}\n    at file:///Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:156:87\n    at async gate (file:///Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:79:94)\n    at async file:///Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:117:3",
+      "screenshot": "history/guide-focused-attempt-2/screenshots/focused-failure-header-and-sidenav-focus-hover-active-styles-at-1440-and-768.png"
+    },
+    {
+      "name": "Actual General Settings and Workspace Settings routes render in light and dark",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "pages": [
+          {
+            "theme": "light",
+            "key": "general",
+            "route": "/administration/general-settings",
+            "main": {
+              "text": "Controller Exception Handling Continue execution when an error is detected in the G-code program Enabling this option may cause machine damage if you don't have an Emergency Stop b",
+              "color": "color(srgb 0 0 0 / 0.8)",
+              "background": "rgb(238, 238, 238)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-2/screenshots/guide-general-settings-light-1440x900.png"
+          },
+          {
+            "theme": "light",
+            "key": "workspace",
+            "route": "/administration/workspace-settings",
+            "main": {
+              "text": "Export Import Restore Defaults The configuration file: /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc { \"version\": \"2.0.0-dev\", \"state\": { \"session\": { \"name\": \"\", \"token\"",
+              "color": "color(srgb 0 0 0 / 0.8)",
+              "background": "rgb(238, 238, 238)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-2/screenshots/guide-workspace-settings-light-1440x900.png"
+          },
+          {
+            "theme": "dark",
+            "key": "general",
+            "route": "/administration/general-settings",
+            "main": {
+              "text": "Controller Exception Handling Continue execution when an error is detected in the G-code program Enabling this option may cause machine damage if you don't have an Emergency Stop b",
+              "color": "color(srgb 1 1 1 / 0.8)",
+              "background": "rgb(7, 7, 7)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-2/screenshots/guide-general-settings-dark-1440x900.png"
+          },
+          {
+            "theme": "dark",
+            "key": "workspace",
+            "route": "/administration/workspace-settings",
+            "main": {
+              "text": "Export Import Restore Defaults The configuration file: /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc { \"version\": \"2.0.0-dev\", \"state\": { \"session\": { \"name\": \"\", \"token\"",
+              "color": "color(srgb 1 1 1 / 0.8)",
+              "background": "rgb(7, 7, 7)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-2/screenshots/guide-workspace-settings-dark-1440x900.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Restore Defaults confirmation closes by outside pointer without confirming",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "dialog": {
+          "text": "Warning Are you sure you want to restore the default settings? /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc Restore Defaults Cancel",
+          "opacity": "1",
+          "visibility": "visible",
+          "rect": {
+            "x": 427,
+            "y": 343,
+            "width": 586,
+            "height": 215
+          }
+        },
+        "outside": {
+          "point": {
+            "x": 8,
+            "y": 8
+          },
+          "stillVisible": false
+        },
+        "screenshot": "history/guide-focused-attempt-2/screenshots/guide-confirm-restore-defaults-open.png",
+        "confirmClicked": false
+      }
+    },
+    {
+      "name": "Import Workspace Settings confirmation closes by outside pointer without importing",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "dialog": {
+          "text": "Warning Are you sure you want to overwrite the workspace settings? 1 { 2 \"version\" : \"2.0.0-dev\" , 3 \"state\" : { 4 \"session\" : { 5 \"token\" : \"********\" 6 } 7 } 8 } Import Cancel",
+          "opacity": "1",
+          "visibility": "visible",
+          "rect": {
+            "x": 384,
+            "y": 254,
+            "width": 672,
+            "height": 393
+          }
+        },
+        "outside": {
+          "point": {
+            "x": 8,
+            "y": 8
+          },
+          "stillVisible": false
+        },
+        "screenshot": "history/guide-focused-attempt-2/screenshots/guide-confirm-import-settings-open.png",
+        "file": "workspace-settings-import-fixture.json",
+        "importClicked": false,
+        "mutationCount": 0
+      }
+    },
+    {
+      "name": "Confirm Delete Macro closes by outside pointer and does not delete",
+      "status": "failed",
+      "durationMs": 10554,
+      "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Edit macro: V3 guide visual fixture', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-tonic=\"Button\" class=\"css-1rv3bd-Box eecupy40\" aria-label=\"Edit macro: V3 guide visual fixture\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at /Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide",
+      "screenshot": "history/guide-focused-attempt-2/screenshots/focused-failure-confirm-delete-macro-closes-by-outside-pointer-and-does-not-delete.png"
+    },
+    {
+      "name": "Axes Custom Commands required-field error is visible and semantic",
+      "status": "failed",
+      "durationMs": 10550,
+      "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Axes widget', exact: true }).getByRole('button', { name: 'More options', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button tabindex=\"0\" title=\"More\" type=\"button\" role=\"button\" aria-haspopup=\"menu\" data-tonic=\"MenuToggle\" aria-label=\"More options\" id=\"@tonic-ui/react:MenuToggle-:rk:\" aria-controls=\"@tonic-ui/react:Menu-:rk:\" class=\"components-Widget-index__widget-button--BCNAi css-1yekzzp-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div data-tonic=\"ModalOverlay\" class=\"css-1o0h9d9-Box eecupy40\"></div> from <div class=\"tonic-ui-portal\">…</div> subtree intercepts point",
+      "screenshot": "history/guide-focused-attempt-2/screenshots/focused-failure-axes-custom-commands-required-field-error-is-visible-and-semantic.png"
+    },
+    {
+      "name": "Autolevel landing card hover and disconnected file-drop state",
+      "status": "failed",
+      "durationMs": 8388,
+      "error": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[class*=\"pathCard\"]').first() to be visible\u001b[22m\n\n    at /Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:265:16\n    at async gate (/Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:79:94)\n    at async file:///Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:260:3",
+      "screenshot": "history/guide-focused-attempt-2/screenshots/focused-failure-autolevel-landing-card-hover-and-disconnected-file-drop-state.png"
+    }
+  ],
+  "screenshots": [
+    "history/guide-focused-attempt-2/screenshots/guide-header-focus-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-header-hover-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-header-active-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-sidenav-focus-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-sidenav-hover-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-sidenav-active-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/focused-failure-header-and-sidenav-focus-hover-active-styles-at-1440-and-768.png",
+    "history/guide-focused-attempt-2/screenshots/guide-general-settings-light-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-workspace-settings-light-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-general-settings-dark-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-workspace-settings-dark-1440x900.png",
+    "history/guide-focused-attempt-2/screenshots/guide-confirm-restore-defaults-open.png",
+    "history/guide-focused-attempt-2/screenshots/guide-confirm-restore-defaults-outside-closed.png",
+    "history/guide-focused-attempt-2/screenshots/guide-confirm-import-settings-open.png",
+    "history/guide-focused-attempt-2/screenshots/guide-confirm-import-settings-outside-closed.png",
+    "history/guide-focused-attempt-2/screenshots/focused-failure-confirm-delete-macro-closes-by-outside-pointer-and-does-not-delete.png",
+    "history/guide-focused-attempt-2/screenshots/focused-failure-axes-custom-commands-required-field-error-is-visible-and-semantic.png",
+    "history/guide-focused-attempt-2/screenshots/focused-failure-autolevel-landing-card-hover-and-disconnected-file-drop-state.png"
+  ],
+  "actions": [],
+  "events": {
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": [],
+    "consoleErrors": [
+      {
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+        "location": {
+          "url": "webpack-internal:///../../node_modules/@emotion/cache/dist/emotion-cache.browser.development.esm.js",
+          "line": 206,
+          "column": 16,
+          "lineNumber": 206,
+          "columnNumber": 16
+        }
+      },
+      {
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+        "location": {
+          "url": "webpack-internal:///../../node_modules/@emotion/cache/dist/emotion-cache.browser.development.esm.js",
+          "line": 206,
+          "column": 16,
+          "lineNumber": 206,
+          "columnNumber": 16
+        }
+      }
+    ],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/signin"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/workspace-settings-import-fixture.json",
+    "version": "2.0.0-dev",
+    "stateKeys": [],
+    "imported": false,
+    "macroCreated": false,
+    "macroExecuted": false,
+    "confirmationActions": 0,
+    "macroSource": "browser-only GET /api/macros synthetic response; no macro record persisted"
+  },
+  "completedAt": "2026-10-06T13:33:01.066Z",
+  "status": "partial-failures",
+  "browserClosed": true
+}

@@ -1,24 +1,13 @@
 import {
   Button,
   Link,
-  useColorMode,
 } from '@tonic-ui/react';
 import React, { forwardRef } from 'react';
 
 const AlertButtonLink = forwardRef((props, ref) => {
-  const [colorMode] = useColorMode();
-  const borderColor = {
-    dark: 'black:primary',
-    light: 'black:primary',
-  }[colorMode];
-  const color = {
-    dark: 'black:primary',
-    light: 'black:primary',
-  }[colorMode];
-  const _hoverBackgroundColor = {
-    dark: 'rgba(0, 0, 0, .12)',
-    light: 'rgba(0, 0, 0, .12)',
-  }[colorMode];
+  const borderColor = 'border.primary';
+  const color = 'text.primary';
+  const _hoverBackgroundColor = 'actions.hovered';
 
   return (
     <Button

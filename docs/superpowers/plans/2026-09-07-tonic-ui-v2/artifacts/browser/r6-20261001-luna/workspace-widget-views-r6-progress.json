@@ -1,0 +1,201 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "headless": true,
+    "viewportInitial": "1440x900",
+    "dpr": 1,
+    "renderer": "SwiftShader WebGL",
+    "camera": "Chromium synthetic camera device"
+  },
+  "gates": [
+    {
+      "name": "ensure synthetic Grbl connection",
+      "status": "passed",
+      "durationMs": 571,
+      "alreadyConnected": false,
+      "port": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator"
+    },
+    {
+      "name": "activate Custom and verify 16 framed widgets plus no-frame Visualizer",
+      "status": "passed",
+      "durationMs": 298,
+      "custom": {
+        "alreadyActive": false,
+        "enabledThroughManager": true
+      },
+      "frameCount": 16,
+      "regionNames": [
+        "Connection widget",
+        "Console widget",
+        "Custom widget",
+        "Grbl widget",
+        "Marlin widget",
+        "Smoothie widget",
+        "TinyG widget",
+        "Webcam widget",
+        "3D Visualizer widget",
+        "Autolevel Widget",
+        "Axes widget",
+        "G-code widget",
+        "Laser widget",
+        "Macro widget",
+        "Probe widget",
+        "Spindle widget",
+        "Tool widget"
+      ],
+      "visualizerHasNoFrame": true
+    },
+    {
+      "name": "Spindle widget collapse and fullscreen view contract",
+      "status": "passed",
+      "durationMs": 400,
+      "collapsed": true,
+      "contentHidden": true,
+      "expanded": true,
+      "fullscreenRect": {
+        "position": "fixed",
+        "top": 48,
+        "left": 60,
+        "right": 1440,
+        "bottom": 900
+      },
+      "fullscreenExited": true,
+      "fullscreenMenuLabels": {
+        "enter": "Enter Full Screen",
+        "exit": "Exit Full Screen"
+      },
+      "unexpectedMutationCommands": 0
+    },
+    {
+      "name": "Tool widget collapse and fullscreen view contract",
+      "status": "passed",
+      "durationMs": 371,
+      "collapsed": true,
+      "contentHidden": true,
+      "expanded": true,
+      "fullscreenRect": {
+        "position": "fixed",
+        "top": 48,
+        "left": 60,
+        "right": 1440,
+        "bottom": 900
+      },
+      "fullscreenExited": true,
+      "fullscreenMenuLabels": {
+        "enter": "Enter Full Screen",
+        "exit": "Exit Full Screen"
+      },
+      "unexpectedMutationCommands": 0
+    },
+    {
+      "name": "Webcam widget collapse and fullscreen view contract",
+      "status": "passed",
+      "durationMs": 333,
+      "collapsed": true,
+      "contentHidden": true,
+      "expanded": true,
+      "fullscreenRect": {
+        "position": "fixed",
+        "top": 48,
+        "left": 60,
+        "right": 1440,
+        "bottom": 900
+      },
+      "fullscreenExited": true,
+      "fullscreenMenuLabels": {
+        "enter": "Enter Full Screen",
+        "exit": "Exit Full Screen"
+      },
+      "unexpectedMutationCommands": 0
+    }
+  ],
+  "expectedFrameNames": [
+    "Autolevel Widget",
+    "Axes widget",
+    "Connection widget",
+    "Console widget",
+    "Custom widget",
+    "G-code widget",
+    "Grbl widget",
+    "Laser widget",
+    "Macro widget",
+    "Marlin widget",
+    "Probe widget",
+    "Smoothie widget",
+    "Spindle widget",
+    "TinyG widget",
+    "Tool widget",
+    "Webcam widget"
+  ],
+  "screenshots": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340043ba00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340043ba00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340043ba00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "outgoingCommands": []
+}

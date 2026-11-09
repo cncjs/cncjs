@@ -1,38 +1,35 @@
-import PropTypes from 'prop-types';
+import {
+  Grid,
+} from '@tonic-ui/react';
 import React from 'react';
-import { Container, Row, Col } from '@app/components/GridSystem';
 import WidgetListItem from './WidgetListItem';
 
-function WidgetList({ data, onChange }) {
+/**
+ * @param {{
+ *   data?: Array<{ caption?: string, details?: string, disabled?: boolean, id: string, visible?: boolean }>,
+ *   onChange?: ({ id: string, checked: boolean }) => void,
+ * }} props
+ * @returns {JSX.Element}
+ */
+function WidgetList({ data = [], onChange = () => {} }) {
   return (
-    <Container fluid gutterWidth={24} style={{ padding: 0 }}>
-      <Row>
-        {data.map(widget => (
-          <Col
-            key={widget.id}
-            xs={12}
-            md={6}
-            lg={4}
-            style={{ margin: '12px 0' }}
-          >
-            <WidgetListItem
-              id={widget.id}
-              caption={widget.caption}
-              details={widget.details}
-              checked={widget.visible}
-              disabled={widget.disabled}
-              onChange={onChange}
-            />
-          </Col>
-        ))}
-      </Row>
-    </Container>
+    <Grid
+      gap="3x"
+      templateColumns="repeat(auto-fit, minmax(240px, 1fr))"
+    >
+      {data.map(widget => (
+        <WidgetListItem
+          key={widget.id}
+          caption={widget.caption}
+          checked={widget.visible}
+          details={widget.details}
+          disabled={widget.disabled}
+          id={widget.id}
+          onChange={onChange}
+        />
+      ))}
+    </Grid>
   );
 }
-
-WidgetList.propTypes = {
-  data: PropTypes.array.isRequired,
-  onChange: PropTypes.func
-};
 
 export default WidgetList;

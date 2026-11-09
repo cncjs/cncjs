@@ -1,0 +1,75 @@
+{
+  "revision": "f050804ef6b485b0190f29557d79df43f53316b0",
+  "frontend": {
+    "suites": 78,
+    "tests": 505,
+    "exitCode": 0
+  },
+  "eslint": {
+    "errors": 0,
+    "existingWarnings": 4,
+    "exitCode": 0
+  },
+  "guard": {
+    "files": 361,
+    "domainClasses": 18,
+    "violations": 0,
+    "fixtureTests": 68,
+    "exitCode": 0
+  },
+  "focused": {
+    "tableAndResourceSuites": 2,
+    "tests": 22,
+    "redBeforeFix": true
+  },
+  "logs": {
+    "frontend": "frontend.log.gz",
+    "eslint": "eslint.log.gz",
+    "guard": "guard.log.gz",
+    "guard-fixtures": "guard-fixtures.log.gz",
+    "table-red": "table-red.log.gz",
+    "table-green": "table-green.log.gz"
+  },
+  "ciProduction": {
+    "id": 37127637668,
+    "url": "https://github.com/cheton/cncjs/actions/runs/37127637668",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "localProductionBuild": false,
+  "browserStatus": "completed; report.json and root-review.json cover accepted evidence/source boundaries; cleanup.json and root-runtime-review.json prove owned cleanup",
+  "ciPlatforms": {
+    "id": 37127637705,
+    "url": "https://github.com/cheton/cncjs/actions/runs/37127637705",
+    "conclusion": "success",
+    "jobs": [
+      "Linux",
+      "Windows",
+      "macOS ARM",
+      "macOS x64"
+    ]
+  },
+  "filenameFollowup": {
+    "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+    "focusedSuites": 2,
+    "tests": 17,
+    "eslintExitCode": 0,
+    "change": "GCodeName fixed.light.accent retains opacity 0.5; old plain black at 0.5 compared against semantic primary alpha 0.8 at 0.5",
+    "ciProduction": {
+      "id": 37130650516,
+      "conclusion": "success",
+      "status": "completed",
+      "url": "https://github.com/cheton/cncjs/actions/runs/37130650516"
+    },
+    "ciPlatforms": {
+      "id": 37130650504,
+      "conclusion": "success",
+      "status": "completed",
+      "url": "https://github.com/cheton/cncjs/actions/runs/37130650504"
+    },
+    "logs": [
+      "filename-tests.log.gz",
+      "filename-eslint.log.gz"
+    ]
+  }
+}

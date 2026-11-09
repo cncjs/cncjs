@@ -3,7 +3,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from '@app/containers/app';
 import rootSaga from '@app/sagas';
 import sagaMiddleware from '@app/store/redux/sagaMiddleware';
@@ -29,7 +29,7 @@ document.body.appendChild(container);
 
 sagaMiddleware.run(rootSaga);
 
-const root = ReactDOM.createRoot(container);
+const root = createRoot(container);
 root.render(
   <GlobalProvider>
     <App />

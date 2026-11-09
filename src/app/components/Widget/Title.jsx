@@ -3,6 +3,7 @@ import cx from 'classnames';
 import React from 'react';
 import styles from './index.styl';
 
+/** @param {{ className?: string, children?: React.ReactNode, [key: string]: unknown }} props */
 function Title({ className, ...props }) {
   return (
     <Box

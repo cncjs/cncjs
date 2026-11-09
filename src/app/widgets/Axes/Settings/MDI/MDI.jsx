@@ -1,159 +1,77 @@
 import findIndex from 'lodash/findIndex';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { Box } from '@tonic-ui/react';
 import { v4 as uuidv4 } from 'uuid';
-import api from '@app/api';
 import CreateRecord from './CreateRecord';
 import UpdateRecord from './UpdateRecord';
 import TableRecords from './TableRecords';
 import {
   MODAL_CREATE_RECORD,
-  MODAL_UPDATE_RECORD
+  MODAL_UPDATE_RECORD,
 } from './constants';
 
-class MDI extends Component {
-  state = {
-    api: {
-      err: false,
-      fetching: false
-    },
-    records: [],
-    modal: {
-      name: '',
-      params: {
-      }
-    }
+/**
+ * @param {{
+ *   records: Array<Record<string, unknown>>,
+ *   onRecordsChange: (records: Array<Record<string, unknown>>) => void,
+ *   loading?: boolean,
+ *   error?: boolean
+ * }} props
+ * @returns {JSX.Element}
+ */
+function MDI({ records, onRecordsChange, loading = false, error = false }) {
+  const [modal, setModal] = useState({ name: '', record: null });
+
+  const closeModal = () => setModal({ name: '', record: null });
+  const moveRecord = (from, to) => {
+    const nextRecords = [...records];
+    nextRecords.splice(to < 0 ? nextRecords.length + to : to, 0, nextRecords.splice(from, 1)[0]);
+    onRecordsChange(nextRecords);
   };
-
-  action = {
-    fetchRecords: () => {
-      this.setState(state => ({
-        api: {
-          ...state.api,
-          err: false,
-          fetching: true
-        }
-      }));
-
-      api.mdi.fetch()
-        .then((res) => {
-          const { records } = res.body;
-
-          this.setState(state => ({
-            api: {
-              ...state.api,
-              err: false,
-              fetching: false
-            },
-            records: records
-          }));
-        })
-        .catch((res) => {
-          this.setState(state => ({
-            api: {
-              ...state.api,
-              err: true,
-              fetching: false
-            },
-            records: []
-          }));
-        });
-    },
-
-    moveRecord: (from, to) => {
-      this.setState(state => {
-        const records = [...this.state.records];
-        records.splice((to < 0 ? records.length + to : to), 0, records.splice(from, 1)[0]);
-        return {
-          records: records
-        };
-      });
-    },
-
-    createRecord: (options) => {
-      this.setState(state => ({
-        records: state.records.concat({
-          id: uuidv4(),
-          ...options
-        })
-      }), () => {
-        this.action.closeModal();
-      });
-    },
-
-    updateRecord: (id, options) => {
-      const records = [...this.state.records];
-      const index = findIndex(records, { id: id });
-
-      if (index < 0) {
-        return;
-      }
-
-      records[index] = {
-        ...records[index],
-        ...options
-      };
-
-      this.setState({
-        records: records
-      }, () => {
-        this.action.closeModal();
-      });
-    },
-
-    removeRecord: (id) => {
-      this.setState(state => ({
-        records: state.records.filter(record => (record.id !== id))
-      }));
-    },
-
-    openModal: (name = '', params = {}) => {
-      this.setState(state => ({
-        modal: {
-          name: name,
-          params: params
-        }
-      }));
-    },
-
-    closeModal: () => {
-      this.setState(state => ({
-        modal: {
-          name: '',
-          params: {}
-        }
-      }));
-    },
-
-    updateModalParams: (params = {}) => {
-      this.setState(state => ({
-        modal: {
-          ...state.modal,
-          params: {
-            ...state.modal.params,
-            ...params
-          }
-        }
-      }));
-    }
+  const createRecord = options => {
+    onRecordsChange(records.concat({ id: uuidv4(), ...options }));
+    closeModal();
   };
+  const updateRecord = (id, options) => {
+    const index = findIndex(records, { id });
 
-  componentDidMount() {
-    this.action.fetchRecords();
-  }
+    if (index < 0) {
+      return;
+    }
 
-  render() {
-    const { state, action } = this;
+    const nextRecords = [...records];
+    nextRecords[index] = { ...nextRecords[index], ...options };
+    onRecordsChange(nextRecords);
+    closeModal();
+  };
+  const removeRecord = id => onRecordsChange(records.filter(record => record.id !== id));
 
-    return (
-      <div>
-        {state.modal.name === MODAL_CREATE_RECORD &&
-          <CreateRecord state={state} action={action} />}
-        {state.modal.name === MODAL_UPDATE_RECORD &&
-          <UpdateRecord state={state} action={action} />}
-        <TableRecords state={state} action={action} />
-      </div>
-    );
-  }
+  return (
+    <Box>
+      {modal.name === MODAL_CREATE_RECORD && (
+        <CreateRecord
+          onSave={createRecord}
+          onCancel={closeModal}
+        />
+      )}
+      {modal.name === MODAL_UPDATE_RECORD && (
+        <UpdateRecord
+          initialValues={modal.record}
+          onSave={options => updateRecord(modal.record.id, options)}
+          onCancel={closeModal}
+        />
+      )}
+      <TableRecords
+        records={records}
+        loading={loading}
+        error={error}
+        onMove={moveRecord}
+        onCreate={() => setModal({ name: MODAL_CREATE_RECORD, record: null })}
+        onUpdate={record => setModal({ name: MODAL_UPDATE_RECORD, record })}
+        onRemove={removeRecord}
+      />
+    </Box>
+  );
 }
 
 export default MDI;

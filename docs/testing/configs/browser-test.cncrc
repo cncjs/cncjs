@@ -1,0 +1,10 @@
+{
+  "secret": "cncjs-browser-test-only-not-for-production",
+  "watchDirectory": "/tmp/cncjs-browser-watch",
+  "ports": [
+    {
+      "path": "/tmp/ttyGRBL",
+      "manufacturer": "Grbl Simulator"
+    }
+  ]
+}

@@ -1,13 +1,15 @@
 import {
+  Box,
   useColorMode,
 } from '@tonic-ui/react';
 import React from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import hljsA11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-import hljsA11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
+import hljsA11yDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/a11y-dark';
+import hljsA11yLight from 'react-syntax-highlighter/dist/cjs/styles/hljs/a11y-light';
 
+/** @param {{ data?: string, language?: string, style?: object, [key: string]: unknown }} props */
 const CodePreview = ({
-  data,
+  data = '',
   language = 'json',
   style,
   ...rest
@@ -20,6 +22,8 @@ const CodePreview = ({
 
   return (
     <SyntaxHighlighter
+      PreTag={Box}
+      as="pre"
       customStyle={{
         ...style,
       }}

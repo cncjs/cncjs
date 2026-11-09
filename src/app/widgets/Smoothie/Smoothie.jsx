@@ -1,256 +1,121 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Box,
+} from '@tonic-ui/react';
 import { ensureArray } from 'ensure-type';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import _get from 'lodash/get';
+import _mapValues from 'lodash/mapValues';
+import React from 'react';
 import mapGCodeToText from '@app/lib/gcode-text';
 import i18n from '@app/lib/i18n';
-import Clickable from '@app/components/Clickable';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import Panel from '@app/components/Panel';
 import Overrides from './Overrides';
-import styles from './index.styl';
 
-class Smoothie extends Component {
-  static propTypes = {
-    state: PropTypes.object,
-    actions: PropTypes.object
-  };
+/**
+ * @param {{
+ *   controllerState?: object,
+ *   panel: {
+ *     modalGroups: { expanded: boolean },
+ *     statusReports: { expanded: boolean },
+ *   },
+ *   setPanelExpanded: (panelName: string, isExpanded: boolean) => void,
+ * }} props
+ */
+function Smoothie({ controllerState = {}, panel, setPanelExpanded }) {
+  const none = '–';
+  const parserState = _get(controllerState, 'parserstate', {});
+  const machineState = _get(controllerState, 'status.machineState', none);
+  const ovF = _get(controllerState, 'status.ovF', 0);
+  const ovS = _get(controllerState, 'status.ovS', 0);
+  const modal = _mapValues(parserState.modal || {}, mapGCodeToText);
 
-  render() {
-    const { state, actions } = this.props;
-    const none = '–';
-    const panel = state.panel;
-    const controllerState = state.controller.state || {};
-    const parserState = _.get(controllerState, 'parserstate', {});
-    const machineState = _.get(controllerState, 'status.machineState', none);
-    const ovF = _.get(controllerState, 'status.ovF', 0);
-    const ovS = _.get(controllerState, 'status.ovS', 0);
-    const feedrate = _.get(parserState, 'feedrate', none);
-    const spindle = _.get(parserState, 'spindle', none);
-    const tool = _.get(parserState, 'tool', none);
-    const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
+  return (
+    <Box>
+      <Box mb="3x"><Overrides ovF={ovF} ovS={ovS} /></Box>
+      <Box sx={{ '> :not(:first-child)': { borderTop: 0 } }}>
+        <ReportSection
+          isExpanded={panel.statusReports.expanded}
+          title={i18n._('Status Reports')}
+          onToggle={({ isExpanded }) => setPanelExpanded('statusReports', isExpanded)}
+        >
+          <ReportRow label={i18n._('State')}>{machineState}</ReportRow>
+          <ReportRow label={i18n._('Feed Rate')}>{_get(parserState, 'feedrate', none)}</ReportRow>
+          <ReportRow label={i18n._('Spindle')}>{_get(parserState, 'spindle', none)}</ReportRow>
+          <ReportRow label={i18n._('Tool Number')}>{_get(parserState, 'tool', none)}</ReportRow>
+        </ReportSection>
+        <ReportSection
+          isExpanded={panel.modalGroups.expanded}
+          title={i18n._('Modal Groups')}
+          onToggle={({ isExpanded }) => setPanelExpanded('modalGroups', isExpanded)}
+        >
+          <ReportRow label={i18n._('Motion')}>{modal.motion || none}</ReportRow>
+          <ReportRow label={i18n._('Coordinate')}>{modal.wcs || none}</ReportRow>
+          <ReportRow label={i18n._('Plane')}>{modal.plane || none}</ReportRow>
+          <ReportRow label={i18n._('Distance')}>{modal.distance || none}</ReportRow>
+          <ReportRow label={i18n._('Feed Rate')}>{modal.feedrate || none}</ReportRow>
+          <ReportRow label={i18n._('Units')}>{modal.units || none}</ReportRow>
+          <ReportRow label={i18n._('Program')}>{modal.program || none}</ReportRow>
+          <ReportRow label={i18n._('Spindle')}>{modal.spindle || none}</ReportRow>
+          <ReportRow label={i18n._('Coolant')}>
+            {ensureArray(modal.coolant).map(coolant => (
+              <Box key={coolant} title={coolant}>{coolant || none}</Box>
+            ))}
+          </ReportRow>
+        </ReportSection>
+      </Box>
+    </Box>
+  );
+}
 
-    return (
-      <Container fluid>
-        <Overrides ovF={ovF} ovS={ovS} />
-        <Panel className={styles.panel}>
-          <Panel.Heading className={styles.panelHeading}>
-            <Clickable
-              onClick={actions.toggleStatusReports}
-              style={{ width: '100%' }}
-            >
-              {({ hovered }) => (
-                <Row>
-                  <Col>{i18n._('Status Reports')}</Col>
-                  <Col width="auto">
-                    <FontAwesomeIcon
-                      icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down'}
-                      fixedWidth
-                      style={{
-                        color: '#222',
-                        opacity: hovered ? 1 : 0.5,
-                      }}
-                    />
-                  </Col>
-                </Row>
-              )}
-            </Clickable>
-          </Panel.Heading>
-          {panel.statusReports.expanded && (
-            <Panel.Body>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('State')}>
-                    {i18n._('State')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well}>
-                    {machineState}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                    {i18n._('Feed Rate')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well}>
-                    {feedrate}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                    {i18n._('Spindle')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well}>
-                    {spindle}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
-                    {i18n._('Tool Number')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well}>
-                    {tool}
-                  </div>
-                </div>
-              </div>
-            </Panel.Body>
-          )}
-        </Panel>
-        <Panel className={styles.panel}>
-          <Panel.Heading className={styles.panelHeading}>
-            <Clickable
-              onClick={actions.toggleModalGroups}
-              style={{ width: '100%' }}
-            >
-              {({ hovered }) => (
-                <Row>
-                  <Col>{i18n._('Modal Groups')}</Col>
-                  <Col width="auto">
-                    <FontAwesomeIcon
-                      icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down'}
-                      fixedWidth
-                      style={{
-                        color: '#222',
-                        opacity: hovered ? 1 : 0.5,
-                      }}
-                    />
-                  </Col>
-                </Row>
-              )}
-            </Clickable>
-          </Panel.Heading>
-          {panel.modalGroups.expanded && (
-            <Panel.Body>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Motion')}>
-                    {i18n._('Motion')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.motion}>
-                    {modal.motion || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
-                    {i18n._('Coordinate')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.wcs}>
-                    {modal.wcs || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Plane')}>
-                    {i18n._('Plane')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.plane}>
-                    {modal.plane || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Distance')}>
-                    {i18n._('Distance')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.distance}>
-                    {modal.distance || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                    {i18n._('Feed Rate')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.feedrate}>
-                    {modal.feedrate || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Units')}>
-                    {i18n._('Units')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.units}>
-                    {modal.units || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Program')}>
-                    {i18n._('Program')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.program}>
-                    {modal.program || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                    {i18n._('Spindle')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well} title={modal.spindle}>
-                    {modal.spindle || none}
-                  </div>
-                </div>
-              </div>
-              <div className="row no-gutters">
-                <div className="col col-xs-4">
-                  <div className={styles.textEllipsis} title={i18n._('Coolant')}>
-                    {i18n._('Coolant')}
-                  </div>
-                </div>
-                <div className="col col-xs-8">
-                  <div className={styles.well}>
-                    {ensureArray(modal.coolant).map(coolant => (
-                      <div title={coolant} key={coolant}>{coolant || none}</div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Panel.Body>
-          )}
-        </Panel>
-      </Container>
-    );
-  }
+/**
+ * @param {{
+ *   children?: React.ReactNode,
+ *   isExpanded: boolean,
+ *   onToggle: ({ isExpanded: boolean }) => void,
+ *   title: string,
+ * }} props
+ */
+function ReportSection({ children, isExpanded, onToggle, title }) {
+  return (
+    <Accordion border={1} borderColor="border.secondary">
+      <AccordionItem isExpanded={isExpanded} onToggle={onToggle}>
+        <AccordionHeader>{title}</AccordionHeader>
+        <AccordionBody>{children}</AccordionBody>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+/**
+ * @param {{ children?: React.ReactNode, label: string }} props
+ */
+function ReportRow({ children, label }) {
+  return (
+    <Box alignItems="center" display="flex" mb="2x">
+      <Box
+        overflow="hidden" textOverflow="ellipsis" title={label}
+        whiteSpace="nowrap" width="50%"
+      >
+        {label}
+      </Box>
+      <Box
+        bg="background.high"
+        border={1}
+        borderColor="border.secondary"
+        borderRadius="sm"
+        minHeight="22px"
+        overflow="hidden"
+        px="1x"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+        width="50%"
+      >
+        {children}
+      </Box>
+    </Box>
+  );
 }
 
 export default Smoothie;

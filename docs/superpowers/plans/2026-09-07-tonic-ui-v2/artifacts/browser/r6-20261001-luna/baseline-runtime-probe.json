@@ -1,0 +1,1156 @@
+{
+  "browser": {
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "errors": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 42:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 45:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 48:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 51:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:20-24\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 21:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 24:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 25:16-19\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 26:19-23\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 28:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 47:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 57:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 72:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 73:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 203:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 206:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 223:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 240:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 17:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 18:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 22:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 23:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 39:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 42:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 56:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 57:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 58:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 72:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 86:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 103:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 104:21-25\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 105:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 119:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 133:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.development.js 51:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.production.js 15:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button \n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup \n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Widget \n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/s"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header \n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_mod"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `Dropdown`.  \n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu \n    at div\n    at div\n    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)\n    at div\n    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen \n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at Uncontrol"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator \n    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)\n    at div\n    at render\n    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)\n    at div\n    at render\n    at Control (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s=\"%s\" or %s={value.toString()}.%s true compact compact true compact \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n  "
+    },
+    {
+      "type": "error",
+      "text": "Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div \n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/component"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00507e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00507e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00507e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    }
+  ],
+  "apiResponses": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/mdi",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tool",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros",
+      "status": 200
+    }
+  ],
+  "failedRequests": [],
+  "status": "workspace-rendered",
+  "hash": "#/workspace",
+  "accessibility": {
+    "regions": [
+      {
+        "label": "Connection widget",
+        "text": "Connection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nS"
+      },
+      {
+        "label": "Console widget",
+        "text": "Console\nNo serial connection"
+      },
+      {
+        "label": "Grbl widget",
+        "text": "Grbl"
+      },
+      {
+        "label": "Marlin widget",
+        "text": "Marlin"
+      },
+      {
+        "label": "Smoothie widget",
+        "text": "Smoothie"
+      },
+      {
+        "label": "TinyG widget",
+        "text": "TinyG"
+      },
+      {
+        "label": "Webcam widget",
+        "text": "Webcam\nWebcam is off"
+      },
+      {
+        "label": "3D Visualizer widget",
+        "text": "G54 (P1)\n3D View\nUpload G-code"
+      },
+      {
+        "label": "Axes widget",
+        "text": "Axes\nMDI\nAxis\tMachine Position\tWork Position\t\n\n\nX\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nY\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nZ\n"
+      },
+      {
+        "label": "G-code widget",
+        "text": "G-code\nG-code not loaded"
+      },
+      {
+        "label": "Macro widget",
+        "text": "Macro\nNew\nExport\nNo macros available"
+      },
+      {
+        "label": "",
+        "text": "Autolevel\n🎯\nPROBE NEW SURFACE\nSet up the probe area and probe the work surface to generate height c"
+      },
+      {
+        "label": "Probe widget",
+        "text": "Probe\nProbe Axis\nZ\nX\nY\nProbe Command: G38.2\nG38.2\nG38.3\nG38.4\nG38.5\nProbe Depth\nin\nProbe Feedrate\nin"
+      },
+      {
+        "label": "Tool widget",
+        "text": "Tool\nNo available tool configuration"
+      },
+      {
+        "label": "Spindle widget",
+        "text": "Spindle\nCoolant\nM7\nM8\nM9\nSpindle\nM3\nM4\nM5\nSpindle Speed\nRPM"
+      },
+      {
+        "label": "Laser widget",
+        "text": "Laser\nLaser Intensity Control\n0%\n-10%\n-1%\n1%\n10%\nLaser Test\n−\nPower (%)\n0%\nTest duration\nms\nMaximum "
+      }
+    ],
+    "buttons": [
+      {
+        "label": "",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "CNCjs 2.0.0-dev - View release notes",
+        "title": "CNCjs 2.0.0-dev",
+        "text": "CNCjs",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Hide left panel",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Manage Widgets (1)",
+        "disabled": false
+      },
+      {
+        "label": "Collapse all left panel widgets",
+        "title": "Collapse All",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Expand all left panel widgets",
+        "title": "Expand All",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Grbl",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Marlin",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Smoothie",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "TinyG",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Serial Port",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Wi-Fi",
+        "disabled": false
+      },
+      {
+        "label": "Refresh",
+        "title": "Refresh",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Refresh",
+        "title": "Refresh",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Open",
+        "disabled": true
+      },
+      {
+        "label": "Mute",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Rotate Left",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Rotate Right",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Flip Horizontally",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Flip Vertically",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Crosshair",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Work Coordinate System",
+        "text": "G54 (P1)",
+        "disabled": true
+      },
+      {
+        "label": "3D View",
+        "title": "Disable 3D View",
+        "text": "3D View",
+        "disabled": false
+      },
+      {
+        "label": "3D View options",
+        "title": "3D View options",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Upload G-code",
+        "text": "Upload G-code",
+        "disabled": true
+      },
+      {
+        "label": "Upload G-code options",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Run",
+        "title": "Run",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Pause",
+        "title": "Pause",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Stop",
+        "title": "Stop",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Close G-code file",
+        "title": "Close",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Top View",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Front View",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Right Side View",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Left Side View",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "3D View",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Zoom to Fit",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Zoom In",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Zoom Out",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Camera mode: Pan",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Collapse all right panel widgets",
+        "title": "Collapse All",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Expand all right panel widgets",
+        "title": "Expand All",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Manage Widgets (1)",
+        "disabled": false
+      },
+      {
+        "label": "Hide right panel",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Select work coordinate system",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Go to zero: X",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Home: X",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move X backward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move X forward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Zero out X work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Set X work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "X axis actions",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Go to zero: Y",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Home: Y",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Y backward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Y forward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Zero out Y work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Set Y work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Y axis actions",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Go to zero: Z",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Home: Z",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Z backward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Z forward",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Zero out Z work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Set Z work offsets",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Z axis actions",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move X negative Y positive",
+        "title": "Move X- Y+",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Y positive",
+        "title": "Move Y+",
+        "text": "Y+",
+        "disabled": true
+      },
+      {
+        "label": "Move X positive Y positive",
+        "title": "Move X+ Y+",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Z positive",
+        "title": "Move Z+",
+        "text": "Z+",
+        "disabled": true
+      },
+      {
+        "label": "Move X negative",
+        "title": "Move X-",
+        "text": "X-",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "Move To XY Zero (G0 X0 Y0)",
+        "text": "X0Y0",
+        "disabled": true
+      },
+      {
+        "label": "Move X positive",
+        "title": "Move X+",
+        "text": "X+",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "Move To Z Zero (G0 Z0)",
+        "text": "Z0",
+        "disabled": true
+      },
+      {
+        "label": "Move X negative Y negative",
+        "title": "Move X- Y-",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Y negative",
+        "title": "Move Y-",
+        "text": "Y-",
+        "disabled": true
+      },
+      {
+        "label": "Move X positive Y negative",
+        "title": "Move X+ Y-",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Move Z negative",
+        "title": "Move Z-",
+        "text": "Z-",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "G21 (mm)",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "1mm",
+        "disabled": true
+      },
+      {
+        "label": "Decrease step size",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "Increase step size",
+        "title": "",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "label": "New macro",
+        "title": "",
+        "text": "New",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Export",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Refresh",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Move Autolevel widget",
+        "title": "",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "Collapse",
+        "title": "Collapse",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "More",
+        "title": "More",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Start New Probe",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Load Probe Data",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Probe Z axis",
+        "text": "Z",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Probe X axis",
+        "text": "X",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "Probe Y axis",
+        "text": "Y",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "G38.2 probe toward workpiece, stop on contact, signal error if failure",
+        "text": "G38.2",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "G38.3 probe toward workpiece, stop on contact",
+        "text": "G38.3",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "G38.4 probe away from workpiece, stop on loss of contact, signal error if failure",
+        "text": "G38.4",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "G38.5 probe away from workpiece, stop on loss of contact",
+        "text": "G38.5",
+        "disabled": false
+      },
+      {
+        "label": "",
+        "title": "",
+        "text": "Probe Axis Z",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "Mist Coolant On (M7)",
+        "text": "M7",
+        "disabled": true
+      },
+      {
+        "label": "",
+        "title": "Flood Coolant On (M8)",
+        "text": "M8",
+        "disabled": true
+      }
+    ],
+    "fields": [
+      {
+        "tag": "DIV",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "connection-serial-port",
+        "role": "",
+        "label": "Serial port",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-62g3xt-dummyInput",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "connection-baud-rate",
+        "role": "",
+        "label": "Baud rate",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-62g3xt-dummyInput",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1bbfjkq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1bbfjkq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1bbfjkq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1bbfjkq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1et0url-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "probeDepth",
+        "role": "",
+        "label": "Probe Depth",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "probeFeedrate",
+        "role": "",
+        "label": "Probe Feedrate",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "touchPlateHeight",
+        "role": "",
+        "label": "Touch Plate Thickness",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "retractionDistance",
+        "role": "",
+        "label": "Retraction Distance",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "Test duration in milliseconds",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "role": "",
+        "label": "Maximum S value",
+        "labelledby": "",
+        "placeholder": "",
+        "className": "css-1ayuooq-Box eecupy40",
+        "disabled": false
+      }
+    ],
+    "fileInputs": 1
+  },
+  "visualizer": {
+    "canvasCount": 1,
+    "rect": {
+      "width": 648,
+      "height": 852
+    }
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 284
+  },
+  "baselineMetrics": {
+    "renderSamples": [
+      {
+        "renderedAtMs": 938.9000000059605,
+        "durationMs": 16.900000005960464
+      },
+      {
+        "renderedAtMs": 1201.4000000059605,
+        "durationMs": 7
+      },
+      {
+        "renderedAtMs": 1290.7999999821186,
+        "durationMs": 2.199999988079071
+      }
+    ],
+    "loadSamples": [],
+    "pendingLoad": null
+  },
+  "finishedAt": "2026-10-01T16:49:20.424Z"
+}

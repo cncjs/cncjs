@@ -1,0 +1,3815 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-01T16:16:23.741Z",
+  "simulator": {
+    "path": "/tmp/ttyGRBL",
+    "baudRate": 115200
+  },
+  "warmLoads": [
+    {
+      "phase": "warm",
+      "index": 1,
+      "uploadToRunEnabledMs": 520,
+      "runEnabledElapsedMs": 139,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 91.40000000596046,
+        "renderFrameCount": 9,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 1,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 10,
+        "lastRenderAtMs": 2227,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "3d",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 73,
+        "lastRenderAtMs": 8408.90000000596,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 2,
+      "uploadToRunEnabledMs": 469,
+      "runEnabledElapsedMs": 139,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 95.10000002384186,
+        "renderFrameCount": 74,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 2,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "3d",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 75,
+        "lastRenderAtMs": 8788.799999982119,
+        "lastRenderDurationMs": 0.3999999761581421,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 136,
+        "lastRenderAtMs": 14931.699999988079,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 3,
+      "uploadToRunEnabledMs": 418,
+      "runEnabledElapsedMs": 134,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 90.2000000178814,
+        "renderFrameCount": 137,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 3,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 138,
+        "lastRenderAtMs": 15274.40000000596,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 198,
+        "lastRenderAtMs": 21288.40000000596,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 4,
+      "uploadToRunEnabledMs": 206,
+      "runEnabledElapsedMs": 141,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 87.7000000178814,
+        "renderFrameCount": 199,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 4,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 200,
+        "lastRenderAtMs": 21639.40000000596,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 264,
+        "lastRenderAtMs": 28007.69999998808,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 5,
+      "uploadToRunEnabledMs": 424,
+      "runEnabledElapsedMs": 133,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.2999999821186,
+        "renderFrameCount": 265,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 5,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 266,
+        "lastRenderAtMs": 28357.19999998808,
+        "lastRenderDurationMs": 0.29999998211860657,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "3d",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 329,
+        "lastRenderAtMs": 34662.5,
+        "lastRenderDurationMs": 1.0999999940395355,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8,
+      "cameraPosition": "top",
+      "renderFrameCount": 11
+    },
+    {
+      "sample": 2,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7,
+      "cameraPosition": "top",
+      "renderFrameCount": 12
+    },
+    {
+      "sample": 3,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "front",
+      "renderFrameCount": 15
+    },
+    {
+      "sample": 4,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 18
+    },
+    {
+      "sample": 5,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "left",
+      "renderFrameCount": 20
+    },
+    {
+      "sample": 6,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 23
+    },
+    {
+      "sample": 7,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 25
+    },
+    {
+      "sample": 8,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7,
+      "cameraPosition": "top",
+      "renderFrameCount": 26
+    },
+    {
+      "sample": 9,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 27
+    },
+    {
+      "sample": 10,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 28
+    },
+    {
+      "sample": 11,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 31
+    },
+    {
+      "sample": 12,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "right",
+      "renderFrameCount": 34
+    },
+    {
+      "sample": 13,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "left",
+      "renderFrameCount": 36
+    },
+    {
+      "sample": 14,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.1,
+      "cameraPosition": "3d",
+      "renderFrameCount": 39
+    },
+    {
+      "sample": 15,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "top",
+      "renderFrameCount": 41
+    },
+    {
+      "sample": 16,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 42
+    },
+    {
+      "sample": 17,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 43
+    },
+    {
+      "sample": 18,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 44
+    },
+    {
+      "sample": 19,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "front",
+      "renderFrameCount": 47
+    },
+    {
+      "sample": 20,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 50
+    },
+    {
+      "sample": 21,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "left",
+      "renderFrameCount": 52
+    },
+    {
+      "sample": 22,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 55
+    },
+    {
+      "sample": 23,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 57
+    },
+    {
+      "sample": 24,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 58
+    },
+    {
+      "sample": 25,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 59
+    },
+    {
+      "sample": 26,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 60
+    },
+    {
+      "sample": 27,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 63
+    },
+    {
+      "sample": 28,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 66
+    },
+    {
+      "sample": 29,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 68
+    },
+    {
+      "sample": 30,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.2,
+      "cameraPosition": "3d",
+      "renderFrameCount": 71
+    },
+    {
+      "sample": 31,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 3.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 77
+    },
+    {
+      "sample": 32,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 78
+    },
+    {
+      "sample": 33,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 79
+    },
+    {
+      "sample": 34,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 80
+    },
+    {
+      "sample": 35,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.1,
+      "cameraPosition": "front",
+      "renderFrameCount": 83
+    },
+    {
+      "sample": 36,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 86
+    },
+    {
+      "sample": 37,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "left",
+      "renderFrameCount": 88
+    },
+    {
+      "sample": 38,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 91
+    },
+    {
+      "sample": 39,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "top",
+      "renderFrameCount": 93
+    },
+    {
+      "sample": 40,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 94
+    },
+    {
+      "sample": 41,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 95
+    },
+    {
+      "sample": 42,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 96
+    },
+    {
+      "sample": 43,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "front",
+      "renderFrameCount": 99
+    },
+    {
+      "sample": 44,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 102
+    },
+    {
+      "sample": 45,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "left",
+      "renderFrameCount": 104
+    },
+    {
+      "sample": 46,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "3d",
+      "renderFrameCount": 107
+    },
+    {
+      "sample": 47,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4,
+      "cameraPosition": "top",
+      "renderFrameCount": 109
+    },
+    {
+      "sample": 48,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 110
+    },
+    {
+      "sample": 49,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 111
+    },
+    {
+      "sample": 50,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 112
+    },
+    {
+      "sample": 51,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 115
+    },
+    {
+      "sample": 52,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 118
+    },
+    {
+      "sample": 53,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "left",
+      "renderFrameCount": 120
+    },
+    {
+      "sample": 54,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "3d",
+      "renderFrameCount": 123
+    },
+    {
+      "sample": 55,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 125
+    },
+    {
+      "sample": 56,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 126
+    },
+    {
+      "sample": 57,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 127
+    },
+    {
+      "sample": 58,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 128
+    },
+    {
+      "sample": 59,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "front",
+      "renderFrameCount": 131
+    },
+    {
+      "sample": 60,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 134
+    },
+    {
+      "sample": 61,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 140
+    },
+    {
+      "sample": 62,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "3d",
+      "renderFrameCount": 143
+    },
+    {
+      "sample": 63,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "top",
+      "renderFrameCount": 145
+    },
+    {
+      "sample": 64,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 146
+    },
+    {
+      "sample": 65,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 147
+    },
+    {
+      "sample": 66,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 148
+    },
+    {
+      "sample": 67,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 151
+    },
+    {
+      "sample": 68,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "right",
+      "renderFrameCount": 154
+    },
+    {
+      "sample": 69,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "left",
+      "renderFrameCount": 156
+    },
+    {
+      "sample": 70,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "3d",
+      "renderFrameCount": 159
+    },
+    {
+      "sample": 71,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "top",
+      "renderFrameCount": 161
+    },
+    {
+      "sample": 72,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 162
+    },
+    {
+      "sample": 73,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 163
+    },
+    {
+      "sample": 74,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 164
+    },
+    {
+      "sample": 75,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 167
+    },
+    {
+      "sample": 76,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 170
+    },
+    {
+      "sample": 77,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "left",
+      "renderFrameCount": 172
+    },
+    {
+      "sample": 78,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "3d",
+      "renderFrameCount": 175
+    },
+    {
+      "sample": 79,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "top",
+      "renderFrameCount": 177
+    },
+    {
+      "sample": 80,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 178
+    },
+    {
+      "sample": 81,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 179
+    },
+    {
+      "sample": 82,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 180
+    },
+    {
+      "sample": 83,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "front",
+      "renderFrameCount": 183
+    },
+    {
+      "sample": 84,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 186
+    },
+    {
+      "sample": 85,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "left",
+      "renderFrameCount": 188
+    },
+    {
+      "sample": 86,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "3d",
+      "renderFrameCount": 191
+    },
+    {
+      "sample": 87,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 5.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 193
+    },
+    {
+      "sample": 88,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 194
+    },
+    {
+      "sample": 89,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 195
+    },
+    {
+      "sample": 90,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 196
+    },
+    {
+      "sample": 91,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "front",
+      "renderFrameCount": 203
+    },
+    {
+      "sample": 92,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 206
+    },
+    {
+      "sample": 93,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.6,
+      "cameraPosition": "left",
+      "renderFrameCount": 208
+    },
+    {
+      "sample": 94,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "3d",
+      "renderFrameCount": 211
+    },
+    {
+      "sample": 95,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 213
+    },
+    {
+      "sample": 96,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 214
+    },
+    {
+      "sample": 97,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 215
+    },
+    {
+      "sample": 98,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 216
+    },
+    {
+      "sample": 99,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "front",
+      "renderFrameCount": 219
+    },
+    {
+      "sample": 100,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 222
+    },
+    {
+      "sample": 101,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 224
+    },
+    {
+      "sample": 102,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "3d",
+      "renderFrameCount": 227
+    },
+    {
+      "sample": 103,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 229
+    },
+    {
+      "sample": 104,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 230
+    },
+    {
+      "sample": 105,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 231
+    },
+    {
+      "sample": 106,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7,
+      "cameraPosition": "top",
+      "renderFrameCount": 232
+    },
+    {
+      "sample": 107,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 235
+    },
+    {
+      "sample": 108,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 238
+    },
+    {
+      "sample": 109,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 240
+    },
+    {
+      "sample": 110,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 243
+    },
+    {
+      "sample": 111,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "top",
+      "renderFrameCount": 245
+    },
+    {
+      "sample": 112,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 246
+    },
+    {
+      "sample": 113,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 247
+    },
+    {
+      "sample": 114,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 248
+    },
+    {
+      "sample": 115,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 251
+    },
+    {
+      "sample": 116,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 254
+    },
+    {
+      "sample": 117,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "left",
+      "renderFrameCount": 256
+    },
+    {
+      "sample": 118,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "3d",
+      "renderFrameCount": 259
+    },
+    {
+      "sample": 119,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "top",
+      "renderFrameCount": 261
+    },
+    {
+      "sample": 120,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 262
+    },
+    {
+      "sample": 121,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 267
+    },
+    {
+      "sample": 122,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 268
+    },
+    {
+      "sample": 123,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "front",
+      "renderFrameCount": 271
+    },
+    {
+      "sample": 124,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 274
+    },
+    {
+      "sample": 125,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.4,
+      "cameraPosition": "left",
+      "renderFrameCount": 276
+    },
+    {
+      "sample": 126,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 279
+    },
+    {
+      "sample": 127,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 281
+    },
+    {
+      "sample": 128,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 282
+    },
+    {
+      "sample": 129,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 283
+    },
+    {
+      "sample": 130,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 284
+    },
+    {
+      "sample": 131,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.1,
+      "cameraPosition": "front",
+      "renderFrameCount": 287
+    },
+    {
+      "sample": 132,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 290
+    },
+    {
+      "sample": 133,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 292
+    },
+    {
+      "sample": 134,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 295
+    },
+    {
+      "sample": 135,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "top",
+      "renderFrameCount": 297
+    },
+    {
+      "sample": 136,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 298
+    },
+    {
+      "sample": 137,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 299
+    },
+    {
+      "sample": 138,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 300
+    },
+    {
+      "sample": 139,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.1,
+      "cameraPosition": "front",
+      "renderFrameCount": 303
+    },
+    {
+      "sample": 140,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "right",
+      "renderFrameCount": 306
+    },
+    {
+      "sample": 141,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "left",
+      "renderFrameCount": 308
+    },
+    {
+      "sample": 142,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "3d",
+      "renderFrameCount": 311
+    },
+    {
+      "sample": 143,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "top",
+      "renderFrameCount": 313
+    },
+    {
+      "sample": 144,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 314
+    },
+    {
+      "sample": 145,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 315
+    },
+    {
+      "sample": 146,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 316
+    },
+    {
+      "sample": 147,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "front",
+      "renderFrameCount": 319
+    },
+    {
+      "sample": 148,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 322
+    },
+    {
+      "sample": 149,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 324
+    },
+    {
+      "sample": 150,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 327
+    }
+  ],
+  "interactionErrors": [],
+  "resourceCycles": [],
+  "checkpoints": {},
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051a800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051a800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051a800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051a800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "openVisible": true
+  },
+  "connectedAt": "2026-10-01T16:16:25.743Z",
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 755
+  },
+  "completedAt": "2026-10-01T16:16:58.751Z",
+  "status": "completed",
+  "finalSnapshot": {
+    "metrics": {
+      "createdTotal": 1,
+      "disposedTotal": 0,
+      "liveEngineCount": 1,
+      "loadCount": 5,
+      "loadSamples": [
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 91.40000000596046,
+          "renderFrameCount": 9,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 95.10000002384186,
+          "renderFrameCount": 74,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 90.2000000178814,
+          "renderFrameCount": 137,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 87.7000000178814,
+          "renderFrameCount": 199,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.2999999821186,
+          "renderFrameCount": 265,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        }
+      ],
+      "renderSamples": [
+        {
+          "engineId": 1,
+          "renderedAtMs": 873.1999999880791,
+          "durationMs": 19.19999998807907,
+          "renderFrameCount": 1
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 899.5,
+          "durationMs": 10.5,
+          "renderFrameCount": 2
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 900.9000000059605,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 3
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 901.7999999821186,
+          "durationMs": 0.8999999761581421,
+          "renderFrameCount": 4
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 902.5999999940395,
+          "durationMs": 0.800000011920929,
+          "renderFrameCount": 5
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1296.7999999821186,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 6
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1312.7999999821186,
+          "durationMs": 6.5,
+          "renderFrameCount": 7
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1417.4000000059605,
+          "durationMs": 1,
+          "renderFrameCount": 8
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2226.5,
+          "durationMs": 7.4000000059604645,
+          "renderFrameCount": 9
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2227,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 10
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2573.7999999821186,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 11
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2736.9000000059605,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 12
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2896,
+          "durationMs": 0.5,
+          "renderFrameCount": 13
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2896.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 14
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2896.7999999821186,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 15
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3154.7999999821186,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 16
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3155.5,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 17
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3155.9000000059605,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 18
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3416.0999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 19
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3417.5999999940395,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 20
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3619.0999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 21
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3619.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 22
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3620,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 23
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3846,
+          "durationMs": 0.5,
+          "renderFrameCount": 24
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3846.2999999821186,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 25
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4050.7999999821186,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 26
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4176.5999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 27
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4345.199999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 28
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4470.199999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 29
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4470.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 30
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4470.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 31
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4716.199999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 32
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4716.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 33
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4716.699999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 34
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5009.4000000059605,
+          "durationMs": 0.5,
+          "renderFrameCount": 35
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5009.699999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 36
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5205.299999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 37
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5205.5999999940395,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 38
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5206,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 39
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5434.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 40
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5434.9000000059605,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 41
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5610.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 42
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5739.4000000059605,
+          "durationMs": 0.5,
+          "renderFrameCount": 43
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5871.799999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 44
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6027.4000000059605,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 45
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6027.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 46
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6028,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 47
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6257.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 48
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6257.9000000059605,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 49
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6258.199999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 50
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6504.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 51
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6504.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 52
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6702.0999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 53
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6702.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 54
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6702.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 55
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6921.799999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 56
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6922.0999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 57
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7091.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 58
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7242.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 59
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7383.4000000059605,
+          "durationMs": 0.5,
+          "renderFrameCount": 60
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7513.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 61
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7514,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 62
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7514.299999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 63
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7732.4000000059605,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 64
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7732.699999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 65
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7733,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 66
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7979.199999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 67
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7979.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 68
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8179,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 69
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8179.4000000059605,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 70
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8179.699999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 71
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8407.299999982119,
+          "durationMs": 5.899999976158142,
+          "renderFrameCount": 72
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8408.90000000596,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 73
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8788.40000000596,
+          "durationMs": 7.300000011920929,
+          "renderFrameCount": 74
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8788.799999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 75
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9087.199999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 76
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9087.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 77
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9311.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 78
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9486.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 79
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9654.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 80
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9807.799999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 81
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9808.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 82
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9808.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 83
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10078.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 84
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10079.299999982119,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 85
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10079.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 86
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10332.299999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 87
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10333.699999988079,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 88
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10533.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 89
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10533.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 90
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10533.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 91
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10759.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 92
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10759.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 93
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10949.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 94
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11074.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 95
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11222.299999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 96
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11365.299999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 97
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11365.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 98
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11365.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 99
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11596.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 100
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11596.90000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 101
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11597,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 102
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11856.90000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 103
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11857.299999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 104
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12080.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 105
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12081,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 106
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12081.199999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 107
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12303.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 108
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12303.699999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 109
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12499.299999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 110
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12651.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 111
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12789.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 112
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12928.699999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 113
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12929.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 114
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12929.199999988079,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 115
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13156,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 116
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13156.199999988079,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 117
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13156.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 118
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13411.299999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 119
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13411.699999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 120
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13608.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 121
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13608.699999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 122
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13609,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 123
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13853.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 124
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13853.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 125
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14023.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 126
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14153.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 127
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14282.799999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 128
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14444.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 129
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14444.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 130
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14444.90000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 131
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14670.90000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 132
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14671.199999988079,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 133
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14671.40000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 134
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14930.199999988079,
+          "durationMs": 5.4000000059604645,
+          "renderFrameCount": 135
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14931.699999988079,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 136
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15273.90000000596,
+          "durationMs": 6.300000011920929,
+          "renderFrameCount": 137
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15274.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 138
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15555.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 139
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15556.799999982119,
+          "durationMs": 1.5,
+          "renderFrameCount": 140
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15802,
+          "durationMs": 0.5,
+          "renderFrameCount": 141
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15802.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 142
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15802.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 143
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16048.59999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 144
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16048.90000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 145
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16242.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 146
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16390.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 147
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16541.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 148
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16709.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 149
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16710,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 150
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16710.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 151
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16942,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 152
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16942.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 153
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16942.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 154
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17195.09999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 155
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17195.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 156
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17394.29999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 157
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17394.69999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 158
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 159
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17603.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 160
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17603.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 161
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17807.90000000596,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 162
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17974.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 163
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18129.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 164
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18268.59999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 165
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18268.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 166
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18269,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 167
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18505.79999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 168
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18506.09999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 169
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18506.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 170
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18774.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 171
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18774.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 172
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18982.19999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 173
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18982.40000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 174
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18982.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 175
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19210.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 176
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19210.90000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 177
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19387.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 178
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19513.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 179
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19644.69999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 180
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19775.79999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 181
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19776.09999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 182
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19776.29999998212,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 183
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19995,
+          "durationMs": 0.5,
+          "renderFrameCount": 184
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19995.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 185
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19995.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 186
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20242.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 187
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20242.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 188
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20435.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 189
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20435.90000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 190
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20436.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 191
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20652.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 192
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20653.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 193
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20833.29999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 194
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20982.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 195
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21115.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 196
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21286.90000000596,
+          "durationMs": 5.800000011920929,
+          "renderFrameCount": 197
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21288.40000000596,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 198
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21639,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 199
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21639.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 200
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21953.79999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 201
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21954.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 202
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21954.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 203
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22221.79999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 204
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22222.59999999404,
+          "durationMs": 0.7000000178813934,
+          "renderFrameCount": 205
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22222.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 206
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22488.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 207
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22489.79999998212,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 208
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22696.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 209
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22696.90000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 210
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22697.09999999404,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 211
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22990.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 212
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22990.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 213
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23190.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 214
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23335.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 215
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23468.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 216
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23626.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 217
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23626.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 218
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23627.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 219
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23855.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 220
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23855.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 221
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23856,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 222
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24125,
+          "durationMs": 0.5,
+          "renderFrameCount": 223
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24125.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 224
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24364.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 225
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24365.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 226
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24365.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 227
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24579.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 228
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24580,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 229
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24760,
+          "durationMs": 0.5,
+          "renderFrameCount": 230
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24914.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 231
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25069.40000000596,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 232
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25230.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 233
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25230.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 234
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25230.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 235
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25457.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 236
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25457.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 237
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25457.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 238
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25730.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 239
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25730.40000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 240
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25934,
+          "durationMs": 0.5,
+          "renderFrameCount": 241
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25934.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 242
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25934.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 243
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26156.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 244
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26156.79999998212,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 245
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26332.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 246
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26459.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 247
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26614,
+          "durationMs": 0.5,
+          "renderFrameCount": 248
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26748.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 249
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26748.69999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 250
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26749,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 251
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26982.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 252
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26982.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 253
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26982.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 254
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27240.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 255
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27240.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 256
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27443.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 257
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27443.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 258
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27444.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 259
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27662.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 260
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27663,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 261
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27843,
+          "durationMs": 0.5,
+          "renderFrameCount": 262
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28006.19999998808,
+          "durationMs": 5.4000000059604645,
+          "renderFrameCount": 263
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28007.69999998808,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 264
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28356.79999998212,
+          "durationMs": 6.299999982118607,
+          "renderFrameCount": 265
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28357.19999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 266
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28680,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 267
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28841.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 268
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28999.79999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 269
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29000.19999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 270
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29000.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 271
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29254.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 272
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29255.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 273
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29255.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 274
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29533.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 275
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29534.79999998212,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 276
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29773,
+          "durationMs": 0.5,
+          "renderFrameCount": 277
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29773.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 278
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29773.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 279
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30008.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 280
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30009.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 281
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30193.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 282
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30346.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 283
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30493.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 284
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30643.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 285
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30644.19999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 286
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30644.40000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 287
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30874.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 288
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30875.09999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 289
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30875.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 290
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31139.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 291
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31140.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 292
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31337,
+          "durationMs": 0.5,
+          "renderFrameCount": 293
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31337.40000000596,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 294
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31337.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 295
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31562.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 296
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31563.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 297
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31741.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 298
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31863.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 299
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31997.69999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 300
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32151.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 301
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32152,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 302
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32152.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 303
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32385.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 304
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32385.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 305
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32386.09999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 306
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32658.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 307
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32658.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 308
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32880.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 309
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32880.90000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 310
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32881.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 311
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33117.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 312
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33117.40000000596,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 313
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33297.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 314
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33426.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 315
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33565.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 316
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33701.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 317
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33701.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 318
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33701.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 319
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33929.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 320
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33929.79999998212,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 321
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33930.09999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 322
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34195.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 323
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34195.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 324
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34425.90000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 325
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34426.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 326
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34426.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 327
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34661.29999998212,
+          "durationMs": 5.299999982118607,
+          "renderFrameCount": 328
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34662.5,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 329
+        }
+      ],
+      "disposeSamples": [],
+      "canvasCreatedTotal": 1,
+      "canvasRemovedTotal": 0,
+      "liveCanvasCount": 1,
+      "engines": [
+        {
+          "id": 1,
+          "width": 648,
+          "height": 755,
+          "pivotX": 0,
+          "pivotY": 0,
+          "pivotZ": 0,
+          "cameraPosition": "3d",
+          "cameraMode": "pan",
+          "projection": "orthographic",
+          "units": "mm",
+          "hasGCode": false,
+          "limitsVisible": true,
+          "coordinateSystemVisible": true,
+          "gridLineNumbersVisible": true,
+          "cuttingToolVisible": true,
+          "canvasAttached": true,
+          "renderFrameCount": 329,
+          "lastRenderAtMs": 34662.5,
+          "lastRenderDurationMs": 1.0999999940395355,
+          "geometryCount": 251,
+          "textureCount": 55,
+          "listenerAddCount": 6,
+          "listenerRemoveCount": 0,
+          "activeListenerCount": 6,
+          "rafRequestCount": 0,
+          "rafCompleteCount": 0,
+          "rafCancelCount": 0,
+          "activeRafCount": 0,
+          "pendingLoadId": null
+        }
+      ]
+    },
+    "heap": {
+      "usedJSHeapSize": 212000000,
+      "totalJSHeapSize": 269000000
+    }
+  },
+  "finishedAt": "2026-10-01T16:16:58.757Z"
+}

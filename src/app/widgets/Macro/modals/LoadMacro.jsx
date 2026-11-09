@@ -1,10 +1,15 @@
 import {
   Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
 } from '@tonic-ui/react';
 import React from 'react';
-import { Button } from '@app/components/Buttons';
-import Modal from '@app/components/Modal';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import x from '@app/lib/json-stringify';
@@ -28,6 +33,10 @@ const loadMacro = async ({ id }) => {
   }
 };
 
+/**
+ * @param {{id: string, name: string, onClose: () => void}} props
+ * @returns {JSX.Element}
+ */
 function LoadMacro({
   id,
   name,
@@ -39,35 +48,40 @@ function LoadMacro({
   };
 
   return (
-    <Modal size="xs" onClose={onClose}>
-      <Modal.Header>
-        <Modal.Title>
-          {i18n._('Load Macro')}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Text>
-          {i18n._('Are you sure you want to load this macro?')}
-        </Text>
-        <Box my=".5rem">
-          <Text fontWeight="semibold">
-            {name}
+    <Modal
+      closeOnInteractOutside
+      isClosable
+      isOpen
+      onClose={onClose}
+      size="xs"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{i18n._('Load Macro')}</ModalHeader>
+        <ModalBody>
+          <Text>
+            {i18n._('Are you sure you want to load this macro?')}
           </Text>
-        </Box>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          onClick={onClose}
-        >
-          {i18n._('No')}
-        </Button>
-        <Button
-          btnStyle="primary"
-          onClick={handleLoadMacro}
-        >
-          {i18n._('Yes')}
-        </Button>
-      </Modal.Footer>
+          <Box my=".5rem">
+            <Text fontWeight="semibold">
+              {name}
+            </Text>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            onClick={onClose}
+          >
+            {i18n._('No')}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleLoadMacro}
+          >
+            {i18n._('Yes')}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 }

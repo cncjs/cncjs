@@ -1,0 +1,57 @@
+name: UI migration validation
+
+on:
+  push:
+    branches:
+      - feat/tonic-ui-v2-migration
+  pull_request:
+    branches:
+      - next
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install Yarn launcher
+        run: npm install -g yarn
+      - name: Install locked dependencies
+        run: yarn install --immutable
+      - name: Migration guard and adversarial fixtures
+        run: |
+          yarn test:ui-migration
+          yarn check:ui-migration
+      - name: Frontend regression tests
+        run: yarn test:frontend --runInBand
+      - name: Lint
+        run: yarn lint
+      - name: Node and simulator tests
+        # Preserve the user-directed SocketConnection exclusion. Existing
+        # simulator fixture intervals are cleaned up after each test. R6
+        # separately verifies owned browser resources.
+        run: yarn test --runInBand --testPathIgnorePatterns SocketConnection --coverage=false --detectOpenHandles
+      - name: Production build
+        run: yarn build
+      - name: Verify packaged entry points
+        run: |
+          test -s dist/cncjs/app/index.html
+          test -s dist/cncjs/server-cli.js
+          test -s dist/cncjs/package.json
+      - name: Preserve production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-migration-production-${{ github.sha }}
+          path: dist/cncjs
+          retention-days: 7

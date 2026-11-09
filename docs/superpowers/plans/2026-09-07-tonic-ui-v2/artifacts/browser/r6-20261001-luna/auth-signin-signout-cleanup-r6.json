@@ -1,0 +1,86 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "account": {
+    "synthetic": true,
+    "passwordPersisted": false,
+    "accountNamePersisted": false,
+    "existsBefore": true,
+    "existsAfter": false
+  },
+  "gates": [
+    {
+      "name": "sign-in synthetic user through login UI",
+      "status": "passed",
+      "durationMs": 1486,
+      "loginRouteAccepted": true,
+      "workspaceMounted": true,
+      "credentialValuesPersisted": false
+    },
+    {
+      "name": "sign-out synthetic user through header menu",
+      "status": "passed",
+      "durationMs": 223,
+      "returnedToSignIn": true,
+      "tokenPersisted": false
+    },
+    {
+      "name": "sign-in again after sign-out through login UI",
+      "status": "passed",
+      "durationMs": 541,
+      "workspaceMounted": true,
+      "credentialValuesPersisted": false
+    },
+    {
+      "name": "sign-out second synthetic session",
+      "status": "passed",
+      "durationMs": 256,
+      "returnedToSignIn": true,
+      "tokenPersisted": false
+    },
+    {
+      "name": "remove synthetic account with isolated admin UI",
+      "status": "passed",
+      "durationMs": 131,
+      "removed": true,
+      "absentAfterCleanup": true
+    }
+  ],
+  "api": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

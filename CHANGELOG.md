@@ -1,1 +1,50 @@
 All notable changes are described on the [Releases](https://github.com/cheton/cnc/releases) page.
+
+## Unreleased
+
+- Increase workspace quick-access controller button height, right-align the toolbar with space for adjacent actions, and keep it scrollable on narrow screens.
+- Distinguish dark-mode widget headers using Tonic semantic surfaces.
+- Improve Connection controller selection and Axes control targets and overflow handling for compact layouts.
+- Fit the Axes position table within compact workspace panels while retaining horizontal scrolling for narrower widths.
+- Recolor loaded Visualizer toolpaths and coordinate grids with Tonic semantic tokens when the appearance changes, preserving progress and camera state.
+- Replace Axes keypad and position-editor font icons with Tonic icons or directly imported Font Awesome icons, preserving diagonal jog directions.
+- Replace Tool widget icon-font controls with Tonic icons and a directly imported copy icon; keep refresh progress and widget actions unchanged.
+- Migrate controller, Visualizer, and widget-header icons to Tonic or directly imported Font Awesome definitions while preserving control and loading states.
+- Replace legacy Autolevel child-view icons with Tonic icons.
+- Bring Connection serial-port and baud-rate refresh icons closer to their selectors without reducing the button hit areas.
+- Use Tonic's default checkbox label spacing in the Connection widget.
+- Use Tonic `1x` and `2x` spacing tokens for existing 4px and 8px `Space` components.
+- Add Playwright E2E scenarios for workspace widgets, the Visualizer, and Administration in both light and dark modes. Keep review screenshots in separate color-mode folders.
+- Guard browser E2E Socket.IO and API traffic so only an approved loopback simulator can open a connection or load G-code, and write review screenshots per test run with a manifest so tests, themes, and reruns never overwrite each other.
+- Move browser scenarios and fixtures to root `test/e2e/`, rename the scenario directory to `scenarios/`, and use `yarn test:e2e`; keep generated artifacts in `output/e2e/`.
+- Keep widget controls inside usable-width panels on narrow screens; wrap Laser and Grbl overrides instead of overflowing their cards.
+- Match the Visualizer canvas, grid, coordinate labels, and G-code filename to the application color mode.
+- Use Tonic UI split button groups for Visualizer actions, keep camera icons legible in dark mode, and improve Grbl override spacing, Autolevel button borders, Spindle icons, and Laser power controls.
+- Separate Visualizer workflow controls from the canvas, inherit camera button colors, keep display-option menus open while toggling, and compact the themed 3D-off G-code dashboard.
+- Restore joined report borders and aligned override rows for Grbl, TinyG, Smoothie, and Marlin.
+- Join compound fields with Tonic InputGroup composition; restore Tool title spacing, Axes table dividers, full-width baud selection, and the original inline Laser intensity controls.
+- Adapt Autolevel Z-probe and probe-area diagrams to both color modes.
+- Preserve explicit appearance and language settings on current prerelease startup, and retain the Visualizer projection while its workspace host is hidden.
+- Apply the saved appearance before application bundles load, using the shared application palette and system appearance when storage is absent or unavailable.
+- Keep Administration resource tables visible during mutation refetches; reserve full-table loading for initial fetches and explicit Refresh or Retry.
+- Give fullscreen widgets an opaque themed surface and a scrollable body below the actual header height; verify entry, resize, and exit in both color modes.
+- Restore the workspace header's six quick-access controller commands with custom solid legacy colors, vertically centered controls, disconnected-state protection, and horizontal scrolling on narrow screens; center the Visualizer split-dropdown chevrons.
+- Restore the header's custom server Commands menu with enabled-record filtering, task progress, shared notifications, and a management link; verify execution using isolated HTTP and Socket.IO fixtures only.
+- Restore the non-3D dashboard's 20px progress track with its line counter centered inside it, and cover empty, loaded, and completed states in both color modes.
+- Make Axes action and dropdown icons follow the application theme, apply themed taskbar dividers, and separate Settings tabs and footer actions; cover panel/fullscreen padding and isolated Settings cancel/save behavior in both color modes.
+- Join the Visualizer 3D View and Upload G-code split buttons with InputGroup/Append composition, keeping equal segment heights and centered dropdown chevrons.
+- Standardize all five application Tabs consumers on TabPanels px="3x" py="2x", removing legacy TabList spacing; verify controller tab switching and 12px horizontal/8px vertical content insets in both themes.
+- Theme Axes Settings range rails, selected tracks, handles, and focus rings; retain rc-slider keyboard/range behavior, and use validated React Hook Form fields and separated footer actions for nested Custom Command editors.
+- Extend isolated Playwright coverage to workspace feeder/disconnect prompts, Administration page-size dropdowns, application-menu dismissal, appearance/language Back navigation, and mini-navigation hover dismissal in both themes.
+- Add isolated widget and application modal/drawer scenarios for nested Macro editors, Autolevel safety gates, Watch Directory traversal/load/upload, M6 resume, unavailable WebGL, mocked Administration persistence/errors, settings recovery, navigation dismissal, and secondary Axes fork/remove.
+- Add per-entry widget dropdown scenarios for Connection, Console, Probe, Tool, Visualizer, all controller command menus, widget dismissal, and Axes actions/units/jog distances.
+- Read Axes controller types from the actual nested controller state and close action menus on outside pointer interaction, including nonfocusable targets.
+- Use an icon-only Commands trigger with a Commands dropdown heading and adjacent keyboard-accessible edit action; route command selection through Dropdown keyboard handling.
+- Keep the Probe confirmation modal inside its widget provider subtree.
+- Restore default widget input-group heights, including matching Tool position inputs and their appended controls to the policy dropdown; add themed borders and padding to Tool command previews.
+- Match Laser Test expansion to the Grbl accordion, show Power percentages without a badge border, and improve dark slider track visibility.
+- Evaluate the development HTML template on each compilation instead of freezing its startup content; existing development processes must restart to load this webpack configuration change.
+- Preserve `favicon.ico` during development output cleanup so restarting webpack does not break application routes; close snapshot pages and drain intercepted requests before shutting down their Socket.IO server.
+- Make E2E menu actions wait for rendered dropdown readiness and actual keyboard focus before activation; clean E2E lint without parallelizing sequential browser interactions or changing assertions.
+- Migrate Administration, login, and widget forms to React Hook Form. Show validation errors after submission instead of on drawer open, and preserve pending-submit, probe-confirmation, and dirty-field protections.
+- Remove `react-final-form` and `final-form` dependencies.

@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -6,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const webpack = require('webpack');
+const appTemplate = require('./scripts/app-template');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
@@ -36,7 +36,7 @@ module.exports = {
       keep: (asset) => {
         const keep = [
           'assets',
-          'favicon.icon',
+          'favicon.ico',
           'i18n',
           'images',
         ].some(x => asset.startsWith(x));
@@ -137,6 +137,7 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+      SUPPRESS_WEBGL_WARNING: '0',
       BUILD_VERSION: buildVersion,
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
@@ -163,20 +164,20 @@ module.exports = {
       if (isWebpackDevServer) {
         return new HtmlWebpackPlugin({
           filename,
-          templateContent: (() => {
-            return fs.readFileSync(template, 'utf8')
+          templateContent: () => (
+            appTemplate(template)
               .replace(/{{dir}}/g, 'ltr')
               .replace(/{{title}}/g, `CNCjs ${buildVersion}`)
               .replace(/{{webroot}}/g, '/')
-              .replace(/{{loading}}/g, 'Loading...');
-          })(),
+              .replace(/{{loading}}/g, 'Loading...')
+          ),
         });
       }
 
       return (
         new HtmlWebpackPlugin({
           filename,
-          template,
+          templateContent: () => appTemplate(template),
         })
       );
     })(),

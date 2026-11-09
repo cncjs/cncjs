@@ -1,0 +1,53 @@
+{
+  "task": "V3-GV owned runtime and fixture cleanup",
+  "status": "complete",
+  "checkedAt": "2026-10-06T13:48:49.968Z",
+  "ownedProcessLineage": {
+    "processGroups": [
+      17433,
+      17434,
+      18804,
+      22933
+    ],
+    "pids": [
+      17433,
+      17434,
+      17457,
+      18804,
+      18807,
+      22933,
+      22946
+    ],
+    "actions": "SIGTERM sent only to the four verified owned process groups after checking ownership and listeners.",
+    "afterCheck": {
+      "allListedPidsAbsent": true,
+      "ports": {
+        "8000": "no listener",
+        "8080": "no listener",
+        "60565": "no listener"
+      },
+      "pty": {
+        "path": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL",
+        "exists": false,
+        "openHandles": false
+      },
+      "browserRunnerActive": false
+    }
+  },
+  "removedOwnedResources": [
+    "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc",
+    "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/AL_part.gcode",
+    "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/workspace-settings-import-fixture.json",
+    "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/watch-tree",
+    "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL"
+  ],
+  "retainedOwnedRecords": "backend/frontend/simulator/bridge logs, child-runner stdout/stderr logs, and runtime-processes.json remain in the unique scratch folder for audit.",
+  "finalResourceCounts": {
+    "isolatedConfig": 0,
+    "fixtureFiles": 0,
+    "watchFixtures": 0,
+    "ptyNodes": 0,
+    "listenersOnOwnedPorts": 0
+  },
+  "scope": "No historical R6 processes or unrelated/user processes or temporary directories were stopped or removed."
+}

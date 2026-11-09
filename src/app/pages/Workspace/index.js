@@ -1,3 +1,3 @@
-import Workspace from './Workspace';
+import WorkspaceRoot from './WorkspaceRoot';
 
-export default Workspace;
+export default WorkspaceRoot;

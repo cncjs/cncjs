@@ -1,28 +1,34 @@
 import classNames from 'classnames';
-import { ensureArray } from 'ensure-type';
-import React, { Component } from 'react';
-import config from '@app/store/config';
+import PropTypes from 'prop-types';
+import React from 'react';
+import controller from '@app/lib/controller';
 import Widget from './Widget';
+import { useWidgetGroup } from './useWidgetGroup';
+import { WIDGET_REGISTRY } from './widgetRegistry';
+import { selectVisibleWidgetIds } from './widgetLayoutState';
 import styles from './widgets.styl';
 
-class DefaultWidgets extends Component {
-  render() {
-    const { className } = this.props;
-    const defaultWidgets = ensureArray(config.get('workspace.container.default.widgets'));
-    const widgets = defaultWidgets.map(widgetId => (
-      <div data-widget-id={widgetId} key={widgetId}>
-        <Widget
-          widgetId={widgetId}
-        />
-      </div>
-    ));
+const DefaultWidgets = ({ className }) => {
+  const { ids } = useWidgetGroup('default');
+  const widgets = selectVisibleWidgetIds(
+    ids,
+    controller.availableControllers,
+    WIDGET_REGISTRY
+  ).map(widgetId => (
+    <div data-widget-id={widgetId} key={widgetId}>
+      <Widget widgetId={widgetId} />
+    </div>
+  ));
 
-    return (
-      <div className={classNames(className, styles.widgets)}>
-        {widgets}
-      </div>
-    );
-  }
-}
+  return (
+    <div className={classNames(className, styles.widgets)}>
+      {widgets}
+    </div>
+  );
+};
+
+DefaultWidgets.propTypes = {
+  className: PropTypes.string,
+};
 
 export default DefaultWidgets;

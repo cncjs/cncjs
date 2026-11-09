@@ -1,9 +1,11 @@
-import styled from 'styled-components';
+import { Box } from '@tonic-ui/react';
+import React from 'react';
 
-const OverflowEllipsis = styled.div`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+/**
+ * @param {{ children?: React.ReactNode, title?: string }} props
+ */
+function OverflowEllipsis(props) {
+  return <Box {...props} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} />;
+}
 
 export default OverflowEllipsis;

@@ -1,0 +1,392 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events at the network boundary",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "Marlin",
+        "payloadBytes": 79,
+        "payloadSha256": "732e457a21307d2c92b4a9e69cbe72de134010aabc30dac25cccdee1e5e85d97",
+        "pollingGet": 6
+      },
+      {
+        "event": "controller:state",
+        "controller": "Marlin",
+        "payloadBytes": 231,
+        "payloadSha256": "6fda8f0646d6d2d872141d93607f9286782987d1bc39d05966fae532582e30ea",
+        "pollingGet": 6
+      }
+    ],
+    "pollingGetCount": 8,
+    "websocketUpgradeClosed": 1,
+    "suppressedGrblControllerEvents": 0,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 6,
+        "name": "connection:close",
+        "controller": null
+      },
+      {
+        "pollingGet": 6,
+        "name": "fixture:batch",
+        "controller": "Marlin"
+      },
+      {
+        "pollingGet": 7,
+        "name": "connection:change",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": []
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1039,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "pollingGetCount": 6,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 20044,
+      "error": "Error: Timed out waiting for Marlin settings/state polling replay",
+      "visibleRegions": [
+        {
+          "name": "Connection widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 96,
+            "width": 335,
+            "height": 527
+          },
+          "connected": true
+        },
+        {
+          "name": "Console widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 631,
+            "width": 335,
+            "height": 309
+          },
+          "connected": true
+        },
+        {
+          "name": "Grbl widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 948,
+            "width": 335,
+            "height": 715
+          },
+          "connected": true
+        },
+        {
+          "name": "Marlin widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 1671,
+            "width": 335,
+            "height": 38
+          },
+          "connected": true
+        },
+        {
+          "name": "Smoothie widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 1717,
+            "width": 335,
+            "height": 38
+          },
+          "connected": true
+        },
+        {
+          "name": "TinyG widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 1763,
+            "width": 335,
+            "height": 38
+          },
+          "connected": true
+        },
+        {
+          "name": "Webcam widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 84,
+            "y": 1809,
+            "width": 335,
+            "height": 236
+          },
+          "connected": true
+        },
+        {
+          "name": "3D Visualizer widget",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852
+          },
+          "connected": true
+        },
+        {
+          "name": "Axes widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 96,
+            "width": 335,
+            "height": 436
+          },
+          "connected": true
+        },
+        {
+          "name": "G-code widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 540,
+            "width": 335,
+            "height": 83
+          },
+          "connected": true
+        },
+        {
+          "name": "Macro widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 631,
+            "width": 335,
+            "height": 124
+          },
+          "connected": true
+        },
+        {
+          "name": "Autolevel Widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 763,
+            "width": 335,
+            "height": 349
+          },
+          "connected": true
+        },
+        {
+          "name": "Probe widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 1120,
+            "width": 335,
+            "height": 535
+          },
+          "connected": true
+        },
+        {
+          "name": "Tool widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 1663,
+            "width": 335,
+            "height": 79
+          },
+          "connected": true
+        },
+        {
+          "name": "Spindle widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 1750,
+            "width": 335,
+            "height": 268
+          },
+          "connected": true
+        },
+        {
+          "name": "Laser widget",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1093,
+            "y": 2026,
+            "width": 335,
+            "height": 343
+          },
+          "connected": true
+        }
+      ]
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 279,
+      "disconnected": true
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0043c000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0043c000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0043c000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0043c000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "outgoingCommands": []
+}

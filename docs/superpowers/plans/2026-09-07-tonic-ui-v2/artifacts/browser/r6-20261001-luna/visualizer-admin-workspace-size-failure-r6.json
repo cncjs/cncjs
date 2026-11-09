@@ -1,0 +1,71 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "links": [
+    {
+      "text": "Workspace",
+      "href": null
+    }
+  ],
+  "before": {
+    "route": "#/administration/machine-profiles",
+    "engine": {
+      "width": 1,
+      "height": 0,
+      "canvasAttached": true,
+      "renderFrameCount": 8
+    },
+    "canvas": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "display": "block",
+      "visibility": "visible"
+    },
+    "buttonTitle": "Disable 3D View",
+    "buttonText": "3D View",
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+    },
+    "visualizerText": "G54 (P1)3D ViewUpload G-codeG-codeG-code not loaded"
+  },
+  "after": {
+    "route": "#/workspace",
+    "engine": {
+      "width": 1,
+      "height": 0,
+      "canvasAttached": true,
+      "renderFrameCount": 8
+    },
+    "canvas": {
+      "x": 432,
+      "y": 91,
+      "width": 1,
+      "height": 0,
+      "display": "block",
+      "visibility": "visible"
+    },
+    "buttonTitle": "Disable 3D View",
+    "buttonText": "3D View",
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+    },
+    "visualizerText": "G54 (P1)\n3D View\nUpload G-code"
+  },
+  "viewportResized": false,
+  "errors": [
+    "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead.",
+    "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+    "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+    "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+    "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+    "THREE.DirectGeometry: Faceless geometries are not supported.",
+    "THREE.DirectGeometry: Faceless geometries are not supported."
+  ]
+}

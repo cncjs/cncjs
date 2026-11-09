@@ -1,180 +1,113 @@
+import { faBatteryFull, faBatteryHalf, faBatteryQuarter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Space,
+  Box,
+  Button,
+  ButtonGroup,
+  Text,
 } from '@tonic-ui/react';
-import PropTypes from 'prop-types';
 import React from 'react';
-import RepeatableButton from '@app/components/RepeatableButton';
 import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import RepeatableButton from '@app/components/RepeatableButton';
 import DigitalReadout from './DigitalReadout';
-import styles from './index.styl';
 
-function Overrides(props) {
-  const { ovF, ovS, ovT } = props;
+const overrideSteps = [
+  { fontSize: '.75rem', icon: 'arrow-down', value: -10 },
+  { fontSize: '.66rem', icon: 'arrow-down', value: -1 },
+  { fontSize: '.66rem', icon: 'arrow-up', value: 1 },
+  { fontSize: '.75rem', icon: 'arrow-up', value: 10 },
+];
 
+const trajectorySteps = [
+  { icon: faBatteryFull, value: 100 },
+  { icon: faBatteryHalf, value: 50 },
+  { icon: faBatteryQuarter, value: 25 },
+];
+
+const buttonGroupSx = {
+  flex: 1,
+  '& > button': { flex: 1, minWidth: 0, px: '1x' },
+};
+
+const resetButtonSx = { minWidth: '24px', width: '24px', p: 0 };
+
+/**
+ * @param {{ ovF?: number, ovS?: number, ovT?: number }} props
+ */
+function Overrides({ ovF = 0, ovS = 0, ovT = 0 }) {
   if (!ovF && !ovS && !ovT) {
     return null;
   }
 
   return (
-    <div className={styles.overrides}>
+    <Box>
       {!!ovF && (
-        <DigitalReadout label="F" value={ovF + '%'}>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('feed_override', -10);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 14 }} />
-            <span style={{ marginLeft: 5 }}>
-              -10%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('feed_override', -1);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 10 }} />
-            <span style={{ marginLeft: 5 }}>
-              -1%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('feed_override', 1);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 10 }} />
-            <span style={{ marginLeft: 5 }}>
-              1%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('feed_override', 10);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 14 }} />
-            <span style={{ marginLeft: 5 }}>
-              10%
-            </span>
-          </RepeatableButton>
-          <button
-            aria-label="Reset feed rate override"
-            type="button"
-            className="btn btn-default"
-            style={{ padding: 5 }}
-            onClick={() => {
-              controller.command('feed_override', 0);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-undo fa-fw" />
-          </button>
-        </DigitalReadout>
+        <OverrideButtons
+          commandName="feed_override"
+          label="F"
+          resetLabel="Reset feed rate override"
+          value={ovF}
+        />
       )}
       {!!ovS && (
-        <DigitalReadout label="S" value={ovS + '%'}>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', -10);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 14 }} />
-            <span style={{ marginLeft: 5 }}>
-              -10%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', -1);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 10 }} />
-            <span style={{ marginLeft: 5 }}>
-              -1%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', 1);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 10 }} />
-            <span style={{ marginLeft: 5 }}>
-              1%
-            </span>
-          </RepeatableButton>
-          <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', 10);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 14 }} />
-            <span style={{ marginLeft: 5 }}>
-              10%
-            </span>
-          </RepeatableButton>
-          <button
-            aria-label="Reset spindle override"
-            type="button"
-            className="btn btn-default"
-            style={{ padding: 5 }}
-            onClick={() => {
-              controller.command('spindle_override', 0);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-fw fa-undo" />
-          </button>
-        </DigitalReadout>
+        <OverrideButtons
+          commandName="spindle_override"
+          label="S"
+          resetLabel="Reset spindle override"
+          value={ovS}
+        />
       )}
       {!!ovT && (
-        <DigitalReadout label="T" value={ovT + '%'}>
-          <button
-            aria-label="Trajectory planner 100%"
-            type="button"
-            className="btn btn-default"
-            onClick={() => {
-              controller.command('rapid_override', 100);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-battery-full" />
-            <Space width={8} />
-            100%
-          </button>
-          <button
-            aria-label="Trajectory planner 50%"
-            type="button"
-            className="btn btn-default"
-            onClick={() => {
-              controller.command('rapid_override', 50);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-battery-half" />
-            <Space width={8} />
-            50%
-          </button>
-          <button
-            aria-label="Trajectory planner 25%"
-            type="button"
-            className="btn btn-default"
-            onClick={() => {
-              controller.command('rapid_override', 25);
-            }}
-          >
-            <i aria-hidden="true" className="fa fa-battery-quarter" />
-            <Space width={8} />
-            25%
-          </button>
+        <DigitalReadout label="T" value={`${ovT}%`}>
+          <ButtonGroup size="sm" minWidth="0" sx={buttonGroupSx}>
+            {trajectorySteps.map(({ icon, value }) => (
+              <Button
+                aria-label={`Trajectory planner ${value}%`}
+                key={value}
+                onClick={() => controller.command('rapid_override', value)}
+                sx={{ fontSize: '.75rem' }}
+              >
+                <FontAwesomeIcon aria-hidden="true" icon={icon} />
+                <Text>{`${value}%`}</Text>
+              </Button>
+            ))}
+          </ButtonGroup>
         </DigitalReadout>
       )}
-    </div>
+    </Box>
   );
 }
 
-Overrides.propTypes = {
-  ovF: PropTypes.number,
-  ovS: PropTypes.number,
-  ovT: PropTypes.number
-};
+/**
+ * @param {{ commandName: string, label: string, resetLabel: string, value: number }} props
+ */
+function OverrideButtons({ commandName, label, resetLabel, value }) {
+  return (
+    <DigitalReadout label={label} value={`${value}%`}>
+      <ButtonGroup size="sm" minWidth="0" sx={buttonGroupSx}>
+        {overrideSteps.map(step => (
+          <RepeatableButton
+            key={step.value}
+            onClick={() => controller.command(commandName, step.value)}
+            sx={{ fontSize: step.fontSize }}
+          >
+            <FontAwesomeIcon icon={step.icon} fixedWidth />
+            <Text>{i18n._(`${step.value}%`)}</Text>
+          </RepeatableButton>
+        ))}
+      </ButtonGroup>
+      <Button
+        aria-label={resetLabel}
+        variant="ghost"
+        size="sm"
+        sx={resetButtonSx}
+        onClick={() => controller.command(commandName, 0)}
+      >
+        <FontAwesomeIcon icon="undo" fixedWidth />
+      </Button>
+    </DigitalReadout>
+  );
+}
 
 export default Overrides;

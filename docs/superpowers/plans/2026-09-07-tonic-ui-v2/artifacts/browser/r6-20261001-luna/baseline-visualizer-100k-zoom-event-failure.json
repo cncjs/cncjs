@@ -1,0 +1,633 @@
+{
+  "baseline": {
+    "sourceCommit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "firstEngineExtractionCommit": "c7ed265f",
+    "devOnlyInstrumentation": "Visualizer.load start through first completed visible WebGLRenderer.render; native input timestamp through first subsequent renderer call",
+    "frontend": "http://127.0.0.1:8082",
+    "backend": "http://127.0.0.1:8000"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-01T16:58:26.934Z",
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "connectionOpen": true
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 284
+  },
+  "warmLoads": [
+    {
+      "index": 1,
+      "uploadToRunEnabledMs": 424,
+      "runEnabledElapsedMs": 316,
+      "metricsLoadSample": {
+        "startedAtMs": 2270.0999999940395,
+        "renderedAtMs": 2347.0999999940395,
+        "durationMs": 77,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 7,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 2,
+      "uploadToRunEnabledMs": 330,
+      "runEnabledElapsedMs": 145,
+      "metricsLoadSample": {
+        "startedAtMs": 8531,
+        "renderedAtMs": 8608.299999982119,
+        "durationMs": 77.2999999821186,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 18,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 3,
+      "uploadToRunEnabledMs": 333,
+      "runEnabledElapsedMs": 169,
+      "metricsLoadSample": {
+        "startedAtMs": 8931.299999982119,
+        "renderedAtMs": 9033.399999976158,
+        "durationMs": 102.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 22,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 4,
+      "uploadToRunEnabledMs": 318,
+      "runEnabledElapsedMs": 232,
+      "metricsLoadSample": {
+        "startedAtMs": 9417.899999976158,
+        "renderedAtMs": 9494.799999982119,
+        "durationMs": 76.90000000596046,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 26,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 5,
+      "uploadToRunEnabledMs": 292,
+      "runEnabledElapsedMs": 237,
+      "metricsLoadSample": {
+        "startedAtMs": 9807.5,
+        "renderedAtMs": 9889.199999988079,
+        "durationMs": 81.69999998807907,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 30,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 2,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    }
+  ],
+  "panSamples": [],
+  "interactionErrors": [
+    {
+      "sample": 3,
+      "error": "Error: Condition not met within 5000 ms"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 42:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 45:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 48:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 51:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:20-24\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 21:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 24:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 25:16-19\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 26:19-23\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 28:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 47:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 57:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 72:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 73:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 203:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 206:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 223:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 240:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 17:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 18:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 22:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 23:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 39:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 42:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 56:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 57:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 58:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 72:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 86:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 103:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 104:21-25\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 105:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 119:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 133:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.development.js 51:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.production.js 15:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button \n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup \n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Widget \n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/s"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header \n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_mod"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `Dropdown`.  \n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu \n    at div\n    at div\n    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)\n    at div\n    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen \n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at Uncontrol"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator \n    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)\n    at div\n    at render\n    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)\n    at div\n    at render\n    at Control (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s=\"%s\" or %s={value.toString()}.%s true compact compact true compact \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n  "
+    },
+    {
+      "type": "error",
+      "text": "Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div \n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/component"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0050c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0050c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0050c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0050c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    }
+  ],
+  "pageErrors": [],
+  "apiResponses": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/mdi",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tool",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros",
+      "status": 200
+    }
+  ],
+  "requestFailures": [],
+  "completedAt": "2026-10-01T16:58:37.035Z",
+  "status": "partial",
+  "finalBaselineMetrics": {
+    "renderSamples": [
+      {
+        "renderedAtMs": 934.2999999821186,
+        "durationMs": 17
+      },
+      {
+        "renderedAtMs": 1198.5,
+        "durationMs": 7
+      },
+      {
+        "renderedAtMs": 1287.0999999940395,
+        "durationMs": 2.300000011920929
+      },
+      {
+        "renderedAtMs": 1376.5999999940395,
+        "durationMs": 1
+      },
+      {
+        "renderedAtMs": 2105,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 2347.0999999940395,
+        "durationMs": 5.800000011920929
+      },
+      {
+        "renderedAtMs": 2347.699999988079,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 2612.899999976158,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 2614.5,
+        "durationMs": 1.4000000059604645
+      },
+      {
+        "renderedAtMs": 2615,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 2867.5999999940395,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 2869,
+        "durationMs": 1.300000011920929
+      },
+      {
+        "renderedAtMs": 2869.399999976158,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 3093.0999999940395,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 8297.299999982119,
+        "durationMs": 4.5999999940395355
+      },
+      {
+        "renderedAtMs": 8300.799999982119,
+        "durationMs": 3.4000000059604645
+      },
+      {
+        "renderedAtMs": 8608.299999982119,
+        "durationMs": 4.799999982118607
+      },
+      {
+        "renderedAtMs": 8608.799999982119,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 8781.399999976158,
+        "durationMs": 4.0999999940395355
+      },
+      {
+        "renderedAtMs": 8784.699999988079,
+        "durationMs": 3.300000011920929
+      },
+      {
+        "renderedAtMs": 9033.399999976158,
+        "durationMs": 5.199999988079071
+      },
+      {
+        "renderedAtMs": 9033.799999982119,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 9253.59999999404,
+        "durationMs": 3.9000000059604645
+      },
+      {
+        "renderedAtMs": 9256.899999976158,
+        "durationMs": 3.2999999821186066
+      },
+      {
+        "renderedAtMs": 9494.799999982119,
+        "durationMs": 4.199999988079071
+      },
+      {
+        "renderedAtMs": 9495.199999988079,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 9663.199999988079,
+        "durationMs": 3.5
+      },
+      {
+        "renderedAtMs": 9666.199999988079,
+        "durationMs": 2.9000000059604645
+      },
+      {
+        "renderedAtMs": 9889.199999988079,
+        "durationMs": 4.5999999940395355
+      },
+      {
+        "renderedAtMs": 9889.59999999404,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 10055.199999988079,
+        "durationMs": 3.5999999940395355
+      },
+      {
+        "renderedAtMs": 10058.399999976158,
+        "durationMs": 3.199999988079071
+      }
+    ],
+    "loadSamples": [
+      {
+        "startedAtMs": 2270.0999999940395,
+        "renderedAtMs": 2347.0999999940395,
+        "durationMs": 77,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 8531,
+        "renderedAtMs": 8608.299999982119,
+        "durationMs": 77.2999999821186,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 8931.299999982119,
+        "renderedAtMs": 9033.399999976158,
+        "durationMs": 102.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 9417.899999976158,
+        "renderedAtMs": 9494.799999982119,
+        "durationMs": 76.90000000596046,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 9807.5,
+        "renderedAtMs": 9889.199999988079,
+        "durationMs": 81.69999998807907,
+        "gcodeCharacters": 2379908
+      }
+    ],
+    "pendingLoad": null
+  },
+  "finishedAt": "2026-10-01T16:58:37.100Z"
+}

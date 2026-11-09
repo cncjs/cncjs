@@ -1,0 +1,41 @@
+{
+  "source": "src/app/widgets/Webcam/index.jsx",
+  "test": "src/app/widgets/Webcam/__tests__/SettingsBoundary.test.jsx",
+  "failure": "Webcam settings rendered in a separate root lacked the widget tracked provider; duplicating the provider fixes rendering but fails live propagation.",
+  "before": {
+    "testExitCode": 1,
+    "testsFailed": 1,
+    "observed": "Forked widget stays local after saving a stream URL through a separately rooted settings provider.",
+    "expectedText": "stream:fork-camera:http://camera.example/live.mp4",
+    "receivedText": "Webcamlocal:fork-camera:",
+    "log": "/tmp/cncjs-r6-webcam-boundary-red.log"
+  },
+  "after": {
+    "testExitCode": 0,
+    "suitesPassed": 4,
+    "testsPassed": 15,
+    "implementation": "Render Tonic SettingsModal inside the existing widget provider tree; Tonic modal portal preserves context.",
+    "assertions": [
+      "Saving the stream URL updates the already mounted fork immediately",
+      "Original webcam retains local source and device",
+      "Writes target only the forked widget ID",
+      "Dialog closes after save"
+    ],
+    "log": "/tmp/cncjs-r6-webcam-boundary-green.log"
+  },
+  "browserVerification": {
+    "status": "passed",
+    "artifact": "workspace-console-webcam-r6.json",
+    "checks": [
+      "Cancel preserves local source",
+      "Save changes live widget to a synthetic data-URI stream",
+      "Restoration returns to active 640x480 fake local capture",
+      "Scale, rotation and fullscreen work and restore scale=1/rotation=0/disabled=true"
+    ]
+  },
+  "initialMissingProviderObservation": {
+    "source": "Luna report and root source review",
+    "rawBrowserFailureRetained": false,
+    "limitation": "Original raw page-error JSON was overwritten; no reconstructed raw stack is claimed."
+  }
+}

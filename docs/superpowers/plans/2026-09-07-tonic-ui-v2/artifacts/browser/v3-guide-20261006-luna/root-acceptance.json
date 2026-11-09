@@ -1,0 +1,31 @@
+{
+  "task": "V3-GV root source/evidence review and user-authorized commit",
+  "date": "2026-10-06",
+  "startHead": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "browserModel": "gpt-6-luna",
+  "browserReasoningEffort": "xhigh",
+  "browserOperationsByRoot": false,
+  "testedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "finalSourceDiffSha256": "230dd0eeaae215be499ee615a4f774fad991da7dc522dae9cf2408fc91321450",
+  "onlyPostBrowserSourceAdjustment": "Remove data-focus/data-hover/data-active aliases; retained native CSS pseudo selectors/declarations are identical. Reconstructing the aliases and diff blob hashes reproduces the exact tested diff hash.",
+  "checks": {
+    "targetedEslint": "passed",
+    "migrationGuardViolations": 0,
+    "diffCheck": "passed",
+    "dataStateAliasOccurrences": 0
+  },
+  "reviewedStaticScreenshots": [
+    "guide-confirm-import-settings-open.png",
+    "controller-settings-preview-marlin-dark-1440x900.png",
+    "guide-file-drop-connected-light-1440x900.png",
+    "guide-axes-custom-command-required-error.png"
+  ],
+  "acceptedScope": "Seven report groups with source-bound evidence; user reviewed described results and authorized commit.",
+  "remainingLimits": [
+    "No acquired NavLink programmatic focus pass is claimed.",
+    "SideNav React key and WorkspaceLayoutProvider listener-count warnings remain unresolved and recorded.",
+    "Inter/DM Mono loading remains outside this slice."
+  ],
+  "cleanup": "cleanup.json",
+  "historicalEvidence": "Original reports and failed-attempt histories retained without rewriting revision/hash metadata."
+}

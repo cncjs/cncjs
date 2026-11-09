@@ -1,0 +1,109 @@
+{
+  "title": "R6 same-browser Visualizer performance comparison",
+  "baselineSource": {
+    "commit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "description": "Pre-engine extraction parent of c7ed265f"
+  },
+  "currentSource": {
+    "branch": "feat/tonic-ui-v2-migration",
+    "worktreeHead": "ae070b9f"
+  },
+  "reproduction": {
+    "currentRunner": "visualizer-100k-r6.mjs and visualizer-interaction-150-pan-r6 runner sequence",
+    "baselineRunner": "baseline-visualizer-100k.mjs",
+    "browser": {
+      "name": "Playwright bundled Chromium",
+      "version": "151.0.7922.34",
+      "viewport": "1440x900",
+      "dpr": 1,
+      "headless": true
+    },
+    "browserBaseline": {
+      "name": "Playwright bundled Chromium",
+      "version": "151.0.7922.34",
+      "viewport": "1440x900",
+      "dpr": 1,
+      "headless": true
+    },
+    "fixture": {
+      "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+      "bytes": 2379870,
+      "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+      "expectedLines": 100000
+    },
+    "viewport": "1440x900",
+    "dpr": 1,
+    "webglCurrent": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "renderer": "WebKit WebGL",
+      "vendor": "WebKit",
+      "width": 648,
+      "height": 755
+    },
+    "webglBaseline": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "renderer": "WebKit WebGL",
+      "vendor": "WebKit",
+      "width": 648,
+      "height": 284
+    }
+  },
+  "metrics": {
+    "loadToFirstVisibleRendererMs": {
+      "current": {
+        "count": 5,
+        "p50Ms": 89.2,
+        "p95Ms": 106.06,
+        "maxMs": 109.9
+      },
+      "baseline": {
+        "count": 5,
+        "p50Ms": 80.8,
+        "p95Ms": 86.5,
+        "maxMs": 87.8
+      },
+      "p50ChangePercent": 10.4,
+      "reviewerGate": "p50 change is +10.4%, below 20% investigation threshold",
+      "p95SampleWarning": "Only 5 warm-load samples; 09a says the five-sample p95 is not a reliable tail estimate."
+    },
+    "nativeInputToFirstRendererMs": {
+      "current": {
+        "count": 150,
+        "p50Ms": 3.9,
+        "p95Ms": 5.255,
+        "maxMs": 5.9
+      },
+      "baseline": {
+        "count": 150,
+        "p50Ms": 3.95,
+        "p95Ms": 4.5,
+        "maxMs": 5.8
+      },
+      "p50ChangePercent": -1.27,
+      "p95ChangePercent": 16.78
+    }
+  },
+  "comparability": {
+    "viewportBrowserGpuFixtureSame": true,
+    "caveat": "Canvas logical dimensions differ after the workspace layout migration: current 648x755, baseline 648x284. Current has 2.66x more vertical drawing area; renderer timings are not normalized for pixel area.",
+    "classification": "Observed p50 values satisfy the 20% median threshold. Canvas-size difference should be reviewed before treating performance comparison as a clean apples-to-apples pass."
+  },
+  "console": {
+    "baselineIssueCounts": {
+      "directGeometryFaceless": 1,
+      "optionalMetaTypeError": 6,
+      "maxListenersWarning": 1
+    },
+    "currentIssueCounts": {
+      "directGeometryFaceless": 2,
+      "optionalMetaTypeError": 0,
+      "maxListenersWarning": 1
+    },
+    "note": "The runtime listener warning stays present at the same 11-change-listener threshold; counts plateau across 20 teardown cycles. Current DirectGeometry count is higher under the load/resource sequence and remains under investigation."
+  },
+  "artifacts": {
+    "currentLoads": "visualizer-100k-resource-20cycles.json",
+    "currentInteractions": "visualizer-interaction-150-pan-r6.json",
+    "baseline": "baseline-visualizer-100k.json"
+  }
+}

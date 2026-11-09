@@ -1,8 +1,12 @@
+import { faLongArrowAltDown, faLongArrowAltUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AngleDownIcon, AngleLeftIcon, AngleRightIcon, AngleUpIcon } from '@tonic-ui/react-icons';
 import {
+  Box,
   Space,
+  Tooltip,
 } from '@tonic-ui/react';
 import React from 'react';
-import Infotip from '@app/components/Infotip';
 import i18n from '@app/lib/i18n';
 
 const keypadInfotip = () => {
@@ -12,15 +16,18 @@ const keypadInfotip = () => {
       textAlign: 'left',
     },
     axisDirection: {
+      display: 'inline-block',
       marginRight: 10
     },
     divider: {
-      borderTop: '1px solid #ccc',
+      borderTop: '1px solid',
+      borderColor: 'border.secondary',
       marginTop: 5,
       paddingTop: 5
     },
     kbd: {
-      border: '1px solid #aaa',
+      border: '1px solid',
+      borderColor: 'border.secondary',
       padding: '1px 4px',
       fontFamily: 'sans-serif',
       whiteSpace: 'nowrap'
@@ -32,113 +39,118 @@ const keypadInfotip = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={{ textAlign: 'left' }}>
-        <div>
-          <span style={styles.axisDirection}>X+</span>
+    <Box style={styles.container}>
+      <Box style={{ textAlign: 'left' }}>
+        <Box>
+          <Box sx={styles.axisDirection}>X+</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-angle-right" style={styles.icon} />
+            <AngleRightIcon aria-hidden="true" size="1em" style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Right')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>X-</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>X-</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-angle-left" style={styles.icon} />
+            <AngleLeftIcon aria-hidden="true" size="1em" style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Left')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>Y+</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>Y+</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-angle-up" style={styles.icon} />
+            <AngleUpIcon aria-hidden="true" size="1em" style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Up')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>Y-</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>Y-</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-angle-down" style={styles.icon} />
+            <AngleDownIcon aria-hidden="true" size="1em" style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Down')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>Z+</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>Z+</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-long-arrow-up" style={styles.icon} />
+            <FontAwesomeIcon aria-hidden="true" icon={faLongArrowAltUp} style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Page Up')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>Z-</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>Z-</Box>
           <kbd style={styles.kbd}>
-            <i className="fa fa-long-arrow-down" style={styles.icon} />
+            <FontAwesomeIcon aria-hidden="true" icon={faLongArrowAltDown} style={styles.icon} />
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Page Down')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>A+</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>A+</Box>
           <kbd style={styles.kbd}>
             {' ] '}
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Right Square Bracket')}
-        </div>
-        <div>
-          <span style={styles.axisDirection}>A-</span>
+        </Box>
+        <Box>
+          <Box sx={styles.axisDirection}>A-</Box>
           <kbd style={styles.kbd}>
             {' [ '}
           </kbd>
-          <Space width={8} />
+          <Space width="2x" />
           {i18n._('Left Square Bracket')}
-        </div>
-      </div>
-      <div>
-        <div style={styles.divider} />
-      </div>
-      <div>
-        <div>
-          <div className="table-form">
-            <div className="table-form-row table-form-row-dense">
-              <div className="table-form-col table-form-col-label">{i18n._('0.1x Move')}</div>
-              <div className="table-form-col">
+        </Box>
+      </Box>
+      <Box>
+        <Box style={styles.divider} />
+      </Box>
+      <Box>
+        <Box>
+          <Box className="table-form">
+            <Box className="table-form-row table-form-row-dense">
+              <Box className="table-form-col table-form-col-label">{i18n._('0.1x Move')}</Box>
+              <Box className="table-form-col">
                 <kbd style={styles.kbd}>{i18n._('Alt')}</kbd>
-              </div>
-            </div>
-            <div className="table-form-row table-form-row-dense">
-              <div className="table-form-col table-form-col-label">{i18n._('10x Move')}</div>
-              <div className="table-form-col">
+              </Box>
+            </Box>
+            <Box className="table-form-row table-form-row-dense">
+              <Box className="table-form-col table-form-col-label">{i18n._('10x Move')}</Box>
+              <Box className="table-form-col">
                 <kbd style={styles.kbd}>{i18n._('⇧ Shift')}</kbd>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default function(props) {
-  const { show, children } = { ...props };
-
+/**
+ * @param {{ show?: boolean, children?: React.ReactNode }} props
+ * @returns {JSX.Element|React.ReactNode}
+ */
+function KeypadOverlay({ show = false, children }) {
   if (!show) {
     return children;
   }
 
   return (
-    <Infotip
-      content={keypadInfotip()}
-      hideOnClick
+    <Tooltip
+      closeOnClick
+      enterDelay={0}
+      label={keypadInfotip()}
+      p={0}
       placement="bottom"
-      style={{ padding: 0 }}
     >
       {children}
-    </Infotip>
+    </Tooltip>
   );
 }
+
+export default KeypadOverlay;

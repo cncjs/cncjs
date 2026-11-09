@@ -1,0 +1,187 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/pivot-rectangle.gcode",
+    "bytes": 86,
+    "expectedLines": 7,
+    "sha256": "a4226f3bbd40ff4a0f369926de69830409b75b76bac8bf0eb4afd52ae52f55ad",
+    "knownBounds": {
+      "min": {
+        "x": 10,
+        "y": 20,
+        "z": -2
+      },
+      "max": {
+        "x": 50,
+        "y": 60,
+        "z": 0
+      },
+      "center": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      }
+    }
+  },
+  "profiles": {
+    "profileA": "R6 pivot A 1790877504300",
+    "limitsA": {
+      "xmin": 0,
+      "xmax": 200,
+      "ymin": -100,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "profileB": "R6 pivot B 1790877504300",
+    "limitsB": {
+      "xmin": -100,
+      "xmax": 0,
+      "ymin": 50,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "cleanedUp": true
+  },
+  "gates": [
+    {
+      "name": "create-two-synthetic-machine-profiles",
+      "status": "passed",
+      "durationMs": 1681,
+      "profileA": "R6 pivot A 1790877504300",
+      "limitsA": {
+        "xmin": 0,
+        "xmax": 200,
+        "ymin": -100,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      },
+      "profileB": "R6 pivot B 1790877504300",
+      "limitsB": {
+        "xmin": -100,
+        "xmax": 0,
+        "ymin": 50,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      }
+    },
+    {
+      "name": "connect-simulator-and-select-profile-a",
+      "status": "failed",
+      "durationMs": 27700,
+      "error": "Error: Timed out waiting for engine 3D view disabled; last state: {\"id\":1,\"width\":1,\"height\":0,\"pivotX\":0,\"pivotY\":0,\"pivotZ\":0,\"cameraPosition\":\"top\",\"cameraMode\":\"pan\",\"projection\":\"orthographic\",\"units\":\"mm\",\"hasGCode\":false,\"limitsVisible\":true,\"coordinateSystemVisible\":true,\"gridLineNumbersVisible\":true,\"cuttingToolVisible\":true,\"canvasAttached\":true,\"renderFrameCount\":8,\"lastRenderAtMs\":972.4000000059605,\"lastRenderDurationMs\":1.2000000178813934,\"geometryCount\":251,\"textureCount\":243,\"listenerAddCount\":6,\"listenerRemoveCount\":0,\"activeListenerCount\":6,\"rafRequestCount\":0,\"rafCompleteCount\":0,\"rafCancelCount\":0,\"activeRafCount\":0,\"pendingLoadId\":null}"
+    },
+    {
+      "name": "pivot-gcode-and-profile-transition-six-scenarios",
+      "status": "failed",
+      "durationMs": 12130,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Select machine profile', exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "camera-positions-zoom-and-projection",
+      "status": "failed",
+      "durationMs": 12001,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: 'Top View', exact: true }).last()\u001b[22m\n"
+    },
+    {
+      "name": "limits-grid-coordinate-system-and-tool-toggles",
+      "status": "failed",
+      "durationMs": 12097,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menuitem', { name: 'Hide Limits', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" tabindex=\"-1\" role=\"menuitem\" aria-disabled=\"true\" data-tonic=\"MenuItem\" class=\"css-1tmwy1h-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    22 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500"
+    },
+    {
+      "name": "controller-driven-visualizer-unit-changes",
+      "status": "passed",
+      "durationMs": 1024,
+      "imperialUnits": "in",
+      "metricUnits": "mm",
+      "commands": [
+        "G20",
+        "G21"
+      ]
+    },
+    {
+      "name": "probe-area-ui-entry",
+      "status": "failed",
+      "durationMs": 12002,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: /Autolevel widget/ }).getByRole('button', { name: 'Start New Probe', exact: true })\u001b[22m\n"
+    }
+  ],
+  "cncUnitCommands": [
+    "G20",
+    "G21"
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (web"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceive"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

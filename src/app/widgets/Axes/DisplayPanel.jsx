@@ -1,12 +1,17 @@
-import chainedFunction from 'chained-function';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ensureArray } from 'ensure-type';
+import {
+  Box,
+  Button,
+  Dropdown as TonicDropdown,
+  DropdownToggle,
+  MenuDivider,
+  MenuItem as TonicMenuItem,
+  Tooltip,
+} from '@tonic-ui/react';
 import includes from 'lodash/includes';
 import noop from 'lodash/noop';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import Dropdown, { MenuItem } from '@app/components/Dropdown';
-import Image from '@app/components/Image';
-import Tooltip from '@app/components/Tooltip';
+import React, { Children, isValidElement, useEffect, useRef, useState } from 'react';
 import {
   AXIS_E,
   AXIS_X,
@@ -15,7 +20,6 @@ import {
   AXIS_A,
   AXIS_B,
   AXIS_C,
-  IMPERIAL_UNITS,
   METRIC_UNITS,
 } from '@app/constants';
 import {
@@ -26,19 +30,35 @@ import {
 } from '@app/constants/controller';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
-import AxisLabel from './components/AxisLabel';
-import AxisSubscript from './components/AxisSubscript';
-import Panel from './components/Panel';
 import PositionLabel from './components/PositionLabel';
 import PositionInput from './components/PositionInput';
 import Taskbar from './components/Taskbar';
-import TaskbarButton from './components/TaskbarButton';
-import iconMinus from './images/minus.svg';
-import iconPlus from './images/plus.svg';
-import iconHome from './images/home.svg';
-import iconPin from './images/pin.svg';
-import iconPencil from './images/pencil.svg';
+import { useAxes } from './context';
 import styles from './index.styl';
+
+const taskbarButtonSx = {
+  display: 'inline-block',
+  m: '2px 1px',
+  p: 0,
+  border: 0,
+  minWidth: '24px',
+  width: '24px',
+  height: '32px',
+  flexShrink: 0,
+  fontWeight: 'normal',
+  lineHeight: 0,
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  touchAction: 'manipulation',
+  cursor: 'pointer',
+  userSelect: 'none',
+  backgroundImage: 'none',
+  backgroundColor: 'inherit',
+  color: 'text.primary',
+  '&:hover': { backgroundColor: 'actions.hovered', textDecoration: 'none' },
+  '&:disabled': { color: 'text.secondary', opacity: 0.65, cursor: 'not-allowed' },
+  '&:disabled:hover': { backgroundColor: 'inherit' },
+};
 
 // Declares which gcode commands each controller supports in the axis dropdown.
 // Grouped by dropdown section (Work Coordinate System → Temporary Offsets → Machine Coordinate System).
@@ -148,55 +168,187 @@ const getAxisHomeCommand = (controllerType, axis) => {
   return '';
 };
 
-class DisplayPanel extends Component {
-  static propTypes = {
-    canClick: PropTypes.bool,
-    units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),
-    axes: PropTypes.array,
-    machinePosition: PropTypes.object,
-    workPosition: PropTypes.object,
-    jog: PropTypes.object,
-    actions: PropTypes.object,
-    controllerType: PropTypes.string,
-  };
+/**
+ * @param {{ children?: React.ReactNode }} props
+ */
+function AxisCommandMenuToggle({ children }) {
+  return children;
+}
 
-  state = {
-    positionInput: {
-      [AXIS_E]: false,
-      [AXIS_X]: false,
-      [AXIS_Y]: false,
-      [AXIS_Z]: false,
-      [AXIS_A]: false,
-      [AXIS_B]: false,
-      [AXIS_C]: false
+/**
+ * @param {{ children?: React.ReactNode }} props
+ */
+function AxisCommandMenuList({ children }) {
+  return children;
+}
+
+/**
+ * @param {{
+ *   active?: boolean,
+ *   children?: React.ReactNode,
+ *   disabled?: boolean,
+ *   divider?: boolean,
+ *   eventKey?: string | string[],
+ *   header?: boolean,
+ *   onSelect?: (eventKey: string | string[]) => void,
+ * }} props
+ */
+function AxisCommandMenuItem({
+  active = false,
+  children,
+  disabled = false,
+  divider = false,
+  eventKey,
+  header = false,
+  onSelect,
+}) {
+  if (divider) {
+    return <MenuDivider />;
+  }
+
+  if (header) {
+    return (
+      <Box
+        px="3x"
+        py="2x"
+        role="heading"
+        fontSize="sm"
+        color="text.secondary"
+      >
+        {children}
+      </Box>
+    );
+  }
+
+  return (
+    <TonicMenuItem
+      disabled={disabled}
+      selected={active}
+      onClick={() => onSelect?.(eventKey)}
+    >
+      {children}
+    </TonicMenuItem>
+  );
+}
+
+/**
+ * @param {{
+ *   children: React.ReactNode,
+ *   disabled?: boolean,
+ *   onSelect?: (eventKey: string | string[]) => void,
+ * }} props
+ */
+function AxisCommandMenu({ children, disabled = false, onSelect }) {
+  const rootRef = useRef(null);
+  const menuRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
     }
-  };
+    const handleOutsidePointerDown = event => {
+      if (!rootRef.current?.contains(event.target) && !menuRef.current?.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    const document = rootRef.current.ownerDocument;
+    document.addEventListener('pointerdown', handleOutsidePointerDown, true);
+    return () => document.removeEventListener('pointerdown', handleOutsidePointerDown, true);
+  }, [isOpen]);
 
-  handleSelect = (eventKey) => {
+  const items = Children.toArray(children);
+  const toggle = items.find(child => isValidElement(child) && child.type === AxisCommandMenuToggle);
+  const list = items.find(child => isValidElement(child) && child.type === AxisCommandMenuList);
+
+  // The `Dropdown` engine is data-driven — lift the item tree into item
+  // objects (the JSX elements are never rendered, they are the data source).
+  const menuItems = Children.toArray(list?.props.children).map(child => {
+    if (!isValidElement(child)) {
+      return child;
+    }
+    const { eventKey, header, divider } = child.props;
+    if (divider) {
+      return { type: 'divider' };
+    }
+    if (header) {
+      return { type: 'custom', content: child.props.children };
+    }
+    return {
+      value: eventKey,
+      content: child.props.children,
+      props: {
+        disabled: child.props.disabled,
+        selected: child.props.active,
+      },
+    };
+  });
+
+  return (
+    <TonicDropdown
+      ref={rootRef}
+      portalled
+      isOpen={isOpen}
+      onOpen={() => setIsOpen(true)}
+      onClose={() => setIsOpen(false)}
+      slotProps={{ content: { ref: menuRef } }}
+      items={menuItems}
+      onChange={item => onSelect?.(item?.value)}
+      renderItem={(item) => {
+        if (item?.type === 'custom') {
+          return (
+            <Box
+              px="3x"
+              py="2x"
+              role="heading"
+              fontSize="sm"
+              color="text.secondary"
+            >
+              {item.content}
+            </Box>
+          );
+        }
+        return item?.content;
+      }}
+      renderToggle={() => (
+        <DropdownToggle
+          aria-label={toggle?.props['aria-label']}
+          className={toggle?.props.className}
+          disabled={disabled}
+        >
+          {toggle?.props.children}
+        </DropdownToggle>
+      )}
+    />
+  );
+}
+
+AxisCommandMenu.Toggle = AxisCommandMenuToggle;
+AxisCommandMenu.Menu = AxisCommandMenuList;
+
+const Dropdown = AxisCommandMenu;
+const MenuItem = AxisCommandMenuItem;
+
+/**
+ * @returns {JSX.Element}
+ */
+function DisplayPanel() {
+  const context = useAxes();
+  const handleSelect = (eventKey) => {
     const commands = ensureArray(eventKey);
     commands.forEach(command => controller.command('gcode', command));
   };
 
-  showPositionInput = (axis) => () => {
-    this.setState(state => ({
-      positionInput: {
-        ...state.positionInput,
-        [axis]: true
-      }
-    }));
+  const showPositionInput = (axis, reportedValue) => () => {
+    context.onSetPositionInput({ axis, value: reportedValue });
   };
 
-  hidePositionInput = (axis) => () => {
-    this.setState(state => ({
-      positionInput: {
-        ...state.positionInput,
-        [axis]: false
-      }
-    }));
+  const hidePositionInput = () => {
+    context.onSetPositionInput(null);
   };
 
-  renderActionDropdown = ({ wcs }) => {
-    const { canClick, controllerType, axes } = this.props;
+  const renderActionDropdown = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType }, axes } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -210,7 +362,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="Select work coordinate system"
@@ -219,7 +371,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-caret-down" />
+          <FontAwesomeIcon icon="caret-down" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -337,13 +489,13 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisE = ({ wcs }) => {
+  const renderActionDropdownForAxisE = ({ wcs }) => {
     // TODO
     return null;
   };
 
-  renderActionDropdownForAxisX = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisX = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -357,7 +509,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="X axis actions"
@@ -366,7 +518,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -484,8 +636,8 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisY = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisY = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -499,7 +651,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="Y axis actions"
@@ -508,7 +660,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -626,8 +778,8 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisZ = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisZ = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -641,7 +793,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="Z axis actions"
@@ -650,7 +802,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -768,8 +920,8 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisA = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisA = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -783,7 +935,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="A axis actions"
@@ -792,7 +944,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -910,8 +1062,8 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisB = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisB = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -925,7 +1077,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="B axis actions"
@@ -934,7 +1086,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -1052,8 +1204,8 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderActionDropdownForAxisC = ({ wcs }) => {
-    const { canClick, controllerType } = this.props;
+  const renderActionDropdownForAxisC = ({ wcs }) => {
+    const { canClick, controller: { type: controllerType } } = context.state;
     const {
       canGoToWork,
       canSetWCSOffset,
@@ -1067,7 +1219,7 @@ class DisplayPanel extends Component {
     return (
       <Dropdown
         disabled={!canClick}
-        onSelect={this.handleSelect}
+        onSelect={handleSelect}
       >
         <Dropdown.Toggle
           aria-label="C axis actions"
@@ -1076,7 +1228,7 @@ class DisplayPanel extends Component {
           compact
           noCaret
         >
-          <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
+          <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {wcs === 'G54' &&
@@ -1194,11 +1346,16 @@ class DisplayPanel extends Component {
     );
   };
 
-  renderAxis = (axis) => {
-    const { canClick, units, machinePosition, workPosition, jog, controllerType } = this.props;
+  const renderAxis = (axis) => {
+    const { canClick, units, machinePosition, workPosition, jog, controllerType, positionInput } = context.state;
     const supportedCommands = SUPPORTED_COMMANDS[controllerType] || {};
-    const { actions } = this.props;
-    const wcs = actions.getWorkCoordinateSystem();
+    const {
+      onGetJogDistance,
+      onGetWorkCoordinateSystem,
+      onJog,
+      onSetWorkOffsets,
+    } = context;
+    const wcs = onGetWorkCoordinateSystem();
     const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const degreeUnits = i18n._('deg');
     const mpos = machinePosition[axis] || '0.000';
@@ -1214,153 +1371,171 @@ class DisplayPanel extends Component {
       [AXIS_C]: degreeUnits
     }[axis] || '';
     const renderActionDropdown = {
-      [AXIS_E]: this.renderActionDropdownForAxisE,
-      [AXIS_X]: this.renderActionDropdownForAxisX,
-      [AXIS_Y]: this.renderActionDropdownForAxisY,
-      [AXIS_Z]: this.renderActionDropdownForAxisZ,
-      [AXIS_A]: this.renderActionDropdownForAxisA,
-      [AXIS_B]: this.renderActionDropdownForAxisB,
-      [AXIS_C]: this.renderActionDropdownForAxisC
+      [AXIS_E]: renderActionDropdownForAxisE,
+      [AXIS_X]: renderActionDropdownForAxisX,
+      [AXIS_Y]: renderActionDropdownForAxisY,
+      [AXIS_Z]: renderActionDropdownForAxisZ,
+      [AXIS_A]: renderActionDropdownForAxisA,
+      [AXIS_B]: renderActionDropdownForAxisB,
+      [AXIS_C]: renderActionDropdownForAxisC
     }[axis] || noop;
     const canZeroOutMachine = canClick && supportedCommands.canZeroOutMachine;
     const axisHomingCommand = getAxisHomeCommand(controllerType, axisLabel);
     const canMoveBackward = canClick;
     const canMoveForward = canClick;
     const canZeroOutWorkOffsets = canClick;
-    const canModifyWorkPosition = canClick && !this.state.positionInput[axis];
-    const showPositionInput = canClick && this.state.positionInput[axis];
+    const canModifyWorkPosition = canClick && positionInput?.axis !== axis;
+    const isPositionInputVisible = canClick && positionInput?.axis === axis;
     const highlightAxis = canClick && (jog.keypad || jog.axis === axis);
 
     return (
       <tr>
         <td className={styles.coordinate}>
-          <AxisLabel highlight={highlightAxis}>
+          <Box fontSize="24px" fontWeight={highlightAxis ? 'bold' : 'normal'}>
             {axisLabel}
-          </AxisLabel>
-          <AxisSubscript>{displayUnits}</AxisSubscript>
+          </Box>
+          <Box textAlign="center" fontSize="12px" lineHeight="20px">{displayUnits}</Box>
         </td>
         <td className={styles.machinePosition}>
           <PositionLabel value={mpos} />
           <Taskbar>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <TaskbarButton
-                aria-label={`Go to zero: ${axisLabel}`}
+            <Box style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <Tooltip
+                portalled
+                label={i18n._('Zero Out Machine')}
                 disabled={!canZeroOutMachine}
-                onClick={() => {
-                  controller.command('gcode', `G28.3 ${axisLabel}0`);
-                }}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Zero Out Machine')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`${i18n._('Zero Out Machine')}: ${axisLabel}`}
                   disabled={!canZeroOutMachine}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={() => {
+                    controller.command('gcode', `G28.3 ${axisLabel}0`);
+                  }}
                 >
-                  <Image src={iconPin} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-              <TaskbarButton
-                aria-label={`Home: ${axisLabel}`}
+                  <FontAwesomeIcon icon="map-marker-alt" fixedWidth />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                portalled
+                label={i18n._('Home Machine')}
                 disabled={!canClick}
-                onClick={() => {
-                  controller.command('gcode', axisHomingCommand);
-                }}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Home Machine')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`Home: ${axisLabel}`}
                   disabled={!canClick}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={() => {
+                    controller.command('gcode', axisHomingCommand);
+                  }}
                 >
-                  <Image src={iconHome} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-            </div>
+                  <FontAwesomeIcon icon="home" fixedWidth />
+                </Button>
+              </Tooltip>
+            </Box>
           </Taskbar>
         </td>
         <td className={styles.workPosition}>
-          {showPositionInput && (
+          {isPositionInputVisible && (
             <PositionInput
               style={{ margin: '5px 0' }}
-              onSave={chainedFunction(
-                (value) => {
-                  actions.setWorkOffsets(axis, value);
-                },
-                this.hidePositionInput(axis)
-              )}
-              onCancel={this.hidePositionInput(axis)}
+              value={positionInput.value}
+              onChange={(value) => context.onSetPositionInput({ axis, value })}
+              onSave={(value) => {
+                onSetWorkOffsets(axis, value);
+                hidePositionInput();
+              }}
+              onCancel={hidePositionInput}
             />
           )}
-          {!showPositionInput &&
+          {!isPositionInputVisible &&
             <PositionLabel value={wpos} />}
           <Taskbar>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <TaskbarButton
-                aria-label={`Move ${axisLabel} backward`}
+            <Box style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <Tooltip
+                portalled
+                label={i18n._('Move Backward')}
                 disabled={!canMoveBackward}
-                onClick={() => {
-                  const distance = actions.getJogDistance();
-                  actions.jog({ [axis]: -distance });
-                }}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Move Backward')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`Move ${axisLabel} backward`}
                   disabled={!canMoveBackward}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={() => {
+                    const distance = onGetJogDistance();
+                    onJog({ [axis]: -distance });
+                  }}
                 >
-                  <Image src={iconMinus} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-              <TaskbarButton
-                aria-label={`Move ${axisLabel} forward`}
+                  <FontAwesomeIcon icon="minus" fixedWidth />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                portalled
+                label={i18n._('Move Forward')}
                 disabled={!canMoveForward}
-                onClick={() => {
-                  const distance = actions.getJogDistance();
-                  actions.jog({ [axis]: distance });
-                }}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Move Forward')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`Move ${axisLabel} forward`}
                   disabled={!canMoveForward}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={() => {
+                    const distance = onGetJogDistance();
+                    onJog({ [axis]: distance });
+                  }}
                 >
-                  <Image src={iconPlus} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-              <TaskbarButton
-                aria-label={`Zero out ${axisLabel} work offsets`}
+                  <FontAwesomeIcon icon="plus" fixedWidth />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                portalled
+                label={i18n._('Zero Out Work Offsets')}
                 disabled={!canZeroOutWorkOffsets}
-                onClick={() => {
-                  actions.setWorkOffsets(axis, 0);
-                }}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Zero Out Work Offsets')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`Zero out ${axisLabel} work offsets`}
                   disabled={!canZeroOutWorkOffsets}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={() => {
+                    onSetWorkOffsets(axis, 0);
+                  }}
                 >
-                  <Image src={iconPin} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-              <TaskbarButton
-                aria-label={`Set ${axisLabel} work offsets`}
-                active={showPositionInput}
+                  <FontAwesomeIcon icon="map-marker-alt" fixedWidth />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                portalled
+                label={i18n._('Set Work Offsets')}
                 disabled={!canModifyWorkPosition}
-                onClick={this.showPositionInput(axis)}
+                closeOnClick
+                enterDelay={0}
+                placement="bottom"
               >
-                <Tooltip
-                  content={i18n._('Set Work Offsets')}
+                <Button
+                  variant="ghost" sx={taskbarButtonSx}
+                  aria-label={`Set ${axisLabel} work offsets`}
+                  active={isPositionInputVisible}
                   disabled={!canModifyWorkPosition}
-                  hideOnClick
-                  placement="bottom"
+                  onClick={showPositionInput(axis, wpos)}
                 >
-                  <Image src={iconPencil} width="14" height="14" />
-                </Tooltip>
-              </TaskbarButton>
-            </div>
+                  <FontAwesomeIcon icon="pencil-alt" fixedWidth />
+                </Button>
+              </Tooltip>
+            </Box>
           </Taskbar>
         </td>
         <td className={styles.action}>
@@ -1370,43 +1545,55 @@ class DisplayPanel extends Component {
     );
   };
 
-  render() {
-    const { axes, machinePosition, workPosition } = this.props;
-    const wcs = this.props.actions.getWorkCoordinateSystem();
-    const hasAxisE = (machinePosition.e !== undefined && workPosition.e !== undefined);
-    const hasAxisX = includes(axes, AXIS_X);
-    const hasAxisY = includes(axes, AXIS_Y);
-    const hasAxisZ = includes(axes, AXIS_Z);
-    const hasAxisA = includes(axes, AXIS_A);
-    const hasAxisB = includes(axes, AXIS_B);
-    const hasAxisC = includes(axes, AXIS_C);
+  const { axes, machinePosition, workPosition } = context.state;
+  const wcs = context.onGetWorkCoordinateSystem();
+  const hasAxisE = (machinePosition.e !== undefined && workPosition.e !== undefined);
+  const hasAxisX = includes(axes, AXIS_X);
+  const hasAxisY = includes(axes, AXIS_Y);
+  const hasAxisZ = includes(axes, AXIS_Z);
+  const hasAxisA = includes(axes, AXIS_A);
+  const hasAxisB = includes(axes, AXIS_B);
+  const hasAxisC = includes(axes, AXIS_C);
 
-    return (
-      <Panel className={styles.displayPanel}>
-        <table className="table-bordered">
+  return (
+    <Box
+      className={styles.displayPanel}
+      sx={{
+        mb: '10px',
+        '&:last-child': { mb: 0 },
+        '& table': { borderCollapse: 'collapse' },
+        '& th, & td': { border: 1, borderColor: 'border.secondary' },
+      }}
+    >
+      <Box overflowX="auto">
+        <table style={{ width: '100%', minWidth: '240px', tableLayout: 'fixed' }}>
           <thead>
             <tr>
-              <th title={i18n._('Axis')}>{i18n._('Axis')}</th>
-              <th title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
-              <th title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
-              <th className={styles.action}>
-                {this.renderActionDropdown({ wcs })}
+              <th scope="col" className={styles.coordinate} title={i18n._('Axis')}>{i18n._('Axis')}</th>
+              <th scope="col" className={styles.positionHeading} title={i18n._('Machine Position')}>
+                <Box as="span" sx={{ display: 'inline-block', maxWidth: '6em' }}>{i18n._('Machine Position')}</Box>
+              </th>
+              <th scope="col" className={styles.positionHeading} title={i18n._('Work Position')}>
+                <Box as="span" sx={{ display: 'inline-block', maxWidth: '6em' }}>{i18n._('Work Position')}</Box>
+              </th>
+              <th scope="col" className={styles.action}>
+                {renderActionDropdown({ wcs })}
               </th>
             </tr>
           </thead>
           <tbody>
-            {hasAxisE && this.renderAxis(AXIS_E)}
-            {hasAxisX && this.renderAxis(AXIS_X)}
-            {hasAxisY && this.renderAxis(AXIS_Y)}
-            {hasAxisZ && this.renderAxis(AXIS_Z)}
-            {hasAxisA && this.renderAxis(AXIS_A)}
-            {hasAxisB && this.renderAxis(AXIS_B)}
-            {hasAxisC && this.renderAxis(AXIS_C)}
+            {hasAxisE && renderAxis(AXIS_E)}
+            {hasAxisX && renderAxis(AXIS_X)}
+            {hasAxisY && renderAxis(AXIS_Y)}
+            {hasAxisZ && renderAxis(AXIS_Z)}
+            {hasAxisA && renderAxis(AXIS_A)}
+            {hasAxisB && renderAxis(AXIS_B)}
+            {hasAxisC && renderAxis(AXIS_C)}
           </tbody>
         </table>
-      </Panel>
-    );
-  }
+      </Box>
+    </Box>
+  );
 }
 
 export default DisplayPanel;

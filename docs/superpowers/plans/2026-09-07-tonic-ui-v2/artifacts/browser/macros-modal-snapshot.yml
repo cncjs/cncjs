@@ -1,0 +1,63 @@
+- generic [ref=e4]:
+  - generic [ref=e7]:
+    - banner "Application header" [ref=e8]:
+      - generic [ref=e9]:
+        - button [ref=e10] [cursor=pointer]
+        - button "CNCjs 2.0.0-dev - View release notes" [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: CNCjs
+        - generic [ref=e16]: en
+        - generic [ref=e18]: Macros
+      - button [ref=e21] [cursor=pointer]:
+        - img [ref=e23]: 
+    - navigation [ref=e25]:
+      - generic [ref=e26] [cursor=pointer]: Workspace
+      - generic [ref=e31]: Administration
+    - main [ref=e36]:
+      - generic [ref=e889]:
+        - generic [ref=e891]:
+          - generic [ref=e892]:
+            - button "Add" [active] [ref=e893] [cursor=pointer]
+            - button "Delete" [disabled] [ref=e894]
+          - button [ref=e896] [cursor=pointer]
+        - table [ref=e901]:
+          - rowgroup [ref=e902]:
+            - row [ref=e903]:
+              - columnheader [ref=e904]:
+                - generic [ref=e906] [cursor=pointer]:
+                  - checkbox [ref=e907]
+                  - checkbox [ref=e908]
+              - columnheader [ref=e912]
+              - columnheader "Macro Name" [ref=e913]
+              - columnheader "Date Modified" [ref=e914]
+          - generic [ref=e915]: No data to display
+        - generic [ref=e917]:
+          - generic [ref=e918]: "Total: 0"
+          - button "20 per page" [disabled] [ref=e921]
+          - textbox [disabled] [ref=e927]: "1"
+          - generic [ref=e928]: /
+          - generic [ref=e929]: "0"
+          - generic [ref=e930]:
+            - button [disabled] [ref=e931]
+            - button [disabled] [ref=e934]
+      - text:                                                                                        +             +                                             
+  - dialog [ref=e939]:
+    - status
+    - generic [ref=e940]: New Macro
+    - generic [ref=e942]:
+      - generic [ref=e943]:
+        - generic [ref=e945]:
+          - text: "Macro name:"
+          - generic [ref=e946]: "*"
+        - textbox [ref=e948]
+      - generic [ref=e949]:
+        - generic [ref=e950]:
+          - generic [ref=e951]:
+            - text: "G-code commands:"
+            - generic [ref=e952]: "*"
+          - button [ref=e956] [cursor=pointer]:
+            - button "Select variables" [ref=e957]
+        - textbox [ref=e959]
+    - generic [ref=e961]:
+      - button "Cancel" [ref=e962] [cursor=pointer]
+      - button "Add" [ref=e963] [cursor=pointer]
+    - button "Close" [ref=e964] [cursor=pointer]

@@ -1,0 +1,203 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "fixture": {
+    "name": "R6 keyboard macro 1790935794111",
+    "updatedName": "R6 keyboard macro 1790935794111 updated",
+    "actionBytes": 9,
+    "actionSha256": "72a60afd977892e3189ff1b64925e6320b50266f04ccbe5fc7c53d9d061dd1ad"
+  },
+  "gates": [
+    {
+      "name": "Macro Create drawer valid toggle DOM and keyboard variable insertion",
+      "status": "passed",
+      "durationMs": 448,
+      "toggleDom": {
+        "tag": "BUTTON",
+        "nestedButtonCount": 0,
+        "inLabel": false
+      },
+      "keyboard": "Enter",
+      "insertedBytes": 9,
+      "insertedSha256": "72a60afd977892e3189ff1b64925e6320b50266f04ccbe5fc7c53d9d061dd1ad",
+      "created": true
+    },
+    {
+      "name": "Macro Update drawer valid toggle DOM and keyboard variable insertion",
+      "status": "passed",
+      "durationMs": 536,
+      "toggleDom": {
+        "tag": "BUTTON",
+        "nestedButtonCount": 0,
+        "inLabel": false
+      },
+      "keyboard": "Enter",
+      "insertedBytes": 9,
+      "insertedSha256": "72a60afd977892e3189ff1b64925e6320b50266f04ccbe5fc7c53d9d061dd1ad",
+      "updated": true,
+      "removed": true
+    }
+  ],
+  "api": [
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/501ab3d6-82ad-4020-891c-d8a9db100dcf"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros/delete"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_m"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Tooltip.js:30:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/OverflowTooltip.js:23:23)\n    at cell (webpack-internal:///./pages/Administration/Macros/Macros.jsx:268:25)\n    at div\n    at eval (webpac"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

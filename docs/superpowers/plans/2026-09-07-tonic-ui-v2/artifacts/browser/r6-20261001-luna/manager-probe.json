@@ -1,0 +1,335 @@
+[
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Visualizer Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input disabled=\"\" type=\"checkbox\" aria-label=\"Visualizer Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Connection Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input disabled=\"\" type=\"checkbox\" aria-label=\"Connection Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Console Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Console Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Grbl Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Grbl Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Marlin Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Marlin Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Smoothie Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Smoothie Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "TinyG Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"TinyG Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Axes Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Axes Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "G-code Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"G-code Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Laser Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Laser Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Macro Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Macro Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Autolevel Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Autolevel Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Probe Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Probe Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Tool Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Tool Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Spindle Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Spindle Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Custom Widget",
+    "checked": false,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Custom Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "INPUT",
+    "type": "checkbox",
+    "role": null,
+    "label": "Webcam Widget",
+    "checked": true,
+    "text": "",
+    "outer": "<input type=\"checkbox\" aria-label=\"Webcam Widget\" data-tonic=\"VisuallyHidden\" class=\"css-1bbfjkq-Box eecupy40\" value=\"\" checked=\"\">"
+  },
+  {
+    "tag": "DIV",
+    "type": null,
+    "role": "checkbox",
+    "label": null,
+    "checked": null,
+    "text": "",
+    "outer": "<div aria-hidden=\"true\" role=\"checkbox\" class=\"css-3spjl2-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" class=\"css-1o7ey38-Box eecupy40\"><g fill=\"currentColor\"><path d=\"M6 11.060l-3-3-1 1 4 4 9-9-1-1z\"></path></g></svg></div>"
+  },
+  {
+    "tag": "BUTTON",
+    "type": "button",
+    "role": null,
+    "label": null,
+    "checked": null,
+    "text": "Cancel",
+    "outer": "<button type=\"button\" data-tonic=\"Button\" class=\"css-x0bzf-Box eecupy40\">Cancel</button>"
+  },
+  {
+    "tag": "BUTTON",
+    "type": "button",
+    "role": null,
+    "label": null,
+    "checked": null,
+    "text": "OK",
+    "outer": "<button type=\"button\" data-tonic=\"Button\" class=\"css-y72awm-Box eecupy40\">OK</button>"
+  },
+  {
+    "tag": "BUTTON",
+    "type": "button",
+    "role": null,
+    "label": "Close",
+    "checked": null,
+    "text": "",
+    "outer": "<button type=\"button\" aria-label=\"Close\" data-tonic=\"ModalCloseButton\" class=\"css-1t5431y-Box eecupy40\"><svg aria-hidden=\"true\" fill=\"currentColor\" focusable=\"false\" viewBox=\"0 0 16 16\" data-icon=\"CloseIcon\" class=\"css-ygi8yd-Box eecupy40\"><path d=\"M15 2l-1-1-6 6-6-6-0.99 0.99 5.99 6.010-6 6 1 1 6-6 6 6 1-1-6-6 6-6z\"></path></svg></button>"
+  }
+]

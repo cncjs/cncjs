@@ -1,0 +1,374 @@
+{
+  "task": "V3-GV Grbl/Marlin fixed-dark controller settings preview light/dark visual validation",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment"
+  },
+  "fixtureIsolation": "one active controller fixture per fresh browser context; Grbl uses only the owned local simulator lifecycle; Marlin uses only incoming UI fixture replay; no refresh, CNC command, motion, or macro execution",
+  "status": "passed",
+  "cases": [
+    {
+      "type": "Grbl",
+      "theme": "light",
+      "key": "grbl-light",
+      "status": "passed",
+      "report": "controller-settings-preview-grbl-light.json",
+      "childExitCode": 0,
+      "settingsPreviewEvidence": {
+        "found": true,
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "1px",
+        "contrastRatio": 12.722854488142998,
+        "previewText": "{ \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "rect": {
+          "x": 329,
+          "y": 239,
+          "width": 782,
+          "height": 450
+        },
+        "panelText": "Refresh { \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "screenshot": "screenshots/controller-settings-preview-grbl-light-1440x900.png",
+        "theme": "light",
+        "controller": "Grbl"
+      },
+      "outgoingCommands": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "warnings": [
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400448000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400448000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400448000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400448000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        }
+      ],
+      "screenshot": "screenshots/controller-settings-preview-grbl-light-1440x900.png",
+      "stderrExcerpt": ""
+    },
+    {
+      "type": "Grbl",
+      "theme": "dark",
+      "key": "grbl-dark",
+      "status": "passed",
+      "report": "controller-settings-preview-grbl-dark.json",
+      "childExitCode": 0,
+      "settingsPreviewEvidence": {
+        "found": true,
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "1px",
+        "contrastRatio": 12.722854488142998,
+        "previewText": "{ \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "rect": {
+          "x": 329,
+          "y": 239,
+          "width": 782,
+          "height": 450
+        },
+        "panelText": "Refresh { \"version\": \"\", \"parameters\": {}, \"settings\": {} }",
+        "screenshot": "screenshots/controller-settings-preview-grbl-dark-1440x900.png",
+        "theme": "dark",
+        "controller": "Grbl"
+      },
+      "outgoingCommands": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "warnings": [
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x10400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        }
+      ],
+      "screenshot": "screenshots/controller-settings-preview-grbl-dark-1440x900.png",
+      "stderrExcerpt": ""
+    },
+    {
+      "type": "Marlin",
+      "theme": "light",
+      "key": "marlin-light",
+      "status": "passed",
+      "report": "controller-settings-preview-marlin-light.json",
+      "childExitCode": 0,
+      "settingsPreviewEvidence": {
+        "found": true,
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "1px",
+        "contrastRatio": 12.722854488142998,
+        "previewText": "{ \"r6FixtureId\": \"MARLIN-SETTINGS-R6\", \"baudrate\": 250000, \"max_feedrate\": { \"x\": 300 } }",
+        "rect": {
+          "x": 329,
+          "y": 239,
+          "width": 782,
+          "height": 450
+        },
+        "panelText": "Refresh { \"r6FixtureId\": \"MARLIN-SETTINGS-R6\", \"baudrate\": 250000, \"max_feedrate\": { \"x\": 300 } }",
+        "screenshot": "screenshots/controller-settings-preview-marlin-light-1440x900.png",
+        "theme": "light",
+        "controller": "Marlin"
+      },
+      "outgoingCommands": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "warnings": [
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13400439000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13400439000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13400439000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13400439000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        }
+      ],
+      "screenshot": "screenshots/controller-settings-preview-marlin-light-1440x900.png",
+      "stderrExcerpt": ""
+    },
+    {
+      "type": "Marlin",
+      "theme": "dark",
+      "key": "marlin-dark",
+      "status": "passed",
+      "report": "controller-settings-preview-marlin-dark.json",
+      "childExitCode": 0,
+      "settingsPreviewEvidence": {
+        "found": true,
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "1px",
+        "contrastRatio": 12.722854488142998,
+        "previewText": "{ \"r6FixtureId\": \"MARLIN-SETTINGS-R6\", \"baudrate\": 250000, \"max_feedrate\": { \"x\": 300 } }",
+        "rect": {
+          "x": 329,
+          "y": 239,
+          "width": 782,
+          "height": 450
+        },
+        "panelText": "Refresh { \"r6FixtureId\": \"MARLIN-SETTINGS-R6\", \"baudrate\": 250000, \"max_feedrate\": { \"x\": 300 } }",
+        "screenshot": "screenshots/controller-settings-preview-marlin-dark-1440x900.png",
+        "theme": "dark",
+        "controller": "Marlin"
+      },
+      "outgoingCommands": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "warnings": [
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x1340044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x1340044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x1340044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x1340044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        }
+      ],
+      "screenshot": "screenshots/controller-settings-preview-marlin-dark-1440x900.png",
+      "stderrExcerpt": ""
+    }
+  ],
+  "startedAt": "2026-10-06T13:43:20.598Z",
+  "updatedAt": "2026-10-06T13:43:42.466Z",
+  "fixedDarkThemeInvariants": {
+    "grbl": {
+      "sameFixedDarkColorsAcrossThemes": true,
+      "light": {
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "contrastRatio": 12.722854488142998
+      },
+      "dark": {
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "contrastRatio": 12.722854488142998
+      }
+    },
+    "marlin": {
+      "sameFixedDarkColorsAcrossThemes": true,
+      "light": {
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "contrastRatio": 12.722854488142998
+      },
+      "dark": {
+        "background": "rgb(7, 7, 7)",
+        "foreground": "color(srgb 1 1 1 / 0.8)",
+        "border": "rgb(82, 82, 82)",
+        "contrastRatio": 12.722854488142998
+      }
+    }
+  },
+  "completedAt": "2026-10-06T13:43:42.466Z"
+}

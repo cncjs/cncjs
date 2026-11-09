@@ -1,0 +1,77 @@
+{
+  "sourceBase": "8290d4ca2c6d203d72048417651d65b796e1521f",
+  "targetVersion": "3.0.0-alpha.1",
+  "checks": {
+    "immutableInstall": 0,
+    "frontend": {
+      "exitCode": 0,
+      "suites": 78,
+      "tests": 504
+    },
+    "lint": {
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 4
+    },
+    "migrationGuard": {
+      "files": 361,
+      "domainClasses": 18,
+      "violations": 0,
+      "fixtureTests": 68
+    },
+    "node": {
+      "exitCode": 0,
+      "suites": 22,
+      "tests": 641,
+      "forceExit": false,
+      "exclusion": "SocketConnection, prior user direction",
+      "sandboxInitialFailure": "loopback listen EPERM; approved retry passed"
+    },
+    "developmentBuild": {
+      "exitCode": 0,
+      "warnings": 1
+    },
+    "semanticTokens": {
+      "distinctLiteralTokens": 21,
+      "modes": [
+        "light",
+        "dark"
+      ],
+      "invalidTokens": 0,
+      "unresolvedReferences": 0,
+      "cssVariables": 2142
+    },
+    "stylusVariables": {
+      "variables": 21,
+      "missing": 0
+    }
+  },
+  "productionBuild": {
+    "location": "CI only",
+    "status": "success",
+    "revision": "c82280d91fd0b46436e936dfa09c1be9ddd62815",
+    "run": "https://github.com/cheton/cncjs/actions/runs/37116468021",
+    "packageReview": "package-review.json"
+  },
+  "browser": "No new V3 browser execution or screenshots; R6 evidence is historical, not V3 visual validation",
+  "preservedDomainColors": [
+    "WebGL trajectory/geometry",
+    "probe diagrams/material/status arrows",
+    "camera reticles",
+    "explicit user-selected Widget palettes",
+    "syntax colors"
+  ],
+  "protectedRuntimeChanges": 0,
+  "alphaCompatibility": [
+    "explicit @emotion/styled peer",
+    "icons Emotion peers via version-scoped Yarn packageExtensions",
+    "TonicProvider useCSSVariables",
+    "correct three riskLevel gradient reference paths",
+    "document root color scheme ownership/cleanup"
+  ],
+  "platformWorkflow": {
+    "status": "in_progress at snapshot",
+    "run": "https://github.com/cheton/cncjs/actions/runs/37116471004",
+    "completionClaim": false
+  }
+}

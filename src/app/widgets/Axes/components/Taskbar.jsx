@@ -1,20 +1,21 @@
 import React from 'react';
-import TaskbarButton from './TaskbarButton';
+import { Box } from '@tonic-ui/react';
 
+/**
+ * @param {{ children?: React.ReactNode, style?: object }} props
+ * @returns {JSX.Element}
+ */
 function Taskbar({ children, style, ...props }) {
   return (
-    <div
+    <Box
       {...props}
-      style={{
-        borderTop: '1px solid #ddd',
-        ...style
-      }}
+      borderTop="1px solid"
+      borderColor="border.secondary"
+      style={style}
     >
       {children}
-    </div>
+    </Box>
   );
 }
-
-Taskbar.Button = TaskbarButton;
 
 export default Taskbar;

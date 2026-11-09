@@ -1,0 +1,1134 @@
+{
+  "browserVersion": "151.0.7922.34",
+  "results": [
+    {
+      "name": "Widget Manager modal focus trap/return",
+      "status": "passed",
+      "detail": {
+        "title": "Widgets\nVisualizer Widget\nThis widget visualizes a G-code file and simulates the tool path.\nConnection Widget\nThis widget lets you establish a connection to a s",
+        "focusInside": true,
+        "tabStayedInside": true,
+        "focusReturned": true
+      }
+    },
+    {
+      "name": "enable inactive Custom Widget to render all 16 framed widgets",
+      "status": "passed",
+      "detail": {
+        "customVisible": true,
+        "inactiveCountLabel": "Manage Widgets (0)"
+      }
+    },
+    {
+      "name": "workspace 1440x900 DPR1",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "widgetRegions": [
+          "Connection widget",
+          "Console widget",
+          "Custom widget",
+          "Grbl widget",
+          "Marlin widget",
+          "Smoothie widget",
+          "TinyG widget",
+          "Webcam widget",
+          "3D Visualizer widget",
+          "Autolevel Widget",
+          "Axes widget",
+          "G-code widget",
+          "Laser widget",
+          "Macro widget",
+          "Probe widget",
+          "Spindle widget",
+          "Tool widget"
+        ],
+        "canvasCount": 1,
+        "overflowX": false,
+        "mainRect": {
+          "x": 72,
+          "width": 1368,
+          "right": 1440
+        },
+        "visualizerWidgetRect": {
+          "x": 432,
+          "width": 648,
+          "right": 1080
+        },
+        "visualizerHostRect": {
+          "x": 432,
+          "width": 648,
+          "right": 1080,
+          "clientWidth": 648
+        },
+        "canvasRect": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "keyWidgetRects": {
+          "Connection widget": {
+            "x": 84,
+            "y": 96,
+            "width": 335,
+            "height": 527,
+            "right": 419,
+            "bottom": 623
+          },
+          "Console widget": {
+            "x": 84,
+            "y": 631,
+            "width": 335,
+            "height": 75,
+            "right": 419,
+            "bottom": 706
+          },
+          "Webcam widget": {
+            "x": 84,
+            "y": 981,
+            "width": 335,
+            "height": 236,
+            "right": 419,
+            "bottom": 1217
+          },
+          "Custom widget": {
+            "x": 84,
+            "y": 714,
+            "width": 335,
+            "height": 75,
+            "right": 419,
+            "bottom": 789
+          },
+          "Axes widget": {
+            "x": 1093,
+            "y": 453.1875,
+            "width": 335,
+            "height": 436,
+            "right": 1428,
+            "bottom": 889.1875
+          }
+        },
+        "panelActions": [
+          {
+            "x": 135.5,
+            "right": 324,
+            "width": 188.5,
+            "label": "Manage Widgets (0)"
+          },
+          {
+            "x": 1188,
+            "right": 1376.5,
+            "width": 188.5,
+            "label": "Manage Widgets (0)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "workspace 768x900 DPR1",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 768,
+          "height": 900
+        },
+        "dpr": 1,
+        "widgetRegions": [
+          "Connection widget",
+          "Console widget",
+          "Custom widget",
+          "Grbl widget",
+          "Marlin widget",
+          "Smoothie widget",
+          "TinyG widget",
+          "Webcam widget",
+          "3D Visualizer widget",
+          "Autolevel Widget",
+          "Axes widget",
+          "G-code widget",
+          "Laser widget",
+          "Macro widget",
+          "Probe widget",
+          "Spindle widget",
+          "Tool widget"
+        ],
+        "canvasCount": 1,
+        "overflowX": false,
+        "mainRect": {
+          "x": 72,
+          "width": 696,
+          "right": 768
+        },
+        "visualizerWidgetRect": {
+          "x": 240,
+          "width": 360,
+          "right": 600
+        },
+        "visualizerHostRect": {
+          "x": 240,
+          "width": 360,
+          "right": 600,
+          "clientWidth": 360
+        },
+        "canvasRect": {
+          "x": 240,
+          "y": 91,
+          "width": 360,
+          "height": 755,
+          "right": 600,
+          "bottom": 846
+        },
+        "keyWidgetRects": {
+          "Connection widget": {
+            "x": 84,
+            "y": 128,
+            "width": 143,
+            "height": 667,
+            "right": 227,
+            "bottom": 795
+          },
+          "Console widget": {
+            "x": 84,
+            "y": 803,
+            "width": 143,
+            "height": 95,
+            "right": 227,
+            "bottom": 898
+          },
+          "Webcam widget": {
+            "x": 84,
+            "y": 1193,
+            "width": 143,
+            "height": 268,
+            "right": 227,
+            "bottom": 1461
+          },
+          "Custom widget": {
+            "x": 84,
+            "y": 906,
+            "width": 143,
+            "height": 95,
+            "right": 227,
+            "bottom": 1001
+          },
+          "Axes widget": {
+            "x": 613,
+            "y": 713.15625,
+            "width": 143,
+            "height": 436,
+            "right": 756,
+            "bottom": 1149.15625
+          }
+        },
+        "panelActions": [
+          {
+            "x": 135.5,
+            "right": 227,
+            "width": 91.5,
+            "label": "Manage Widgets (0)"
+          },
+          {
+            "x": 613,
+            "right": 704.5,
+            "width": 91.5,
+            "label": "Manage Widgets (0)"
+          }
+        ],
+        "axesActionReachability": {
+          "disabled": true,
+          "scrollLeft": 192,
+          "containerRight": 768,
+          "x": 676.171875,
+          "right": 693.671875
+        },
+        "leftTabReachability": {
+          "focused": true,
+          "scrollLeft": 128,
+          "x": 87.890625,
+          "right": 175.125
+        }
+      }
+    },
+    {
+      "name": "appearance device/dark/light menu choices at both viewports",
+      "status": "passed",
+      "detail": [
+        {
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "choice": "Dark theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "header": {
+                "background": "rgb(33, 33, 33)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(21, 21, 21)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "main": {
+                "background": "rgb(21, 21, 21)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(33, 33, 33)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 66,
+                    "g": 66,
+                    "b": 66,
+                    "a": 1
+                  },
+                  "contrast": 10.049743700462349
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.6
+                  },
+                  "background": {
+                    "r": 48,
+                    "g": 48,
+                    "b": 48,
+                    "a": 1
+                  },
+                  "contrast": 5.827379897837428
+                }
+              ]
+            }
+          }
+        },
+        {
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "choice": "Light theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "header": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "main": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 201,
+                    "g": 201,
+                    "b": 201,
+                    "a": 1
+                  },
+                  "contrast": 12.68156835782328
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.65
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 6.690723694901061
+                }
+              ]
+            }
+          }
+        },
+        {
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "choice": "Use device theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "header": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "main": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 201,
+                    "g": 201,
+                    "b": 201,
+                    "a": 1
+                  },
+                  "contrast": 12.68156835782328
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.65
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 6.690723694901061
+                }
+              ]
+            }
+          }
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 900
+          },
+          "choice": "Dark theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "header": {
+                "background": "rgb(33, 33, 33)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(21, 21, 21)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "main": {
+                "background": "rgb(21, 21, 21)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(33, 33, 33)",
+                "color": "rgba(255, 255, 255, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 66,
+                    "g": 66,
+                    "b": 66,
+                    "a": 1
+                  },
+                  "contrast": 10.049743700462349
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 13.78374846958839
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255,
+                    "a": 0.6
+                  },
+                  "background": {
+                    "r": 33,
+                    "g": 33,
+                    "b": 33,
+                    "a": 1
+                  },
+                  "contrast": 6.630169912719853
+                }
+              ]
+            }
+          }
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 900
+          },
+          "choice": "Light theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "header": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "main": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 201,
+                    "g": 201,
+                    "b": 201,
+                    "a": 1
+                  },
+                  "contrast": 12.68156835782328
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.65
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 6.690723694901061
+                }
+              ]
+            }
+          }
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 900
+          },
+          "choice": "Use device theme",
+          "colors": {
+            "selectors": {
+              "body": {
+                "background": "rgb(34, 34, 34)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "header": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "nav": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "main": {
+                "background": "rgb(255, 255, 255)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              },
+              "[aria-label=\"Application header\"]": {
+                "background": "rgb(242, 242, 242)",
+                "color": "rgba(0, 0, 0, 0.92)"
+              }
+            },
+            "samples": {
+              "Connection widget": [
+                {
+                  "text": "Connection",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Serial Port",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                  },
+                  "background": {
+                    "r": 201,
+                    "g": 201,
+                    "b": 201,
+                    "a": 1
+                  },
+                  "contrast": 12.68156835782328
+                }
+              ],
+              "Axes widget": [
+                {
+                  "text": "Axes",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Axis",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                }
+              ],
+              "Autolevel Widget": [
+                {
+                  "text": "🎯PROBE NEW SURFACESet up the probe area and pro",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.92
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 16.546592616578526
+                },
+                {
+                  "text": "Set up the probe area and probe the work surface",
+                  "foreground": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 0.65
+                  },
+                  "background": {
+                    "r": 242,
+                    "g": 242,
+                    "b": 242,
+                    "a": 1
+                  },
+                  "contrast": 6.690723694901061
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "keyboard navigation menu open and Escape close",
+      "status": "passed",
+      "detail": {
+        "marginBefore": "72px",
+        "marginExpanded": "240px",
+        "marginRestored": "72px"
+      }
+    },
+    {
+      "name": "bulk and single widget collapse/expand",
+      "status": "passed",
+      "detail": {
+        "expandCount": 1,
+        "connectionCollapsed": 1,
+        "connectionRestored": 1,
+        "singleCollapsed": 1,
+        "restored": 1
+      }
+    },
+    {
+      "name": "Console fullscreen enter and exit",
+      "status": "passed",
+      "detail": {
+        "exitCount": 1,
+        "restored": 1
+      }
+    },
+    {
+      "name": "Connection controller tabs switch",
+      "status": "passed",
+      "detail": [
+        {
+          "tab": "Grbl",
+          "isSelected": true,
+          "ariaPressed": null,
+          "ariaSelected": null
+        },
+        {
+          "tab": "Marlin",
+          "isSelected": true,
+          "ariaPressed": null,
+          "ariaSelected": null
+        },
+        {
+          "tab": "Smoothie",
+          "isSelected": true,
+          "ariaPressed": null,
+          "ariaSelected": null
+        },
+        {
+          "tab": "TinyG",
+          "isSelected": true,
+          "ariaPressed": null,
+          "ariaSelected": null
+        }
+      ]
+    }
+  ]
+}

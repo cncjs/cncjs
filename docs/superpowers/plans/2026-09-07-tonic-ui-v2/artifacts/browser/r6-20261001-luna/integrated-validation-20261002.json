@@ -1,0 +1,269 @@
+{
+  "task": "R6 interim integrated source validation",
+  "head": "ae070b9f",
+  "revision": "Final uncommitted R6 source; latest frontend78/501 includes all final component fixes. Subsequent locale cleanup preserves existing values and adds only nine required keys per language.",
+  "recordedAt": "2026-10-02T10:43:48.466772+00:00",
+  "checks": [
+    {
+      "command": "yarn test:frontend --runInBand",
+      "exitCode": 0,
+      "suitesPassed": 78,
+      "testsPassed": 501,
+      "log": "/tmp/cncjs-r6-root-frontend-macro-20261002.log"
+    },
+    {
+      "command": "yarn lint",
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 4,
+      "log": "/tmp/cncjs-r6-root-lint-macro-20261002.log"
+    },
+    {
+      "command": "yarn check:ui-migration",
+      "exitCode": 0,
+      "productionFiles": 361,
+      "domainClasses": 18,
+      "violations": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "check": "protected server/controller/Redux/store diff",
+      "changedFiles": 0
+    },
+    {
+      "command": "yarn test --runInBand --testPathIgnorePatterns SocketConnection --coverage=false --detectOpenHandles --forceExit",
+      "exitCode": 0,
+      "suitesPassed": 20,
+      "testsPassed": 635,
+      "openHandles": 112,
+      "openHandleOrigin": "Inherited GrblSimulator.startPlannerExecutor setInterval at grbl-simulator/grbl-simulator.js:346",
+      "cleanShutdownProven": false,
+      "log": "/tmp/cncjs-r6-root-node-20261002.log"
+    }
+  ],
+  "scope": "Source checks do not close unexecuted R6 browser gates. Later source changes require appropriate revalidation.",
+  "productionBuild": "not run, per local build rule; CI gate remains W3",
+  "fixesToTestSetup": [
+    "Four Workspace Tonic mocks now include the theme hook fixture.",
+    "Two Visualizer characterization suites isolate profile-list Axios transport while retaining the real Query owner."
+  ],
+  "latestSourceChecks": {
+    "recordedAt": "2026-10-02T09:53:38.050223+00:00",
+    "revision": "Uncommitted R6 source through Macro valid menu composition and Enter/Space variable insertion regressions; later edits require revalidation",
+    "checks": [
+      {
+        "command": "yarn test:frontend --runInBand",
+        "exitCode": 0,
+        "suitesPassed": 78,
+        "testsPassed": 501,
+        "log": "/tmp/cncjs-r6-root-frontend-macro-20261002.log"
+      },
+      {
+        "command": "yarn lint",
+        "exitCode": 0,
+        "errors": 0,
+        "existingWarnings": 4,
+        "log": "/tmp/cncjs-r6-root-lint-macro-20261002.log"
+      },
+      {
+        "command": "yarn check:ui-migration",
+        "exitCode": 0,
+        "productionFiles": 361,
+        "domainClasses": 18,
+        "violations": 0
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      },
+      {
+        "check": "protected server/controller/Redux/store diff",
+        "changedFiles": 0
+      }
+    ],
+    "developmentCompilation": {
+      "log": "/tmp/cncjs-r6-20261001/lifecycle-r6-restart.log",
+      "observation": "Latest webpack5.75.0 compilation succeeded with one existing Workspace warning; R6-owned lifecycle subsequently stopped and ports closed. No production build.",
+      "recordedAt": "2026-10-02T02:35:57.324451+00:00"
+    }
+  },
+  "sourceCheckHistory": [
+    {
+      "recordedAt": "2026-10-02T02:15:18.561456+00:00",
+      "revision": "Uncommitted working tree including route resize, render timing, and degenerate Cuboid fixes; later edits require revalidation",
+      "checks": [
+        {
+          "command": "yarn test:frontend --runInBand",
+          "exitCode": 0,
+          "suitesPassed": 76,
+          "testsPassed": 496,
+          "log": "/tmp/cncjs-r6-root-frontend-20261002-latest.log"
+        },
+        {
+          "command": "yarn lint",
+          "exitCode": 0,
+          "errors": 0,
+          "existingWarnings": 4,
+          "log": "/tmp/cncjs-r6-root-lint-20261002-latest.log"
+        },
+        {
+          "command": "yarn check:ui-migration",
+          "exitCode": 0,
+          "productionFiles": 361,
+          "domainClasses": 18,
+          "violations": 0
+        },
+        {
+          "command": "git diff --check",
+          "exitCode": 0
+        },
+        {
+          "check": "protected server/controller/Redux/store diff",
+          "changedFiles": 0
+        }
+      ],
+      "developmentCompilation": {
+        "log": "/tmp/cncjs-r6-20261001/lifecycle-r6-restart.log",
+        "observation": "Latest webpack 5.75.0 compilation succeeds with one existing Workspace ESLint warning; owned development lifecycle continues running. This is not a production build or a lifecycle exit check.",
+        "recordedAt": "2026-10-02T02:35:57.324451+00:00"
+      }
+    },
+    {
+      "recordedAt": "2026-10-02T03:10:04.749890+00:00",
+      "revision": "Uncommitted R6 fixes including current-state system appearance comparison in GlobalProvider; later edits require revalidation",
+      "checks": [
+        {
+          "command": "yarn test:frontend --runInBand",
+          "exitCode": 0,
+          "suitesPassed": 77,
+          "testsPassed": 498,
+          "log": "/tmp/cncjs-r6-root-frontend-20261002-theme.log"
+        },
+        {
+          "command": "yarn lint",
+          "exitCode": 0,
+          "errors": 0,
+          "existingWarnings": 4,
+          "log": "/tmp/cncjs-r6-root-lint-20261002-theme.log"
+        },
+        {
+          "command": "yarn check:ui-migration",
+          "exitCode": 0,
+          "productionFiles": 361,
+          "domainClasses": 18,
+          "violations": 0
+        },
+        {
+          "command": "git diff --check",
+          "exitCode": 0
+        },
+        {
+          "check": "protected server/controller/Redux/store diff",
+          "changedFiles": 0
+        }
+      ],
+      "developmentCompilation": {
+        "log": "/tmp/cncjs-r6-20261001/lifecycle-r6-restart.log",
+        "observation": "Latest webpack 5.75.0 compilation succeeds with one existing Workspace ESLint warning; owned development lifecycle continues running. This is not a production build or a lifecycle exit check.",
+        "recordedAt": "2026-10-02T02:35:57.324451+00:00"
+      }
+    },
+    {
+      "recordedAt": "2026-10-02T09:21:12.054508+00:00",
+      "revision": "Uncommitted R6 source through Webcam in-tree settings modal and live forked-widget propagation regression; later edits require revalidation",
+      "checks": [
+        {
+          "command": "yarn test:frontend --runInBand",
+          "exitCode": 0,
+          "suitesPassed": 78,
+          "testsPassed": 499,
+          "log": "/tmp/cncjs-r6-root-frontend-webcam-20261002.log"
+        },
+        {
+          "command": "yarn lint",
+          "exitCode": 0,
+          "errors": 0,
+          "existingWarnings": 4,
+          "log": "/tmp/cncjs-r6-root-lint-webcam-20261002.log"
+        },
+        {
+          "command": "yarn check:ui-migration",
+          "exitCode": 0,
+          "productionFiles": 361,
+          "domainClasses": 18,
+          "violations": 0
+        },
+        {
+          "command": "git diff --check",
+          "exitCode": 0
+        },
+        {
+          "check": "protected server/controller/Redux/store diff",
+          "changedFiles": 0
+        }
+      ],
+      "developmentCompilation": {
+        "log": "/tmp/cncjs-r6-20261001/lifecycle-r6-restart.log",
+        "observation": "Latest webpack 5.75.0 compilation succeeds with one existing Workspace ESLint warning; owned development lifecycle continues running. This is not a production build or a lifecycle exit check.",
+        "recordedAt": "2026-10-02T02:35:57.324451+00:00"
+      }
+    }
+  ],
+  "historicalInitialChecks": [
+    {
+      "command": "yarn test:frontend --runInBand",
+      "exitCode": 0,
+      "suitesPassed": 75,
+      "testsPassed": 491,
+      "log": "/tmp/cncjs-r6-root-frontend-20261002-final.log"
+    },
+    {
+      "command": "yarn lint",
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 4,
+      "log": "/tmp/cncjs-r6-root-lint-20261002.log"
+    },
+    {
+      "command": "yarn check:ui-migration",
+      "exitCode": 0,
+      "productionFiles": 361,
+      "domainClasses": 18,
+      "violations": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "check": "protected server/controller/Redux/store diff",
+      "changedFiles": 0
+    },
+    {
+      "command": "yarn test --runInBand --testPathIgnorePatterns SocketConnection --coverage=false --detectOpenHandles --forceExit",
+      "exitCode": 0,
+      "suitesPassed": 20,
+      "testsPassed": 635,
+      "openHandles": 112,
+      "openHandleOrigin": "Inherited GrblSimulator.startPlannerExecutor setInterval at grbl-simulator/grbl-simulator.js:346",
+      "cleanShutdownProven": false,
+      "log": "/tmp/cncjs-r6-root-node-20261002.log"
+    }
+  ],
+  "finalReview": {
+    "recordedAt": "2026-10-02T10:43:48.466772+00:00",
+    "r6Status": "completed",
+    "matchedPerformance": "matched-performance-comparison-r6.json",
+    "consoleClassification": "console-classification-r6.json",
+    "cleanup": "r6-final-cleanup.json",
+    "localeAudit": "17 JSON files, exactly nine added keys each, all HEAD keys/values preserved",
+    "protectedSourceChangedFiles": 0,
+    "diffCheckExitCode": 0,
+    "productionBuild": "not run; W3 remains todo",
+    "commitPush": "not performed for R6",
+    "temporaryFileFollowUp": "R6 /tmp files deleted after explicit user authorization on2026-10-02; original log paths refer to deleted historical logs. Repository evidence preserved."
+  }
+}

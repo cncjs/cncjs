@@ -1,0 +1,12 @@
+import { chromium } from '/tmp/cncjs-r6-playwright/node_modules/playwright/index.mjs';
+const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await page.goto('http://127.0.0.1:8080/#/workspace', { waitUntil: 'domcontentloaded' });
+await page.getByRole('region', { name: '3D Visualizer widget', exact: true }).waitFor();
+await page.waitForTimeout(1000);
+const before = await page.evaluate(() => ({ hash: location.hash, metrics: window.__CNCJS_VISUALIZER_METRICS__ }));
+await page.evaluate(() => { location.hash = '/login'; });
+await page.waitForTimeout(1500);
+const after = await page.evaluate(() => ({ hash: location.hash, metrics: window.__CNCJS_VISUALIZER_METRICS__, text: document.body.innerText.slice(0, 1600), loginInputs: [...document.querySelectorAll('input')].map(e => ({ type: e.type, name: e.name, aria: e.getAttribute('aria-label'), placeholder: e.placeholder })) }));
+console.log(JSON.stringify({ before, after }, null, 2));
+await browser.close();

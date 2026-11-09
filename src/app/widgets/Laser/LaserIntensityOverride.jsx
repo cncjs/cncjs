@@ -1,18 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Space,
+  Box,
+  Button,
+  ButtonGroup,
+  Flex,
   Text,
   TextLabel,
 } from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup } from '@app/components/Buttons';
-import Center from '@app/components/Center';
-import Clickable from '@app/components/Clickable';
-import FormGroup from '@app/components/FormGroup';
-import RepeatableButton from '@app/components/RepeatableButton';
 import {
   GRBL,
   MARLIN,
@@ -22,81 +20,199 @@ import {
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import { none } from '@app/lib/utils';
-import OverrideReadout from './components/OverrideReadout';
 
+const REPEAT_DELAY = 500;
+const REPEAT_INTERVAL = Math.floor(1000 / 15);
+
+function useRepeatable(onAction, disabled) {
+  const delayTimer = useRef(null);
+  const intervalTimer = useRef(null);
+  const active = useRef(false);
+  const action = useRef(onAction);
+  const releaseHandler = useRef(null);
+
+  useEffect(() => {
+    action.current = onAction;
+  }, [onAction]);
+
+  const clear = useCallback(() => {
+    if (delayTimer.current) {
+      clearTimeout(delayTimer.current);
+      delayTimer.current = null;
+    }
+    if (intervalTimer.current) {
+      clearInterval(intervalTimer.current);
+      intervalTimer.current = null;
+    }
+    if (releaseHandler.current) {
+      document.documentElement.removeEventListener('mouseup', releaseHandler.current);
+      releaseHandler.current = null;
+    }
+    active.current = false;
+  }, []);
+
+  const release = useCallback(() => {
+    if (!active.current || disabled) {
+      return;
+    }
+    clear();
+    action.current();
+  }, [clear, disabled]);
+
+  const start = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    clear();
+    active.current = true;
+    releaseHandler.current = release;
+    document.documentElement.addEventListener('mouseup', release);
+    delayTimer.current = setTimeout(() => {
+      if (!active.current) {
+        return;
+      }
+      action.current();
+      intervalTimer.current = setInterval(() => {
+        if (active.current) {
+          action.current();
+        }
+      }, REPEAT_INTERVAL);
+    }, REPEAT_DELAY);
+  }, [clear, disabled, release]);
+
+  useEffect(() => {
+    if (disabled) {
+      clear();
+    }
+    return clear;
+  }, [clear, disabled]);
+
+  return {
+    onMouseDown: start,
+    onTouchStart: start,
+    onTouchCancel: release,
+    onTouchEnd: release,
+    onBlur: clear,
+  };
+}
+
+function RepeatableButton({
+  onClick,
+  onKeyDown,
+  disabled = false,
+  children,
+  ...props
+}) {
+  const repeatableProps = useRepeatable(onClick, disabled);
+  const handleKeyDown = (event) => {
+    onKeyDown?.(event);
+
+    if (event.defaultPrevented || disabled) {
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
+  return (
+    <Button
+      type="button"
+      disabled={disabled}
+      {...props}
+      {...repeatableProps}
+      onKeyDown={handleKeyDown}
+    >
+      {children}
+    </Button>
+  );
+}
+
+/**
+ * @param {{ value: number, disabled?: boolean }} props
+ */
 function LaserIntensityOverride({
   value,
+  disabled = false,
 }) {
   return (
-    <FormGroup>
+    <Box mb="4x">
       <TextLabel mb="2x">
         {i18n._('Laser Intensity Control')}
       </TextLabel>
-      <Center vertical>
-        <FontAwesomeIcon icon="bolt" fixedWidth />
-        <Space width={8} />
-        <OverrideReadout>
+      <Flex alignItems="center" gap="2x">
+        <Box
+          as="output"
+          aria-label={i18n._('Laser Intensity Control')}
+          border={1}
+          borderColor="border.secondary"
+          display="flex"
+          alignItems="center"
+          justifyContent="flex-end"
+          flex="none"
+          width="45px"
+          height="24px"
+          px="1x"
+          fontSize="sm"
+        >
           {(value >= 0) ? `${value}%` : none}
-        </OverrideReadout>
-        <Space width={8} />
-        <ButtonGroup sm>
+        </Box>
+        <ButtonGroup
+          size="sm"
+          variant="secondary"
+          flex="1"
+          minWidth="0"
+          sx={{ '& > button': { flex: 1, minWidth: 0, px: '1x' } }}
+        >
           <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', -10);
-            }}
-            style={{ fontSize: '.75rem' }}
+            disabled={disabled}
+            onClick={() => controller.command('spindle_override', -10)}
+            aria-label="-10%"
+            sx={{ fontSize: '.75rem' }}
           >
             <FontAwesomeIcon icon="arrow-down" fixedWidth />
             <Text>{i18n._('-10%')}</Text>
           </RepeatableButton>
           <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', -1);
-            }}
-            style={{ fontSize: '.66rem' }}
+            disabled={disabled}
+            onClick={() => controller.command('spindle_override', -1)}
+            aria-label="-1%"
+            sx={{ fontSize: '.66rem' }}
           >
             <FontAwesomeIcon icon="arrow-down" fixedWidth />
             <Text>{i18n._('-1%')}</Text>
           </RepeatableButton>
           <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', 1);
-            }}
-            style={{ fontSize: '.66rem' }}
+            disabled={disabled}
+            onClick={() => controller.command('spindle_override', 1)}
+            aria-label="1%"
+            sx={{ fontSize: '.66rem' }}
           >
             <FontAwesomeIcon icon="arrow-up" fixedWidth />
             <Text>{i18n._('1%')}</Text>
           </RepeatableButton>
           <RepeatableButton
-            onClick={() => {
-              controller.command('spindle_override', 10);
-            }}
-            style={{ fontSize: '.75rem' }}
+            disabled={disabled}
+            onClick={() => controller.command('spindle_override', 10)}
+            aria-label="10%"
+            sx={{ fontSize: '.75rem' }}
           >
             <FontAwesomeIcon icon="arrow-up" fixedWidth />
             <Text>{i18n._('10%')}</Text>
           </RepeatableButton>
+          <Button
+            type="button"
+            aria-label="Reset"
+            disabled={disabled}
+            onClick={() => controller.command('spindle_override', 0)}
+          >
+            <FontAwesomeIcon icon="undo" fixedWidth />
+          </Button>
         </ButtonGroup>
-        <Space width={8} />
-        <Clickable
-          aria-label="Reset"
-          onClick={() => {
-            controller.command('spindle_override', 0);
-          }}
-        >
-          {({ hovered }) => (
-            <FontAwesomeIcon
-              icon="undo"
-              fixedWidth
-              style={{
-                color: '#222',
-                opacity: hovered ? 1 : 0.5,
-              }}
-            />
-          )}
-        </Clickable>
-      </Center>
-    </FormGroup>
+      </Flex>
+    </Box>
   );
 }
 

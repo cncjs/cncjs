@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-10-02T13:57:48.041520+00:00",
+  "testedRevision": "W3 uncommitted source after Spinner, dependency, guard, bootstrap-template and production-entry changes",
+  "checks": [
+    {
+      "command": "yarn install --immutable",
+      "exitCode": 0,
+      "log": "immutable-install-approved.log",
+      "initialFailure": "Sandbox blocked existing pre-push package hook writes; approved retry passed"
+    },
+    {
+      "command": "yarn test:ui-migration",
+      "exitCode": 0,
+      "suites": 1,
+      "tests": 68,
+      "log": "guard-green.log"
+    },
+    {
+      "command": "yarn check:ui-migration",
+      "exitCode": 0,
+      "files": 361,
+      "domainClasses": 18,
+      "violations": 0,
+      "log": "migration-check-final.log"
+    },
+    {
+      "command": "yarn test:frontend --runInBand",
+      "exitCode": 0,
+      "suites": 78,
+      "tests": 501,
+      "log": "frontend-spinner.log.gz"
+    },
+    {
+      "command": "yarn lint",
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 4,
+      "log": "lint-final.log"
+    },
+    {
+      "command": "yarn test --runInBand --testPathIgnorePatterns SocketConnection --coverage=false --detectOpenHandles",
+      "exitCode": 0,
+      "suites": 22,
+      "tests": 641,
+      "openHandles": 0,
+      "log": "node-clean-shutdown.log",
+      "cleanShutdownProven": true
+    },
+    {
+      "command": "production-entry/bootstrap focused regressions",
+      "exitCode": 0,
+      "suites": 2,
+      "tests": 2,
+      "log": "production-entry-green.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "yarn test:frontend --runInBand src/app/pages/Administration/__tests__/ResourceLists.test.jsx",
+      "exitCode": 0,
+      "suites": 1,
+      "tests": 20,
+      "log": "resource-lists-budget.log"
+    }
+  ],
+  "testFirst": {
+    "retiredDependencies": "guard-red.log: four new cases failed; guard-green.log:68passed",
+    "productionEntry": "production-entry-red.log: testing-library/helper imports leaked; green:real config excludes them"
+  },
+  "browserEvidence": "Completed R6 artifacts; no new W3 screenshots claimed",
+  "productionBuild": {
+    "location": "CI only",
+    "status": "success",
+    "revision": "b0612c796e3ddf6aa445933a66047a8aa83db6f5",
+    "run": "https://github.com/cheton/cncjs/actions/runs/37020168380",
+    "evidence": "ci-production-budget-fix.json"
+  },
+  "protectedSourceChanges": 0,
+  "historicalNodeGate": {
+    "command": "yarn test --runInBand --testPathIgnorePatterns SocketConnection --coverage=false --detectOpenHandles --forceExit",
+    "exitCode": 0,
+    "suites": 22,
+    "tests": 641,
+    "openHandles": 112,
+    "log": "node-final.log",
+    "cleanShutdownProven": false
+  },
+  "testFixtureChanges": [
+    "grbl-simulator/__tests__/grbl-simulator.test.js"
+  ]
+}

@@ -1,15 +1,16 @@
+import { Box } from '@tonic-ui/react';
 import _get from 'lodash/get';
 import React from 'react';
 import { connect } from 'react-redux';
 import i18n from '@app/lib/i18n';
-import CollapsibleCard from '@app/components/CollapsibleCard';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import HorizontalForm from '@app/components/HorizontalForm';
 import { nonblankValue } from '@app/lib/utils';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
-import OverflowEllipsis from './components/OverflowEllipsis';
-import Readout from './components/Readout';
+import ReportRow from './components/ReportRow';
+import ReportSection from './components/ReportSection';
 
+/**
+ * @param {{ feedrate?: number, machineState?: string, spindle?: number, tool?: number }} props
+ */
 function StatusReports({
   machineState,
   feedrate,
@@ -18,81 +19,19 @@ function StatusReports({
 }) {
   const config = useWidgetConfig();
   const expanded = config.get('panel.statusReports.expanded');
-  const collapsed = !expanded;
-
   return (
-    <CollapsibleCard
-      easing="ease-out"
-      collapsed={collapsed}
+    <ReportSection
+      isExpanded={Boolean(expanded)}
+      title={i18n._('Status Reports')}
+      onToggle={({ isExpanded }) => config.set('panel.statusReports.expanded', isExpanded)}
     >
-      {({ collapsed, ToggleIcon, Header, Body }) => {
-        const expanded = !collapsed;
-        config.set('panel.statusReports.expanded', expanded);
-
-        return (
-          <Container fluid style={{ width: '100%' }}>
-            <Header>
-              {({ hovered }) => (
-                <Row>
-                  <Col>{i18n._('Status Reports')}</Col>
-                  <Col width="auto">
-                    <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
-                  </Col>
-                </Row>
-              )}
-            </Header>
-            <Body>
-              <HorizontalForm spacing={['.75rem', '.5rem']}>
-                {({ FormContainer, FormRow, FormCol }) => (
-                  <FormContainer>
-                    <FormRow>
-                      <FormCol>
-                        <OverflowEllipsis title={i18n._('State')}>
-                          {i18n._('State')}
-                        </OverflowEllipsis>
-                      </FormCol>
-                      <FormCol style={{ width: '50%' }}>
-                        <Readout>{nonblankValue(machineState)}</Readout>
-                      </FormCol>
-                    </FormRow>
-                    <FormRow>
-                      <FormCol>
-                        <OverflowEllipsis title={i18n._('Feed Rate')}>
-                          {i18n._('Feed Rate')}
-                        </OverflowEllipsis>
-                      </FormCol>
-                      <FormCol style={{ width: '50%' }}>
-                        <Readout>{nonblankValue(feedrate)}</Readout>
-                      </FormCol>
-                    </FormRow>
-                    <FormRow>
-                      <FormCol>
-                        <OverflowEllipsis title={i18n._('Spindle')}>
-                          {i18n._('Spindle')}
-                        </OverflowEllipsis>
-                      </FormCol>
-                      <FormCol style={{ width: '50%' }}>
-                        <Readout>{nonblankValue(spindle)}</Readout>
-                      </FormCol>
-                    </FormRow>
-                    <FormRow>
-                      <FormCol>
-                        <OverflowEllipsis title={i18n._('Tool Number')}>
-                          {i18n._('Tool Number')}
-                        </OverflowEllipsis>
-                      </FormCol>
-                      <FormCol style={{ width: '50%' }}>
-                        <Readout>{nonblankValue(tool)}</Readout>
-                      </FormCol>
-                    </FormRow>
-                  </FormContainer>
-                )}
-              </HorizontalForm>
-            </Body>
-          </Container>
-        );
-      }}
-    </CollapsibleCard>
+      <Box p="3x">
+        <ReportRow label={i18n._('State')}>{nonblankValue(machineState)}</ReportRow>
+        <ReportRow label={i18n._('Feed Rate')}>{nonblankValue(feedrate)}</ReportRow>
+        <ReportRow label={i18n._('Spindle')}>{nonblankValue(spindle)}</ReportRow>
+        <ReportRow label={i18n._('Tool Number')}>{nonblankValue(tool)}</ReportRow>
+      </Box>
+    </ReportSection>
   );
 }
 

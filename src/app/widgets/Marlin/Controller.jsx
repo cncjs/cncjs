@@ -1,79 +1,114 @@
-import PropTypes from 'prop-types';
+import {
+  Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@tonic-ui/react';
+import { RefreshIcon } from '@tonic-ui/react-icons';
 import React from 'react';
-import { Button } from '@app/components/Buttons';
-import Modal from '@app/components/Modal';
-import { Nav, NavItem } from '@app/components/Navs';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
-import styles from './index.styl';
 
-function Controller(props) {
-  const { state, actions } = props;
-  const { activeTab = 'state' } = state.modal.params;
-  const height = Math.max(window.innerHeight / 2, 200);
-
+/**
+ * @param {{
+ *   controllerSettings?: object,
+ *   controllerState?: object,
+ *   onClose: () => void,
+ * }} props
+ */
+function Controller({ controllerSettings, controllerState, onClose }) {
   return (
-    <Modal size="lg" onClose={actions.closeModal}>
-      <Modal.Header>
-        <Modal.Title>
-          Marlin
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Nav
-          navStyle="tabs"
-          activeKey={activeTab}
-          onSelect={(eventKey, event) => {
-            actions.updateModalParams({ activeTab: eventKey });
-          }}
-          style={{ marginBottom: 10 }}
-        >
-          <NavItem eventKey="state">{i18n._('Controller State')}</NavItem>
-          <NavItem eventKey="settings">{i18n._('Controller Settings')}</NavItem>
-        </Nav>
-        <div className={styles.navContent} style={{ height: height }}>
-          {activeTab === 'state' && (
-            <pre className={styles.pre}>
-              <code>{JSON.stringify(state.controller.state, null, 4)}</code>
-            </pre>
-          )}
-          {activeTab === 'settings' && (
-            <div>
-              <Button
-                xs
-                btnStyle="default"
-                style={{
-                  position: 'absolute',
-                  right: 10,
-                  top: 10
-                }}
-                onClick={event => {
-                  controller.writeln('$#'); // Parameters
-                  controller.writeln('$$'); // Settings
-                }}
-              >
-                <i className="fa fa-refresh" />
-                {i18n._('Refresh')}
-              </Button>
-              <pre className={styles.pre}>
-                <code>{JSON.stringify(state.controller.settings, null, 4)}</code>
-              </pre>
-            </div>
-          )}
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={actions.closeModal}>
-          {i18n._('Close')}
-        </Button>
-      </Modal.Footer>
+    <Modal
+      autoFocus
+      closeOnEsc
+      closeOnInteractOutside={false}
+      ensureFocus
+      isClosable
+      isOpen
+      size="lg"
+      onClose={onClose}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Marlin</ModalHeader>
+        <ModalBody>
+          <Tabs>
+            <TabList aria-label={i18n._('Marlin controller data')}>
+              <Tab>{i18n._('Controller State')}</Tab>
+              <Tab>{i18n._('Controller Settings')}</Tab>
+            </TabList>
+            <TabPanels px="3x" py="2x">
+              <TabPanel>
+                <ControllerData value={controllerState} />
+              </TabPanel>
+              <TabPanel>
+                <Box sx={previewSx}>
+                  <Box sx={{ position: 'absolute', right: 10, top: 10 }}>
+                    <Button
+                      size="xs"
+                      onClick={() => {
+                        controller.writeln('$#');
+                        controller.writeln('$$');
+                      }}
+                    >
+                      <RefreshIcon aria-hidden="true" size="1em" />
+                      {i18n._('Refresh')}
+                    </Button>
+                  </Box>
+                  <ControllerData value={controllerSettings} bare />
+                </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>{i18n._('Close')}</Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 }
 
-Controller.propTypes = {
-  state: PropTypes.object,
-  actions: PropTypes.object
+/**
+ * @param {{ bare?: boolean, value?: object }} props
+ */
+function ControllerData({ bare = false, value }) {
+  const content = (
+    <Box
+      as="pre"
+      sx={{
+        background: 'inherit',
+        border: 0,
+        color: 'inherit',
+        fontFamily: 'mono',
+        margin: 0,
+        padding: '8px 12px',
+      }}
+    >
+      <code>{JSON.stringify(value, null, 2)}</code>
+    </Box>
+  );
+
+  return bare ? content : <Box sx={previewSx}>{content}</Box>;
+}
+
+const previewSx = {
+  background: 'background._fixed.dark.low',
+  border: 1,
+  borderColor: 'border._fixed.dark.secondary',
+  color: 'text._fixed.dark.primary',
+  height: 'max(50vh, 200px)',
+  overflowY: 'auto',
+  position: 'relative',
 };
 
 export default Controller;

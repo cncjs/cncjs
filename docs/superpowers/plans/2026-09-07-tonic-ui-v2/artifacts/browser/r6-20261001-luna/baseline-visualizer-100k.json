@@ -1,0 +1,4917 @@
+{
+  "baseline": {
+    "sourceCommit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "firstEngineExtractionCommit": "c7ed265f",
+    "devOnlyInstrumentation": "Visualizer.load start through first completed visible WebGLRenderer.render; native input timestamp through first subsequent renderer call",
+    "frontend": "http://127.0.0.1:8082",
+    "backend": "http://127.0.0.1:8000"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-01T17:03:39.437Z",
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "connectionOpen": true
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 284
+  },
+  "warmLoads": [
+    {
+      "index": 1,
+      "uploadToRunEnabledMs": 398,
+      "runEnabledElapsedMs": 313,
+      "metricsLoadSample": {
+        "startedAtMs": 2278.5,
+        "renderedAtMs": 2358.9000000059605,
+        "durationMs": 80.40000000596046,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 7,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 2,
+      "uploadToRunEnabledMs": 347,
+      "runEnabledElapsedMs": 251,
+      "metricsLoadSample": {
+        "startedAtMs": 13037.90000000596,
+        "renderedAtMs": 13118.700000017881,
+        "durationMs": 80.80000001192093,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 161,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 3,
+      "uploadToRunEnabledMs": 293,
+      "runEnabledElapsedMs": 233,
+      "metricsLoadSample": {
+        "startedAtMs": 25417.40000000596,
+        "renderedAtMs": 25492.70000001788,
+        "durationMs": 75.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 347,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 4,
+      "uploadToRunEnabledMs": 308,
+      "runEnabledElapsedMs": 244,
+      "metricsLoadSample": {
+        "startedAtMs": 36249.90000000596,
+        "renderedAtMs": 36331.20000001788,
+        "durationMs": 81.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 505,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 5,
+      "uploadToRunEnabledMs": 362,
+      "runEnabledElapsedMs": 279,
+      "metricsLoadSample": {
+        "startedAtMs": 46970.70000001788,
+        "renderedAtMs": 47058.5,
+        "durationMs": 87.7999999821186,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 659,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3
+    },
+    {
+      "sample": 2,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.7
+    },
+    {
+      "sample": 3,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 4,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8
+    },
+    {
+      "sample": 5,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 1,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 7,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 8,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 9,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 5.8
+    },
+    {
+      "sample": 10,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 11,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 12,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 13,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 14,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 2,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 16,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 17,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 18,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 19,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 20,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 21,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 22,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 23,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 3,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 25,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 26,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 27,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 28,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 29,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 30,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 31,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.9
+    },
+    {
+      "sample": 32,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 4,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 34,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3
+    },
+    {
+      "sample": 35,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 36,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 37,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 38,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 39,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 40,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 41,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 5,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 43,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 44,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 45,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 46,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 47,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.7
+    },
+    {
+      "sample": 48,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 49,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 50,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 6,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 52,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 53,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3
+    },
+    {
+      "sample": 54,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3
+    },
+    {
+      "sample": 55,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 56,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 57,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 58,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 59,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8
+    },
+    {
+      "sample": 7,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 61,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 62,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 63,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 64,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 65,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 66,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8
+    },
+    {
+      "sample": 67,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 68,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 8,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 70,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 71,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 72,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3
+    },
+    {
+      "sample": 73,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 74,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 75,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 76,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 77,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 9,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 79,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 80,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 81,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 82,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 83,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5
+    },
+    {
+      "sample": 84,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 85,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 86,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 10,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 88,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 89,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 90,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 91,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 92,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 93,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 94,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 95,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 11,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 97,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9
+    },
+    {
+      "sample": 98,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 99,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 100,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 101,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 102,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 103,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 104,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 12,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 106,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 107,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 108,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 109,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 110,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 111,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 112,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 113,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 13,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 115,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 116,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8
+    },
+    {
+      "sample": 117,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 118,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 119,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 120,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 121,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.9
+    },
+    {
+      "sample": 122,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 14,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 124,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 125,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9
+    },
+    {
+      "sample": 126,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 127,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1
+    },
+    {
+      "sample": 128,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 129,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 130,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 131,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 15,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 133,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 134,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9
+    },
+    {
+      "sample": 135,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 136,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9
+    },
+    {
+      "sample": 137,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 138,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 139,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    },
+    {
+      "sample": 140,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 16,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 142,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 143,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9
+    },
+    {
+      "sample": 144,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8
+    },
+    {
+      "sample": 145,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2
+    },
+    {
+      "sample": 146,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 147,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6
+    },
+    {
+      "sample": 148,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4
+    },
+    {
+      "sample": 149,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5
+    },
+    {
+      "sample": 17,
+      "action": "Canvas Pan",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    }
+  ],
+  "panSamples": [
+    {
+      "sample": 1,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 2,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 3,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 4,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 5,
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 6,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 7,
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 8,
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 9,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 10,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 11,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 12,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 13,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 14,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 15,
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 16,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    },
+    {
+      "sample": 17,
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cameraMode": "Camera mode: Pan"
+    }
+  ],
+  "interactionErrors": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 42:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 45:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 48:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 51:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:20-24\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 21:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 24:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 25:16-19\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 26:19-23\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 28:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 47:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 57:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 72:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 73:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 203:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 206:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 223:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 240:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 17:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 18:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 22:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 23:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 39:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 42:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 56:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 57:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 58:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 72:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 86:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 103:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 104:21-25\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 105:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 119:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 133:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.development.js 51:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.production.js 15:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button \n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup \n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Widget \n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/s"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header \n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_mod"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `Dropdown`.  \n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu \n    at div\n    at div\n    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)\n    at div\n    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen \n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at Uncontrol"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator \n    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)\n    at div\n    at render\n    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)\n    at div\n    at render\n    at Control (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s=\"%s\" or %s={value.toString()}.%s true compact compact true compact \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n  "
+    },
+    {
+      "type": "error",
+      "text": "Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div \n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/component"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1140050d800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1140050d800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1140050d800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1140050d800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administ"
+    }
+  ],
+  "pageErrors": [],
+  "apiResponses": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/mdi",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tool",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros",
+      "status": 200
+    }
+  ],
+  "requestFailures": [],
+  "summary": {
+    "warmLoads": 5,
+    "loadToFirstRendererMs": {
+      "p50": 80.8,
+      "p95": 86.5,
+      "max": 87.7999999821186
+    },
+    "uploadToRunEnabledMs": {
+      "p50": 347,
+      "p95": 390.8,
+      "max": 398
+    },
+    "interactions": 150,
+    "inputToFirstRendererMs": {
+      "p50": 3.95,
+      "p95": 4.5,
+      "max": 5.8
+    },
+    "panSamples": 17,
+    "panInputToRendererMs": {
+      "p50": 0.6,
+      "p95": 0.7,
+      "max": 0.7
+    },
+    "canvasSize": {
+      "width": 648,
+      "height": 284
+    }
+  },
+  "completedAt": "2026-10-01T17:04:38.794Z",
+  "status": "completed",
+  "finalBaselineMetrics": {
+    "renderSamples": [
+      {
+        "renderedAtMs": 934.9000000059605,
+        "durationMs": 16.599999994039536
+      },
+      {
+        "renderedAtMs": 1199.9000000059605,
+        "durationMs": 7
+      },
+      {
+        "renderedAtMs": 1288.800000011921,
+        "durationMs": 2.199999988079071
+      },
+      {
+        "renderedAtMs": 1378.9000000059605,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 2122.2000000178814,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 2358.9000000059605,
+        "durationMs": 5.5999999940395355
+      },
+      {
+        "renderedAtMs": 2359.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 2601.100000023842,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 2602.600000023842,
+        "durationMs": 1.5
+      },
+      {
+        "renderedAtMs": 2603,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 2886.7000000178814,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 2888,
+        "durationMs": 1.199999988079071
+      },
+      {
+        "renderedAtMs": 2888.4000000059605,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 3101,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 3230.300000011921,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 3353.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 3486.300000011921,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 3493.2000000178814,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 3493.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 3648.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 3648.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 3748.100000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 3748.4000000059605,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 3845.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 3895.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 3944.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 3994.7000000178814,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 3995,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 4093,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4142.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4192.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4193,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 4290.4000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 4340.4000000059605,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 4390.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4390.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 4488.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4488.9000000059605,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 4585.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4635.4000000059605,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 4684.800000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 4685.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 4782,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 4831.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 4831.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 5109.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 5110.600000023842,
+        "durationMs": 1.5
+      },
+      {
+        "renderedAtMs": 5323.300000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 5323.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 5324.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 5591.300000011921,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 5591.5,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 5787.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 5787.9000000059605,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 5788.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 6025,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6025.4000000059605,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 6025.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 6250.9000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6371,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6511.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6652.600000023842,
+        "durationMs": 0.800000011920929
+      },
+      {
+        "renderedAtMs": 6658.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6659.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 6806.4000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6856.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6906.300000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 6906.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7003.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7055.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 7055.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 7157,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 7157.200000017881,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 7253.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7303.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7353.4000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7353.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 7451.300000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7501.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 7551.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7551.4000000059605,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 7648.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 7697.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 7745.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7745.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 7842.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7891.200000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7940.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7940.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 8038.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 8088.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 8089.300000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 8330.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 8331,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 8513,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 8513.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 8513.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 8732.200000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 8732.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 8919.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 8919.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 8920.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 9154.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 9155.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 9155.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 9380.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 9504.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 9617.200000017881,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 9761.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 9770.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 9770.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 9916.800000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 9966.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10016.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10016.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 10114.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10165.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10214.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10264.100000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10264.300000011921,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 10362.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10411.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10461.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 10461.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10558.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10608.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 10657.300000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 10657.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 10754.700000017881,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 10804.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10854,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 10854.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 10950.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 10999.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 11048.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 11049,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 11145.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 11195,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 11244.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 11244.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 11342.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 11391.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 11392.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 11607.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 11607.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 11776.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 11776.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 11777.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 11999.200000017881,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 11999.40000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 12187.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 12188.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 12188.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 12408.200000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 12408.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 12408.800000011921,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 12654.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 12803.200000017881,
+        "durationMs": 4.0999999940395355
+      },
+      {
+        "renderedAtMs": 12806.700000017881,
+        "durationMs": 3.5
+      },
+      {
+        "renderedAtMs": 13118.700000017881,
+        "durationMs": 4.800000011920929
+      },
+      {
+        "renderedAtMs": 13119.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 13293.300000011921,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 13400.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 13554.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 13560.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 13561.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 13704.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 13704.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 13798.100000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 13845.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 13893.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 13939.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 13939.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 14030.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14077.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14124.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14170.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 14170.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14262.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14308.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14355.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14355.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14447.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 14494.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14541.300000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14541.5,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 14633.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 14680.300000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 14726.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 14726.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 14817.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 14863.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 14916,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 14916.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 15007.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 15053.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 15054.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 15297,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 15298.700000017881,
+        "durationMs": 1.5999999940395355
+      },
+      {
+        "renderedAtMs": 15484.300000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 15484.700000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 15484.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 15737,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 15737.300000011921,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 15919.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 15920.40000000596,
+        "durationMs": 1
+      },
+      {
+        "renderedAtMs": 15920.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 16159.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 16160.300000011921,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 16160.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 16394.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 16512.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 16638.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 16761.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 16767.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 16768,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 16914.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 16964.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17014.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17014.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17111.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17160.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17211.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17261.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17262.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 17359.100000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17408.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17458.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17459.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 17555.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17605.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17655.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17655.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 17753,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17803.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 17852.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17853.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 17950,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 17998.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 18047.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 18047.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 18145.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 18193.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 18242.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 18242.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 18338.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 18387.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 18388.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 18621.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 18622.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 18801.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 18801.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 18801.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 19083.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 19083.80000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 19264.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 19265,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 19265.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 19511.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 19511.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 19511.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 19749.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 19923.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 20061.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 20264.100000023842,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 20271.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 20271.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20429.80000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 20430.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 20527.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20585,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 20585.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20682.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20732.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 20780.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 20830.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20830.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 20928.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 20976.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 21025.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 21026.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 21123.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 21173,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 21222.100000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21222.30000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 21318.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21375.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 21375.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 21472,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21521.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 21569.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21570.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 21667.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 21675,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21922.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 21922.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 22144.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 22145.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 22145.5,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 22363.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 22363.70000001788,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 22564.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 22564.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 22565,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 22823.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 22824.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 22824.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 23062,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 23204.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 23326.40000000596,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 23453.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 23477.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 23477.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 23625.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 23675.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 23724.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 23724.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 23821,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 23878.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 23879,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 23976.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24024.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 24073.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24074.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 24170.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24219.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24278.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24279,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 24375.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24424.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24473.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24474,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 24568.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24617.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24666.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24666.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24763.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24811,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 24859.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 24860.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 24954.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 25004.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 25005.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 25276.5,
+        "durationMs": 5.199999988079071
+      },
+      {
+        "renderedAtMs": 25279.70000001788,
+        "durationMs": 3.2000000178813934
+      },
+      {
+        "renderedAtMs": 25492.70000001788,
+        "durationMs": 4.0999999940395355
+      },
+      {
+        "renderedAtMs": 25493.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 25662.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 25664.100000023842,
+        "durationMs": 1.7000000178813934
+      },
+      {
+        "renderedAtMs": 25856.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 25856.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 25856.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 26086.70000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 26087,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 26277,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 26277.90000000596,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 26278.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 26542,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 26542.90000000596,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 26543.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 26773.20000001788,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 26919.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 27058.80000001192,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 27256,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 27267.100000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 27267.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 27421.600000023842,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 27422,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 27529.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 27529.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 27626.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 27676.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 27725.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 27774.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 27775.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 27872.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 27921.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 27972,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 27972.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 28070.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 28119.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28169,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28169.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 28270.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 28270.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 28367.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28417.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28467,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 28467.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 28565.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28614.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28614.70000001788,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 28843.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 28843.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 29038.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 29038.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 29038.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 29280.80000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 29281,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 29473.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 29473.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 29473.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 29708.70000001788,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 29708.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 29709.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 29943.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30089.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30212.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30341.5,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 30347.100000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 30347.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 30494.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30544.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30593.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 30594.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 30691,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 30741.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 30790.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 30840.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 30841,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 30936.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 30986.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31036.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 31036.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 31134.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31184.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31234.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31234.600000023842,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 31330.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 31380.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 31430.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31430.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 31526.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 31575.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31625.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 31625.5,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 31721.80000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 31771.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31820.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31821,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 31918.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 31966.600000023842,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 31967.100000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 32179.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 32180.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 32363.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 32364.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 32364.600000023842,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 32587.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 32587.600000023842,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 32762.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 32762.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 32762.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 33013,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 33013.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 33013.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 33236.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 33384,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 33535.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 33656.90000000596,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 33663.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 33664.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 33810,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 33860.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 33909.10000002384,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 33909.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 34006.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34056.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 34105,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34154.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34154.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 34252.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34302.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34357,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34357.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 34454.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34504.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34553.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34553.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 34650.70000001788,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 34700.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34749.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34750.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 34846.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 34895.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34944.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 34944.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 35041.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 35090.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 35139.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 35140.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 35237.90000000596,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 35287.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 35288.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 35503.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 35504.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 35682.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 35683.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 35683.40000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 35903,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 35903.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 36089.80000001192,
+        "durationMs": 3.699999988079071
+      },
+      {
+        "renderedAtMs": 36092.90000000596,
+        "durationMs": 3.0999999940395355
+      },
+      {
+        "renderedAtMs": 36331.20000001788,
+        "durationMs": 4.300000011920929
+      },
+      {
+        "renderedAtMs": 36331.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 36493,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 36494.30000001192,
+        "durationMs": 1.300000011920929
+      },
+      {
+        "renderedAtMs": 36494.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 36751.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 36752.5,
+        "durationMs": 1.0999999940395355
+      },
+      {
+        "renderedAtMs": 36752.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 36977.70000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 37107.40000000596,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 37231.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 37396.20000001788,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 37402.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 37403,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 37558.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 37558.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 37667.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 37667.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 37791.60000002384,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 37791.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 37893.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 37893.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 37991.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38041.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38091.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38140.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 38141.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 38238.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 38287.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 38336.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38336.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 38434.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 38483.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 38533.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38533.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 38631.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 38681.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 38681.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 38897.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 38898.5,
+        "durationMs": 1.199999988079071
+      },
+      {
+        "renderedAtMs": 39097.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 39098.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 39098.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 39367.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 39367.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 39567.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 39567.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 39568.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 39799.80000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 39800.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 39800.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 40045.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 40192.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 40348.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 40462.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 40469.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 40469.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 40616.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 40665.10000002384,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 40715.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 40715.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 40817.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 40817.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 40914.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 40963.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 41013.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 41062,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 41062.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 41159.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41209,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 41262,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 41262.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 41359.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 41408.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41457.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41458,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 41554,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 41603.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 41659.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41660.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 41756.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41805.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 41854.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 41854.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 41951.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 42001.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 42001.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 42212.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 42212.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 42395.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 42396.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 42396.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 42641.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 42642.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 42824.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 42824.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 42824.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 43054.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 43054.60000002384,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 43054.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 43281.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 43433.80000001192,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 43588.40000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 43704.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 43729,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 43729.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 43876.30000001192,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 43926.70000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 43976.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 43977,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 44075.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44124.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44174.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44224.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44224.60000002384,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 44322.10000002384,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 44370.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 44420.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 44420.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 44518.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44568.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44617.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44617.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 44712.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 44762.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44812.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44812.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 44909.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 44958.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45007.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45007.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 45104,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45153.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45203,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45203.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 45301.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45350.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 45350.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 45559.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 45559.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 45741.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45741.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 45741.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 45979.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 45980.10000002384,
+        "durationMs": 0.20000001788139343
+      },
+      {
+        "renderedAtMs": 46153.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 46153.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 46153.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 46379.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 46379.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 46379.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 46618.5,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 46801,
+        "durationMs": 3.899999976158142
+      },
+      {
+        "renderedAtMs": 46804.70000001788,
+        "durationMs": 3.7000000178813934
+      },
+      {
+        "renderedAtMs": 47058.5,
+        "durationMs": 5.799999982118607
+      },
+      {
+        "renderedAtMs": 47058.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 47276.10000002384,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 47404.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 47529,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 47534.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 47535.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 47678.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 47679.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 47776.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 47776.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 47869.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 47916,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 47962.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 48009.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48009.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 48100.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 48147.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48193.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48193.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 48287.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48333.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48381,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 48381.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 48473,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 48519,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 48565.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48566,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 48657.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 48704.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48750.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48751.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 48843.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48889.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 48889.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 49134.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 49136,
+        "durationMs": 1.5999999940395355
+      },
+      {
+        "renderedAtMs": 49345.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 49346.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 49346.5,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 49594.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 49595,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 49793.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 49794.70000001788,
+        "durationMs": 1
+      },
+      {
+        "renderedAtMs": 49795,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 50048.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50049.70000001788,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 50050,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 50281.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 50432.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50574.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50707.90000000596,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 50714.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50715.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 50862.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50913.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 50963.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 50963.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 51061.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51111.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51161.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51211.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51211.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 51308.40000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 51357.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 51409,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 51409.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 51506.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51554.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 51611.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51612.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 51708.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 51758,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 51807.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 51808.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 51903.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 51951.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 51999.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 51999.80000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 52097,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 52146.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 52196.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 52196.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 52293.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 52343.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 52343.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 52553.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 52554.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 52768.30000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 52768.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 52768.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 52998.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 52998.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 53194.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 53195.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 53195.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 53442.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 53443.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 53443.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 53683.20000001788,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 53838.60000002384,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 53968.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54108.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54112.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54113,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 54259.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54309.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54360.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54360.30000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 54458.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54508.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54558.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54608.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54608.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 54705.70000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 54755.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 54814.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 54814.90000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 54911.80000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 54961.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 55011.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55011.40000000596,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 55109,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 55158.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55208.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55208.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 55305.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55355.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55404.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 55404.5,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 55501.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55551,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 55600.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55600.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 55697.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 55746.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 55747.20000001788,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 55987.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 55988.10000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 56168.80000001192,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 56169,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 56169.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 56408,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 56408.30000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 56592.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 56592.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 56592.80000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 56835.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 56835.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 56835.90000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57074.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 57232.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57357,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 57515.10000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 57520.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57521.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 57668.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 57717.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57767.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57767.40000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 57863.30000001192,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 57914.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 57963.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58012,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 58012.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58108.40000000596,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58157.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 58206.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58206.80000001192,
+        "durationMs": 0.19999998807907104
+      },
+      {
+        "renderedAtMs": 58304.20000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58353.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58403.30000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 58403.70000001788,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58499.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 58548.90000000596,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 58598.5,
+        "durationMs": 0.3999999761581421
+      },
+      {
+        "renderedAtMs": 58598.80000001192,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 58695.60000002384,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 58744.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58744.90000000596,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 58841.60000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 58891,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 58940.70000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 58941,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 59037.20000001788,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 59087.10000002384,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 59087.60000002384,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 59314.40000000596,
+        "durationMs": 4.0999999940395355
+      },
+      {
+        "renderedAtMs": 59317.90000000596,
+        "durationMs": 3.5
+      }
+    ],
+    "loadSamples": [
+      {
+        "startedAtMs": 2278.5,
+        "renderedAtMs": 2358.9000000059605,
+        "durationMs": 80.40000000596046,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 13037.90000000596,
+        "renderedAtMs": 13118.700000017881,
+        "durationMs": 80.80000001192093,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 25417.40000000596,
+        "renderedAtMs": 25492.70000001788,
+        "durationMs": 75.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 36249.90000000596,
+        "renderedAtMs": 36331.20000001788,
+        "durationMs": 81.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 46970.70000001788,
+        "renderedAtMs": 47058.5,
+        "durationMs": 87.7999999821186,
+        "gcodeCharacters": 2379908
+      }
+    ],
+    "pendingLoad": null
+  },
+  "finishedAt": "2026-10-01T17:04:38.863Z"
+}

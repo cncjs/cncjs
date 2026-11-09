@@ -1,0 +1,6987 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-01T16:20:47.036Z",
+  "simulator": {
+    "path": "/tmp/ttyGRBL",
+    "baudRate": 115200
+  },
+  "warmLoads": [
+    {
+      "phase": "warm",
+      "index": 1,
+      "uploadToRunEnabledMs": 529,
+      "runEnabledElapsedMs": 140,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 90.2999999821186,
+        "renderFrameCount": 9,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 1,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 10,
+        "lastRenderAtMs": 2263.899999976158,
+        "lastRenderDurationMs": 0.5,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 159,
+        "lastRenderAtMs": 14052.699999988079,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 65,
+        "rafCompleteCount": 62,
+        "rafCancelCount": 3,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 2,
+      "uploadToRunEnabledMs": 463,
+      "runEnabledElapsedMs": 143,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 95,
+        "renderFrameCount": 160,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 2,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 161,
+        "lastRenderAtMs": 14436.09999999404,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 65,
+        "rafCompleteCount": 62,
+        "rafCancelCount": 3,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 345,
+        "lastRenderAtMs": 28147,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 161,
+        "rafCompleteCount": 154,
+        "rafCancelCount": 7,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 3,
+      "uploadToRunEnabledMs": 430,
+      "runEnabledElapsedMs": 134,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 87.2999999821186,
+        "renderFrameCount": 346,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 3,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 347,
+        "lastRenderAtMs": 28509.19999998808,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 161,
+        "rafCompleteCount": 154,
+        "rafCancelCount": 7,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 496,
+        "lastRenderAtMs": 40393.29999998212,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 226,
+        "rafCompleteCount": 216,
+        "rafCancelCount": 10,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 4,
+      "uploadToRunEnabledMs": 434,
+      "runEnabledElapsedMs": 135,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 88.2999999821186,
+        "renderFrameCount": 497,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 4,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 498,
+        "lastRenderAtMs": 40767.29999998212,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 226,
+        "rafCompleteCount": 216,
+        "rafCancelCount": 10,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 643,
+        "lastRenderAtMs": 52914.79999998212,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 287,
+        "rafCompleteCount": 274,
+        "rafCancelCount": 13,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 5,
+      "uploadToRunEnabledMs": 439,
+      "runEnabledElapsedMs": 131,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.80000001192093,
+        "renderFrameCount": 644,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 5,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 645,
+        "lastRenderAtMs": 53288.09999999404,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 287,
+        "rafCompleteCount": 274,
+        "rafCancelCount": 13,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "right",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 823,
+        "lastRenderAtMs": 67107.89999997616,
+        "lastRenderDurationMs": 1.2999999821186066,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 377,
+        "rafCompleteCount": 360,
+        "rafCancelCount": 17,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "front",
+      "renderFrameCount": 13
+    },
+    {
+      "sample": 2,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "right",
+      "renderFrameCount": 16
+    },
+    {
+      "sample": 3,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 17
+    },
+    {
+      "sample": 4,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8,
+      "cameraPosition": "right",
+      "renderFrameCount": 18
+    },
+    {
+      "sample": 5,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 19
+    },
+    {
+      "sample": 1,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 7,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 47
+    },
+    {
+      "sample": 8,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 50
+    },
+    {
+      "sample": 9,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 52
+    },
+    {
+      "sample": 10,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "front",
+      "renderFrameCount": 55
+    },
+    {
+      "sample": 11,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 58
+    },
+    {
+      "sample": 12,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 59
+    },
+    {
+      "sample": 13,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 60
+    },
+    {
+      "sample": 14,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 61
+    },
+    {
+      "sample": 2,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 16,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8,
+      "cameraPosition": "left",
+      "renderFrameCount": 96
+    },
+    {
+      "sample": 17,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 99
+    },
+    {
+      "sample": 18,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "top",
+      "renderFrameCount": 101
+    },
+    {
+      "sample": 19,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 104
+    },
+    {
+      "sample": 20,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 107
+    },
+    {
+      "sample": 21,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 108
+    },
+    {
+      "sample": 22,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 109
+    },
+    {
+      "sample": 23,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 110
+    },
+    {
+      "sample": 3,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 25,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8,
+      "cameraPosition": "left",
+      "renderFrameCount": 145
+    },
+    {
+      "sample": 26,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 148
+    },
+    {
+      "sample": 27,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 150
+    },
+    {
+      "sample": 28,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 153
+    },
+    {
+      "sample": 29,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "right",
+      "renderFrameCount": 156
+    },
+    {
+      "sample": 30,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 157
+    },
+    {
+      "sample": 31,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 162
+    },
+    {
+      "sample": 32,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 163
+    },
+    {
+      "sample": 4,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 34,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "left",
+      "renderFrameCount": 199
+    },
+    {
+      "sample": 35,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 202
+    },
+    {
+      "sample": 36,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 204
+    },
+    {
+      "sample": 37,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "front",
+      "renderFrameCount": 207
+    },
+    {
+      "sample": 38,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "right",
+      "renderFrameCount": 210
+    },
+    {
+      "sample": 39,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 211
+    },
+    {
+      "sample": 40,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 212
+    },
+    {
+      "sample": 41,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 213
+    },
+    {
+      "sample": 5,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 43,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 5.1,
+      "cameraPosition": "left",
+      "renderFrameCount": 247
+    },
+    {
+      "sample": 44,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 250
+    },
+    {
+      "sample": 45,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "top",
+      "renderFrameCount": 252
+    },
+    {
+      "sample": 46,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 255
+    },
+    {
+      "sample": 47,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "right",
+      "renderFrameCount": 258
+    },
+    {
+      "sample": 48,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 259
+    },
+    {
+      "sample": 49,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 260
+    },
+    {
+      "sample": 50,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 261
+    },
+    {
+      "sample": 6,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.3,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 52,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 296
+    },
+    {
+      "sample": 53,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "3d",
+      "renderFrameCount": 299
+    },
+    {
+      "sample": 54,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.1,
+      "cameraPosition": "top",
+      "renderFrameCount": 301
+    },
+    {
+      "sample": 55,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "front",
+      "renderFrameCount": 304
+    },
+    {
+      "sample": 56,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 307
+    },
+    {
+      "sample": 57,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 308
+    },
+    {
+      "sample": 58,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 309
+    },
+    {
+      "sample": 59,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 310
+    },
+    {
+      "sample": 7,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 61,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.7,
+      "cameraPosition": "left",
+      "renderFrameCount": 349
+    },
+    {
+      "sample": 62,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 352
+    },
+    {
+      "sample": 63,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 354
+    },
+    {
+      "sample": 64,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "front",
+      "renderFrameCount": 357
+    },
+    {
+      "sample": 65,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 360
+    },
+    {
+      "sample": 66,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 361
+    },
+    {
+      "sample": 67,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 362
+    },
+    {
+      "sample": 68,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 363
+    },
+    {
+      "sample": 8,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 70,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 392
+    },
+    {
+      "sample": 71,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 395
+    },
+    {
+      "sample": 72,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "top",
+      "renderFrameCount": 397
+    },
+    {
+      "sample": 73,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "front",
+      "renderFrameCount": 400
+    },
+    {
+      "sample": 74,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 403
+    },
+    {
+      "sample": 75,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 404
+    },
+    {
+      "sample": 76,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 405
+    },
+    {
+      "sample": 77,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 406
+    },
+    {
+      "sample": 9,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 79,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8,
+      "cameraPosition": "left",
+      "renderFrameCount": 441
+    },
+    {
+      "sample": 80,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 444
+    },
+    {
+      "sample": 81,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "top",
+      "renderFrameCount": 446
+    },
+    {
+      "sample": 82,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "front",
+      "renderFrameCount": 449
+    },
+    {
+      "sample": 83,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 452
+    },
+    {
+      "sample": 84,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 453
+    },
+    {
+      "sample": 85,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 454
+    },
+    {
+      "sample": 86,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 455
+    },
+    {
+      "sample": 10,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 88,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 489
+    },
+    {
+      "sample": 89,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "3d",
+      "renderFrameCount": 492
+    },
+    {
+      "sample": 90,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 5.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 494
+    },
+    {
+      "sample": 91,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4,
+      "cameraPosition": "front",
+      "renderFrameCount": 501
+    },
+    {
+      "sample": 92,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 504
+    },
+    {
+      "sample": 93,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 505
+    },
+    {
+      "sample": 94,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8,
+      "cameraPosition": "right",
+      "renderFrameCount": 506
+    },
+    {
+      "sample": 95,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 507
+    },
+    {
+      "sample": 11,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 97,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 537
+    },
+    {
+      "sample": 98,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 540
+    },
+    {
+      "sample": 99,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 5,
+      "cameraPosition": "top",
+      "renderFrameCount": 542
+    },
+    {
+      "sample": 100,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 545
+    },
+    {
+      "sample": 101,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "right",
+      "renderFrameCount": 548
+    },
+    {
+      "sample": 102,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 549
+    },
+    {
+      "sample": 103,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 550
+    },
+    {
+      "sample": 104,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 551
+    },
+    {
+      "sample": 12,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 106,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 582
+    },
+    {
+      "sample": 107,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.2,
+      "cameraPosition": "3d",
+      "renderFrameCount": 585
+    },
+    {
+      "sample": 108,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 587
+    },
+    {
+      "sample": 109,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.3,
+      "cameraPosition": "front",
+      "renderFrameCount": 590
+    },
+    {
+      "sample": 110,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 593
+    },
+    {
+      "sample": 111,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 594
+    },
+    {
+      "sample": 112,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 595
+    },
+    {
+      "sample": 113,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 596
+    },
+    {
+      "sample": 13,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 115,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.8,
+      "cameraPosition": "left",
+      "renderFrameCount": 629
+    },
+    {
+      "sample": 116,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 632
+    },
+    {
+      "sample": 117,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "top",
+      "renderFrameCount": 634
+    },
+    {
+      "sample": 118,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "front",
+      "renderFrameCount": 637
+    },
+    {
+      "sample": 119,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.9,
+      "cameraPosition": "right",
+      "renderFrameCount": 640
+    },
+    {
+      "sample": 120,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 641
+    },
+    {
+      "sample": 121,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 646
+    },
+    {
+      "sample": 122,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 647
+    },
+    {
+      "sample": 14,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 124,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 3.9,
+      "cameraPosition": "left",
+      "renderFrameCount": 677
+    },
+    {
+      "sample": 125,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "3d",
+      "renderFrameCount": 680
+    },
+    {
+      "sample": 126,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 682
+    },
+    {
+      "sample": 127,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.9,
+      "cameraPosition": "front",
+      "renderFrameCount": 685
+    },
+    {
+      "sample": 128,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 688
+    },
+    {
+      "sample": 129,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 689
+    },
+    {
+      "sample": 130,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 690
+    },
+    {
+      "sample": 131,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 691
+    },
+    {
+      "sample": 15,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 133,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.2,
+      "cameraPosition": "left",
+      "renderFrameCount": 726
+    },
+    {
+      "sample": 134,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 5.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 729
+    },
+    {
+      "sample": 135,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "top",
+      "renderFrameCount": 731
+    },
+    {
+      "sample": 136,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.3,
+      "cameraPosition": "front",
+      "renderFrameCount": 734
+    },
+    {
+      "sample": 137,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "right",
+      "renderFrameCount": 737
+    },
+    {
+      "sample": 138,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 738
+    },
+    {
+      "sample": 139,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 739
+    },
+    {
+      "sample": 140,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 740
+    },
+    {
+      "sample": 16,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 142,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4,
+      "cameraPosition": "left",
+      "renderFrameCount": 774
+    },
+    {
+      "sample": 143,
+      "action": "3D View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "3d",
+      "renderFrameCount": 777
+    },
+    {
+      "sample": 144,
+      "action": "Top View",
+      "eventType": "click",
+      "eventToRendererMs": 4.6,
+      "cameraPosition": "top",
+      "renderFrameCount": 779
+    },
+    {
+      "sample": 145,
+      "action": "Front View",
+      "eventType": "click",
+      "eventToRendererMs": 5.9,
+      "cameraPosition": "front",
+      "renderFrameCount": 782
+    },
+    {
+      "sample": 146,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "right",
+      "renderFrameCount": 785
+    },
+    {
+      "sample": 147,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.5,
+      "cameraPosition": "right",
+      "renderFrameCount": 786
+    },
+    {
+      "sample": 148,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 787
+    },
+    {
+      "sample": 149,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.6,
+      "cameraPosition": "right",
+      "renderFrameCount": 788
+    },
+    {
+      "sample": 17,
+      "action": "Canvas Pan",
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    }
+  ],
+  "interactionErrors": [],
+  "panSamples": [
+    {
+      "sample": 1,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 2,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 3,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 4,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 5,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 6,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.3,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 7,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 8,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.7,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 9,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 10,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 11,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 12,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 13,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.4,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 14,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 15,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.6,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 16,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    },
+    {
+      "sample": 17,
+      "eventType": "mousemove",
+      "eventToRendererMs": 0.5,
+      "pixelHashChanged": true,
+      "cncCommandDelta": 0,
+      "cameraMode": "pan"
+    }
+  ],
+  "cncCommands": [
+    {
+      "command": {
+        "name": "synthetic-100k.gcode",
+        "contentBytes": 2379870,
+        "contentSha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+        "contentOmitted": "Deterministic synthetic fixture; regenerate with generate-fixtures.py"
+      }
+    },
+    {},
+    {
+      "command": {
+        "name": "synthetic-100k.gcode",
+        "contentBytes": 2379870,
+        "contentSha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+        "contentOmitted": "Deterministic synthetic fixture; regenerate with generate-fixtures.py"
+      }
+    },
+    {},
+    {
+      "command": {
+        "name": "synthetic-100k.gcode",
+        "contentBytes": 2379870,
+        "contentSha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+        "contentOmitted": "Deterministic synthetic fixture; regenerate with generate-fixtures.py"
+      }
+    },
+    {},
+    {
+      "command": {
+        "name": "synthetic-100k.gcode",
+        "contentBytes": 2379870,
+        "contentSha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+        "contentOmitted": "Deterministic synthetic fixture; regenerate with generate-fixtures.py"
+      }
+    },
+    {},
+    {
+      "command": {
+        "name": "synthetic-100k.gcode",
+        "contentBytes": 2379870,
+        "contentSha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+        "contentOmitted": "Deterministic synthetic fixture; regenerate with generate-fixtures.py"
+      }
+    },
+    {}
+  ],
+  "resourceCycles": [],
+  "checkpoints": {},
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400506000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400506000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400506000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400506000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "openVisible": true
+  },
+  "connectedAt": "2026-10-01T16:20:49.068Z",
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 755
+  },
+  "completedAt": "2026-10-01T16:21:54.513Z",
+  "status": "completed",
+  "finalSnapshot": {
+    "metrics": {
+      "createdTotal": 1,
+      "disposedTotal": 0,
+      "liveEngineCount": 1,
+      "loadCount": 5,
+      "loadSamples": [
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 90.2999999821186,
+          "renderFrameCount": 9,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 95,
+          "renderFrameCount": 160,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 87.2999999821186,
+          "renderFrameCount": 346,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 88.2999999821186,
+          "renderFrameCount": 497,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.80000001192093,
+          "renderFrameCount": 644,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        }
+      ],
+      "renderSamples": [
+        {
+          "engineId": 1,
+          "renderedAtMs": 875.5999999940395,
+          "durationMs": 19.100000023841858,
+          "renderFrameCount": 1
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 900.2999999821186,
+          "durationMs": 9.099999994039536,
+          "renderFrameCount": 2
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 901.5,
+          "durationMs": 1.100000023841858,
+          "renderFrameCount": 3
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 902.1999999880791,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 4
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 902.6999999880791,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 5
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1300.199999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 6
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1314.3999999761581,
+          "durationMs": 6.299999982118607,
+          "renderFrameCount": 7
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1418.2999999821186,
+          "durationMs": 1,
+          "renderFrameCount": 8
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2263.2999999821186,
+          "durationMs": 7.5999999940395355,
+          "renderFrameCount": 9
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2263.899999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 10
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2643.7999999821186,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 11
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2644.2999999821186,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 12
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2644.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 13
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2915,
+          "durationMs": 0.5,
+          "renderFrameCount": 14
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2915.7999999821186,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 15
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2916.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 16
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3169.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 17
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3371.699999988079,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 18
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3512.0999999940395,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 19
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3701.5,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 20
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3709.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 21
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3709.7999999821186,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 22
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3891.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 23
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3891.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 24
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4024.0999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 25
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4024.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 26
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4143.799999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 27
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4204.899999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 28
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4205.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 29
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4325,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 30
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4400,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 31
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4400.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 32
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4552.5999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 33
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4627.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 34
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4627.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 35
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4749.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 36
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4811.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 37
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4873.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 38
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4873.699999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 39
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4992,
+          "durationMs": 0.5,
+          "renderFrameCount": 40
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5052,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 41
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5112.0999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 42
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5112.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 43
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5233.899999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 44
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5295.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 45
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5477.399999976158,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 46
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5478.799999982119,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 47
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5683.799999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 48
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5684.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 49
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5684.5999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 50
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5900.399999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 51
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5900.699999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 52
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6077.0999999940395,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 53
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6077.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 54
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6077.699999988079,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 55
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6316.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 56
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6316.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 57
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6317.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 58
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6585.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 59
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6738,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 60
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6880.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 61
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7006.5999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 62
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7013.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 63
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7013.5999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 64
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7192.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 65
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7255,
+          "durationMs": 0.5,
+          "renderFrameCount": 66
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7316.0999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 67
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7316.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 68
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7438,
+          "durationMs": 0.5,
+          "renderFrameCount": 69
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7498.399999976158,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 70
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7559.699999988079,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 71
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7560.0999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 72
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7678,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 73
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7739,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 74
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7799.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 75
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7799.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 76
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7918.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 77
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7979,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 78
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8039.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 79
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8039.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 80
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8161.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 81
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8223.299999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 82
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8285.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 83
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8285.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 84
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8406.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 85
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8467.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 86
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8529.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 87
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8529.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 88
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8647.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 89
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8707.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 90
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8766.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 91
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8767.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 92
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8887.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 93
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8947.799999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 94
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9140.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 95
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9140.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 96
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9345.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 97
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9345.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 98
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9345.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 99
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9553,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 100
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9553.299999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 101
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9740.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 102
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9740.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 103
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9741.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 104
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9959.799999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 105
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9960.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 106
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9960.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 107
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10208.799999982119,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 108
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10345.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 109
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10492.399999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 110
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10649.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 111
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10655.899999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 112
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10656.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 113
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10837,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 114
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10898.799999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 115
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10960.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 116
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10960.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 117
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11082.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 118
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11144.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 119
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11205.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 120
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11205.899999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 121
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11325,
+          "durationMs": 0.5,
+          "renderFrameCount": 122
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11385.399999976158,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 123
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11445.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 124
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11446,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 125
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11564,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 126
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11624.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 127
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11684.799999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 128
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11685.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 129
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11805.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 130
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11867.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 131
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11929.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 132
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11929.199999988079,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 133
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12050.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 134
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12111.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 135
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12173.399999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 136
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12173.699999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 137
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12292.299999982119,
+          "durationMs": 0.5,
+          "renderFrameCount": 138
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12352.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 139
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12412.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 140
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12413,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 141
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12532.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 142
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12594.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 143
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12784.799999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 144
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12785.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 145
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12978.399999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 146
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12978.5,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 147
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12978.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 148
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13213.899999976158,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 149
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13214,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 150
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13398.699999988079,
+          "durationMs": 0.5,
+          "renderFrameCount": 151
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13399,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 152
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13399.299999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 153
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13645.299999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 154
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13645.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 155
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13645.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 156
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13897.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 157
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14051.199999988079,
+          "durationMs": 5.800000011920929,
+          "renderFrameCount": 158
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14052.699999988079,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 159
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14434.899999976158,
+          "durationMs": 7,
+          "renderFrameCount": 160
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14436.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 161
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14754.199999988079,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 162
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14913.199999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 163
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15112.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 164
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15116.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 165
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15116.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 166
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15265.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 167
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15316.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 168
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15366.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 169
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15367.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 170
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15464.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 171
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15514.799999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 172
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15565.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 173
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15619.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 174
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15620.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 175
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15717.299999982119,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 176
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15766.699999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 177
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15816.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 178
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15816.799999982119,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 179
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15914,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 180
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15964,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 181
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16013.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 182
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16013.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 183
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16111.199999988079,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 184
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16160.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 185
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16210.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 186
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16210.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 187
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16307.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 188
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16357.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 189
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16406.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 190
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16406.399999976158,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 191
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16502.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 192
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16552,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 193
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16601.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 194
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16601.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 195
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16699.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 196
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16749.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 197
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16943.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 198
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16944.69999998808,
+          "durationMs": 1.5,
+          "renderFrameCount": 199
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17179,
+          "durationMs": 0.5,
+          "renderFrameCount": 200
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17179.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 201
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17179.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 202
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17399.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 203
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17399.899999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 204
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17609.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 205
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17609.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 206
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17609.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 207
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17858.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 208
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17858.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 209
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17858.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 210
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18104.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 211
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18275.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 212
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18443,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 213
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18575.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 214
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18585.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 215
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18586.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 216
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18766.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 217
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18828.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 218
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18889.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 219
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18889.899999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 220
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19011.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 221
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19072.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 222
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19133.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 223
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19134.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 224
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19252.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 225
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19313.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 226
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19373.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 227
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19373.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 228
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19490.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 229
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19550.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 230
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19613,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 231
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19613.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 232
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19735,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 233
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19796.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 234
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19858.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 235
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19858.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 236
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19979,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 237
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20045.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 238
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20045.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 239
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20163.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 240
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20224.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 241
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20293.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 242
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20293.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 243
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20413.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 244
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20475.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 245
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20687,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 246
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20687.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 247
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20887.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 248
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20887.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 249
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 20887.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 250
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21117.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 251
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21117.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 252
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21298.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 253
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21298.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 254
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21299,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 255
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21522.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 256
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21522.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 257
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21523.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 258
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21772.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 259
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 21933.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 260
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22075.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 261
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22224,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 262
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22236.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 263
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22237.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 264
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22417.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 265
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22479.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 266
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22542.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 267
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22542.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 268
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22665.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 269
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22727.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 270
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22790.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 271
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22791.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 272
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22911.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 273
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 22971.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 274
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23033.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 275
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23033.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 276
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23151.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 277
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23212,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 278
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23271.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 279
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23272.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 280
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23393.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 281
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23455.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 282
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23516.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 283
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23516.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 284
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23637.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 285
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23699.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 286
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23761.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 287
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23762,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 288
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23880,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 289
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 23941.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 290
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24001.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 291
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24001.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 292
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24122.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 293
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24183.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 294
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24394,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 295
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24394.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 296
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24595.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 297
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24596.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 298
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24596.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 299
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24816.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 300
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 24816.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 301
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25024.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 302
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25024.5,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 303
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25024.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 304
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25271.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 305
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25271.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 306
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25271.79999998212,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 307
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25541.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 308
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25695.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 309
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25839.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 310
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 25989.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 311
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26000.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 312
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26000.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 313
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26181.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 314
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26244.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 315
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26306.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 316
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26306.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 317
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26429.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 318
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26492.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 319
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26554.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 320
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26554.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 321
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26674.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 322
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26734.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 323
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26795.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 324
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26795.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 325
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26914.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 326
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 26974.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 327
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27035.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 328
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27035.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 329
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27157.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 330
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27219.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 331
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27282,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 332
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27282.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 333
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27404.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 334
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27466.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 335
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27529.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 336
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27529.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 337
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27647.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 338
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27707.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 339
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27767.899999976158,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 340
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27768.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 341
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27888.399999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 342
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 27950.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 343
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28145.69999998808,
+          "durationMs": 5.5999999940395355,
+          "renderFrameCount": 344
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28147,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 345
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28508.79999998212,
+          "durationMs": 6.299999982118607,
+          "renderFrameCount": 346
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28509.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 347
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28809.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 348
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 28810.899999976158,
+          "durationMs": 1.5,
+          "renderFrameCount": 349
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29057.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 350
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29058.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 351
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29058.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 352
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29306.399999976158,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 353
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29306.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 354
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29500.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 355
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29500.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 356
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29501.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 357
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29729.09999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 358
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29729.399999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 359
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 29729.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 360
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30001,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 361
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30173.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 362
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30323.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 363
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30537.59999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 364
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30543.399999976158,
+          "durationMs": 0.5,
+          "renderFrameCount": 365
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30543.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 366
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30731.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 367
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30731.399999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 368
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30868.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 369
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30868.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 370
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 30987,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 371
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31046.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 372
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31107.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 373
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31107.899999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 374
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31225.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 375
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31286.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 376
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31346.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 377
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31346.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 378
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31467.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 379
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31528.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 380
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31590.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 381
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31590.899999976158,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 382
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31712.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 383
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31773.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 384
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31835.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 385
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31835.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 386
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31953.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 387
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 31953.899999976158,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 388
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32073.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 389
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32134.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 390
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32325.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 391
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32326.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 392
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32529.899999976158,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 393
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32530.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 394
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32530.5,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 395
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32770,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 396
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32770.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 397
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32968.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 398
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32968.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 399
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 32968.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 400
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33204.89999997616,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 401
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33205.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 402
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33205.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 403
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33460.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 404
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33602.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 405
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33760.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 406
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33918.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 407
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33928.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 408
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 33928.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 409
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34109.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 410
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34172.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 411
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34234.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 412
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34234.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 413
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34355.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 414
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34416.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 415
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34478.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 416
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34479.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 417
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34598.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 418
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34658.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 419
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34719.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 420
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34720.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 421
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34838.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 422
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34898.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 423
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34958.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 424
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 34958.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 425
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 426
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35140.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 427
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35202.89999997616,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 428
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35203.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 429
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35325.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 430
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35387,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 431
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35449.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 432
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35449.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 433
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35568,
+          "durationMs": 0.5,
+          "renderFrameCount": 434
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35628.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 435
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35688.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 436
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35688.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 437
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35809.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 438
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 35870.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 439
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36080.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 440
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36081.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 441
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36295.69999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 442
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36296,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 443
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36296.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 444
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36540,
+          "durationMs": 0.5,
+          "renderFrameCount": 445
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36540.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 446
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36750.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 447
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36751.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 448
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36751.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 449
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36981.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 450
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36981.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 451
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 36981.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 452
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37233.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 453
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37378.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 454
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37530,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 455
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37673,
+          "durationMs": 0.5,
+          "renderFrameCount": 456
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37681.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 457
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37682.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 458
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37862,
+          "durationMs": 0.5,
+          "renderFrameCount": 459
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37924.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 460
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37986.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 461
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 37986.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 462
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38108.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 463
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38171.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 464
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38233.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 465
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38234.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 466
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38353.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 467
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38413.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 468
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38475.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 469
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38475.39999997616,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 470
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38593.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 471
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38653.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 472
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38713.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 473
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38713.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 474
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38835.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 475
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38896.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 476
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38959.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 477
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 38959.69999998808,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 478
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39080.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 479
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39142.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 480
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39204.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 481
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39205.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 482
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39322.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 483
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39382.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 484
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39443,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 485
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39443.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 486
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39563.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 487
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39757.19999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 488
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39757.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 489
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39969.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 490
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39970.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 491
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 39970.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 492
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40190,
+          "durationMs": 0.5,
+          "renderFrameCount": 493
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40190.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 494
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40391.89999997616,
+          "durationMs": 5.5999999940395355,
+          "renderFrameCount": 495
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40393.29999998212,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 496
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40766.79999998212,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 497
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 40767.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 498
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41077.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 499
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41078.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 500
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41078.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 501
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41389.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 502
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41390.5,
+          "durationMs": 0.6000000238418579,
+          "renderFrameCount": 503
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41390.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 504
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41652.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 505
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 41841.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 506
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42005.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 507
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42195.39999997616,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 508
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42202.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 509
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42203,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 510
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42388.59999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 511
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42388.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 512
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42515.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 513
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42515.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 514
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42633.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 515
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42693.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 516
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42753.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 517
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42753.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 518
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42872,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 519
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42932,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 520
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42992.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 521
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 42992.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 522
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43113.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 523
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43175.5,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 524
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43237.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 525
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43237.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 526
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43359.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 527
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43421.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 528
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43482.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 529
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43482.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 530
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43600.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 531
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43665.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 532
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43666.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 533
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43786.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 534
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 43847.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 535
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44073.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 536
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44074.69999998808,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 537
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44320.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 538
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44320.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 539
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44320.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 540
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44576.79999998212,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 541
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44577.09999999404,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 542
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44809.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 543
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44809.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 544
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 44809.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 545
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45067.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 546
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45068,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 547
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45068.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 548
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45322.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 549
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45495.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 550
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45688.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 551
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45907.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 552
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45912.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 553
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 45913.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 554
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46108.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 555
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46108.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 556
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46237.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 557
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46237.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 558
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46355,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 559
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46416.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 560
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46476.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 561
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46476.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 562
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46594.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 563
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46654.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 564
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46714.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 565
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46714.79999998212,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 566
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46834.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 567
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46896,
+          "durationMs": 0.5,
+          "renderFrameCount": 568
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46957.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 569
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 46958,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 570
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47078.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 571
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47140.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 572
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47202,
+          "durationMs": 0.5,
+          "renderFrameCount": 573
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47202.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 574
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47320,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 575
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47379.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 576
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47439.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 577
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47440,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 578
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47559.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 579
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47620.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 580
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47840.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 581
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 47840.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 582
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48059.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 583
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48060,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 584
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48060.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 585
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48325,
+          "durationMs": 0.5,
+          "renderFrameCount": 586
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48325.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 587
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48532.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 588
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48532.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 589
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48532.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 590
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48784.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 591
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48785.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 592
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 48785.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 593
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49057.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 594
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49229.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 595
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49387.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 596
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49551.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 597
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49562.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 598
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49562.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 599
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49743.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 600
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49805.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 601
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49866.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 602
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49867.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 603
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 49988.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 604
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50050.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 605
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50111.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 606
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50111.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 607
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50236.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 608
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50237.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 609
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50354.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 610
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50413.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 611
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50473.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 612
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50473.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 613
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50594.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 614
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50655.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 615
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50716.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 616
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50717,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 617
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50836.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 618
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50898.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 619
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50960.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 620
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 50960.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 621
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51078.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 622
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51138.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 623
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51198.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 624
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51198.59999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 625
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51317.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 626
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51378.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 627
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51613,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 628
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51613.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 629
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51815.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 630
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51815.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 631
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 51816,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 632
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52042.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 633
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52042.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 634
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52248.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 635
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52248.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 636
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52248.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 637
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52485.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 638
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52485.69999998808,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 639
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52486,
+          "durationMs": 0.10000002384185791,
+          "renderFrameCount": 640
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52744.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 641
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52913.39999997616,
+          "durationMs": 5.399999976158142,
+          "renderFrameCount": 642
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 52914.79999998212,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 643
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53287.59999999404,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 644
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53288.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 645
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53615.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 646
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53802.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 647
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53990.89999997616,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 648
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53997.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 649
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 53997.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 650
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54154.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 651
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54154.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 652
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54254.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 653
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54254.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 654
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54367,
+          "durationMs": 0.5,
+          "renderFrameCount": 655
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54367.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 656
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54465.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 657
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54516.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 658
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54566.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 659
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54616.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 660
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54617.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 661
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54714.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 662
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54764.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 663
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54814.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 664
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54815.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 665
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54912.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 666
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 54962.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 667
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55012.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 668
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55012.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 669
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55109.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 670
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55158.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 671
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55210.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 672
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55210.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 673
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55306.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 674
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55356.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 675
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55570.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 676
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55572.09999999404,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 677
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55841.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 678
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55842.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 679
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 55842.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 680
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56088.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 681
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56089.19999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 682
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56296.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 683
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56297.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 684
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56297.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 685
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56539.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 686
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56539.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 687
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56539.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 688
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 56803.29999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 689
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57021.89999997616,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 690
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57192.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 691
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57352,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 692
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57360,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 693
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57360.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 694
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57540.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 695
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57602.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 696
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57664.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 697
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57664.89999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 698
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57785.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 699
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57847.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 700
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57909.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 701
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 57909.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 702
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58027.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 703
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58087.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 704
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58149.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 705
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58149.79999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 706
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58266.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 707
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58325.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 708
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58386,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 709
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58386.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 710
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58507,
+          "durationMs": 0.5,
+          "renderFrameCount": 711
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58567.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 712
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58628.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 713
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58628.69999998808,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 714
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58749.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 715
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58811.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 716
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58872.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 717
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58873.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 718
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 58990.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 719
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59051.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 720
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59111.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 721
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59111.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 722
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59231.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 723
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59292,
+          "durationMs": 0.5,
+          "renderFrameCount": 724
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59485.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 725
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59485.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 726
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59702.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 727
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59702.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 728
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59703.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 729
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59951,
+          "durationMs": 0.5,
+          "renderFrameCount": 730
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 59951.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 731
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60153.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 732
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60153.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 733
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60153.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 734
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60403.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 735
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60404.09999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 736
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60404.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 737
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60672.09999999404,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 738
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 60835.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 739
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61000,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 740
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61155.89999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 741
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61162.69999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 742
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61163,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 743
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61343.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 744
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61405.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 745
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61467.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 746
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61467.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 747
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61588.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 748
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61650.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 749
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61712,
+          "durationMs": 0.5,
+          "renderFrameCount": 750
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61712.29999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 751
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61829.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 752
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61890.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 753
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61950.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 754
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 61950.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 755
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62067.29999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 756
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62127.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 757
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62187.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 758
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62188.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 759
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62308.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 760
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62369.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 761
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62431,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 762
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62431.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 763
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62550.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 764
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62612.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 765
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62674,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 766
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62674.19999998808,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 767
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62791.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 768
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62857.59999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 769
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62857.89999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 770
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 62978.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 771
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63039.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 772
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63259.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 773
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63259.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 774
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63480.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 775
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63481.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 776
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63481.39999997616,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 777
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63720.79999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 778
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63721.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 779
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63914.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 780
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63914.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 781
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 63915.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 782
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64174.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 783
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64176.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 784
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64176.5,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 785
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64435.19999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 786
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64591.69999998808,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 787
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64767.39999997616,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 788
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64952.79999998212,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 789
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64956.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 790
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 64956.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 791
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65138.39999997616,
+          "durationMs": 0.5,
+          "renderFrameCount": 792
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65201.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 793
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65263.89999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 794
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65264.09999999404,
+          "durationMs": 0.09999999403953552,
+          "renderFrameCount": 795
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65386.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 796
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65448,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 797
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65509.69999998808,
+          "durationMs": 0.5,
+          "renderFrameCount": 798
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65510,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 799
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65629.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 800
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65690.29999998212,
+          "durationMs": 0.5,
+          "renderFrameCount": 801
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65750.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 802
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65751.19999998808,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 803
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65869,
+          "durationMs": 0.5,
+          "renderFrameCount": 804
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65929.19999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 805
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65989.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 806
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 65989.69999998808,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 807
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66109.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 808
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66171.69999998808,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 809
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66233.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 810
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66234.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 811
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66355,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 812
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66416.39999997616,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 813
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66478,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 814
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66478.29999998212,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 815
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66595.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 816
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66655.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 817
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66715.79999998212,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 818
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66716.09999999404,
+          "durationMs": 0.20000001788139343,
+          "renderFrameCount": 819
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66836.09999999404,
+          "durationMs": 0.5,
+          "renderFrameCount": 820
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 66897.39999997616,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 821
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 67106.5,
+          "durationMs": 5.600000023841858,
+          "renderFrameCount": 822
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 67107.89999997616,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 823
+        }
+      ],
+      "disposeSamples": [],
+      "canvasCreatedTotal": 1,
+      "canvasRemovedTotal": 0,
+      "liveCanvasCount": 1,
+      "engines": [
+        {
+          "id": 1,
+          "width": 648,
+          "height": 755,
+          "pivotX": 0,
+          "pivotY": 0,
+          "pivotZ": 0,
+          "cameraPosition": "right",
+          "cameraMode": "pan",
+          "projection": "orthographic",
+          "units": "mm",
+          "hasGCode": false,
+          "limitsVisible": true,
+          "coordinateSystemVisible": true,
+          "gridLineNumbersVisible": true,
+          "cuttingToolVisible": true,
+          "canvasAttached": true,
+          "renderFrameCount": 823,
+          "lastRenderAtMs": 67107.89999997616,
+          "lastRenderDurationMs": 1.2999999821186066,
+          "geometryCount": 251,
+          "textureCount": 55,
+          "listenerAddCount": 6,
+          "listenerRemoveCount": 0,
+          "activeListenerCount": 6,
+          "rafRequestCount": 377,
+          "rafCompleteCount": 360,
+          "rafCancelCount": 17,
+          "activeRafCount": 0,
+          "pendingLoadId": null
+        }
+      ]
+    },
+    "heap": {
+      "usedJSHeapSize": 212000000,
+      "totalJSHeapSize": 269000000
+    }
+  },
+  "finishedAt": "2026-10-01T16:21:54.525Z",
+  "artifactCuration": {
+    "originalBytes": 12586652,
+    "originalSha256": "01141919faf676b2e7d2ebf7f5a765d8ed5cb6c7289e005cec83b9bde2fe4867",
+    "transformation": "Replace repeated synthetic G-code content in legacy command-event payloads with byte count and SHA256; preserve all 150 input latency samples, 17 pan samples, warm loads, snapshots, counters, and event ordering.",
+    "legacyMonitorLimitation": "This historical runner extracted args[2] (payload) rather than args[1] (command name). These entries prove command-event counts, not exact command classification. The later advanced functional runner records correct sanitized command names and categories."
+  }
+}

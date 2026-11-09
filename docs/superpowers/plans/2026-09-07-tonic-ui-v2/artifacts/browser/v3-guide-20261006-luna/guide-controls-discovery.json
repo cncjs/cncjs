@@ -1,0 +1,2673 @@
+{
+  "browser": "153.0.8010.12",
+  "pages": [
+    {
+      "route": "/workspace",
+      "url": "http://127.0.0.1:8080/#/workspace",
+      "text": "CNCjs EN Workspace Workspace Administration Manage Widgets (1) Connection Grbl Marlin Smoothie TinyG Serial Port Wi-Fi Serial port Choose a port Baud rate Choose a baud rate Set DTR line status upon opening Set RTS line status upon opening Use RTS/CTS flow control Connect automatically Open Console No serial connection Grbl Marlin Smoothie TinyG Webcam Webcam is off G54 (P1) 3D View Upload G-code Manage Widgets (1) Axes MDI Axis Machine Position Work Position X mm 0.000 0.000 Y mm 0.000 0.000 Z mm 0.000 0.000 Y + Z + X - X 0 Y 0 X + Z 0 Y - Z - G21 (mm) 1mm G-code G-code not loaded Macro New Export No macros available Autolevel 🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data Probe Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth in Probe Feedrate in/min Touch Plate Thickness in Retraction Distance in Probe Axis Z Tool No available tool configuration Spindle Coolant M7 M8 M9 Spindle M3 M4 M5 Spindle Speed RPM Laser Laser Intensity Control 0% -10% -1% 1% 10% Laser Test − Power (%) 0%",
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle navigation",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            16,
+            4,
+            40,
+            40
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "CNCjs",
+          "aria": "CNCjs 2.0.0-dev - View release notes",
+          "title": "CNCjs 2.0.0-dev",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            64,
+            8,
+            105,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1392,
+            8,
+            32,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Workspace",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            48,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Administration",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            120,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Hide left panel",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            84,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Manage Widgets (1)",
+          "aria": "Manage Widgets (1)",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            136,
+            60,
+            189,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse all left panel widgets",
+          "title": "Collapse All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            332,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Expand all left panel widgets",
+          "title": "Expand All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            376,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            105,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            97,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            348,
+            97,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Grbl",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            146,
+            53,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marlin",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            150,
+            146,
+            66,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Smoothie",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            216,
+            146,
+            87,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "TinyG",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            303,
+            146,
+            63,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Serial Port",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            194,
+            118,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Wi-Fi",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            215,
+            194,
+            86,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "Choose a port",
+          "aria": "Serial port",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            280,
+            137,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            376,
+            290,
+            44,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "Choose a baud rate",
+          "aria": "Baud rate",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            97,
+            376,
+            172,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            376,
+            386,
+            44,
+            32
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            444,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            480,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            516,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            552,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Open",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            97,
+            578,
+            85,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            640,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Clear console",
+          "title": "Clear all",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            318,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            351,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Enter full screen",
+          "title": "Enter Full Screen",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            281,
+            632,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            723,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            715,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            769,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            761,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            815,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            807,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            861,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            853,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            907,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Enable Webcam",
+          "title": "Enable",
+          "type": "submit",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            318,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh webcam",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            351,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            281,
+            899,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "G54 (P1)",
+          "aria": null,
+          "title": "Work Coordinate System",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            814,
+            53,
+            103,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "3D View",
+          "aria": "3D View",
+          "title": "Disable 3D View",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            921,
+            53,
+            103,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "3D View options",
+          "title": "3D View options",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1024,
+            53,
+            46,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Upload G-code",
+          "aria": null,
+          "title": "Upload G-code",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            442,
+            101,
+            125,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "Upload G-code options",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            567,
+            101,
+            46,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Run",
+          "title": "Run",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            621,
+            101,
+            37,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Pause",
+          "title": "Pause",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            657,
+            101,
+            35,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Stop",
+          "title": "Stop",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            692,
+            101,
+            37,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Close G-code file",
+          "title": "Close",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            729,
+            101,
+            35,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Top View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            442,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Front View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            478,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Right Side View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            514,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Left Side View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            550,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "3D View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            586,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom to Fit",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            622,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom In",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            658,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom Out",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            694,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "Camera mode: Pan",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            730,
+            852,
+            58,
+            43
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse all right panel widgets",
+          "title": "Collapse All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1093,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Expand all right panel widgets",
+          "title": "Expand All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1137,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Manage Widgets (1)",
+          "aria": "Manage Widgets (1)",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1188,
+            60,
+            189,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Hide right panel",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1385,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1106,
+            105,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle keypad jogging",
+          "title": "Keypad jogging",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1302,
+            97,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "MDI",
+          "aria": "Toggle manual data input mode",
+          "title": "Manual Data Input",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1336,
+            103,
+            58,
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/administration/commands",
+      "url": "http://127.0.0.1:8080/#/administration/commands",
+      "text": "CNCjs EN Commands Workspace Administration Add Delete Enable Disable Command Name Date Modified Status No data to display Total: 0 20 per page / 0",
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle navigation",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            16,
+            4,
+            40,
+            40
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "CNCjs",
+          "aria": "CNCjs 2.0.0-dev - View release notes",
+          "title": "CNCjs 2.0.0-dev",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            64,
+            8,
+            105,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1392,
+            8,
+            32,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Workspace",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            48,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Administration",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            120,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Add",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            88,
+            64,
+            80,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Delete",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            176,
+            64,
+            80,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Enable",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            264,
+            64,
+            80,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Disable",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            352,
+            64,
+            80,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1390,
+            64,
+            34,
+            34
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": "Select all rows",
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            88,
+            122,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "20 per page",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1147,
+            856,
+            124,
+            32
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "1",
+          "aria": "Page",
+          "title": null,
+          "type": "text",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1279,
+            856,
+            40,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Go to previous page",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1352,
+            856,
+            32,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Go to next page",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1384,
+            856,
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/administration/workspace",
+      "url": "http://127.0.0.1:8080/#/workspace",
+      "text": "CNCjs EN Workspace Workspace Administration Manage Widgets (1) Connection Grbl Marlin Smoothie TinyG Serial Port Wi-Fi Serial port Choose a port Baud rate 115200 Set DTR line status upon opening Set RTS line status upon opening Use RTS/CTS flow control Connect automatically Open Console No serial connection Grbl Marlin Smoothie TinyG Webcam Webcam is off G54 (P1) 3D View Upload G-code Manage Widgets (1) Axes MDI Axis Machine Position Work Position X mm 0.000 0.000 Y mm 0.000 0.000 Z mm 0.000 0.000 Y + Z + X - X 0 Y 0 X + Z 0 Y - Z - G21 (mm) 1mm G-code G-code not loaded Macro New Export No macros available Autolevel 🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data Probe Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth in Probe Feedrate in/min Touch Plate Thickness in Retraction Distance in Probe Axis Z Tool No available tool configuration Spindle Coolant M7 M8 M9 Spindle M3 M4 M5 Spindle Speed RPM Laser Laser Intensity Control 0% -10% -1% 1% 10% Laser Test − Power (%) 0% Test durati",
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle navigation",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            16,
+            4,
+            40,
+            40
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "CNCjs",
+          "aria": "CNCjs 2.0.0-dev - View release notes",
+          "title": "CNCjs 2.0.0-dev",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            64,
+            8,
+            105,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1392,
+            8,
+            32,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Workspace",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            48,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Administration",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            120,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Hide left panel",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            84,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Manage Widgets (1)",
+          "aria": "Manage Widgets (1)",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            136,
+            60,
+            189,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse all left panel widgets",
+          "title": "Collapse All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            332,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Expand all left panel widgets",
+          "title": "Expand All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            376,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            105,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            97,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            348,
+            97,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Grbl",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            146,
+            53,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marlin",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            150,
+            146,
+            66,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Smoothie",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            216,
+            146,
+            87,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "TinyG",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            303,
+            146,
+            63,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Serial Port",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            194,
+            118,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Wi-Fi",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            215,
+            194,
+            86,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "Choose a port",
+          "aria": "Serial port",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            97,
+            280,
+            137,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            376,
+            290,
+            44,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "115200",
+          "aria": "Baud rate",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            97,
+            376,
+            93,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            376,
+            386,
+            44,
+            32
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            444,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            480,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            516,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            552,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Open",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            97,
+            578,
+            85,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            640,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Clear console",
+          "title": "Clear all",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            318,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            351,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Enter full screen",
+          "title": "Enter Full Screen",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            632,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            281,
+            632,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            723,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            715,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            769,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            761,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            815,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            807,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            861,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            381,
+            853,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            97,
+            907,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Enable Webcam",
+          "title": "Enable",
+          "type": "submit",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            318,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Refresh webcam",
+          "title": "Refresh",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            351,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse",
+          "title": "Collapse",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            385,
+            899,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "More options",
+          "title": "More",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            281,
+            899,
+            37,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "G54 (P1)",
+          "aria": null,
+          "title": "Work Coordinate System",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            814,
+            53,
+            103,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "3D View",
+          "aria": "3D View",
+          "title": "Disable 3D View",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            921,
+            53,
+            103,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "3D View options",
+          "title": "3D View options",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1024,
+            53,
+            46,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Upload G-code",
+          "aria": null,
+          "title": "Upload G-code",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            442,
+            101,
+            125,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "Upload G-code options",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            567,
+            101,
+            46,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Run",
+          "title": "Run",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            621,
+            101,
+            37,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Pause",
+          "title": "Pause",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            657,
+            101,
+            35,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Stop",
+          "title": "Stop",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            692,
+            101,
+            37,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Close G-code file",
+          "title": "Close",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            729,
+            101,
+            35,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Top View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            442,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Front View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            478,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Right Side View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            514,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Left Side View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            550,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "3D View",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            586,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom to Fit",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            622,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom In",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            658,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Zoom Out",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            694,
+            856,
+            36,
+            36
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": "Camera mode: Pan",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            730,
+            852,
+            58,
+            43
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Collapse all right panel widgets",
+          "title": "Collapse All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1093,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Expand all right panel widgets",
+          "title": "Expand All",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1137,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Manage Widgets (1)",
+          "aria": "Manage Widgets (1)",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1188,
+            60,
+            189,
+            24
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Hide right panel",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1385,
+            60,
+            44,
+            24
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1106,
+            105,
+            24,
+            16
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle keypad jogging",
+          "title": "Keypad jogging",
+          "type": "button",
+          "href": null,
+          "disabled": true,
+          "rect": [
+            1302,
+            97,
+            34,
+            18
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "MDI",
+          "aria": "Toggle manual data input mode",
+          "title": "Manual Data Input",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1336,
+            103,
+            58,
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/about",
+      "url": "http://127.0.0.1:8080/#/about",
+      "text": "CNCjs EN About Workspace Administration CNCjs 2.0.0-dev A web-based interface for CNC milling controller running Grbl, Marlin, Smoothieware, or TinyG Learn more Downloads Report an issue Automatically check for updates Check for updates Checking for updates...",
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "aria": "Toggle navigation",
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            16,
+            4,
+            40,
+            40
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "CNCjs",
+          "aria": "CNCjs 2.0.0-dev - View release notes",
+          "title": "CNCjs 2.0.0-dev",
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            64,
+            8,
+            105,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": "button",
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            1392,
+            8,
+            32,
+            32
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Workspace",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            48,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Administration",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": null,
+          "disabled": false,
+          "rect": [
+            0,
+            120,
+            71,
+            72
+          ]
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "Learn more",
+          "aria": null,
+          "title": null,
+          "type": null,
+          "href": "https://github.com/cncjs/cncjs/wiki",
+          "disabled": false,
+          "rect": [
+            200,
+            127,
+            73,
+            20
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Downloads",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            96,
+            176,
+            97,
+            32
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Report an issue",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            201,
+            176,
+            126,
+            32
+          ]
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "aria": null,
+          "title": null,
+          "type": "checkbox",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            96,
+            250,
+            1,
+            1
+          ]
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Check for updates",
+          "aria": null,
+          "title": null,
+          "type": "button",
+          "href": null,
+          "disabled": false,
+          "rect": [
+            96,
+            284,
+            145,
+            32
+          ]
+        }
+      ]
+    }
+  ]
+}

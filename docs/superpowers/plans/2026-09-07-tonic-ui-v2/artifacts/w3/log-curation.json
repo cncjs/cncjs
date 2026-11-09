@@ -1,0 +1,85 @@
+{
+  "transformation": "Strip terminal ANSI color, trailing whitespace and empty EOF lines; preserve diagnostic text/test results.",
+  "logs": [
+    {
+      "file": "production-entry-green.log",
+      "originalSha256": "812824ea672f5ee9298561c8bca54d7dccb97a3543a36d07a8d7d71a3a246a20",
+      "curatedSha256": "812824ea672f5ee9298561c8bca54d7dccb97a3543a36d07a8d7d71a3a246a20"
+    },
+    {
+      "file": "frontend-spinner.log.gz",
+      "originalSha256": "f057cae3f2affe82bff9141e3de18b9b971a72f7acab4d6cb6cb8e3e06b042de",
+      "curatedSha256": "d1e9328869ba33fd94b9ef4242f9af56eb77de038a1e1738e331619a179e4c14"
+    },
+    {
+      "file": "lint.log",
+      "originalSha256": "c8d2fab5adeed3ed9a1f86e58ff230ad9d25e0ff86d360b4365cb6162301400f",
+      "curatedSha256": "4971c3230a2255752b5c8707242296ac62fbdeff76adf3386e1e7ce4119c8c97"
+    },
+    {
+      "file": "frontend.log.gz",
+      "originalSha256": "c67c340f7e8d0b9747acec1ee01d748641fabab79a114cf9eb39aa36b5913fd1",
+      "curatedSha256": "16f2d886bc8a99588f1682e428307658898d67d81244e1ffed1bdb10301b610f"
+    },
+    {
+      "file": "immutable-install-approved.log",
+      "originalSha256": "1a7f2b5a4d7ff705a2b25e56d25d86b0951c14de1eb2567926cf4537250de7cf",
+      "curatedSha256": "1a7f2b5a4d7ff705a2b25e56d25d86b0951c14de1eb2567926cf4537250de7cf"
+    },
+    {
+      "file": "node.log",
+      "originalSha256": "8277ae6b327e056d33432e38d66fb4a3011a075bbfa54ab535dc99eb15f4114d",
+      "curatedSha256": "d7c2133e2530f5e7b45eb55e8a7e4a6f65b0852ad44e6d5dafd98a0be072af21"
+    },
+    {
+      "file": "migration-check.log",
+      "originalSha256": "77aef4593ef4e85b370bf5e5b1f719290b996b971c7b8caa71eb471c4cbf0872",
+      "curatedSha256": "77aef4593ef4e85b370bf5e5b1f719290b996b971c7b8caa71eb471c4cbf0872"
+    },
+    {
+      "file": "lint-spinner.log",
+      "originalSha256": "fe35f5dc10f4635089b52c8ae6425b37cc8e4811c6e60ae646433721ff128df6",
+      "curatedSha256": "36607893899e8d8dbd956dde08383439d4232f66b31d2e1c2a38fab4fb9eb04d"
+    },
+    {
+      "file": "guard-red.log",
+      "originalSha256": "4707edbee8ab5eba65844dbfe305854fd77840261bf2f79b2f641c8f3a1097f9",
+      "curatedSha256": "4707edbee8ab5eba65844dbfe305854fd77840261bf2f79b2f641c8f3a1097f9"
+    },
+    {
+      "file": "guard-green.log",
+      "originalSha256": "a329d9c5babe1dadcd3ddc6ddf55de8821df55221c2f27395581c5e55d198b2c",
+      "curatedSha256": "a329d9c5babe1dadcd3ddc6ddf55de8821df55221c2f27395581c5e55d198b2c"
+    },
+    {
+      "file": "migration-check-final.log",
+      "originalSha256": "77aef4593ef4e85b370bf5e5b1f719290b996b971c7b8caa71eb471c4cbf0872",
+      "curatedSha256": "77aef4593ef4e85b370bf5e5b1f719290b996b971c7b8caa71eb471c4cbf0872"
+    },
+    {
+      "file": "lint-final.log",
+      "originalSha256": "cc5aaa4790346a96a03f78979ad06857a4a21bfd9f4e2eea735cbba8bd7ce25d",
+      "curatedSha256": "bf5a3c45f294e8d74bfa159366b2bf8e6153c6b84985e006f3154ade9214f461"
+    },
+    {
+      "file": "immutable-install.log",
+      "originalSha256": "e5e754654eb181fdd7eb0f5f57cc3572872a074b60bac59918b89e7b2eaef0f7",
+      "curatedSha256": "e5e754654eb181fdd7eb0f5f57cc3572872a074b60bac59918b89e7b2eaef0f7"
+    },
+    {
+      "file": "dependency-removal.log",
+      "originalSha256": "80c986eb37cd3d5b504fd47a86dfe5dd907f2e284b84dc7175838d9f6b0334c3",
+      "curatedSha256": "80c986eb37cd3d5b504fd47a86dfe5dd907f2e284b84dc7175838d9f6b0334c3"
+    },
+    {
+      "file": "production-entry-red.log",
+      "originalSha256": "392e075b7bffffb3c9f10736afb8424e6f3cc83d782dbab64e58b6ac99fe01ed",
+      "curatedSha256": "392e075b7bffffb3c9f10736afb8424e6f3cc83d782dbab64e58b6ac99fe01ed"
+    },
+    {
+      "file": "node-final.log",
+      "originalSha256": "59edb17c137976a34041ced176875528e8ed8c6586b3c4becc26212f45f19842",
+      "curatedSha256": "eee667ef9c09bbd7c49e6fbdff00b1b2fecda640fbfb3afe11a26dee786f09f0"
+    }
+  ]
+}

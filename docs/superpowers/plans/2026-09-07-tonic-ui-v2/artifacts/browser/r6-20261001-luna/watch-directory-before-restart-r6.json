@@ -1,0 +1,77 @@
+{
+  "reconstructedRecord": true,
+  "note": "Saved from the previously captured watch-directory-r6.json tool output before the fresh lifecycle rerun overwrote it; preserve the earlier successful hierarchy result and explicit sibling-cache block.",
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "rootPath": "/tmp/cncjs-r6-20261001/watch-tree",
+    "siblingPath": "r6-sibling-batch",
+    "expected": {
+      "rootDirectories": 100,
+      "smallTreeFiles": 49,
+      "siblingFiles": 5000
+    }
+  },
+  "results": [
+    {
+      "name": "synthetic-simulator-connection",
+      "status": "passed",
+      "durationMs": 640,
+      "alreadyConnected": false,
+      "selectedSimulator": "/tmp/ttyGRBL\\nManufacturer: Grbl Simulator",
+      "connected": true
+    },
+    {
+      "name": "watch-root-5000-node-hierarchy",
+      "status": "passed",
+      "durationMs": 191,
+      "rootCount": 100,
+      "rootFirst": "dir-000",
+      "rootLast": "dir-099",
+      "firstDirectoryFileCount": 49,
+      "firstFile": "dir-000/fixture-0000.nc",
+      "lastFile": "dir-000/fixture-0048.nc",
+      "totalFixtureNodes": 5000
+    },
+    {
+      "name": "watch-5000-sibling-directory",
+      "status": "blocked",
+      "durationMs": 2,
+      "configuredSiblingPath": "r6-sibling-batch",
+      "cachedRootItemCount": 100,
+      "diskSiblingFolderPresent": true,
+      "reason": "Folder was added after DirectoryWatcher startup."
+    }
+  ],
+  "api": [
+    {
+      "method": "POST",
+      "path": "/api/watch/files",
+      "directory": ""
+    },
+    {
+      "status": 200,
+      "path": "/api/watch/files",
+      "directory": "",
+      "itemCount": 100
+    },
+    {
+      "method": "POST",
+      "path": "/api/watch/files",
+      "directory": "dir-000"
+    },
+    {
+      "status": 200,
+      "path": "/api/watch/files",
+      "directory": "dir-000",
+      "itemCount": 49
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

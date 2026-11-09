@@ -1,0 +1,163 @@
+FAIL __tests__/ui-migration.test.js
+  ✓ alias transport import and component mutation (14 ms)
+  ✓ relative API import (2 ms)
+  ✓ relative barrel re-export (6 ms)
+  ✓ star barrel re-export (2 ms)
+  ✓ namespace barrel re-export (2 ms)
+  ✓ CommonJS require and member alias (1 ms)
+  ✓ CommonJS barrel export (2 ms)
+  ✓ dynamic import of transport (2 ms)
+  ✓ nonliteral module fails closed (1 ms)
+  ✓ aliased global fetch (1 ms)
+  ✓ XMLHttpRequest cannot bypass HTTP boundary (1 ms)
+  ✓ shadowed fetch is local data (1 ms)
+  ✓ named query module and UI hook (3 ms)
+  ✓ new queries filename has no wildcard exception (1 ms)
+  ✓ query pure transport cannot be called directly by UI (1 ms)
+  ✓ query re-export cannot launder raw transport (2 ms)
+  ✓ controller command remains realtime (1 ms)
+  ✓ allowed download member (1 ms)
+  ✓ download exception cannot allow component mutation
+  ✓ download exception cannot let API object escape (1 ms)
+  ✓ non-React bootstrap may use pure transport (1 ms)
+  ✓ non-React bootstrap cannot call React hooks (1 ms)
+  ✓ non-React bootstrap cannot call Query hooks (1 ms)
+  ✓ aliased React Component (1 ms)
+  ✓ aliased React namespace and class expression (1 ms)
+  ✓ React base through relative barrel (2 ms)
+  ✓ CommonJS destructured React base (1 ms)
+  ✓ indirect React inheritance (1 ms)
+  ✓ domain class exception cannot hide React inheritance (1 ms)
+  ✓ named domain class remains permitted (1 ms)
+  ✓ unlisted class fails closed
+  ✓ legacy factory through alias (2 ms)
+  ✓ React legacy createClass through namespace (1 ms)
+  ✓ legacy family relative barrel (1 ms)
+  ✓ legacy package aliased import (1 ms)
+  ✓ forbidden instance method computed (1 ms)
+  ✓ child instance settings value
+  ✓ aliased findDOMNode (1 ms)
+  ✓ resource DOM refs are legal (1 ms)
+  ✓ obsolete fetch abstraction (1 ms)
+  ✓ wildcard HTTP allowlist is rejected
+  ✓ missing allowlist reason is rejected
+  ✓ transport query exception cannot own JSX (1 ms)
+  ✓ invalid source fails closed (1 ms)
+  ✓ hook name cannot disguise raw HTTP without Query (2 ms)
+  ✓ raw HTTP returned from query helper is forbidden in UI (1 ms)
+  ✓ object export cannot launder raw HTTP (2 ms)
+  ✓ assigned alias cannot hide React base (1 ms)
+  ✓ cyclic barrel still resolves transport (1 ms)
+  ✓ namespace React base with computed member (1 ms)
+  ✓ unknown boundary role is rejected
+  ✓ unrestricted download exception is rejected
+  ✓ wrapped React superclass cannot use domain exception (1 ms)
+  ✓ React superclass factory cannot use domain exception (1 ms)
+  ✓ arrow getter cannot launder raw HTTP (1 ms)
+  ✓ arrow superclass getter cannot use domain exception (1 ms)
+  ✓ aliased obsolete fetch service is forbidden (1 ms)
+  ✓ unused QueryClient hook cannot disguise a raw HTTP read (1 ms)
+  ✓ pure query options may be consumed by Query (2 ms)
+  ✓ calling queryFn directly from component is forbidden (1 ms)
+  ✓ eager HTTP cannot disguise itself as query options (2 ms)
+  ✕ W3 rejects retired direct dependency react-animate-height (2 ms)
+  ✕ W3 rejects retired direct dependency react-datepicker (2 ms)
+  ✕ W3 rejects retired direct dependency react-facebook-loading (1 ms)
+  ✕ W3 rejects retired direct dependency uncontrollable (1 ms)
+  ✓ CLI reports file/line/rule and fails on component mutation (83 ms)
+  ✓ CLI succeeds for a legal realtime fixture project (76 ms)
+  ✓ CLI fails instead of passing an empty or wrong project root (66 ms)
+
+  ● W3 rejects retired direct dependency react-animate-height
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "legacy-ui",
+    - ]
+    + Array []
+
+      21 |   const { violations } = checkProject({ root, policy: fixture.policy });
+      22 |   const rules = [...new Set(violations.map(item => item.rule))].sort();
+    > 23 |   expect(rules).toEqual([...fixture.rules].sort());
+         |                 ^
+      24 | });
+      25 |
+      26 | test('CLI reports file/line/rule and fails on component mutation', () => {
+
+      at toEqual (__tests__/ui-migration.test.js:23:17)
+
+  ● W3 rejects retired direct dependency react-datepicker
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "legacy-ui",
+    - ]
+    + Array []
+
+      21 |   const { violations } = checkProject({ root, policy: fixture.policy });
+      22 |   const rules = [...new Set(violations.map(item => item.rule))].sort();
+    > 23 |   expect(rules).toEqual([...fixture.rules].sort());
+         |                 ^
+      24 | });
+      25 |
+      26 | test('CLI reports file/line/rule and fails on component mutation', () => {
+
+      at toEqual (__tests__/ui-migration.test.js:23:17)
+
+  ● W3 rejects retired direct dependency react-facebook-loading
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "legacy-ui",
+    - ]
+    + Array []
+
+      21 |   const { violations } = checkProject({ root, policy: fixture.policy });
+      22 |   const rules = [...new Set(violations.map(item => item.rule))].sort();
+    > 23 |   expect(rules).toEqual([...fixture.rules].sort());
+         |                 ^
+      24 | });
+      25 |
+      26 | test('CLI reports file/line/rule and fails on component mutation', () => {
+
+      at toEqual (__tests__/ui-migration.test.js:23:17)
+
+  ● W3 rejects retired direct dependency uncontrollable
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "legacy-ui",
+    - ]
+    + Array []
+
+      21 |   const { violations } = checkProject({ root, policy: fixture.policy });
+      22 |   const rules = [...new Set(violations.map(item => item.rule))].sort();
+    > 23 |   expect(rules).toEqual([...fixture.rules].sort());
+         |                 ^
+      24 | });
+      25 |
+      26 | test('CLI reports file/line/rule and fails on component mutation', () => {
+
+      at toEqual (__tests__/ui-migration.test.js:23:17)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 64 passed, 68 total
+Snapshots:   0 total
+Time:        0.738 s, estimated 1 s
+Ran all test suites within paths "__tests__/ui-migration.test.js".

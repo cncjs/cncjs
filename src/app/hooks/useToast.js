@@ -1,16 +1,12 @@
 import {
   Box,
   Toast,
-  useColorMode,
-  useColorStyle,
   useToastManager,
 } from '@tonic-ui/react';
 import React, { useCallback } from 'react';
 
 const ToastLayout = (props) => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
-  const boxShadow = colorStyle.shadow.thin;
+  const boxShadow = 'low.main';
 
   return (
     <Box

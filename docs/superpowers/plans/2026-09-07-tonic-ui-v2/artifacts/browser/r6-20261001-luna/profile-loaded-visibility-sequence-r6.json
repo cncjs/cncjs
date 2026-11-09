@@ -1,0 +1,389 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "fixture": {
+    "bytes": 86,
+    "sha256": "a4226f3bbd40ff4a0f369926de69830409b75b76bac8bf0eb4afd52ae52f55ad",
+    "lines": 7
+  },
+  "profiles": [
+    {
+      "name": "R6 sequence A 1790936843965",
+      "limits": {
+        "xmin": 0,
+        "xmax": 200,
+        "ymin": -100,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      }
+    },
+    {
+      "name": "R6 sequence B 1790936843965",
+      "limits": {
+        "xmin": -100,
+        "xmax": 0,
+        "ymin": 50,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "step": "actual-simulator-open",
+      "atMs": 1790936846272
+    },
+    {
+      "step": "profile:R6 sequence A 1790936843965",
+      "atMs": 1790936846882,
+      "engine": {
+        "hasGCode": false,
+        "width": 648,
+        "height": 755,
+        "pivotX": 100,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "gcodeWorldCenterX": null,
+        "gcodeWorldCenterY": null,
+        "gcodeWorldCenterZ": null,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    },
+    {
+      "step": "fixture-loaded-visible",
+      "atMs": 1790936847127,
+      "engine": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    },
+    {
+      "step": "profile:R6 sequence B 1790936843965",
+      "atMs": 1790936847628,
+      "engine": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    },
+    {
+      "step": "profile:R6 sequence A 1790936843965",
+      "atMs": 1790936848057,
+      "engine": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Profile B switch while loaded preserves real world center and pivot",
+      "status": "passed",
+      "profile": "R6 sequence B 1790936843965",
+      "engine": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    },
+    {
+      "name": "Native Hide Limits action with Profile A and loaded G-code",
+      "status": "passed",
+      "label": "Hide Limits",
+      "before": {
+        "text": "Hide Limits",
+        "disabled": false,
+        "ariaDisabled": null,
+        "pointerEvents": "auto",
+        "rect": {
+          "x": 930.671875,
+          "y": 367,
+          "width": 149.328125,
+          "height": 36
+        },
+        "hitTarget": {
+          "tag": "CANVAS",
+          "role": null,
+          "label": null,
+          "text": ""
+        }
+      },
+      "nativeClick": [
+        {
+          "label": "Hide Limits",
+          "atMs": 4266.5,
+          "isTrusted": true,
+          "targetTag": "BUTTON",
+          "targetRole": "menuitem"
+        }
+      ],
+      "afterTwoFrames": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": false,
+        "sceneLimitsVisible": false,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      },
+      "afterSettle": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": false,
+        "sceneLimitsVisible": false,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      },
+      "menuStillVisible": false
+    },
+    {
+      "name": "Restore limits while Profile A and loaded G-code",
+      "status": "passed",
+      "label": "Show Limits",
+      "before": {
+        "text": "Show Limits",
+        "disabled": false,
+        "ariaDisabled": null,
+        "pointerEvents": "auto",
+        "rect": {
+          "x": 930.671875,
+          "y": 367,
+          "width": 149.328125,
+          "height": 36
+        },
+        "hitTarget": {
+          "tag": "CANVAS",
+          "role": null,
+          "label": null,
+          "text": ""
+        }
+      },
+      "nativeClick": [
+        {
+          "label": "Show Limits",
+          "atMs": 4953,
+          "isTrusted": true,
+          "targetTag": "BUTTON",
+          "targetRole": "menuitem"
+        }
+      ],
+      "afterTwoFrames": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      },
+      "afterSettle": {
+        "hasGCode": true,
+        "width": 648,
+        "height": 755,
+        "pivotX": 30,
+        "pivotY": 40,
+        "pivotZ": -1,
+        "gcodeWorldCenterX": 0,
+        "gcodeWorldCenterY": 0,
+        "gcodeWorldCenterZ": 0,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      },
+      "menuStillVisible": false
+    },
+    {
+      "name": "Visibility interaction CNC mutation delta",
+      "status": "passed",
+      "commandCount": 0,
+      "commands": []
+    },
+    {
+      "name": "G-code unloaded and cached world center cleared",
+      "status": "passed",
+      "engine": {
+        "hasGCode": false,
+        "width": 648,
+        "height": 755,
+        "pivotX": 100,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "gcodeWorldCenterX": null,
+        "gcodeWorldCenterY": null,
+        "gcodeWorldCenterZ": null,
+        "limitsVisible": true,
+        "sceneLimitsVisible": true,
+        "coordinateSystemVisible": true,
+        "sceneCoordinateSystemVisible": true
+      }
+    }
+  ],
+  "commands": [
+    {
+      "name": "sender_load",
+      "category": "programState",
+      "transport": "polling",
+      "payloadBytes": 138,
+      "payloadSha256": "cb2c3fe23070461bafb84643afe8f2191a27414839d707701e277906eb47ccb0"
+    },
+    {
+      "name": "sender_unload",
+      "category": "programState",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-in"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Tooltip.js:30:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/OverflowTooltip.js:23:23)\n    at cell (webpack-internal:///./pages/Administration/Machines/Machines.jsx:274:25)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.developmen"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400449e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400449e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400449e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11400449e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "profileCleanup": "removed"
+}

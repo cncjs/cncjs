@@ -1,14 +1,17 @@
 import {
   Text,
-  useColorMode,
-  useColorStyle,
 } from '@tonic-ui/react';
 import {
-  isNullOrUndefined,
-} from '@tonic-ui/utils';
+  get,
+  useFormState,
+} from 'react-hook-form';
 import React, { forwardRef } from 'react';
-import { Field } from 'react-final-form';
+import i18n from '@app/lib/i18n';
 
+/**
+ * @param {object} props
+ * @param {string} props.name
+ */
 const FieldErrorText = forwardRef((
   {
     name,
@@ -16,37 +19,23 @@ const FieldErrorText = forwardRef((
   },
   ref,
 ) => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
+  const { errors } = useFormState({ name });
+  const fieldError = get(errors, name);
+  const error = fieldError && (fieldError.message || i18n._('Invalid value.'));
+
+  if (!error) {
+    return null;
+  }
 
   return (
-    <Field
-      name={name}
-      subscription={{
-        error: true,
-        submitFailed: true,
-      }}
-      render={({ meta }) => {
-        const isEmpty = !meta.error;
-        const isInvalid = meta.submitFailed && !isNullOrUndefined(meta.error);
-        const isValid = !isInvalid;
-
-        if (isEmpty || isValid) {
-          return null;
-        }
-
-        return (
-          <Text
-            ref={ref}
-            color={colorStyle.color.error}
-            mt="1x"
-            {...rest}
-          >
-            {meta.error}
-          </Text>
-        );
-      }}
-    />
+    <Text
+      ref={ref}
+      color="error.text"
+      mt="1x"
+      {...rest}
+    >
+      {error}
+    </Text>
   );
 });
 

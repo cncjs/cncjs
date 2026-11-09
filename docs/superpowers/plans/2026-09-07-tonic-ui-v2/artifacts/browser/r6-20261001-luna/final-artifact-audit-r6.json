@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-02T10:44:24.575524+00:00",
+  "jsonFilesParsed": 113,
+  "credentialPatternFindings": [],
+  "jsonLargerThan1MB": [],
+  "localeAudit": "17 files, exactly nine new keys, all HEAD values preserved",
+  "diffCheckExitCode": 0,
+  "protectedSourceChangedFiles": 0,
+  "scope": "Audit of repository evidence only; retained /tmp authentication/config files deliberately not copied into evidence."
+}

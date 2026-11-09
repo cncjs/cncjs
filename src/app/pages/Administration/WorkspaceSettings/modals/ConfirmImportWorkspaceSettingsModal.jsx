@@ -7,7 +7,6 @@ import {
   ModalFooter,
   Stack,
   Text,
-  useColorStyle,
 } from '@tonic-ui/react';
 import CodePreview from '@app/components/CodePreview';
 import ModalWarningIcon from '@app/icons/ModalWarningIcon';
@@ -21,14 +20,13 @@ const ConfirmImportWorkspaceSettingsModal = ({
   onConfirm,
   ...rest
 }) => {
-  const [colorStyle] = useColorStyle();
   const data = JSON.parse(JSON.stringify(dataProp));
   _set(data, 'state.session.token', '********'); // Hide session token
 
   return (
     <Modal
       closeOnEsc
-      closeOnOutsideClick
+      closeOnInteractOutside
       isClosable
       isOpen={true}
       onClose={onClose}
@@ -39,7 +37,7 @@ const ConfirmImportWorkspaceSettingsModal = ({
         <ModalBody>
           <Flex columnGap="4x" mb="6x">
             <ModalWarningIcon
-              color={colorStyle?.color?.warning}
+              color="warning.icon"
               size="12x"
             />
             <Stack spacing="1x">

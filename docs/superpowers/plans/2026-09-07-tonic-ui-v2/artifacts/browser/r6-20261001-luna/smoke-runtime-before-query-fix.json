@@ -1,0 +1,186 @@
+{
+  "browserVersion": "151.0.7922.34",
+  "headless": true,
+  "responseStatus": 200,
+  "runtime": {
+    "title": "CNCjs 2.0.0-dev",
+    "url": "http://127.0.0.1:8080/#/workspace",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "devicePixelRatio": 1,
+    "colorScheme": "light",
+    "themeAttributes": {
+      "html": null,
+      "body": null
+    },
+    "frameRegions": [
+      "Collapse all left panel widgets",
+      "Expand all left panel widgets",
+      "Connection widget",
+      "Widget controls",
+      "Console widget",
+      "Widget controls",
+      "Grbl widget",
+      "Widget controls",
+      "Marlin widget",
+      "Widget controls",
+      "Smoothie widget",
+      "Widget controls",
+      "TinyG widget",
+      "Widget controls",
+      "Webcam widget",
+      "Widget controls",
+      "3D Visualizer widget",
+      "Collapse all right panel widgets",
+      "Expand all right panel widgets",
+      "Axes widget",
+      "Widget controls",
+      "G-code widget",
+      "Widget controls",
+      "Macro widget",
+      "Widget controls",
+      "Move Autolevel widget",
+      "Widget controls",
+      "Probe widget",
+      "Widget controls",
+      "Tool widget",
+      "Widget controls",
+      "Spindle widget",
+      "Widget controls",
+      "Laser widget",
+      "Widget controls"
+    ],
+    "canvasCount": 1,
+    "webglContext": true,
+    "webglVendor": "Google Inc. (Google)",
+    "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "bodyTextStart": "CNCjs\nEN\nWorkspace\nWorkspace\nAdministration\nManage Widgets (1)\nConnection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nSet DTR line status upon opening\nSet RTS line status upon opening\nUse RTS/CTS flow control\nConnect automatically\nOpen\nConsole\nNo serial connection\nGrbl\nMarlin\nSmoothie\nTinyG\nWebcam\nWebcam is off\nG54 (P1)\n3D View\nUpload G-code\nManage Widgets (1)\nAxes\nMDI\nAxis\tMachine Position\tWork Position\t\n\n\nX\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nY\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nZ\nmm\n\t\n0.000\n\t\n0.000\n\t\nY\n+\nZ\n+\nX\n-\nX\n0\nY\n0\nX\n+\nZ\n0\nY\n-\nZ\n-\nG21 (mm)\n1mm\nG-code\nG-code not loaded\nMacro\nNew\nExport\nNo macros available\nAutolevel\n🎯\nPROBE NEW SURFACE\nSet up the probe area and probe the work surface to generate height compensation data.\nStart New Probe\n🔧\nAPPLY COMPENSATION\nLoad a previously saved .probe file and apply it to your G-code.\nLoad Probe Data\nProbe\nProbe Axis\nZ\nX\nY\nProbe Command: G38.2\nG38.2\nG38.3\nG38.4\nG38.5\nProbe Depth\nin\nProbe Feedrate\nin/min\nTouch Plate Thickness\nin\nRetraction Distance\nin\nProbe Axis Z\nTool\nNo available tool configuration\nSpindle\nCoolant\nM7\nM8\nM9\nSpindle\nM3\nM4\nM5\nSpindle Speed\nRPM\nLaser\nLaser Intensity Control\n0%\n-10%\n-1%\n1%\n10%\nLaser Test\n−\nPower (%)\n0%\nTest duration\nms\nMaximum value\nS\nLaser Test\nLaser Off",
+    "accessibleSnapshot": "- banner \"Application header\":\n  - button \"Toggle navigation\"\n  - button \"CNCjs 2.0.0-dev - View release notes\": CNCjs\n  - text: en Workspace\n  - button\n- navigation: Workspace Administration\n- main:\n  - button \"Hide left panel\"\n  - button \"Manage Widgets (1)\"\n  - button \"Collapse all left panel widgets\"\n  - button \"Expand all left panel widgets\"\n  - region \"Connection widget\":\n    - text: Connection\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - button \"Grbl\"\n    - button \"Marlin\"\n    - button \"Smoothie\"\n    - button \"TinyG\"\n    - button \"Serial Port\"\n    - button \"Wi-Fi\"\n    - text: Serial port\n    - button \"Serial port\": Choose a port\n    - button \"Refresh\"\n    - text: Baud rate\n    - button \"Baud rate\": \"115200\"\n    - button \"Refresh\"\n    - checkbox \"Set DTR line status upon opening\"\n    - text: Set DTR line status upon opening\n    - checkbox \"Set RTS line status upon opening\"\n    - text: Set RTS line status upon opening\n    - checkbox \"Use RTS/CTS flow control\"\n    - text: Use RTS/CTS flow control\n    - checkbox \"Connect automatically\" [checked]\n    - text: Connect automatically\n    - button \"Open\" [disabled]\n  - region \"Console widget\":\n    - text: Console\n    - toolbar \"Widget controls\":\n      - button \"Clear console\"\n      - button \"Collapse\" [expanded]\n      - button \"Enter full screen\"\n      - button \"More options\"\n    - text: No serial connection\n  - region \"Grbl widget\":\n    - text: Grbl\n    - toolbar \"Widget controls\":\n      - button \"More options\"\n  - region \"Marlin widget\":\n    - text: Marlin\n    - toolbar \"Widget controls\":\n      - button \"More options\"\n  - region \"Smoothie widget\":\n    - text: Smoothie\n    - toolbar \"Widget controls\":\n      - button \"More options\"\n  - region \"TinyG widget\":\n    - text: TinyG\n    - toolbar \"Widget controls\":\n      - button \"More options\"\n  - region \"Webcam widget\":\n    - text: Webcam\n    - toolbar \"Widget controls\":\n      - button \"Enable Webcam\"\n      - button \"Refresh webcam\" [disabled]\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - img\n    - text: Webcam is off\n  - region \"3D Visualizer widget\":\n    - button \"G54 (P1)\" [disabled]\n    - button \"3D View\"\n    - button \"3D View options\"\n    - button \"Upload G-code\" [disabled]\n    - button \"Upload G-code options\" [disabled]\n    - button \"Run\" [disabled]\n    - button \"Pause\" [disabled]\n    - button \"Stop\" [disabled]\n    - button \"Close G-code file\" [disabled]\n    - button \"Top View\"\n    - button \"Front View\"\n    - button \"Right Side View\"\n    - button \"Left Side View\"\n    - button \"3D View\"\n    - button \"Zoom to Fit\"\n    - button \"Zoom In\"\n    - button \"Zoom Out\"\n    - 'button \"Camera mode: Pan\"'\n  - button \"Collapse all right panel widgets\"\n  - button \"Expand all right panel widgets\"\n  - button \"Manage Widgets (1)\"\n  - button \"Hide right panel\"\n  - region \"Axes widget\":\n    - text: Axes\n    - toolbar \"Widget controls\":\n      - button \"Toggle keypad jogging\" [disabled]\n      - button \"Toggle manual data input mode\": MDI\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - table:\n      - rowgroup:\n        - row \"Axis Machine Position Work Position Select work coordinate system\":\n          - columnheader \"Axis\"\n          - columnheader \"Machine Position\"\n          - columnheader \"Work Position\"\n          - columnheader \"Select work coordinate system\":\n            - button \"Select work coordinate system\" [disabled]\n      - rowgroup:\n        - 'row \"X mm 0.000 Go to zero: X Home: X 0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets X axis actions\"':\n          - cell \"X mm\"\n          - 'cell \"0.000 Go to zero: X Home: X\"':\n            - text: \"0.000\"\n            - 'button \"Go to zero: X\" [disabled]'\n            - 'button \"Home: X\" [disabled]'\n          - cell \"0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets\":\n            - text: \"0.000\"\n            - button \"Move X backward\" [disabled]\n            - button \"Move X forward\" [disabled]\n            - button \"Zero out X work offsets\" [disabled]\n            - button \"Set X work offsets\" [disabled]\n          - cell \"X axis actions\":\n            - button \"X axis actions\" [disabled]\n        - 'row \"Y mm 0.000 Go to zero: Y Home: Y 0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets Y axis actions\"':\n          - cell \"Y mm\"\n          - 'cell \"0.000 Go to zero: Y Home: Y\"':\n            - text: \"0.000\"\n            - 'button \"Go to zero: Y\" [disabled]'\n            - 'button \"Home: Y\" [disabled]'\n          - cell \"0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets\":\n            - text: \"0.000\"\n            - button \"Move Y backward\" [disabled]\n            - button \"Move Y forward\" [disabled]\n            - button \"Zero out Y work offsets\" [disabled]\n            - button \"Set Y work offsets\" [disabled]\n          - cell \"Y axis actions\":\n            - button \"Y axis actions\" [disabled]\n        - 'row \"Z mm 0.000 Go to zero: Z Home: Z 0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets Z axis actions\"':\n          - cell \"Z mm\"\n          - 'cell \"0.000 Go to zero: Z Home: Z\"':\n            - text: \"0.000\"\n            - 'button \"Go to zero: Z\" [disabled]'\n            - 'button \"Home: Z\" [disabled]'\n          - cell \"0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets\":\n            - text: \"0.000\"\n            - button \"Move Z backward\" [disabled]\n            - button \"Move Z forward\" [disabled]\n            - button \"Zero out Z work offsets\" [disabled]\n            - button \"Set Z work offsets\" [disabled]\n          - cell \"Z axis actions\":\n            - button \"Z axis actions\" [disabled]\n    - button \"Move X negative Y positive\" [disabled]\n    - button \"Move Y positive\" [disabled]: Y +\n    - button \"Move X positive Y positive\" [disabled]\n    - button \"Move Z positive\" [disabled]: Z +\n    - button \"Move X negative\" [disabled]: X -\n    - button \"X 0 Y 0\" [disabled]\n    - button \"Move X positive\" [disabled]: X +\n    - button \"Z 0\" [disabled]\n    - button \"Move X negative Y negative\" [disabled]\n    - button \"Move Y negative\" [disabled]: Y -\n    - button \"Move X positive Y negative\" [disabled]\n    - button \"Move Z negative\" [disabled]: Z -\n    - button \"G21 (mm)\" [disabled]\n    - button \"1 mm\" [disabled]:\n      - text: \"1\"\n      - subscript: mm\n    - button \"Decrease step size\" [disabled]\n    - button \"Increase step size\" [disabled]\n  - region \"G-code widget\":\n    - text: G-code\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - status: G-code not loaded\n  - region \"Macro widget\":\n    - text: Macro\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - button \"New macro\": New\n    - button \"Export\"\n    - button \"Refresh\"\n    - text: No macros available\n  - region:\n    - button \"Move Autolevel widget\"\n    - text: Autolevel\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More\"\n    - img \"Target\": 🎯\n    - text: PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data.\n    - button \"Start New Probe\"\n    - img \"Wrench\": 🔧\n    - text: APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code.\n    - button \"Load Probe Data\"\n  - region \"Probe widget\":\n    - text: Probe\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - text: Probe Axis\n    - button \"Z\"\n    - button \"X\"\n    - button \"Y\"\n    - text: \"Probe Command: G38.2\"\n    - button \"G38.2\"\n    - button \"G38.3\"\n    - button \"G38.4\"\n    - button \"G38.5\"\n    - text: Probe Depth\n    - spinbutton \"Probe Depth\": \"10\"\n    - text: in Probe Feedrate\n    - spinbutton \"Probe Feedrate\": \"20\"\n    - text: in/min Touch Plate Thickness\n    - spinbutton \"Touch Plate Thickness\": \"10\"\n    - text: in Retraction Distance\n    - spinbutton \"Retraction Distance\": \"4\"\n    - text: in\n    - button \"Probe Axis Z\" [disabled]\n  - region \"Tool widget\":\n    - text: Tool\n    - toolbar \"Widget controls\":\n      - button \"Refresh tool configuration\"\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - text: No available tool configuration\n  - region \"Spindle widget\":\n    - text: Spindle\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - text: Coolant\n    - button \"M7\" [disabled]\n    - button \"M8\" [disabled]\n    - button \"M9\" [disabled]\n    - text: Spindle\n    - button \"M3\" [disabled]\n    - button \"M4\" [disabled]\n    - button \"M5\" [disabled]\n    - text: Spindle Speed\n    - spinbutton \"Spindle Speed\": \"1000\"\n    - text: RPM\n  - region \"Laser widget\":\n    - text: Laser\n    - toolbar \"Widget controls\":\n      - button \"Collapse\" [expanded]\n      - button \"More options\"\n    - text: Laser Intensity Control 0%\n    - button \"-10%\"\n    - button \"-1%\"\n    - button \"1%\"\n    - button \"10%\"\n    - button \"Reset\"\n    - text: Laser Test\n    - button \"Collapse\" [expanded]: −\n    - text: Power (%) 0%\n    - slider \"Laser power\"\n    - text: Test duration\n    - spinbutton \"Test duration in milliseconds\": \"0\"\n    - text: ms Maximum value S\n    - spinbutton \"Maximum S value\": \"1000\"\n    - button \"Laser Test\" [disabled]\n    - button \"Laser Off\" [disabled]"
+  },
+  "events": {
+    "console": [
+      {
+        "type": "info",
+        "text": "[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading disabled, Progress enabled, Overlay enabled."
+      },
+      {
+        "type": "log",
+        "text": "[HMR] Waiting for update signal from WDS..."
+      },
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "info",
+        "text": "🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙"
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %cbf9982bc-876f-4a09-908c-b7afeeea4c17:APP_INIT %c@ 21:43:17.814 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: bf9982bc-876f-4a09-908c-b7afeeea4c17:APP_INIT}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      },
+      {
+        "type": "error",
+        "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %cbf9982bc-876f-4a09-908c-b7afeeea4c17:APP_INIT_SUCCESS %c@ 21:43:17.849 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: bf9982bc-876f-4a09-908c-b7afeeea4c17:APP_INIT_SUCCESS}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      },
+      {
+        "type": "error",
+        "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+      },
+      {
+        "type": "error",
+        "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+      },
+      {
+        "type": "error",
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+      },
+      {
+        "type": "error",
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+      },
+      {
+        "type": "warning",
+        "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24900:3)"
+      },
+      {
+        "type": "error",
+        "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+      },
+      {
+        "type": "error",
+        "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+      },
+      {
+        "type": "error",
+        "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x10c00516000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x10c00516000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x10c00516000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      }
+    ],
+    "pageErrors": [],
+    "unhandledRejections": [],
+    "requestFailures": [],
+    "httpErrors": []
+  }
+}

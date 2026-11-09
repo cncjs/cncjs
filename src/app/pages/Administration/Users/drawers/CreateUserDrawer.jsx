@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  Box,
   Button,
   Drawer,
   DrawerContent,
@@ -9,6 +8,7 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
+  FormControl,
   Switch,
   Text,
   TextLabel,
@@ -16,29 +16,23 @@ import {
 import {
   useConst,
 } from '@tonic-ui/react-hooks';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import React, { useCallback } from 'react';
-import { Field, Form } from 'react-final-form';
-import FormGroup from '@app/components/FormGroup';
-import {
-  InlineToastContainer,
-  InlineToasts,
-  useInlineToasts,
-} from '@app/components/InlineToasts';
+import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
-import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
-import * as validations from '@app/pages/Administration/validations';
 import {
   API_USERS_QUERY_KEY,
   useCreateUserMutation,
 } from '../queries';
 
+/** @param {{ onClose?: Function, id?: string }} props */
 const CreateUserDrawer = ({
   onClose,
   ...rest
 }) => {
-  const { toasts, notify: notifyToast } = useInlineToasts();
+  const notifyToast = useToast();
   const queryClient = useQueryClient();
   const createUserMutation = useCreateUserMutation({
     onSuccess: () => {
@@ -59,11 +53,15 @@ const CreateUserDrawer = ({
       });
     },
   });
-  const initialValues = useConst(() => ({
+  const defaultValues = useConst(() => ({
     enabled: true,
-    title: '',
-    commands: '',
+    name: '',
+    password: '',
   }));
+  const methods = useForm({
+    defaultValues,
+    mode: 'onSubmit',
+  });
   const handleFormSubmit = useCallback((values) => {
     createUserMutation.mutate({
       data: values,
@@ -82,115 +80,88 @@ const CreateUserDrawer = ({
       {...rest}
     >
       <DrawerOverlay />
-      <Form
-        initialValues={initialValues}
-        onSubmit={handleFormSubmit}
-        validate={(values) => {
-          const errors = {};
-          errors.name = validations.required(values.name);
-          errors.data = validations.required(values.data);
-          return errors;
-        }}
-        render={({ form }) => (
-          <DrawerContent>
-            <InlineToastContainer>
-              <InlineToasts toasts={toasts} />
-            </InlineToastContainer>
-            <DrawerHeader>
-              <Text>
-                {i18n._('New User')}
-              </Text>
-            </DrawerHeader>
-            <DrawerBody>
-              <FormGroup>
-                <Flex
-                  alignItems="center"
-                  columnGap="3x"
-                >
-                  <FieldTextLabel>
-                    {i18n._('Status:')}
-                  </FieldTextLabel>
-                  <Field name="enabled">
-                    {({ input, meta }) => {
-                      return (
-                        <Flex
-                          alignItems="center"
-                          columnGap="2x"
-                        >
-                          <Switch
-                            aria-label="Enable account"
-                            {...input}
-                            checked={input.value}
-                          />
-                          <TextLabel>
-                            {input.value === true ? i18n._('ON') : i18n._('OFF')}
-                          </TextLabel>
-                        </Flex>
-                      );
-                    }}
-                  </Field>
-                </Flex>
-              </FormGroup>
-              <FormGroup>
-                <Box mb="1x">
-                  <FieldTextLabel
-                    required
-                  >
-                    {i18n._('User name:')}
-                  </FieldTextLabel>
-                </Box>
-                <FieldInput
-                  aria-label="Username"
-                  name="title"
-                  placeholder={i18n._('e.g., Activate Air Purifier')}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Box mb="1x">
-                  <FieldTextLabel
-                    required
-                    infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
-                  >
-                    {i18n._('Shell commands:')}
-                  </FieldTextLabel>
-                </Box>
-                <FieldTextarea
-                  name="commands"
-                  rows="10"
-                  placeholder="/home/cncjs/bin/activate-air-purifier"
-                />
-              </FormGroup>
-            </DrawerBody>
-            <DrawerFooter>
+      <FormProvider {...methods}>
+        <DrawerContent
+          as="form"
+          noValidate
+          onSubmit={methods.handleSubmit(handleFormSubmit)}
+        >
+          <DrawerHeader>
+            <Text>
+              {i18n._('New User')}
+            </Text>
+          </DrawerHeader>
+          <DrawerBody>
+            <FormControl mb="4x">
               <Flex
                 alignItems="center"
-                columnGap="2x"
+                columnGap="3x"
               >
-                <Button
-                  onClick={onClose}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Cancel')}
-                </Button>
-                <Button
-                  variant="primary"
-                  disabled={isFormDisabled}
-                  onClick={() => {
-                    form.submit();
-                  }}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Add')}
-                </Button>
+                <FieldTextLabel>
+                  {i18n._('Status:')}
+                </FieldTextLabel>
+                <Controller
+                  name="enabled"
+                  render={({ field }) => (
+                    <Flex
+                      alignItems="center"
+                      columnGap="2x"
+                    >
+                      <Switch
+                        aria-label="Enable account"
+                        checked={!!field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                      />
+                      <TextLabel>
+                        {field.value === true ? i18n._('ON') : i18n._('OFF')}
+                      </TextLabel>
+                    </Flex>
+                  )}
+                />
               </Flex>
-            </DrawerFooter>
-          </DrawerContent>
-        )}
-      />
+            </FormControl>
+            <FieldInput
+              name="name"
+              label={i18n._('User name:')}
+              required
+              autoComplete="username"
+            />
+            <FieldInput
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              label={i18n._('Password:')}
+              required
+            />
+          </DrawerBody>
+          <DrawerFooter>
+            <Flex
+              alignItems="center"
+              columnGap="2x"
+            >
+              <Button
+                type="button"
+                onClick={onClose}
+                sx={{
+                  minWidth: 80,
+                }}
+              >
+                {i18n._('Cancel')}
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isFormDisabled}
+                sx={{
+                  minWidth: 80,
+                }}
+              >
+                {i18n._('Add')}
+              </Button>
+            </Flex>
+          </DrawerFooter>
+        </DrawerContent>
+      </FormProvider>
     </Drawer>
   );
 };

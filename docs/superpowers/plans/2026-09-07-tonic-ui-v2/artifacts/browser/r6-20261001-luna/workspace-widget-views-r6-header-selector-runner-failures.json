@@ -1,0 +1,222 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "headless": true,
+    "viewportInitial": "1440x900",
+    "dpr": 1,
+    "renderer": "SwiftShader WebGL",
+    "camera": "Chromium synthetic camera device"
+  },
+  "gates": [
+    {
+      "name": "ensure synthetic Grbl connection",
+      "status": "passed",
+      "durationMs": 537,
+      "alreadyConnected": false,
+      "port": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator"
+    },
+    {
+      "name": "activate Custom and verify 16 framed widgets plus no-frame Visualizer",
+      "status": "passed",
+      "durationMs": 298,
+      "custom": {
+        "alreadyActive": false,
+        "enabledThroughManager": true
+      },
+      "frameCount": 16,
+      "regionNames": [
+        "Connection widget",
+        "Console widget",
+        "Custom widget",
+        "Grbl widget",
+        "Marlin widget",
+        "Smoothie widget",
+        "TinyG widget",
+        "Webcam widget",
+        "3D Visualizer widget",
+        "Autolevel Widget",
+        "Axes widget",
+        "G-code widget",
+        "Laser widget",
+        "Macro widget",
+        "Probe widget",
+        "Spindle widget",
+        "Tool widget"
+      ],
+      "visualizerHasNoFrame": true
+    },
+    {
+      "name": "Autolevel Widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Autolevel Widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Axes widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Axes widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Connection widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10005,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Console widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Console widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Custom widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Custom widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "G-code widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'G-code widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Grbl widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 4046,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Grbl widget', exact: true }).locator(':scope > .widget-header').getByRole('button', { name: 'Collapse', exact: true }).first() to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Laser widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 2,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Macro widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 1,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Probe widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 0,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Spindle widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 0,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Tool widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 0,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Webcam widget collapse and fullscreen view contract",
+      "status": "failed",
+      "durationMs": 0,
+      "error": "Error: locator.waitFor: Target page, context or browser has been closed"
+    },
+    {
+      "name": "Workspace and live Visualizer light/dark/auto at both R6 viewports",
+      "status": "failed",
+      "durationMs": 1,
+      "error": "Error: page.setViewportSize: Target page, context or browser has been closed"
+    }
+  ],
+  "expectedFrameNames": [
+    "Autolevel Widget",
+    "Axes widget",
+    "Connection widget",
+    "Console widget",
+    "Custom widget",
+    "G-code widget",
+    "Grbl widget",
+    "Laser widget",
+    "Macro widget",
+    "Marlin widget",
+    "Probe widget",
+    "Smoothie widget",
+    "Spindle widget",
+    "TinyG widget",
+    "Tool widget",
+    "Webcam widget"
+  ],
+  "screenshots": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400448c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400448c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400448c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "outgoingCommands": []
+}

@@ -1,0 +1,11 @@
+{
+  "browserVersion": "151.0.7922.34",
+  "waitMs": 8000,
+  "ui": {
+    "serialPortMenuEnabled": true,
+    "containsSyntheticPortLabel": false,
+    "connectionRegionText": "Connection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nSet DTR line status upon opening\nSet RTS line status upon opening\nUse RTS/CTS flow control\nConnect automatically\nOpen"
+  },
+  "packets": [],
+  "pageErrors": []
+}

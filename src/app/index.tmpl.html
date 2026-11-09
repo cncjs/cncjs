@@ -8,6 +8,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script>
+(function () {
+  var appearance;
+  try {
+    var stored = JSON.parse(localStorage.getItem('cnc'));
+    appearance = stored && stored.state && stored.state.settings && stored.state.settings.appearance;
+  } catch (error) {
+    // Unavailable or invalid storage must not prevent the loading screen.
+  }
+  var isDark = appearance === 'dark' ||
+    (appearance !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-color-scheme', isDark ? 'dark' : 'light');
+})();
+</script>
+<style>
+html {
+  background-color: {{lightBackground}};
+  color-scheme: light;
+}
+html[data-color-scheme="dark"] {
+  background-color: {{darkBackground}};
+  color-scheme: dark;
+}
+#loading { color: {{lightText}}; }
+html[data-color-scheme="dark"] #loading { color: {{darkText}}; }
+</style>
 <link rel="shortcut icon" href="{{webroot}}favicon.ico">
 </head>
 <body>
@@ -15,8 +41,8 @@
 this.process = Object.assign({}, this.process, { env: {} });
 </script>
 <div id="loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-  <div style="background: transparent url('{{webroot}}images/32x32/loading.gif') no-repeat 0 0; height: 32px; width: 32px; display: block; margin: 0 auto;"></div>
-  <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: normal; color: #222; text-align: center; margin-top: 10px;">{{loading}}</div>
+  {{spinner}}
+  <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: normal; color: inherit; text-align: center; margin-top: 10px;">{{loading}}</div>
 </div>
 </body>
 </html>

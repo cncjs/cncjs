@@ -1,11 +1,16 @@
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '@tonic-ui/react';
 import _difference from 'lodash/difference';
-import _find from 'lodash/find';
 import _includes from 'lodash/includes';
 import _union from 'lodash/union';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Button } from '@app/components/Buttons';
-import Modal from '@app/components/Modal';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   GRBL,
   MARLIN,
@@ -17,238 +22,229 @@ import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
 import WidgetList from './WidgetList';
 
-class WidgetManager extends Component {
-  static propTypes = {
-    onSave: PropTypes.func,
-    onClose: PropTypes.func.isRequired
-  };
+const getWidgetDefinitions = () => [
+  {
+    id: 'visualizer',
+    caption: i18n._('Visualizer Widget'),
+    details: i18n._('This widget visualizes a G-code file and simulates the tool path.'),
+    disabled: true,
+  },
+  {
+    id: 'connection',
+    caption: i18n._('Connection Widget'),
+    details: i18n._('This widget lets you establish a connection to a serial port.'),
+    disabled: true,
+  },
+  {
+    id: 'console',
+    caption: i18n._('Console Widget'),
+    details: i18n._('This widget lets you read and write data to the CNC controller connected to a serial port.'),
+    disabled: false,
+  },
+  {
+    id: 'grbl',
+    caption: i18n._('Grbl Widget'),
+    details: i18n._('This widget shows the Grbl state and provides Grbl specific features.'),
+    disabled: false,
+  },
+  {
+    id: 'marlin',
+    caption: i18n._('Marlin Widget'),
+    details: i18n._('This widget shows the Marlin state and provides Marlin specific features.'),
+    disabled: false,
+  },
+  {
+    id: 'smoothie',
+    caption: i18n._('Smoothie Widget'),
+    details: i18n._('This widget shows the Smoothie state and provides Smoothie specific features.'),
+    disabled: false,
+  },
+  {
+    id: 'tinyg',
+    caption: i18n._('TinyG Widget'),
+    details: i18n._('This widget shows the TinyG state and provides TinyG specific features.'),
+    disabled: false,
+  },
+  {
+    id: 'axes',
+    caption: i18n._('Axes Widget'),
+    details: i18n._('This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.'),
+    disabled: false,
+  },
+  {
+    id: 'gcode',
+    caption: i18n._('G-code Widget'),
+    details: i18n._('This widget shows the current status of G-code commands.'),
+    disabled: false,
+  },
+  {
+    id: 'laser',
+    caption: i18n._('Laser Widget'),
+    details: i18n._('This widget allows you control laser intensity and turn the laser on/off.'),
+    disabled: false,
+  },
+  {
+    id: 'macro',
+    caption: i18n._('Macro Widget'),
+    details: i18n._('This widget can use macros to automate routine tasks.'),
+    disabled: false,
+  },
+  {
+    id: 'autolevel',
+    caption: i18n._('Autolevel Widget'),
+    details: i18n._('Probe the work surface to generate Z-axis height compensation data for your G-code.'),
+    disabled: false,
+  },
+  {
+    id: 'probe',
+    caption: i18n._('Probe Widget'),
+    details: i18n._('This widget helps you use a touch plate to set your Z zero offset.'),
+    disabled: false,
+  },
+  {
+    id: 'tool',
+    caption: i18n._('Tool Widget'),
+    details: i18n._('This widget manages workflows for tool changes.'),
+    disabled: false,
+  },
+  {
+    id: 'spindle',
+    caption: i18n._('Spindle Widget'),
+    details: i18n._('This widget provides the spindle control.'),
+    disabled: false,
+  },
+  {
+    id: 'custom',
+    caption: i18n._('Custom Widget'),
+    details: i18n._('This widget gives you a communication interface for creating your own widget.'),
+    disabled: false,
+  },
+  {
+    id: 'webcam',
+    caption: i18n._('Webcam Widget'),
+    details: i18n._('This widget lets you monitor a webcam.'),
+    disabled: false,
+  },
+];
 
-  state = {
-    show: true
-  };
+const isWidgetAvailable = (id) => {
+  if (id === 'grbl') {
+    return _includes(controller.availableControllers, GRBL);
+  }
+  if (id === 'marlin') {
+    return _includes(controller.availableControllers, MARLIN);
+  }
+  if (id === 'smoothie') {
+    return _includes(controller.availableControllers, SMOOTHIE);
+  }
+  if (id === 'tinyg') {
+    return _includes(controller.availableControllers, TINYG);
+  }
+  return true;
+};
 
-  widgetList = [
-    {
-      id: 'visualizer',
-      caption: i18n._('Visualizer Widget'),
-      details: i18n._('This widget visualizes a G-code file and simulates the tool path.'),
-      visible: true,
-      disabled: true
-    },
-    {
-      id: 'connection',
-      caption: i18n._('Connection Widget'),
-      details: i18n._('This widget lets you establish a connection to a serial port.'),
-      visible: true,
-      disabled: true
-    },
-    {
-      id: 'console',
-      caption: i18n._('Console Widget'),
-      details: i18n._('This widget lets you read and write data to the CNC controller connected to a serial port.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'grbl',
-      caption: i18n._('Grbl Widget'),
-      details: i18n._('This widget shows the Grbl state and provides Grbl specific features.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'marlin',
-      caption: i18n._('Marlin Widget'),
-      details: i18n._('This widget shows the Marlin state and provides Marlin specific features.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'smoothie',
-      caption: i18n._('Smoothie Widget'),
-      details: i18n._('This widget shows the Smoothie state and provides Smoothie specific features.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'tinyg',
-      caption: i18n._('TinyG Widget'),
-      details: i18n._('This widget shows the TinyG state and provides TinyG specific features.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'axes',
-      caption: i18n._('Axes Widget'),
-      details: i18n._('This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'gcode',
-      caption: i18n._('G-code Widget'),
-      details: i18n._('This widget shows the current status of G-code commands.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'laser',
-      caption: i18n._('Laser Widget'),
-      details: i18n._('This widget allows you control laser intensity and turn the laser on/off.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'macro',
-      caption: i18n._('Macro Widget'),
-      details: i18n._('This widget can use macros to automate routine tasks.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'autolevel',
-      caption: i18n._('Autolevel Widget'),
-      details: i18n._('Probe the work surface to generate Z-axis height compensation data for your G-code.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'probe',
-      caption: i18n._('Probe Widget'),
-      details: i18n._('This widget helps you use a touch plate to set your Z zero offset.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'tool',
-      caption: i18n._('Tool Widget'),
-      details: i18n._('This widget manages workflows for tool changes.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'spindle',
-      caption: i18n._('Spindle Widget'),
-      details: i18n._('This widget provides the spindle control.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'custom',
-      caption: i18n._('Custom Widget'),
-      details: i18n._('This widget gives you a communication interface for creating your own widget.'),
-      visible: true,
-      disabled: false
-    },
-    {
-      id: 'webcam',
-      caption: i18n._('Webcam Widget'),
-      details: i18n._('This widget lets you monitor a webcam.'),
-      visible: true,
-      disabled: false
+const getConfiguredActiveWidgets = () => {
+  const defaultWidgets = config.get('workspace.container.default.widgets', [])
+    .map(widgetId => widgetId.split(':')[0]);
+  const primaryWidgets = config.get('workspace.container.primary.widgets', [])
+    .map(widgetId => widgetId.split(':')[0]);
+  const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
+    .map(widgetId => widgetId.split(':')[0]);
+
+  return _union(defaultWidgets, primaryWidgets, secondaryWidgets);
+};
+
+/**
+ * @param {{ onClose?: () => void, onSave?: (value: { activeWidgets: string[], inactiveWidgets: string[] }) => void }} props
+ * @returns {JSX.Element}
+ */
+function WidgetManager({ onClose = () => {}, onSave = () => {} }) {
+  const widgetList = useMemo(
+    () => getWidgetDefinitions().filter(widget => isWidgetAvailable(widget.id)),
+    []
+  );
+  const [activeWidgetIds, setActiveWidgetIds] = useState(() => {
+    const configuredWidgets = getConfiguredActiveWidgets();
+    return widgetList
+      .filter(widget => _includes(configuredWidgets, widget.id))
+      .map(widget => widget.id);
+  });
+  const hasClosedRef = useRef(false);
+
+  const handleClose = useCallback(() => {
+    if (hasClosedRef.current) {
+      return;
     }
-  ];
+    hasClosedRef.current = true;
+    onClose();
+  }, [onClose]);
 
-  handleChangeWidgetVisibility = ({ id, checked }) => {
-    const o = _find(this.widgetList, { id: id });
-    if (o) {
-      o.visible = checked;
+  const handleChangeWidgetVisibility = useCallback(({ id, checked }) => {
+    setActiveWidgetIds(current => (
+      checked ? _union(current, [id]) : _difference(current, [id])
+    ));
+  }, []);
+
+  const handleSave = useCallback(() => {
+    if (hasClosedRef.current) {
+      return;
     }
-  };
 
-  handleSave = () => {
-    this.setState({ show: false });
-
-    const allWidgets = this.widgetList.map(item => item.id);
-    const activeWidgets = this.widgetList
-      .filter(item => item.visible)
-      .map(item => item.id);
+    const allWidgets = widgetList.map(widget => widget.id);
+    const activeWidgets = widgetList
+      .filter(widget => _includes(activeWidgetIds, widget.id))
+      .map(widget => widget.id);
     const inactiveWidgets = _difference(allWidgets, activeWidgets);
 
-    this.props.onSave({ activeWidgets, inactiveWidgets });
-  };
+    hasClosedRef.current = true;
+    onSave({ activeWidgets, inactiveWidgets });
+    onClose();
+  }, [activeWidgetIds, onClose, onSave, widgetList]);
 
-  handleCancel = () => {
-    this.setState({ show: false });
-  };
+  const visibleWidgets = widgetList.map(widget => ({
+    ...widget,
+    visible: _includes(activeWidgetIds, widget.id),
+  }));
 
-  constructor(props) {
-    super(props);
-
-    this.widgetList = this.widgetList.filter(widgetItem => {
-      if (widgetItem.id === 'grbl' && !_includes(controller.availableControllers, GRBL)) {
-        return false;
-      }
-      if (widgetItem.id === 'marlin' && !_includes(controller.availableControllers, MARLIN)) {
-        return false;
-      }
-      if (widgetItem.id === 'smoothie' && !_includes(controller.availableControllers, SMOOTHIE)) {
-        return false;
-      }
-      if (widgetItem.id === 'tinyg' && !_includes(controller.availableControllers, TINYG)) {
-        return false;
-      }
-      return true;
-    });
-  }
-
-  componentDidUpdate() {
-    if (!(this.state.show)) {
-      this.props.onClose();
-    }
-  }
-
-  render() {
-    const defaultWidgets = config.get('workspace.container.default.widgets', [])
-      .map(widgetId => widgetId.split(':')[0]);
-    const primaryWidgets = config.get('workspace.container.primary.widgets', [])
-      .map(widgetId => widgetId.split(':')[0]);
-    const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
-      .map(widgetId => widgetId.split(':')[0]);
-    const activeWidgets = _union(defaultWidgets, primaryWidgets, secondaryWidgets);
-
-    this.widgetList.forEach(widget => {
-      widget.visible = _includes(activeWidgets, widget.id);
-    });
-
-    return (
-      <Modal
-        style={{
-          maxWidth: '80%',
-        }}
-        onClose={this.handleCancel}
-        show={this.state.show}
-      >
-        <Modal.Header>
-          <Modal.Title>{i18n._('Widgets')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body
-          style={{
+  return (
+    <Modal
+      autoFocus
+      closeOnEsc
+      closeOnInteractOutside
+      ensureFocus
+      isClosable
+      isOpen
+      onClose={handleClose}
+      size="lg"
+    >
+      <ModalOverlay />
+      <ModalContent sx={{ maxWidth: '80%' }}>
+        <ModalHeader>{i18n._('Widgets')}</ModalHeader>
+        <ModalBody
+          sx={{
             maxHeight: Math.max(window.innerHeight / 2, 200),
             overflowY: 'scroll',
           }}
         >
           <WidgetList
-            data={this.widgetList}
-            onChange={this.handleChangeWidgetVisibility}
+            data={visibleWidgets}
+            onChange={handleChangeWidgetVisibility}
           />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={this.handleCancel}
-          >
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={handleClose}>
             {i18n._('Cancel')}
           </Button>
           <Button
-            btnStyle="primary"
-            onClick={this.handleSave}
+            variant="primary"
+            onClick={handleSave}
           >
             {i18n._('OK')}
           </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }
 
 export default WidgetManager;

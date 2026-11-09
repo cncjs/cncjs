@@ -1,0 +1,91 @@
+{
+  "status": "completed",
+  "method": "After owned dev listeners closed, restore only verified scanner additions from current HEAD; no existing values changed or keys removed.",
+  "files": [
+    {
+      "file": "src/app/i18n/cs/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/de/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/en/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/es/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/fr/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/hu/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/it/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/ja/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/nb/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/nl/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/pt-br/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/pt/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/ru/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/tr/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/uk/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/zh-cn/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    },
+    {
+      "file": "src/app/i18n/zh-tw/resource.json",
+      "generatedAdditions": 51,
+      "existingValuesChanged": 0
+    }
+  ]
+}

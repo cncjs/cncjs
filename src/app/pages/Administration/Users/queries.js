@@ -1,16 +1,17 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from '@app/api/axios';
 
-export const API_USERS_QUERY_KEY = ['api/commands'];
+export const API_USERS_QUERY_KEY = ['api/users'];
 
 const useFetchUsersQuery = (options) => {
   const query = options?.meta?.query;
   return useQuery({
     queryKey: [...API_USERS_QUERY_KEY, query].filter(Boolean),
-    queryFn: async ({ queryKey, meta }) => {
-      const url = meta.query
-        ? 'api/commands?' + meta.query
-        : 'api/commands';
+    queryFn: async ({ meta }) => {
+      const query = meta?.query;
+      const url = query
+        ? 'api/users?' + query
+        : 'api/users';
       const response = await axios.get(url);
       return response.data;
     },
@@ -21,7 +22,7 @@ const useFetchUsersQuery = (options) => {
 const useBulkDeleteUsersMutation = (options) => {
   return useMutation({
     mutationFn: async ({ data }) => {
-      const url = 'api/commands/delete';
+      const url = 'api/users/delete';
       const response = await axios.post(url, data);
       return response.data;
     },
@@ -32,7 +33,7 @@ const useBulkDeleteUsersMutation = (options) => {
 const useBulkEnableUsersMutation = (options) => {
   return useMutation({
     mutationFn: async ({ data }) => {
-      const url = 'api/commands/enable';
+      const url = 'api/users/enable';
       const response = await axios.post(url, data);
       return response.data;
     },
@@ -43,7 +44,7 @@ const useBulkEnableUsersMutation = (options) => {
 const useBulkDisableUsersMutation = (options) => {
   return useMutation({
     mutationFn: async ({ data }) => {
-      const url = 'api/commands/disable';
+      const url = 'api/users/disable';
       const response = await axios.post(url, data);
       return response.data;
     },
@@ -54,7 +55,7 @@ const useBulkDisableUsersMutation = (options) => {
 const useCreateUserMutation = (options) => {
   return useMutation({
     mutationFn: async ({ data }) => {
-      const url = 'api/commands';
+      const url = 'api/users';
       const response = await axios.post(url, data);
       return response.data;
     },
@@ -67,7 +68,7 @@ const useReadUserQuery = (options) => {
     queryKey: [...API_USERS_QUERY_KEY, options?.meta?.id],
     queryFn: async (context) => {
       const id = context?.meta?.id;
-      const url = `api/commands/${id}`;
+      const url = `api/users/${id}`;
       const response = await axios.get(url);
       return response.data;
     },
@@ -79,7 +80,7 @@ const useUpdateUserMutation = (options) => {
   return useMutation({
     mutationFn: async ({ meta, data }) => {
       const id = meta?.id;
-      const url = `api/commands/${id}`;
+      const url = `api/users/${id}`;
       const response = await axios.put(url, data);
       return response.data;
     },
@@ -91,7 +92,7 @@ const useDeleteUserMutation = (options) => {
   return useMutation({
     mutationFn: async ({ meta }) => {
       const id = meta?.id;
-      const url = `api/commands/${id}`;
+      const url = `api/users/${id}`;
       const response = await axios.delete(url);
       return response.data;
     },
@@ -103,7 +104,7 @@ const useEnableUserMutation = (options) => {
   return useMutation({
     mutationFn: async ({ meta }) => {
       const id = meta?.id;
-      const url = `api/commands/${id}/enable`;
+      const url = `api/users/${id}/enable`;
       const response = await axios.post(url);
       return response.data;
     },
@@ -115,19 +116,7 @@ const useDisableUserMutation = (options) => {
   return useMutation({
     mutationFn: async ({ meta }) => {
       const id = meta?.id;
-      const url = `api/commands/${id}/disable`;
-      const response = await axios.post(url);
-      return response.data;
-    },
-    ...options,
-  });
-};
-
-const useRunUserMutation = (options) => {
-  return useMutation({
-    mutationFn: async ({ meta }) => {
-      const id = meta?.id;
-      const url = `api/commands/${id}/run`;
+      const url = `api/users/${id}/disable`;
       const response = await axios.post(url);
       return response.data;
     },
@@ -146,5 +135,4 @@ export {
   useDeleteUserMutation,
   useEnableUserMutation,
   useDisableUserMutation,
-  useRunUserMutation,
 };

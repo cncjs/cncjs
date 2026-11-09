@@ -1,7 +1,24 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { flexRender } from '@tanstack/react-table';
 import {
   Box,
+  Collapse,
+  Input,
+  Dropdown,
+  DropdownButton,
+  Pagination,
+  PaginationItem,
+  Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableHeaderRow,
+  TableHeaderCell,
+  TableRow,
+  TableScrollbar,
+  useTheme,
   Button,
+  ButtonBase,
   Checkbox,
   Divider,
   Flex,
@@ -12,7 +29,6 @@ import {
   Text,
   TextLabel,
   Tooltip,
-  useColorMode,
   usePortalManager,
 } from '@tonic-ui/react';
 import {
@@ -21,28 +37,25 @@ import {
 import * as dateFns from 'date-fns';
 import { ensureArray } from 'ensure-type';
 import qs from 'qs';
-import React, { useCallback, useMemo, useState } from 'react';
-import BaseTable from '@app/components/BaseTable';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import CodePreview from '@app/components/CodePreview';
-import IconButton from '@app/components/IconButton';
-import TablePagination from '@app/components/TablePagination';
-import {
-  DEFAULT_ROWS_PER_PAGE_OPTIONS,
-} from '@app/components/TablePagination/constants';
 import i18n from '@app/lib/i18n';
+import {
+  useFetchMacrosQuery,
+  useBulkDeleteMacrosMutation,
+} from '@app/queries/macros';
+import { getPageNumber, ROWS_PER_PAGE_OPTIONS } from '../table/pagination';
+import useResourceTable from '../table/useResourceTable';
 import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import ConfirmBulkDeleteRecordsModal from '../modals/ConfirmBulkDeleteRecordsModal';
 import CreateMacroDrawer from './drawers/CreateMacroDrawer';
 import UpdateMacroDrawer from './drawers/UpdateMacroDrawer';
-import {
-  API_MACROS_QUERY_KEY,
-  useFetchMacrosQuery,
-  useBulkDeleteMacrosMutation,
-} from './queries';
 
+/** @returns {JSX.Element} */
 const Macros = () => {
   // pagination
-  const rowsPerPageOptions = ensureArray(DEFAULT_ROWS_PER_PAGE_OPTIONS);
+  const rowsPerPageOptions = ROWS_PER_PAGE_OPTIONS;
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
@@ -52,7 +65,9 @@ const Macros = () => {
     setRowSelection({});
   }, []);
 
-  const queryClient = useQueryClient();
+  // manual refresh
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const fetchMacrosQuery = useFetchMacrosQuery({
     meta: {
       query: qs.stringify({
@@ -62,19 +77,16 @@ const Macros = () => {
       }),
     },
   });
-  const bulkDeleteMacrosMutation = useBulkDeleteMacrosMutation({
-    onSuccess: () => {
-      // Invalidate `useFetchMacrosQuery`
-      queryClient.invalidateQueries({ queryKey: API_MACROS_QUERY_KEY });
-    },
-  });
+  const bulkDeleteMacrosMutation = useBulkDeleteMacrosMutation();
   const portal = usePortalManager();
-  const [colorMode] = useColorMode();
   const selectedRowCount = Object.keys(rowSelection).length;
   const isRowSelectionDisabled = fetchMacrosQuery.isFetching;
-  const isLoadingData = fetchMacrosQuery.isFetching;
+  // Show the full-table loading overlay for the initial fetch and explicit
+  // refreshes only; background fetches (e.g. mutation invalidations) keep the
+  // rendered records visible. React Query v4 `isLoading` means "no data yet".
+  const isLoadingData = fetchMacrosQuery.isLoading || isRefreshing;
   const data = ensureArray(fetchMacrosQuery.data?.records);
-  const totalCount = fetchMacrosQuery.data?.pagination?.totalRecords;
+  const totalCount = fetchMacrosQuery.data?.pagination?.totalRecords ?? 0;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
   const handleClickAdd = useCallback(() => {
@@ -107,8 +119,15 @@ const Macros = () => {
     ));
   }, [portal, rowSelection, bulkDeleteMacrosMutation, clearRowSelection]);
 
-  const handleClickRefresh = useCallback(() => {
-    fetchMacrosQuery.refetch();
+  const handleClickRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      // Join an in-flight fetch instead of cancelling it so the overlay stays
+      // visible until the request settles, whether it succeeds or fails.
+      await fetchMacrosQuery.refetch({ cancelRefetch: false });
+    } finally {
+      setIsRefreshing(false);
+    }
   }, [fetchMacrosQuery]);
 
   const handleClickViewMacroDetailsById = useCallback((id) => () => {
@@ -126,6 +145,7 @@ const Macros = () => {
       header: ({ table }) => (
         <Flex alignItems="center" justifyContent="center">
           <Checkbox
+            inputProps={{ 'aria-label': i18n._('Select all rows') }}
             disabled={isRowSelectionDisabled}
             checked={table.getIsAllRowsSelected()}
             indeterminate={table.getIsSomeRowsSelected()}
@@ -136,6 +156,7 @@ const Macros = () => {
       cell: ({ row }) => (
         <Flex alignItems="center" justifyContent="center">
           <Checkbox
+            inputProps={{ 'aria-label': i18n._('Select row {{id}}', { id: row.id }) }}
             disabled={isRowSelectionDisabled}
             checked={row.getIsSelected()}
             indeterminate={row.getIsSomeSelected()}
@@ -159,6 +180,8 @@ const Macros = () => {
 
         return (
           <TableRowToggleIcon
+            aria-label={i18n._('Toggle details for {{id}}', { id: row.id })}
+            aria-expanded={isExpanded}
             isExpanded={isExpanded}
             onClick={row.getToggleExpandedHandler()}
             sx={{
@@ -220,14 +243,8 @@ const Macros = () => {
   ]);
 
   const renderExpandedRow = useCallback(({ row }) => {
-    const tableBorderColor = {
-      dark: 'gray:70',
-      light: 'gray:30',
-    }[colorMode];
-    const dividerColor = {
-      dark: 'gray:60',
-      light: 'gray:30',
-    }[colorMode];
+    const tableBorderColor = 'border.secondary';
+    const dividerColor = 'border.secondary';
     const value = row.original.action;
 
     return (
@@ -281,9 +298,17 @@ const Macros = () => {
         </Flex>
       </Flex>
     );
-  }, [
-    colorMode,
-  ]);
+  }, []);
+
+  const theme = useTheme();
+  const font = [theme.fontWeights.semibold, theme.fontSizes.sm, theme.fonts.base].join(' ');
+  const { table, headerRef, setTableWidth } = useResourceTable({
+    columns, data, rowSelection, onRowSelectionChange: setRowSelection, font,
+  });
+  const changePage = nextPage => {
+    setPage(nextPage);
+    clearRowSelection();
+  };
 
   return (
     <Flex
@@ -331,14 +356,29 @@ const Macros = () => {
             columnGap="2x"
           >
             <Tooltip label={i18n._('Refresh')}>
-              <IconButton
+              <ButtonBase
+                aria-label={i18n._('Refresh')}
+                border={1}
+                borderColor="transparent"
+                color="text.secondary"
+                lineHeight={1}
                 onClick={handleClickRefresh}
+                px="2x"
+                py="2x"
+                transition="all .2s"
+                sx={{
+                  '&:focus': { color: 'text.secondary' },
+                  '&:hover': { color: 'text.accent' },
+                  '&:focus:hover': { color: 'text.accent' },
+                  '&:active': { color: 'text.secondary' },
+                  '&:focus:active': { color: 'text.secondary' },
+                }}
               >
                 <Icon
                   as={RefreshIcon}
                   spin={fetchMacrosQuery.isFetching}
                 />
-              </IconButton>
+              </ButtonBase>
             </Tooltip>
           </Flex>
         </Flex>
@@ -350,38 +390,136 @@ const Macros = () => {
           minHeight: 100,
         }}
       >
-        <BaseTable
-          isLoading={isLoadingData}
-          columns={columns}
-          data={data}
-          renderExpandedRow={renderExpandedRow}
-          rowSelection={rowSelection}
-          enableRowSelection={true}
-          onRowSelectionChange={setRowSelection}
-        />
+        <Box height="100%" overflow="hidden" position="relative">
+          <AutoSizer onResize={({ width }) => setTableWidth(width)}>
+            {({ width, height }) => (
+              <Table layout="flexbox" sx={{ width, height }}>
+                <TableHeader ref={headerRef} overflowX="hidden">
+                  {table.getHeaderGroups().map(group => (
+                    <TableHeaderRow key={group.id}>
+                      {group.headers.map(header => (
+                        <TableHeaderCell
+                          key={header.id}
+                          minWidth={header.column.columnDef.minSize}
+                          width={header.getSize()}
+                          {...header.column.columnDef.style}
+                        >
+                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHeaderCell>
+                      ))}
+                    </TableHeaderRow>
+                  ))}
+                </TableHeader>
+                {isLoadingData && (
+                  <Flex
+                    role="status" position="absolute" inset={0}
+                    align="center" justify="center" backgroundColor="rgba(0, 0, 0, .7)"
+                    zIndex={1}
+                  >
+                    <Spinner /><Text ml="2x">{i18n._('Loading...')}</Text>
+                  </Flex>
+                )}
+                {fetchMacrosQuery.isError && (
+                  <Flex
+                    role="alert" align="center" justify="center"
+                    gap="2x"
+                  >
+                    <Text>{i18n._('An unexpected error has occurred.')}</Text>
+                    <Button onClick={handleClickRefresh}>{i18n._('Retry')}</Button>
+                  </Flex>
+                )}
+                {!isLoadingData && !fetchMacrosQuery.isError && data.length === 0 && (
+                  <Flex align="center" justify="center" height="100%">{i18n._('No data to display')}</Flex>
+                )}
+                {table.getRowModel().rows.length > 0 && (
+                  <TableScrollbar
+                    height="100%" overflowY="auto" overflowX="auto"
+                    onUpdate={({ scrollLeft }) => {
+                      if (headerRef.current && headerRef.current.scrollLeft !== scrollLeft) {
+                        headerRef.current.scrollLeft = scrollLeft;
+                      }
+                    }}
+                  >
+                    <TableBody>
+                      {table.getRowModel().rows.map(row => (
+                        <Fragment key={row.id}>
+                          <TableRow
+                            data-selected={row.getIsSelected() ? '' : undefined}
+                            _hover={{ backgroundColor: 'actions.hovered' }}
+                            _selected={{ backgroundColor: 'actions.selected' }}
+                          >
+                            {row.getVisibleCells().map(cell => (
+                              <TableCell
+                                key={cell.id} minWidth={cell.column.columnDef.minSize} width={cell.column.getSize()}
+                                {...cell.column.columnDef.cellStyle}
+                              >
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                          {row.getCanExpand() && (
+                            <Collapse in={row.getIsExpanded()} unmountOnExit>
+                              {renderExpandedRow({ row })}
+                            </Collapse>
+                          )}
+                        </Fragment>
+                      ))}
+                    </TableBody>
+                  </TableScrollbar>
+                )}
+              </Table>
+            )}
+          </AutoSizer>
+        </Box>
       </Box>
       <Box flex="none">
-        <TablePagination
-          count={totalCount}
-          disabled={totalCount === 0}
-          onPageChange={(page) => {
-            setPage(page);
-
-            // Clear row selection when the page changes
-            clearRowSelection();
-          }}
-          onRowsPerPageChange={(rowsPerPage) => {
-            setRowsPerPage(rowsPerPage);
-
-            // Clear row selection when the number of rows per page changes
-            clearRowSelection();
-          }}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={rowsPerPageOptions}
-          showFirstButton={totalPages > 4}
-          showLastButton={totalPages > 4}
-        />
+        <Flex
+          align="center" justify="flex-end" backgroundColor="background.high"
+          color={totalCount === 0 ? 'text.disabled' : undefined}
+          px="6x" py="3x" gap="2x"
+        >
+          <Text>{i18n._('Total: {{count}}', { count: totalCount })}</Text>
+          <Dropdown
+            placement="top"
+            items={rowsPerPageOptions.map(option => ({
+              value: option,
+              content: option,
+              props: {
+                onClick: () => {
+                  changePage(1); setRowsPerPage(option);
+                },
+              },
+            }))}
+            renderItem={item => item?.content}
+            renderToggle={() => (
+              <DropdownButton disabled={totalCount === 0} variant="ghost">
+                {i18n._('{{rowsPerPage}} per page', { rowsPerPage })}
+              </DropdownButton>
+            )}
+          />
+          <Input
+            aria-label={i18n._('Page')} disabled={totalCount === 0} width="10x"
+            px={0} textAlign="center"
+            value={page} onChange={event => changePage(getPageNumber(event.target.value, totalPages))}
+          />
+          <Text>/ {totalPages}</Text>
+          <Pagination
+            count={totalPages} page={page} disabled={totalCount === 0}
+            onChange={changePage}
+            slot={{ first: totalPages > 4, last: totalPages > 4 }}
+            renderItem={item => ['first', 'previous', 'next', 'last'].includes(item.type) && (
+              <PaginationItem
+                {...item}
+                aria-label={{
+                  first: i18n._('Go to first page'),
+                  previous: i18n._('Go to previous page'),
+                  next: i18n._('Go to next page'),
+                  last: i18n._('Go to last page'),
+                }[item.type]}
+              />
+            )}
+          />
+        </Flex>
       </Box>
     </Flex>
   );

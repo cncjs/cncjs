@@ -1,0 +1,1352 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "routeMethod": "in-app HashRouter hashchange, no document reload; Workspace remains mounted with display:none off-route",
+  "cycles": [
+    {
+      "cycle": 1,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 403,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 0,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 402,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 3,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 2,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 406,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 3,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 405,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 6,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 3,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 409,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 6,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 408,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 9,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 4,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 412,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 9,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 411,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 12,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 5,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 415,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 12,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 414,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 15,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 6,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 418,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 15,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 417,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 18,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 7,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 421,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 18,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 420,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 21,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 8,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 424,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 21,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 423,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 24,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 9,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 427,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 24,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 426,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 27,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 10,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 430,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 27,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 429,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 30,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 11,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 433,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 30,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 432,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 33,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 12,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 436,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 33,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 435,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 36,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 13,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 439,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 36,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 438,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 39,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 14,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 442,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 39,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 441,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 42,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 15,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 445,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 42,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 444,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 45,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 16,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 448,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 45,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 447,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 48,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 17,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 451,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 48,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 450,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 51,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 18,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 454,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 51,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 453,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 54,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 19,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 457,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 54,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 456,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 57,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    },
+    {
+      "cycle": 20,
+      "admin": {
+        "route": "#/administration/machine-profiles",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "disposedDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 46,
+          "canvas": 11,
+          "element": 460,
+          "other": 7
+        },
+        "activeDeltaFromFirstAdmin": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 57,
+          "other": 0
+        }
+      },
+      "workspace": {
+        "route": "#/workspace",
+        "liveEngineCount": 1,
+        "liveCanvasCount": 1,
+        "createdDelta": 0,
+        "activeListeners": {
+          "window": 35,
+          "document": 45,
+          "canvas": 11,
+          "element": 459,
+          "other": 7
+        },
+        "activeDeltaFromInitial": {
+          "window": 0,
+          "document": 0,
+          "canvas": 0,
+          "element": 60,
+          "other": 0
+        },
+        "ownedEngineListeners": 6,
+        "activeRaf": 0
+      }
+    }
+  ],
+  "errors": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/W"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0051a200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0051a200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10c0051a200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    }
+  ],
+  "startedAt": "2026-10-01T16:25:28.062Z",
+  "initial": {
+    "route": "#/workspace",
+    "census": {
+      "active": {
+        "window": 35,
+        "document": 45,
+        "canvas": 11,
+        "element": 399,
+        "other": 7
+      },
+      "added": {
+        "window": 36,
+        "document": 71,
+        "canvas": 11,
+        "element": 427,
+        "other": 8
+      },
+      "removed": {
+        "window": 1,
+        "document": 26,
+        "canvas": 0,
+        "element": 28,
+        "other": 1
+      }
+    },
+    "metrics": {
+      "createdTotal": 1,
+      "disposedTotal": 0,
+      "liveEngineCount": 1,
+      "loadCount": 0,
+      "loadSamples": [],
+      "renderSamples": [
+        {
+          "engineId": 1,
+          "renderedAtMs": 875,
+          "durationMs": 18.80000001192093,
+          "renderFrameCount": 1
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 906.8000000119209,
+          "durationMs": 12.600000023841858,
+          "renderFrameCount": 2
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 907.8000000119209,
+          "durationMs": 0.800000011920929,
+          "renderFrameCount": 3
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 908.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 4
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 908.9000000059605,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 5
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1298.699999988079,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 6
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1313.5999999940395,
+          "durationMs": 6.5,
+          "renderFrameCount": 7
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1417.4000000059605,
+          "durationMs": 1.2000000178813934,
+          "renderFrameCount": 8
+        }
+      ],
+      "disposeSamples": [],
+      "canvasCreatedTotal": 1,
+      "canvasRemovedTotal": 0,
+      "liveCanvasCount": 1,
+      "engines": [
+        {
+          "id": 1,
+          "width": 648,
+          "height": 755,
+          "pivotX": 0,
+          "pivotY": 0,
+          "pivotZ": 0,
+          "cameraPosition": "top",
+          "cameraMode": "pan",
+          "projection": "orthographic",
+          "units": "mm",
+          "hasGCode": false,
+          "limitsVisible": true,
+          "coordinateSystemVisible": true,
+          "gridLineNumbersVisible": true,
+          "cuttingToolVisible": true,
+          "canvasAttached": true,
+          "renderFrameCount": 8,
+          "lastRenderAtMs": 1417.4000000059605,
+          "lastRenderDurationMs": 1.2000000178813934,
+          "geometryCount": 251,
+          "textureCount": 55,
+          "listenerAddCount": 6,
+          "listenerRemoveCount": 0,
+          "activeListenerCount": 6,
+          "rafRequestCount": 0,
+          "rafCompleteCount": 0,
+          "rafCancelCount": 0,
+          "activeRafCount": 0,
+          "pendingLoadId": null
+        }
+      ]
+    },
+    "activeEventListeners": {
+      "window": 35,
+      "document": 45,
+      "canvas": 11,
+      "element": 399,
+      "other": 7
+    }
+  },
+  "initialMetrics": {
+    "createdTotal": 1,
+    "disposedTotal": 0,
+    "liveEngineCount": 1,
+    "loadCount": 0,
+    "loadSamples": [],
+    "renderSamples": [
+      {
+        "engineId": 1,
+        "renderedAtMs": 875,
+        "durationMs": 18.80000001192093,
+        "renderFrameCount": 1
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 906.8000000119209,
+        "durationMs": 12.600000023841858,
+        "renderFrameCount": 2
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 907.8000000119209,
+        "durationMs": 0.800000011920929,
+        "renderFrameCount": 3
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 908.5,
+        "durationMs": 0.5,
+        "renderFrameCount": 4
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 908.9000000059605,
+        "durationMs": 0.4000000059604645,
+        "renderFrameCount": 5
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 1298.699999988079,
+        "durationMs": 0.699999988079071,
+        "renderFrameCount": 6
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 1313.5999999940395,
+        "durationMs": 6.5,
+        "renderFrameCount": 7
+      },
+      {
+        "engineId": 1,
+        "renderedAtMs": 1417.4000000059605,
+        "durationMs": 1.2000000178813934,
+        "renderFrameCount": 8
+      }
+    ],
+    "disposeSamples": [],
+    "canvasCreatedTotal": 1,
+    "canvasRemovedTotal": 0,
+    "liveCanvasCount": 1,
+    "engines": [
+      {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 8,
+        "lastRenderAtMs": 1417.4000000059605,
+        "lastRenderDurationMs": 1.2000000178813934,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      }
+    ]
+  },
+  "final": {
+    "route": "#/workspace",
+    "census": {
+      "active": {
+        "window": 35,
+        "document": 45,
+        "canvas": 11,
+        "element": 459,
+        "other": 7
+      },
+      "added": {
+        "window": 36,
+        "document": 1452,
+        "canvas": 11,
+        "element": 1868,
+        "other": 8
+      },
+      "removed": {
+        "window": 1,
+        "document": 1407,
+        "canvas": 0,
+        "element": 1409,
+        "other": 1
+      }
+    },
+    "metrics": {
+      "createdTotal": 1,
+      "disposedTotal": 0,
+      "liveEngineCount": 1,
+      "loadCount": 0,
+      "loadSamples": [],
+      "renderSamples": [
+        {
+          "engineId": 1,
+          "renderedAtMs": 875,
+          "durationMs": 18.80000001192093,
+          "renderFrameCount": 1
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 906.8000000119209,
+          "durationMs": 12.600000023841858,
+          "renderFrameCount": 2
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 907.8000000119209,
+          "durationMs": 0.800000011920929,
+          "renderFrameCount": 3
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 908.5,
+          "durationMs": 0.5,
+          "renderFrameCount": 4
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 908.9000000059605,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 5
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1298.699999988079,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 6
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1313.5999999940395,
+          "durationMs": 6.5,
+          "renderFrameCount": 7
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1417.4000000059605,
+          "durationMs": 1.2000000178813934,
+          "renderFrameCount": 8
+        }
+      ],
+      "disposeSamples": [],
+      "canvasCreatedTotal": 1,
+      "canvasRemovedTotal": 0,
+      "liveCanvasCount": 1,
+      "engines": [
+        {
+          "id": 1,
+          "width": 648,
+          "height": 755,
+          "pivotX": 0,
+          "pivotY": 0,
+          "pivotZ": 0,
+          "cameraPosition": "top",
+          "cameraMode": "pan",
+          "projection": "orthographic",
+          "units": "mm",
+          "hasGCode": false,
+          "limitsVisible": true,
+          "coordinateSystemVisible": true,
+          "gridLineNumbersVisible": true,
+          "cuttingToolVisible": true,
+          "canvasAttached": true,
+          "renderFrameCount": 8,
+          "lastRenderAtMs": 1417.4000000059605,
+          "lastRenderDurationMs": 1.2000000178813934,
+          "geometryCount": 251,
+          "textureCount": 55,
+          "listenerAddCount": 6,
+          "listenerRemoveCount": 0,
+          "activeListenerCount": 6,
+          "rafRequestCount": 0,
+          "rafCompleteCount": 0,
+          "rafCancelCount": 0,
+          "activeRafCount": 0,
+          "pendingLoadId": null
+        }
+      ]
+    }
+  },
+  "finalPlateau": {
+    "liveEngineCount": 1,
+    "liveCanvasCount": 1,
+    "createdTotal": 1,
+    "disposedTotal": 0,
+    "canvasCreatedTotal": 1,
+    "canvasRemovedTotal": 0,
+    "workspaceListenerDelta": {
+      "window": 0,
+      "document": 0,
+      "canvas": 0,
+      "element": 60,
+      "other": 0
+    },
+    "maximumWorkspaceListenerDelta": 60
+  },
+  "completedAt": "2026-10-01T16:25:35.495Z",
+  "status": "completed",
+  "finishedAt": "2026-10-01T16:25:35.574Z"
+}

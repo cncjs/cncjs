@@ -1,0 +1,196 @@
+~/Code/cncjs/cncjs-cheton/src ~/Code/cncjs/cncjs-cheton
+Successfully compiled 2 files with Babel (474ms).
+Successfully compiled 6 files with Babel (430ms).
+~/Code/cncjs/cncjs-cheton
+Successfully compiled 127 files with Babel (1617ms).
+(node:98138) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving 'lodash/package.json' in /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib for build dependencies doesn't lead to expected result '/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/lodash/package.json', but to '/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/node_modules/lodash/package.json' instead. Resolving dependencies are ignored for this path.
+<w>  at unknown 4 lodash/package.json
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/ModuleCache.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/ModuleCache.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/config.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/config.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/index.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-plugin-lodash/lib/index.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/module-types.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/module-types.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/configuration.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/configuration.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/index.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/files/index.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/config-descriptors.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/config-descriptors.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/item.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/item.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/index.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/config/index.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/transform-ast.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/transform-ast.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/index.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@babel/core/lib/index.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-loader/lib/injectCaller.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-loader/lib/injectCaller.js
+<w>  at file dependencies /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-loader/lib/index.js
+<w>  at file /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-loader/lib/index.js
+<w>  at resolve commonjs /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/babel-loader/lib/index.js
+assets by info 39.3 MiB [immutable]
+  assets by path *.ttf 641 KiB
+    asset b1a653db79258eeccc5d0bb8726f6600.ttf 388 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf] (auxiliary name: main)
+    asset 450a5c898f0b184b968b971eaf7c5fa4.ttf 182 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.ttf] (auxiliary name: main)
+    asset 3cd9fb8fcec4ad0f99d4062cd547a4ba.ttf 60.9 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf] (auxiliary name: main)
+    asset e314b618134d5be20996d79e7245160b.ttf 9.9 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.ttf] (auxiliary name: main)
+  assets by path *.woff2 277 KiB
+    asset 41c0f706d8ce93933771be0292757b92.woff2 147 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2] (auxiliary name: main)
+    asset 3ac6859b28be946745f95de1136a7251.woff2 105 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2] (auxiliary name: main)
+    asset 1f3772178d9e5bed38a6ca738d28cd4b.woff2 24.6 KiB [emitted] [immutable] [from: ../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2] (auxiliary name: main)
+  asset main.6c0d0d0669f4606554c1.bundle.js 38.5 MiB [emitted] [immutable] (name: main)
+asset main.css 223 KiB [emitted] (name: main)
+asset index.html 3.06 KiB [emitted]
+Entrypoint main 38.7 MiB (917 KiB) = main.css 223 KiB main.6c0d0d0669f4606554c1.bundle.js 38.5 MiB 7 auxiliary assets
+orphan modules 3.56 MiB (javascript) 15.2 KiB (runtime) [orphan] 1695 modules
+runtime modules 246 KiB 143 modules
+javascript modules 13.5 MiB 2490 modules
+css modules 214 KiB
+  modules by path ./ 51.8 KiB 15 modules
+  modules by path ../../node_modules/ 162 KiB
+    css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!../../node_modules/stylus-loader/dist/cjs.js!../../node_modules/rc-slider/assets/index.css 6.51 KiB [built] [code generated]
+    + 3 modules
+json modules 15.5 KiB
+  modules by path ../../node_modules/browserify-sign/ 2.23 KiB
+    ../../node_modules/browserify-sign/browser/algorithms.json 2.07 KiB [built] [code generated]
+    ../../node_modules/browserify-sign/browser/curves.json 162 bytes [built] [code generated]
+  + 6 modules
+
+WARNING in [eslint]
+/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx
+  90:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state
+
+/Users/cheton/Code/cncjs/cncjs-cheton/src/app/widgets/Axes/DisplayPanel.jsx
+  279:1  warning  Function 'DisplayPanel' has too many lines (1221). Maximum allowed is 1024  max-lines-per-function
+
+/Users/cheton/Code/cncjs/cncjs-cheton/src/app/widgets/Connection/Connection.jsx
+  164:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state
+
+✖ 3 problems (0 errors, 3 warnings)
+
+webpack 5.75.0 compiled with 1 warning in 9525 ms
+[i18next-scanner] transform: count=10, file="config/routes.js"
+[i18next-scanner] transform: count=5, file="containers/app/App.jsx"
+[i18next-scanner] transform: count=16, file="containers/app/Header.jsx"
+[i18next-scanner] transform: count=12, file="containers/app/LoginPage.jsx"
+[i18next-scanner] transform: count=4, file="containers/app/modals/CorruptedWorkspaceSettingsModal.jsx"
+[i18next-scanner] transform: count=39, file="lib/gcode-text.js"
+[i18next-scanner] transform: count=2, file="lib/units.js"
+[i18next-scanner] transform: count=4, file="lib/validations.jsx"
+[i18next-scanner] transform: count=11, file="pages/About/About.jsx"
+[i18next-scanner] transform: count=28, file="pages/Administration/Commands/Commands.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Commands/drawers/CreateCommandDrawer.jsx"
+[i18next-scanner] transform: count=11, file="pages/Administration/Commands/drawers/UpdateCommandDrawer.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Events/drawers/CreateEventDrawer.jsx"
+[i18next-scanner] transform: count=10, file="pages/Administration/Events/drawers/UpdateEventDrawer.jsx"
+[i18next-scanner] transform: count=27, file="pages/Administration/Events/Events.js"
+[i18next-scanner] transform: count=10, file="pages/Administration/GeneralSettings/GeneralSettings.jsx"
+[i18next-scanner] transform: count=6, file="pages/Administration/Machines/drawers/CreateMachineDrawer.jsx"
+[i18next-scanner] transform: count=7, file="pages/Administration/Machines/drawers/UpdateMachineDrawer.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Machines/limits.js"
+[i18next-scanner] transform: count=20, file="pages/Administration/Machines/Machines.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Macros/drawers/CreateMacroDrawer.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Macros/drawers/UpdateMacroDrawer.jsx"
+[i18next-scanner] transform: count=21, file="pages/Administration/Macros/Macros.jsx"
+[i18next-scanner] transform: count=4, file="pages/Administration/modals/ConfirmBulkDeleteRecordsModal.jsx"
+[i18next-scanner] transform: count=9, file="pages/Administration/Users/drawers/CreateUserDrawer.jsx"
+[i18next-scanner] transform: count=8, file="pages/Administration/Users/drawers/UpdateUserDrawer.jsx"
+[i18next-scanner] transform: count=24, file="pages/Administration/Users/Users.jsx"
+[i18next-scanner] transform: count=1, file="pages/Administration/validations.js"
+[i18next-scanner] transform: count=4, file="pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx"
+[i18next-scanner] transform: count=4, file="pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx"
+[i18next-scanner] transform: count=6, file="pages/Administration/WorkspaceSettings/WorkspaceSettings.jsx"
+[i18next-scanner] transform: count=3, file="pages/Workspace/modals/FeederPaused.jsx"
+[i18next-scanner] transform: count=2, file="pages/Workspace/modals/FeederWait.jsx"
+[i18next-scanner] transform: count=3, file="pages/Workspace/modals/ServerDisconnected.jsx"
+[i18next-scanner] transform: count=8, file="pages/Workspace/PrimaryWidgets.jsx"
+[i18next-scanner] transform: count=8, file="pages/Workspace/SecondaryWidgets.jsx"
+[i18next-scanner] transform: count=2, file="pages/Workspace/widget-manager/WidgetListItem.jsx"
+[i18next-scanner] transform: count=37, file="pages/Workspace/widget-manager/WidgetManager.jsx"
+[i18next-scanner] transform: count=26, file="pages/Workspace/Workspace.jsx"
+[i18next-scanner] transform: count=24, file="widgets/Autolevel/ApplyView.jsx"
+[i18next-scanner] transform: count=15, file="widgets/Autolevel/index.jsx"
+[i18next-scanner] transform: count=8, file="widgets/Autolevel/LandingView.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Autolevel/ProbeAreaDiagram.jsx"
+[i18next-scanner] transform: count=22, file="widgets/Autolevel/SetupProbeView.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Autolevel/StartProbeModal.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Autolevel/StopProbeModal.jsx"
+[i18next-scanner] transform: count=6, file="widgets/Autolevel/TestProbeModal.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Autolevel/ZProbeDiagram.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Axes/components/PositionInput.jsx"
+[i18next-scanner] transform: count=155, file="widgets/Axes/DisplayPanel.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Axes/index.jsx"
+[i18next-scanner] transform: count=23, file="widgets/Axes/Keypad.jsx"
+[i18next-scanner] transform: count=12, file="widgets/Axes/KeypadOverlay.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Axes/Settings/General.jsx"
+[i18next-scanner] transform: count=10, file="widgets/Axes/Settings/index.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Axes/Settings/MDI/CreateRecord.jsx"
+[i18next-scanner] transform: count=18, file="widgets/Axes/Settings/MDI/TableRecords.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Axes/Settings/MDI/UpdateRecord.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Axes/Settings/ShuttleXpress.jsx"
+[i18next-scanner] transform: count=35, file="widgets/Connection/Connection.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Connection/index.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Console/Console.jsx"
+[i18next-scanner] transform: count=15, file="widgets/Console/index.jsx"
+[i18next-scanner] transform: count=2, file="widgets/Custom/Custom.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Custom/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Custom/modals/SettingsModal.jsx"
+[i18next-scanner] transform: count=9, file="widgets/GCode/GCodeStats.jsx"
+[i18next-scanner] transform: count=9, file="widgets/GCode/index.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Grbl/FeedOverride.jsx"
+[i18next-scanner] transform: count=19, file="widgets/Grbl/index.jsx"
+[i18next-scanner] transform: count=10, file="widgets/Grbl/ModalGroups.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Grbl/modals/ControllerModal.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Grbl/QueueReports.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Grbl/RapidOverride.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Grbl/SpindleOverride.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Grbl/StatusReports.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Laser/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Laser/LaserIntensityOverride.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Laser/LaserTest.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Macro/index.jsx"
+[i18next-scanner] transform: count=13, file="widgets/Macro/Macro.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Macro/modals/ConfirmDeleteMacro.jsx"
+[i18next-scanner] transform: count=8, file="widgets/Macro/modals/EditMacro.jsx"
+[i18next-scanner] transform: count=4, file="widgets/Macro/modals/LoadMacro.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Macro/modals/NewMacro.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Macro/modals/RunMacro.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Marlin/Controller.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Marlin/index.jsx"
+[i18next-scanner] transform: count=24, file="widgets/Marlin/Marlin.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Probe/index.jsx"
+[i18next-scanner] transform: count=5, file="widgets/Probe/modals/ProbeModal.jsx"
+[i18next-scanner] transform: count=15, file="widgets/Probe/Probe.jsx"
+[i18next-scanner] transform: count=4, file="widgets/shared/validations.js"
+[i18next-scanner] transform: count=5, file="widgets/Smoothie/Controller.jsx"
+[i18next-scanner] transform: count=14, file="widgets/Smoothie/index.jsx"
+[i18next-scanner] transform: count=15, file="widgets/Smoothie/Smoothie.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Spindle/index.jsx"
+[i18next-scanner] transform: count=11, file="widgets/Spindle/Spindle.jsx"
+[i18next-scanner] transform: count=4, file="widgets/TinyG/Controller.jsx"
+[i18next-scanner] transform: count=17, file="widgets/TinyG/index.jsx"
+[i18next-scanner] transform: count=21, file="widgets/TinyG/TinyG.jsx"
+[i18next-scanner] transform: count=9, file="widgets/Tool/index.jsx"
+[i18next-scanner] transform: count=29, file="widgets/Tool/Tool.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Visualizer/Dashboard.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Visualizer/index.jsx"
+[i18next-scanner] transform: count=1, file="widgets/Visualizer/Loading.jsx"
+[i18next-scanner] transform: count=17, file="widgets/Visualizer/Notifications.js"
+[i18next-scanner] transform: count=23, file="widgets/Visualizer/PrimaryToolbar.jsx"
+[i18next-scanner] transform: count=3, file="widgets/Visualizer/ProbeVisualization.js"
+[i18next-scanner] transform: count=4, file="widgets/Visualizer/renderer.jsx"
+[i18next-scanner] transform: count=1, file="widgets/Visualizer/Rendering.jsx"
+[i18next-scanner] transform: count=16, file="widgets/Visualizer/SecondaryToolbar.jsx"
+[i18next-scanner] transform: count=25, file="widgets/Visualizer/WatchDirectory.jsx"
+[i18next-scanner] transform: count=14, file="widgets/Visualizer/WorkflowControl.jsx"
+[i18next-scanner] transform: count=12, file="widgets/Webcam/index.jsx"
+[i18next-scanner] transform: count=10, file="widgets/Webcam/modals/SettingsModal.jsx"
+[i18next-scanner] transform: count=7, file="widgets/Webcam/Webcam.jsx"
+(node:98197) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)

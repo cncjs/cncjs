@@ -1,0 +1,62 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true,
+    "args": [
+      "--disable-webgl",
+      "--disable-webgl2",
+      "--disable-3d-apis"
+    ]
+  },
+  "gates": [
+    {
+      "name": "real WebGL-unavailable fallback keeps workspace usable and disables 3D controls",
+      "status": "passed",
+      "capability": {
+        "webglContextAvailable": false,
+        "webglConstructorAvailable": true,
+        "pageCanvasCount": 0,
+        "configDisabled": false
+      },
+      "enableTitle": "Enable 3D View",
+      "webglStatus": "Disabled",
+      "perspectiveDisabled": true,
+      "screenshot": "webgl-fallback-r6.png"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    }
+  ],
+  "finishedAt": "2026-10-02T02:36:54.146Z"
+}

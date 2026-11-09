@@ -1,0 +1,217 @@
+{
+  "task": "V3-GV Tonic UI 3.0.0-alpha.1 migration guide visual validation",
+  "status": "visual_gates_passed_with_classified_console_warnings",
+  "completedAt": "2026-10-06T13:48:49.968Z",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active session/task assignment"
+  },
+  "testedTree": {
+    "head": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+    "applicationPackageDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "scope": "Bounded V3-GV visual gates only; no source/locale/ledger edits, no commit, no production build.",
+  "results": [
+    {
+      "name": "Workspace semantic theme/viewport matrix",
+      "status": "passed",
+      "report": "workspace-theme-matrix-v3.json",
+      "cases": "light/dark/auto at 1440x900 and 768x900; auto OS preference changed light→dark→light",
+      "screenshots": "12 matrix screenshots plus 3 auto-live screenshots",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "detail": "Semantic token values resolved; sampled normal text contrast, layout/overflow, side borders and canvas size/fit recorded. Webcam and lower widgets distinguish region existence from viewport presence."
+    },
+    {
+      "name": "Administration routes, drawers, settings, widgets, Console and Webcam",
+      "status": "passed",
+      "report": "routes-semantic-v3-guide.json",
+      "assertions": 15,
+      "screenshots": 29,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "apiWrites": [
+        "POST /api/signin (anonymous session initialization)"
+      ],
+      "detail": "Correct routes include /administration/general-settings and /administration/workspace-settings. Dialog/drawer/menu captures waited for stable visible content. Console used a synthetic Grbl connection; no motion/run/jog. Webcam inactive video state verified."
+    },
+    {
+      "name": "Visualizer filename and probe-compensation warning badge",
+      "status": "passed",
+      "report": "visualizer-probe-compensation-v3.json",
+      "cases": [
+        {
+          "theme": "light",
+          "filenameContrast": 3.71,
+          "badgeContrast": 5.744
+        },
+        {
+          "theme": "dark",
+          "filenameContrast": 3.71,
+          "badgeContrast": 7.256
+        }
+      ],
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-light-1440x900.png",
+        "screenshots/visualizer-probe-compensation-dark-1440x900.png"
+      ],
+      "outgoingCommands": [
+        {
+          "name": "sender_load",
+          "fixture": "AL_part.gcode",
+          "content": "comment-only",
+          "classification": "authorized UI fixture load"
+        }
+      ],
+      "detail": "No run/jog/motion command. Filename contrast sampled against white WebGL canvas with element opacity; badge compositing used actual outer/inner backgrounds."
+    },
+    {
+      "name": "Controller semantic body values and icons",
+      "status": "passed",
+      "report": "controller-matrix-v3.json",
+      "cases": 8,
+      "caseNames": [
+        "Grbl light",
+        "Grbl dark",
+        "Marlin light",
+        "Marlin dark",
+        "Smoothie light",
+        "Smoothie dark",
+        "TinyG light",
+        "TinyG dark"
+      ],
+      "assertions": 32,
+      "screenshots": 8,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "outgoingCommands": 0,
+      "detail": "One active controller fixture per fresh context; only simulator connection lifecycle where used, otherwise incoming state/settings fixture replay."
+    },
+    {
+      "name": "Guide-specific Header/SideNav states, settings routes, outside-close confirms, Axes error and Autolevel states",
+      "status": "passed",
+      "report": "guide-focused-acceptance-v3.json",
+      "assertionGroups": 7,
+      "screenshots": "Referenced by report assertions",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "detail": "Header and mobile SideNav controls acquired focus and recorded hover/active states. Selected NavLink hover/active recorded; programmatic focus was not acquired, so no NavLink focus pass is claimed. Import, Restore Defaults and Delete Macro confirmations closed on outside pointer without confirming. Axes required-field error and Autolevel card/drop states captured."
+    },
+    {
+      "name": "Fixed-dark settings preview",
+      "status": "passed",
+      "report": "controller-settings-preview-matrix-v3.json",
+      "cases": [
+        "Grbl light",
+        "Grbl dark",
+        "Marlin light",
+        "Marlin dark"
+      ],
+      "screenshots": [
+        "screenshots/controller-settings-preview-grbl-light-1440x900.png",
+        "screenshots/controller-settings-preview-grbl-dark-1440x900.png",
+        "screenshots/controller-settings-preview-marlin-light-1440x900.png",
+        "screenshots/controller-settings-preview-marlin-dark-1440x900.png"
+      ],
+      "contrastRatio": 12.722854488142998,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "outgoingCommands": 0,
+      "detail": "Fixed-dark code preview values and contrast were identical across light/dark app themes; Refresh was not activated."
+    },
+    {
+      "name": "Workspace file-drop prompt",
+      "status": "passed",
+      "report": "guide-file-drop-connected-v3.json",
+      "cases": [
+        "disconnected light",
+        "disconnected dark",
+        "connected light",
+        "connected dark"
+      ],
+      "screenshots": [
+        "screenshots/guide-file-drop-disconnected-light-1440x900.png",
+        "screenshots/guide-file-drop-disconnected-dark-1440x900.png",
+        "screenshots/guide-file-drop-connected-light-1440x900.png",
+        "screenshots/guide-file-drop-connected-dark-1440x900.png"
+      ],
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "apiWrites": [
+        "POST /api/signin (anonymous session initialization)"
+      ],
+      "fixture": {
+        "name": "visual-drag-fixture.gcode",
+        "commentOnly": true,
+        "dragenterAndLeaveOnly": true,
+        "dropEventFired": false,
+        "fileUploaded": false
+      },
+      "detail": "The connected view used only the local synthetic Grbl connection lifecycle; no command button, file upload, or drop action was activated."
+    }
+  ],
+  "warningClassification": {
+    "status": "known console messages classified; unresolved product/runtime warnings remain visible for root review",
+    "pageErrorsInAcceptedGates": 0,
+    "requestFailuresInAcceptedGates": 0,
+    "httpErrorsInAcceptedGates": 0,
+    "entries": [
+      {
+        "severity": "console error diagnostic",
+        "message": "Emotion reports :first-child as potentially unsafe for server-side rendering.",
+        "classification": "styling-engine development diagnostic; no page exception observed."
+      },
+      {
+        "severity": "console warning",
+        "message": "React list item key warning in SideNav.",
+        "classification": "product warning in changed component; unresolved and surfaced to root."
+      },
+      {
+        "severity": "console warning",
+        "message": "MaxListenersExceededWarning from WorkspaceLayoutProvider subscribeToConfig.",
+        "classification": "runtime listener-count warning; unresolved and surfaced to root."
+      },
+      {
+        "severity": "console warning",
+        "message": "THREE.BufferGeometry.addAttribute() is deprecated in favor of setAttribute().",
+        "classification": "legacy Visualizer dependency warning."
+      },
+      {
+        "severity": "console warning",
+        "message": "SwiftShader GPU stall due to ReadPixels.",
+        "classification": "headless software GPU diagnostic."
+      },
+      {
+        "severity": "console warning",
+        "message": "VirtualList componentWillReceiveProps lifecycle deprecation.",
+        "classification": "legacy component warning."
+      }
+    ],
+    "claim": "This report does not claim zero console warnings or zero unclassified console errors."
+  },
+  "retainedDiagnostics": [
+    "Initial matrix failure caused by missing generated runtime output/cncjs/app/favicon.ico and frontend proxy configuration; retained as failure history. Runtime favicon was restored from src/app/favicon.ico and frontend PROXY_TARGET was set to http://127.0.0.1:8000; accepted matrix was rerun.",
+    "Earlier focused fixture/harness failures remain under history/guide-focused-attempt-* and are not counted as passing gates. Latest focused acceptance report is the accepted result.",
+    "Initial macro fixture POST 400 is retained in failed-attempt history; final runner uses a synthetic GET fixture and performs no macro write/delete/execute."
+  ],
+  "credentialAudit": {
+    "status": "passed",
+    "patterns": "No query-token, bearer, or JWT-shaped strings found in textual artifacts or retained compressed history; workspace config token fields are masked."
+  },
+  "userImplementationGuidance": "Pseudo-state styles should use CSS pseudo selectors such as &:focus, &:hover and &:active; do not add data-* attributes/selectors for these states.",
+  "cleanup": "cleanup.json",
+  "browserWorkerBoundary": "Only new artifacts under this v3-guide-20261006-luna directory were written. No application source, locale, or ledger edits were made; no commit was created."
+}

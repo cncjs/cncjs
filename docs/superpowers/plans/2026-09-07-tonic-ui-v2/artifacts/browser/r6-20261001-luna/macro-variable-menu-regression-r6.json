@@ -1,0 +1,51 @@
+{
+  "task": "R6 Administration nested-button and keyboard variable selection",
+  "sources": [
+    "src/app/pages/Administration/Macros/drawers/CreateMacroDrawer.jsx",
+    "src/app/pages/Administration/Macros/drawers/UpdateMacroDrawer.jsx"
+  ],
+  "test": "src/app/pages/Administration/__tests__/InlineToastsMigration.test.jsx",
+  "diagnosis": {
+    "fullStackLog": "/tmp/cncjs-r6-root-frontend-webcam-20261002.log",
+    "path": "LinkButton button inside default MenuToggle button, under FieldTextarea labelAction",
+    "baselineSourceCommit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "baselineSourceMatches": true,
+    "classification": "Pre-existing nested composition confirmed by historical source and installed Tonic API; equivalent baseline browser route is not claimed."
+  },
+  "red": {
+    "log": "/tmp/cncjs-r6-macro-menu-red.log",
+    "testsFailed": 2,
+    "observed": "Create and Update render a descendant button for Select variables."
+  },
+  "intermediate": {
+    "log": "/tmp/cncjs-r6-macro-menu-green.log",
+    "testsFailed": 2,
+    "observed": "Nested-button fix succeeds, but MenuItem keyboard activation closes without consumer onClick insertion."
+  },
+  "fix": "MenuToggle render prop applies getMenuToggleProps directly to LinkButton. MenuItem Enter/Space activates its native click once with repeat suppression and default prevention.",
+  "green": {
+    "log": "/tmp/cncjs-r6-macro-menu-keyboard-green.log",
+    "testsPassed": 2,
+    "scope": "Both Create and Update verify valid button DOM and keyboard variable insertion without mutation."
+  },
+  "finalSourceChecks": {
+    "frontendSuites": 78,
+    "frontendTests": 501,
+    "frontendExitCode": 0,
+    "lintErrors": 0,
+    "lintExistingWarnings": 4,
+    "guardFiles": 361,
+    "guardDomainClasses": 18,
+    "guardViolations": 0,
+    "variableKeys": [
+      "Enter",
+      "Space"
+    ],
+    "browserVerification": "pending"
+  },
+  "browserVerification": {
+    "status": "passed",
+    "artifact": "macro-live-browser-r6.json",
+    "scope": "Create/Update: standalone toggle, zero nested buttons, native Enter inserts %wait at caret; synthetic record updated then deleted; zero page errors/request failures. Space covered by frontend regressions."
+  }
+}

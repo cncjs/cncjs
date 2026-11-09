@@ -1,0 +1,33 @@
+{
+  "artifact": "br0-20260913-193330",
+  "status": "blocked",
+  "browser": {
+    "requested": "Playwright bundled Chromium",
+    "runtime": "browser-client",
+    "availableBackends": [],
+    "url": "http://127.0.0.1:8080/#/workspace",
+    "viewportTargets": ["1440x900", "768x900"],
+    "executable": null,
+    "version": null
+  },
+  "gates": {
+    "stop": "not_run",
+    "jogPressRelease": "not_run",
+    "disconnectDisabled": "not_run",
+    "watchDirectory": "not_run",
+    "macro": "not_run"
+  },
+  "assertions": [],
+  "errors": [
+    "Browser runtime discovery returned no available browser backends (agent.browsers.list() = [])."
+  ],
+  "cleanup": {
+    "port8000": "absent",
+    "port8080": "absent",
+    "ttyGRBL": "absent"
+  },
+  "sourceEdited": false,
+  "ledgerEdited": false,
+  "planEdited": false,
+  "committed": false
+}

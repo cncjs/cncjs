@@ -1,50 +1,50 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 
-class Line extends Component {
-  static propTypes = {
-    style: PropTypes.object,
-    vertical: PropTypes.bool,
-    color: PropTypes.string,
-    opacity: PropTypes.number,
-    length: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.number
-  };
-
-  static defaultProps = {
-    vertical: false,
-    color: '#fff',
-    opacity: 0.8,
-    length: 0,
-    width: 1
-  };
-
-  render() {
-    const { style, vertical, color, opacity, length, width, ...props } = this.props;
-
-    let componentStyle = {
-      boxShadow: '0 0 2px #333',
-      opacity: opacity,
-    };
-
-    if (vertical) {
-      componentStyle.borderLeftColor = color;
-      componentStyle.borderLeftStyle = 'solid';
-      componentStyle.borderLeftWidth = width;
-      componentStyle.height = length;
-    } else {
-      componentStyle.borderTopColor = color;
-      componentStyle.borderTopStyle = 'solid';
-      componentStyle.borderTopWidth = width;
-      componentStyle.width = length;
-    }
-
-    componentStyle = { ...componentStyle, ...style };
-
-    return (
-      <div {...props} style={componentStyle} />
-    );
-  }
+/**
+ * @param {{ vertical?: boolean, color?: string, opacity?: number, length?: number|string, width?: number, [key: string]: unknown }} props
+ */
+function Line({
+  vertical = false,
+  color = '#fff',
+  opacity = 0.8,
+  length = 0,
+  width = 1,
+  ...props
+}) {
+  const size = typeof length === 'number' ? length : 100;
+  return vertical ? (
+    <svg
+      {...props}
+      width={width}
+      height={length}
+      viewBox={`0 0 ${width} ${size}`}
+    >
+      <line
+        x1={width / 2}
+        x2={width / 2}
+        y2={size}
+        stroke={color}
+        strokeOpacity={opacity}
+        strokeWidth={width}
+      />
+    </svg>
+  ) : (
+    <svg
+      {...props}
+      width={length}
+      height={width}
+      viewBox={`0 0 ${size} ${width}`}
+    >
+      <line
+        y1={width / 2}
+        y2={width / 2}
+        x2={size}
+        stroke={color}
+        strokeOpacity={opacity}
+        strokeWidth={width}
+      />
+    </svg>
+  );
 }
 
 export default Line;

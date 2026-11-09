@@ -1,0 +1,723 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixtures": {
+    "commands": {
+      "name": "R6 command 1790875612715",
+      "updatedName": "R6 command 1790875612715 updated"
+    },
+    "events": {
+      "name": "R6 event 1790875612715",
+      "updatedName": "R6 event 1790875612715 updated"
+    },
+    "macros": {
+      "name": "R6 macro 1790875612715",
+      "updatedName": "R6 macro 1790875612715 updated"
+    },
+    "user": {
+      "name": "r6-user-1790875612715-updated",
+      "updatedName": "r6-user-1790875612715-updated",
+      "passwordStored": false
+    }
+  },
+  "gates": [
+    {
+      "name": "command-create-read-update-delete",
+      "status": "failed",
+      "durationMs": 1909,
+      "error": "Error: command read returned wrong Command name:"
+    },
+    {
+      "name": "event-create-read-update-delete",
+      "status": "failed",
+      "durationMs": 1218,
+      "error": "Error: event read returned wrong Event name:"
+    },
+    {
+      "name": "macro-create-read-update-delete",
+      "status": "passed",
+      "durationMs": 1613,
+      "created": "R6 macro 1790875612715",
+      "readBack": true,
+      "updated": "R6 macro 1790875612715 updated",
+      "removed": true
+    },
+    {
+      "name": "create-update-user",
+      "status": "passed",
+      "durationMs": 1483,
+      "created": "r6-user-1790875612715-updated",
+      "readBack": true,
+      "passwordRecorded": false
+    },
+    {
+      "name": "sign-in-with-created-user",
+      "status": "failed",
+      "durationMs": 10004,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Sign In', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "sign-out-through-header-menu",
+      "status": "failed",
+      "durationMs": 10045,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menuitem', { name: 'Sign out', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "cleanup-user-account",
+      "status": "failed",
+      "durationMs": 10003,
+      "error": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Sign In', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "cleanup-user-account-finally",
+      "status": "failed",
+      "error": "Temporary user record may remain; inspect the isolated browser config and remove the synthetic record after restoring sign-in."
+    }
+  ],
+  "api": [
+    {
+      "method": "POST",
+      "path": "/api/signin"
+    },
+    {
+      "status": 200,
+      "path": "/api/signin"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/commands",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands/66f1d374-94a1-4ddd-91b2-0c4e52fba376"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands/66f1d374-94a1-4ddd-91b2-0c4e52fba376"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin"
+    },
+    {
+      "status": 200,
+      "path": "/api/signin"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/events",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name",
+        "trigger"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events/bce57560-e0c1-4270-b8e3-36545b5d82f8"
+    },
+    {
+      "status": 200,
+      "path": "/api/events/bce57560-e0c1-4270-b8e3-36545b5d82f8"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin"
+    },
+    {
+      "status": 200,
+      "path": "/api/signin"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros",
+      "bodyKeys": [
+        "action",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178",
+      "bodyKeys": [
+        "action",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/95193bfa-35f0-439f-b4ae-9051bf2eb178"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros/delete",
+      "bodyKeys": [
+        "ids"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users"
+    },
+    {
+      "method": "POST",
+      "path": "/api/signin"
+    },
+    {
+      "status": 200,
+      "path": "/api/signin"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/users"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/users",
+      "bodyKeys": [
+        "enabled",
+        "name",
+        "password"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users"
+    },
+    {
+      "status": 200,
+      "path": "/api/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e"
+    },
+    {
+      "status": 200,
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e",
+      "bodyKeys": [
+        "enabled",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e"
+    },
+    {
+      "status": 200,
+      "path": "/api/users/97b5c6d5-1d1c-44ef-bf3f-cb051754518e"
+    },
+    {
+      "status": 200,
+      "path": "/api/users"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../nod"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../.."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../nod"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../.."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../nod"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: validateDOMNesting(...): %s cannot appear as a descendant of <%s>.%s <button> button \n    at button\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-u"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../.."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../nod"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../.."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00514a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00514a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00514a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00502a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

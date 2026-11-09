@@ -1,6 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
 import {
-  Box,
   Button,
   Drawer,
   DrawerContent,
@@ -9,42 +7,29 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
+  Dropdown,
+  DropdownToggle,
   LinkButton,
-  Menu,
-  MenuToggle,
-  MenuList,
   MenuGroup,
-  MenuItem,
   Spinner,
   Text,
 } from '@tonic-ui/react';
-import memoize from 'micro-memoize';
-import React, { useCallback, useRef } from 'react';
-import { Form } from 'react-final-form';
-import FormGroup from '@app/components/FormGroup';
-import {
-  InlineToastContainer,
-  InlineToasts,
-  useInlineToasts,
-} from '@app/components/InlineToasts';
+import { FormProvider, useForm } from 'react-hook-form';
+import React, { useCallback, useEffect, useRef } from 'react';
+import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
-import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
-import * as validations from '@app/pages/Administration/validations';
+import {
+  useReadMacroQuery,
+  useUpdateMacroMutation,
+} from '@app/queries/macros';
 import {
   MACRO_VARIABLE_EXAMPLES,
 } from '../constants';
 import {
-  API_MACROS_QUERY_KEY,
-  useReadMacroQuery,
-  useUpdateMacroMutation,
-} from '../queries';
-import {
   insertAtCaret,
 } from '../utils';
-
-const getMemoizedState = memoize(state => ({ ...state }));
 
 const UpdateMacroDrawer = ({
   id,
@@ -52,8 +37,7 @@ const UpdateMacroDrawer = ({
   ...rest
 }) => {
   const gcodeInputRef = useRef();
-  const { toasts, notify: notifyToast } = useInlineToasts();
-  const queryClient = useQueryClient();
+  const notifyToast = useToast();
   const readMacroQuery = useReadMacroQuery({
     meta: {
       id,
@@ -64,9 +48,6 @@ const UpdateMacroDrawer = ({
       if (typeof onClose === 'function') {
         onClose();
       }
-
-      // Invalidate `useFetchMacrosQuery`
-      queryClient.invalidateQueries({ queryKey: API_MACROS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
@@ -78,10 +59,30 @@ const UpdateMacroDrawer = ({
       });
     },
   });
-  const initialValues = getMemoizedState({
-    name: readMacroQuery.data?.name,
-    action: readMacroQuery.data?.action,
+  const methods = useForm({
+    defaultValues: {
+      name: '',
+      action: '',
+    },
+    mode: 'onSubmit',
   });
+  const { isSubmitted } = methods.formState;
+  const {
+    reset,
+    handleSubmit,
+  } = methods;
+
+  // Populate the form once the record loads. `reset` does not run validation,
+  // so no invalid state flashes when the edit form opens.
+  useEffect(() => {
+    if (readMacroQuery.data) {
+      reset({
+        name: readMacroQuery.data.name,
+        action: readMacroQuery.data.action,
+      });
+    }
+  }, [readMacroQuery.data, reset]);
+
   const handleFormSubmit = useCallback((values) => {
     updateMacroMutation.mutate({
       meta: {
@@ -103,127 +104,117 @@ const UpdateMacroDrawer = ({
       {...rest}
     >
       <DrawerOverlay />
-      <Form
-        initialValues={initialValues}
-        onSubmit={handleFormSubmit}
-        validate={(values) => {
-          const errors = {};
-          errors.name = validations.required(values.name);
-          errors.action = validations.required(values.action);
-          return errors;
-        }}
-        render={({ form }) => (
-          <DrawerContent>
-            <InlineToastContainer>
-              <InlineToasts toasts={toasts} />
-            </InlineToastContainer>
-            <DrawerHeader>
-              <Text>
-                {i18n._('Macro Details')}
-              </Text>
-            </DrawerHeader>
-            <DrawerBody>
-              {readMacroQuery.isFetching && (
-                <Spinner />
-              )}
-              {!(readMacroQuery.isFetching) && (
-                <>
-                  <FormGroup>
-                    <Box mb="1x">
-                      <FieldTextLabel
-                        required
-                      >
-                        {i18n._('Macro name:')}
-                      </FieldTextLabel>
-                    </Box>
-                    <FieldInput name="name" />
-                  </FormGroup>
-                  <FormGroup>
-                    <Flex
-                      mb="1x"
-                      justifyContent="space-between"
-                    >
-                      <FieldTextLabel
-                        required
-                        infoTipLabel={i18n._('Input the G-code commands to execute with this macro.')}
-                      >
-                        {i18n._('G-code commands:')}
-                      </FieldTextLabel>
-                      <Menu
-                        placement="bottom-end"
-                      >
-                        <MenuToggle>
-                          <LinkButton>
-                            {i18n._('Select variables')}
-                          </LinkButton>
-                        </MenuToggle>
-                        <MenuList
-                          maxHeight="50vh"
-                          overflow="auto"
-                        >
-                          {MACRO_VARIABLE_EXAMPLES.map(group => (
+      <FormProvider {...methods}>
+        <DrawerContent
+          as="form"
+          noValidate
+          onSubmit={handleSubmit(handleFormSubmit)}
+        >
+          <DrawerHeader>
+            <Text>
+              {i18n._('Macro Details')}
+            </Text>
+          </DrawerHeader>
+          <DrawerBody>
+            {readMacroQuery.isFetching && (
+              <Spinner />
+            )}
+            {!(readMacroQuery.isFetching) && (
+              <>
+                <FieldInput
+                  name="name"
+                  label={i18n._('Macro name:')}
+                  required
+                />
+                <FieldTextarea
+                  ref={gcodeInputRef}
+                  name="action"
+                  label={i18n._('G-code commands:')}
+                  required
+                  infoTipLabel={i18n._('Input the G-code commands to execute with this macro.')}
+                  rows="10"
+                  labelAction={(
+                    <Dropdown
+                      items={MACRO_VARIABLE_EXAMPLES.flatMap(group => [
+                        {
+                          value: group.title,
+                          type: 'custom',
+                          content: (
                             <MenuGroup
                               key={group.title}
                               title={group.title}
-                            >
-                              {group.data.map(item => (
-                                <MenuItem
-                                  key={item}
-                                  value={item}
-                                  onClick={(event) => {
-                                    const el = gcodeInputRef.current;
-                                    const value = event.currentTarget.value;
-                                    const textareaValue = insertAtCaret(el, value);
-                                    form.change('action', textareaValue);
-                                  }}
-                                >
-                                  {item}
-                                </MenuItem>
-                              ))}
-                            </MenuGroup>
-                          ))}
-                        </MenuList>
-                      </Menu>
-                    </Flex>
-                    <FieldTextarea
-                      ref={gcodeInputRef}
-                      name="action"
-                      rows="10"
+                            />
+                          ),
+                        },
+                        ...group.data.map(item => (
+                          {
+                            value: item,
+                            content: item,
+                            props: {
+                              value: item,
+                              onKeyDown: (event) => {
+                                if ((event.key === 'Enter' || event.key === ' ') && !event.repeat) {
+                                  event.preventDefault();
+                                  event.currentTarget.click();
+                                }
+                              },
+                              onClick: (event) => {
+                                const el = gcodeInputRef.current;
+                                const value = event.currentTarget.value;
+                                const textareaValue = insertAtCaret(el, value);
+                                methods.setValue('action', textareaValue, {
+                                  shouldDirty: true,
+                                  shouldValidate: isSubmitted,
+                                });
+                              },
+                            },
+                          }
+                        )),
+                      ])}
+                      renderItem={item => item?.content}
+                      renderToggle={() => (
+                        <DropdownToggle>
+                          {({ getToggleProps }) => (
+                            <LinkButton {...getToggleProps()}>
+                              {i18n._('Select variables')}
+                            </LinkButton>
+                          )}
+                        </DropdownToggle>
+                      )}
                     />
-                  </FormGroup>
-                </>
-              )}
-            </DrawerBody>
-            <DrawerFooter>
-              <Flex
-                alignItems="center"
-                columnGap="2x"
+                  )}
+                />
+              </>
+            )}
+          </DrawerBody>
+          <DrawerFooter>
+            <Flex
+              alignItems="center"
+              columnGap="2x"
+            >
+              <Button
+                type="button"
+                onClick={onClose}
+                sx={{
+                  minWidth: 80,
+                }}
               >
-                <Button
-                  onClick={onClose}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Cancel')}
-                </Button>
-                <Button
-                  variant="primary"
-                  disabled={isFormDisabled}
-                  onClick={() => {
-                    form.submit();
-                  }}
-                  sx={{
-                    minWidth: 80,
-                  }}
-                >
-                  {i18n._('Save')}
-                </Button>
-              </Flex>
-            </DrawerFooter>
-          </DrawerContent>
-        )}
-      />
+                {i18n._('Cancel')}
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isFormDisabled}
+                sx={{
+                  minWidth: 80,
+                }}
+              >
+                {i18n._('Save')}
+              </Button>
+            </Flex>
+          </DrawerFooter>
+        </DrawerContent>
+      </FormProvider>
     </Drawer>
   );
 };

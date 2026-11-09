@@ -1,0 +1,560 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "renderer": "ANGLE SwiftShader",
+    "dpr": 1,
+    "config": "temporary isolated CNCjs R6 config",
+    "simulation": "synthetic GRBL /tmp/ttyGRBL"
+  },
+  "framedWidgetContracts": {
+    "expected": 13,
+    "passed": 13,
+    "names": [
+      "Connection widget",
+      "Autolevel Widget",
+      "Axes widget",
+      "Console widget",
+      "Custom widget",
+      "G-code widget",
+      "Grbl widget",
+      "Laser widget",
+      "Macro widget",
+      "Probe widget",
+      "Spindle widget",
+      "Tool widget",
+      "Webcam widget"
+    ],
+    "cases": [
+      {
+        "name": "Connection widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 540,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-connection-smoke.json"
+      },
+      {
+        "name": "Autolevel Widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 575,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-autolevel-axes-console.json"
+      },
+      {
+        "name": "Axes widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 362,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-autolevel-axes-console.json"
+      },
+      {
+        "name": "Console widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 357,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-autolevel-axes-console.json"
+      },
+      {
+        "name": "Custom widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 342,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-custom-gcode-grbl.json"
+      },
+      {
+        "name": "G-code widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 395,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-custom-gcode-grbl.json"
+      },
+      {
+        "name": "Grbl widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 415,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-custom-gcode-grbl.json"
+      },
+      {
+        "name": "Laser widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 402,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-laser-macro-probe-labelfail.json"
+      },
+      {
+        "name": "Macro widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 419,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-laser-macro-probe-labelfail.json"
+      },
+      {
+        "name": "Probe widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 402,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "fullscreenMenuLabels": {
+          "enter": "Full Screen",
+          "exit": "Full Screen"
+        },
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-probe.json"
+      },
+      {
+        "name": "Spindle widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 400,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "fullscreenMenuLabels": {
+          "enter": "Enter Full Screen",
+          "exit": "Exit Full Screen"
+        },
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-spindle-tool-webcam.json"
+      },
+      {
+        "name": "Tool widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 371,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "fullscreenMenuLabels": {
+          "enter": "Enter Full Screen",
+          "exit": "Exit Full Screen"
+        },
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-spindle-tool-webcam.json"
+      },
+      {
+        "name": "Webcam widget collapse and fullscreen view contract",
+        "status": "passed",
+        "durationMs": 333,
+        "collapsed": true,
+        "contentHidden": true,
+        "expanded": true,
+        "fullscreenRect": {
+          "position": "fixed",
+          "top": 48,
+          "left": 60,
+          "right": 1440,
+          "bottom": 900
+        },
+        "fullscreenExited": true,
+        "fullscreenMenuLabels": {
+          "enter": "Enter Full Screen",
+          "exit": "Exit Full Screen"
+        },
+        "unexpectedMutationCommands": 0,
+        "source": "workspace-widget-views-r6-spindle-tool-webcam.json"
+      }
+    ]
+  },
+  "customWidget": {
+    "status": "passed",
+    "evidence": "manager enabled Custom and asserted all 16 named framed widget regions; Visualizer asserted to remain frameless",
+    "source": "workspace-widget-views-r6-autolevel-axes-console.json"
+  },
+  "workspaceVisualizerTheme": [
+    {
+      "source": "workspace-widget-theme-settled-1440.json",
+      "status": "passed",
+      "viewport": 1440,
+      "screenshots": [
+        "workspace-visualizer-theme-light-1440x900.png",
+        "workspace-visualizer-theme-dark-1440x900.png",
+        "workspace-visualizer-theme-auto-light-1440x900.png",
+        "workspace-visualizer-theme-auto-dark-1440x900.png"
+      ],
+      "states": [
+        {
+          "phase": "light",
+          "expectedHeaderBackground": "rgb(242, 242, 242)",
+          "actualHeaderBackground": "rgb(242, 242, 242)",
+          "camera": {
+            "label": "Front View",
+            "before": "top",
+            "after": "front"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(0, 0, 0)",
+            "background": "rgb(224, 224, 224)",
+            "disabled": false
+          },
+          "contrastRatio": 15.908084190807749,
+          "canvas": {
+            "width": 648,
+            "height": 755,
+            "drawingWidth": 648,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "dark",
+          "expectedHeaderBackground": "rgb(33, 33, 33)",
+          "actualHeaderBackground": "rgb(33, 33, 33)",
+          "camera": {
+            "label": "Top View",
+            "before": "front",
+            "after": "top"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(255, 255, 255)",
+            "background": "rgb(94, 94, 94)",
+            "disabled": false
+          },
+          "contrastRatio": 6.484186114084169,
+          "canvas": {
+            "width": 648,
+            "height": 755,
+            "drawingWidth": 648,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "auto-light",
+          "expectedHeaderBackground": "rgb(242, 242, 242)",
+          "actualHeaderBackground": "rgb(242, 242, 242)",
+          "camera": {
+            "label": "Front View",
+            "before": "top",
+            "after": "front"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(0, 0, 0)",
+            "background": "rgb(224, 224, 224)",
+            "disabled": false
+          },
+          "contrastRatio": 15.908084190807749,
+          "canvas": {
+            "width": 648,
+            "height": 755,
+            "drawingWidth": 648,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "auto-dark",
+          "expectedHeaderBackground": "rgb(33, 33, 33)",
+          "actualHeaderBackground": "rgb(33, 33, 33)",
+          "camera": {
+            "label": "Top View",
+            "before": "front",
+            "after": "top"
+          },
+          "settled": {
+            "animationCount": 2,
+            "color": "rgb(255, 255, 255)",
+            "background": "rgb(94, 94, 94)",
+            "disabled": false
+          },
+          "contrastRatio": 6.484186114084169,
+          "canvas": {
+            "width": 648,
+            "height": 755,
+            "drawingWidth": 648,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      ]
+    },
+    {
+      "source": "workspace-widget-theme-settled-768.json",
+      "status": "passed",
+      "viewport": 768,
+      "screenshots": [
+        "workspace-visualizer-theme-light-768x900.png",
+        "workspace-visualizer-theme-dark-768x900.png",
+        "workspace-visualizer-theme-auto-light-768x900.png",
+        "workspace-visualizer-theme-auto-dark-768x900.png"
+      ],
+      "states": [
+        {
+          "phase": "light",
+          "expectedHeaderBackground": "rgb(242, 242, 242)",
+          "actualHeaderBackground": "rgb(242, 242, 242)",
+          "camera": {
+            "label": "Front View",
+            "before": "top",
+            "after": "front"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(0, 0, 0)",
+            "background": "rgb(224, 224, 224)",
+            "disabled": false
+          },
+          "contrastRatio": 15.908084190807749,
+          "canvas": {
+            "width": 360,
+            "height": 755,
+            "drawingWidth": 360,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "dark",
+          "expectedHeaderBackground": "rgb(33, 33, 33)",
+          "actualHeaderBackground": "rgb(33, 33, 33)",
+          "camera": {
+            "label": "Top View",
+            "before": "front",
+            "after": "top"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(255, 255, 255)",
+            "background": "rgb(94, 94, 94)",
+            "disabled": false
+          },
+          "contrastRatio": 6.484186114084169,
+          "canvas": {
+            "width": 360,
+            "height": 755,
+            "drawingWidth": 360,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "auto-light",
+          "expectedHeaderBackground": "rgb(242, 242, 242)",
+          "actualHeaderBackground": "rgb(242, 242, 242)",
+          "camera": {
+            "label": "Front View",
+            "before": "top",
+            "after": "front"
+          },
+          "settled": {
+            "animationCount": 0,
+            "color": "rgb(0, 0, 0)",
+            "background": "rgb(224, 224, 224)",
+            "disabled": false
+          },
+          "contrastRatio": 15.908084190807749,
+          "canvas": {
+            "width": 360,
+            "height": 755,
+            "drawingWidth": 360,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        },
+        {
+          "phase": "auto-dark",
+          "expectedHeaderBackground": "rgb(33, 33, 33)",
+          "actualHeaderBackground": "rgb(33, 33, 33)",
+          "camera": {
+            "label": "Top View",
+            "before": "front",
+            "after": "top"
+          },
+          "settled": {
+            "animationCount": 2,
+            "color": "rgb(255, 255, 255)",
+            "background": "rgb(94, 94, 94)",
+            "disabled": false
+          },
+          "contrastRatio": 6.484186114084169,
+          "canvas": {
+            "width": 360,
+            "height": 755,
+            "drawingWidth": 360,
+            "drawingHeight": 755
+          },
+          "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      ]
+    }
+  ],
+  "runIssues": [
+    {
+      "source": "workspace-widget-views-r6-connection-smoke.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-views-r6-autolevel-axes-console.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-views-r6-custom-gcode-grbl.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-views-r6-laser-macro-probe-labelfail.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-views-r6-probe.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-views-r6-spindle-tool-webcam.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 16
+    },
+    {
+      "source": "workspace-widget-theme-settled-1440.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 18
+    },
+    {
+      "source": "workspace-widget-theme-settled-768.json",
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "consoleIssueCount": 20
+    }
+  ],
+  "limitations": [
+    "Marlin, Smoothie, and TinyG remain pending browser-side controller state replay.",
+    "Settings save/cancel, fork/remove/reorder, Console long output, and Webcam stream sizing remain pending."
+  ]
+}

@@ -37,7 +37,7 @@ import * as analytics from '@app/lib/analytics';
 import controller from '@app/lib/controller';
 import x from '@app/lib/json-stringify';
 import log from '@app/lib/log';
-import * as user from '@app/lib/user';
+import { signin } from '@app/queries/session';
 import config from '@app/store/config';
 
 export function* init() {
@@ -218,9 +218,9 @@ const initDateFns = () => {
   }
 };
 
-const authenticateSessionToken = () => new Promise(resolve => {
+export const authenticateSessionToken = () => new Promise(resolve => {
   const token = config.get('session.token');
-  user.signin({ token: token })
+  signin({ token: token })
     .then(async ({ authenticated, token }) => {
       if (!authenticated) {
         resolve();

@@ -1,0 +1,227 @@
+{
+  "httpBoundaries": {
+    "src/app/queries/macros.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/queries/gcode.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/queries/session.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/queries/serialport.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/queries/appState.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/widgets/Axes/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/widgets/Tool/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/widgets/Visualizer/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/Commands/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/Events/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/Machines/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/Macros/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/Users/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/GeneralSettings/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/Administration/WorkspaceSettings/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/pages/About/queries.js": {
+      "role": "query",
+      "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."
+    },
+    "src/app/api/index.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Existing API HTTP/download implementation."
+    },
+    "src/app/api/axios.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Existing shared axios configuration."
+    },
+    "src/app/lib/user.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Pure authentication transport and token persistence."
+    },
+    "src/app/sagas/app/bootstrap.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Existing non-React app/session bootstrap transport; only pure query exports allowed."
+    },
+    "src/app/widgets/Visualizer/Dashboard.jsx": {
+      "role": "download",
+      "members": [
+        "downloadGCode"
+      ],
+      "reason": "Browser G-code download form submission, not cacheable HTTP server state; only api.downloadGCode permitted."
+    }
+  },
+  "domainClasses": {
+    "src/app/lib/CNCJSController.js": [
+      {
+        "name": "CNCJSController",
+        "reason": "Controller-report normalization/data model, with no React rendering or component inheritance."
+      }
+    ],
+    "src/app/lib/combokeys.js": [
+      {
+        "name": "Combokeys",
+        "reason": "Keyboard binding EventEmitter used by app shortcuts; owns keyboard resources, not React UI."
+      }
+    ],
+    "src/app/lib/immutable-store.js": [
+      {
+        "name": "ImmutableStore",
+        "reason": "Immutable data and change EventEmitter for configuration; not a component."
+      }
+    ],
+    "src/app/lib/three/CombinedCamera.js": [
+      {
+        "name": "CombinedCamera",
+        "reason": "Three.js Camera subclass owned by the visualizer engine; rendering geometry, not React."
+      }
+    ],
+    "src/app/store/config/EventEmitterStore.js": [
+      {
+        "name": "EventEmitterStore",
+        "reason": "Configuration EventEmitter store; not a React component."
+      }
+    ],
+    "src/app/widgets/Axes/ShuttleControl.js": [
+      {
+        "name": "ShuttleControl",
+        "reason": "Axes shuttle/hardware-key EventEmitter owner; not a React component."
+      }
+    ],
+    "src/app/widgets/Console/History.js": [
+      {
+        "name": "History",
+        "reason": "Console command history/cursor data model used by useTerminal."
+      }
+    ],
+    "src/app/widgets/Visualizer/CoordinateAxes.js": [
+      {
+        "name": "CoordinateAxes",
+        "reason": "Three.js axis geometry factory owned by the engine."
+      }
+    ],
+    "src/app/widgets/Visualizer/Cuboid.js": [
+      {
+        "name": "Cuboid",
+        "reason": "Visualizer bounding-box data/geometry operations."
+      }
+    ],
+    "src/app/widgets/Visualizer/CuttingPointer.jsx": [
+      {
+        "name": "CuttingPointer",
+        "reason": "Three.js cutting-tool pointer geometry; JSX filename contains a domain class, not a component."
+      }
+    ],
+    "src/app/widgets/Visualizer/GCodeVisualizer.js": [
+      {
+        "name": "GCodeVisualizer",
+        "reason": "Parsed G-code Three.js scene geometry/resource owner."
+      }
+    ],
+    "src/app/widgets/Visualizer/GridLine.js": [
+      {
+        "name": "GridLine",
+        "reason": "Three.js grid geometry factory."
+      }
+    ],
+    "src/app/widgets/Visualizer/PivotPoint3.js": [
+      {
+        "name": "PivotPoint3",
+        "reason": "Visualizer pivot-coordinate domain value; class expression included in AST reconciliation."
+      }
+    ],
+    "src/app/widgets/Visualizer/ProbeVisualization.js": [
+      {
+        "name": "ProbeVisualization",
+        "reason": "Probe-point Three.js geometry/resource owner."
+      }
+    ],
+    "src/app/widgets/Visualizer/TextSprite.js": [
+      {
+        "name": "TextSprite",
+        "reason": "Three.js text sprite/texture resource factory."
+      }
+    ],
+    "src/app/widgets/Visualizer/Viewport.js": [
+      {
+        "name": "Viewport",
+        "reason": "Engine viewport/projection dimensions and camera model."
+      }
+    ],
+    "src/app/widgets/Visualizer/VisualizerEngine.js": [
+      {
+        "name": "VisualizerEngine",
+        "reason": "Non-React renderer/camera/control resource engine owned by useVisualizer."
+      }
+    ],
+    "src/app/widgets/shared/WidgetConfig.js": [
+      {
+        "name": "WidgetConfig",
+        "reason": "Widget configuration access/persistence domain model."
+      }
+    ]
+  },
+  "componentFamilies": {
+    "CodePreview": {
+      "reason": "Domain syntax highlighting and line presentation",
+      "test": "src/app/components/CodePreview/__tests__/CodePreview.test.jsx"
+    },
+    "Iframe": {
+      "reason": "Custom widget native event/URL resource owner",
+      "test": "src/app/components/Iframe/__tests__/Iframe.test.jsx"
+    },
+    "RepeatableButton": {
+      "reason": "CNC press/hold timing and cancellation",
+      "test": "src/app/components/RepeatableButton/__tests__/RepeatableButton.test.jsx"
+    },
+    "Webcam": {
+      "reason": "Local media stream lifecycle owner",
+      "test": "src/app/widgets/Webcam/__tests__/Webcam.test.jsx"
+    },
+    "Widget": {
+      "reason": "CNC controlled frame/menu composition",
+      "test": "src/app/pages/Workspace/__tests__/WidgetLayoutContract.test.jsx"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "variables": [
+    "--tonic-colors-_shadow-low",
+    "--tonic-colors-actions-hovered",
+    "--tonic-colors-actions-selected",
+    "--tonic-colors-actions-selectedHovered",
+    "--tonic-colors-background-_fixed-dark-low",
+    "--tonic-colors-background-high",
+    "--tonic-colors-background-highest",
+    "--tonic-colors-background-low",
+    "--tonic-colors-border-secondary",
+    "--tonic-colors-error-_overlay",
+    "--tonic-colors-error-text",
+    "--tonic-colors-info-_overlay",
+    "--tonic-colors-info-icon",
+    "--tonic-colors-text-_fixed-dark-primary",
+    "--tonic-colors-text-disabled",
+    "--tonic-colors-text-primary",
+    "--tonic-colors-text-secondary",
+    "--tonic-colors-text-tertiary",
+    "--tonic-colors-warning-_onOverlay-text",
+    "--tonic-colors-warning-_overlay",
+    "--tonic-shadows-low-main"
+  ],
+  "missing": []
+}

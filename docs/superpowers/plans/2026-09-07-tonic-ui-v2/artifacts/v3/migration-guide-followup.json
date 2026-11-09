@@ -1,0 +1,373 @@
+{
+  "tokens": {
+    "actions.selected": [
+      "src/app/components/Widget/Button.jsx:31",
+      "src/app/pages/Administration/Commands/Commands.jsx:591",
+      "src/app/pages/Administration/Events/Events.js:571",
+      "src/app/pages/Administration/Machines/Machines.jsx:423",
+      "src/app/pages/Administration/Macros/Macros.jsx:438",
+      "src/app/pages/Administration/Users/Users.jsx:455",
+      "src/app/widgets/Visualizer/SecondaryToolbar.jsx:141"
+    ],
+    "text.primary": [
+      "src/app/components/Widget/Button.jsx:32",
+      "src/app/components/Widget/Header.jsx:14",
+      "src/app/containers/app/Header.jsx:249",
+      "src/app/containers/app/Header.jsx:400",
+      "src/app/containers/app/Header.jsx:438",
+      "src/app/containers/app/Header.jsx:491",
+      "src/app/containers/app/MiniNav.jsx:37",
+      "src/app/containers/app/MiniNav.jsx:156",
+      "src/app/containers/app/SideNav.jsx:66",
+      "src/app/containers/app/SideNav.jsx:108",
+      "src/app/containers/app/components/NavLink.jsx:13",
+      "src/app/pages/About/components/AlertButtonLink.jsx:9",
+      "src/app/pages/Workspace/Workspace.jsx:525",
+      "src/app/pages/Workspace/Workspace.jsx:590",
+      "src/app/pages/Workspace/Workspace.jsx:619",
+      "src/app/pages/Workspace/Workspace.jsx:641",
+      "src/app/widgets/Autolevel/LandingView.jsx:23",
+      "src/app/widgets/Autolevel/LandingView.jsx:39",
+      "src/app/widgets/Autolevel/index.jsx:771",
+      "src/app/widgets/Probe/Probe.jsx:163",
+      "src/app/widgets/Visualizer/Dashboard.jsx:88",
+      "src/app/widgets/Visualizer/PrimaryToolbar.jsx:64",
+      "src/app/widgets/Visualizer/PrimaryToolbar.jsx:168",
+      "src/app/widgets/Visualizer/SecondaryToolbar.jsx:142",
+      "src/app/widgets/Visualizer/SecondaryToolbar.jsx:181"
+    ],
+    "actions.selectedHovered": [
+      "src/app/components/Widget/Button.jsx:34"
+    ],
+    "text.secondary": [
+      "src/app/components/Widget/DropdownMenuItem.jsx:39",
+      "src/app/containers/app/Header.jsx:247",
+      "src/app/containers/app/Header.jsx:412",
+      "src/app/containers/app/Header.jsx:421",
+      "src/app/containers/app/Header.jsx:424",
+      "src/app/containers/app/Header.jsx:425",
+      "src/app/containers/app/Header.jsx:489",
+      "src/app/containers/app/MiniNav.jsx:93",
+      "src/app/containers/app/SideNav.jsx:86",
+      "src/app/containers/app/SideNav.jsx:95",
+      "src/app/containers/app/SideNav.jsx:98",
+      "src/app/containers/app/SideNav.jsx:99",
+      "src/app/containers/app/SideNav.jsx:191",
+      "src/app/pages/Administration/Commands/Commands.jsx:386",
+      "src/app/pages/Administration/Commands/Commands.jsx:394",
+      "src/app/pages/Administration/Commands/Commands.jsx:397",
+      "src/app/pages/Administration/Commands/Commands.jsx:398",
+      "src/app/pages/Administration/Commands/Commands.jsx:505",
+      "src/app/pages/Administration/Commands/Commands.jsx:512",
+      "src/app/pages/Administration/Commands/Commands.jsx:515",
+      "src/app/pages/Administration/Commands/Commands.jsx:516",
+      "src/app/pages/Administration/Events/Events.js:485",
+      "src/app/pages/Administration/Events/Events.js:492",
+      "src/app/pages/Administration/Events/Events.js:495",
+      "src/app/pages/Administration/Events/Events.js:496",
+      "src/app/pages/Administration/Machines/Machines.jsx:337",
+      "src/app/pages/Administration/Machines/Machines.jsx:344",
+      "src/app/pages/Administration/Machines/Machines.jsx:347",
+      "src/app/pages/Administration/Machines/Machines.jsx:348",
+      "src/app/pages/Administration/Macros/Macros.jsx:352",
+      "src/app/pages/Administration/Macros/Macros.jsx:359",
+      "src/app/pages/Administration/Macros/Macros.jsx:362",
+      "src/app/pages/Administration/Macros/Macros.jsx:363",
+      "src/app/pages/Administration/Users/Users.jsx:369",
+      "src/app/pages/Administration/Users/Users.jsx:376",
+      "src/app/pages/Administration/Users/Users.jsx:379",
+      "src/app/pages/Administration/Users/Users.jsx:380",
+      "src/app/pages/Administration/components/FieldTextLabel.jsx:25",
+      "src/app/pages/Workspace/Workspace.jsx:493",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx:54",
+      "src/app/widgets/Autolevel/LandingView.jsx:28",
+      "src/app/widgets/Autolevel/LandingView.jsx:44",
+      "src/app/widgets/Autolevel/SetupProbeView.jsx:55",
+      "src/app/widgets/Autolevel/SetupProbeView.jsx:186",
+      "src/app/widgets/Autolevel/SetupProbeView.jsx:294",
+      "src/app/widgets/Autolevel/StartProbeModal.jsx:74",
+      "src/app/widgets/Axes/DisplayPanel.jsx:220",
+      "src/app/widgets/Axes/Keypad.jsx:387",
+      "src/app/widgets/Axes/Keypad.jsx:439",
+      "src/app/widgets/Axes/Keypad.jsx:475",
+      "src/app/widgets/Macro/Macro.jsx:54",
+      "src/app/widgets/Tool/Tool.jsx:120",
+      "src/app/widgets/Tool/Tool.jsx:254",
+      "src/app/widgets/Visualizer/WatchDirectory.jsx:124",
+      "src/app/widgets/Webcam/components/MutedText.jsx:7",
+      "src/app/widgets/Webcam/modals/SettingsModal.jsx:116"
+    ],
+    "background.high": [
+      "src/app/components/Widget/Header.jsx:11",
+      "src/app/containers/app/Header.jsx:399",
+      "src/app/containers/app/SideNav.jsx:65",
+      "src/app/pages/Administration/Commands/Commands.jsx:619",
+      "src/app/pages/Administration/Events/Events.js:599",
+      "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx:155",
+      "src/app/pages/Administration/Machines/Machines.jsx:451",
+      "src/app/pages/Administration/Macros/Macros.jsx:466",
+      "src/app/pages/Administration/Users/Users.jsx:479",
+      "src/app/pages/Workspace/Workspace.jsx:524",
+      "src/app/pages/Workspace/Workspace.jsx:589",
+      "src/app/pages/Workspace/Workspace.jsx:618",
+      "src/app/pages/Workspace/Workspace.jsx:640",
+      "src/app/widgets/Autolevel/index.jsx:768",
+      "src/app/widgets/Macro/Macro.jsx:57",
+      "src/app/widgets/Smoothie/Smoothie.jsx:104"
+    ],
+    "border.secondary": [
+      "src/app/components/Widget/Header.jsx:13",
+      "src/app/containers/app/MiniNav.jsx:39",
+      "src/app/containers/app/MiniNav.jsx:158",
+      "src/app/containers/app/SideNav.jsx:69",
+      "src/app/pages/Administration/Commands/Commands.jsx:341",
+      "src/app/pages/Administration/Commands/Commands.jsx:342",
+      "src/app/pages/Administration/Events/Events.js:348",
+      "src/app/pages/Administration/Events/Events.js:349",
+      "src/app/pages/Administration/Machines/Machines.jsx:236",
+      "src/app/pages/Administration/Machines/Machines.jsx:237",
+      "src/app/pages/Administration/Macros/Macros.jsx:235",
+      "src/app/pages/Administration/Macros/Macros.jsx:236",
+      "src/app/pages/Workspace/Workspace.jsx:486",
+      "src/app/pages/Workspace/Workspace.jsx:527",
+      "src/app/pages/Workspace/Workspace.jsx:592",
+      "src/app/pages/Workspace/Workspace.jsx:621",
+      "src/app/pages/Workspace/Workspace.jsx:643",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx:40",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx:49",
+      "src/app/widgets/Autolevel/LandingView.jsx:13",
+      "src/app/widgets/Autolevel/index.jsx:770",
+      "src/app/widgets/Autolevel/index.jsx:844",
+      "src/app/widgets/Axes/KeypadOverlay.jsx:21",
+      "src/app/widgets/Axes/KeypadOverlay.jsx:27",
+      "src/app/widgets/Axes/components/Taskbar.jsx:14",
+      "src/app/widgets/Macro/Macro.jsx:55",
+      "src/app/widgets/Macro/Macro.jsx:56",
+      "src/app/widgets/Smoothie/Controller.jsx:97",
+      "src/app/widgets/Smoothie/Smoothie.jsx:106",
+      "src/app/widgets/TinyG/Controller.jsx:72",
+      "src/app/widgets/Visualizer/Dashboard.jsx:75",
+      "src/app/widgets/Visualizer/Dashboard.jsx:87",
+      "src/app/widgets/Visualizer/PrimaryToolbar.jsx:67"
+    ],
+    "background.medium": [
+      "src/app/containers/app/Header.jsx:246",
+      "src/app/containers/app/Header.jsx:488",
+      "src/app/pages/Workspace/Workspace.jsx:484",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx:47",
+      "src/app/widgets/Autolevel/LandingView.jsx:11"
+    ],
+    "text.accent": [
+      "src/app/containers/app/Header.jsx:422",
+      "src/app/containers/app/Header.jsx:423",
+      "src/app/containers/app/SideNav.jsx:96",
+      "src/app/containers/app/SideNav.jsx:97",
+      "src/app/containers/app/components/NavLink.jsx:15",
+      "src/app/containers/app/components/NavLink.jsx:17",
+      "src/app/containers/app/components/NavLink.jsx:19",
+      "src/app/pages/Administration/Commands/Commands.jsx:395",
+      "src/app/pages/Administration/Commands/Commands.jsx:396",
+      "src/app/pages/Administration/Commands/Commands.jsx:513",
+      "src/app/pages/Administration/Commands/Commands.jsx:514",
+      "src/app/pages/Administration/Events/Events.js:493",
+      "src/app/pages/Administration/Events/Events.js:494",
+      "src/app/pages/Administration/Machines/Machines.jsx:345",
+      "src/app/pages/Administration/Machines/Machines.jsx:346",
+      "src/app/pages/Administration/Macros/Macros.jsx:360",
+      "src/app/pages/Administration/Macros/Macros.jsx:361",
+      "src/app/pages/Administration/Users/Users.jsx:377",
+      "src/app/pages/Administration/Users/Users.jsx:378"
+    ],
+    "text.tertiary": [
+      "src/app/containers/app/Header.jsx:462",
+      "src/app/containers/app/SideNav.jsx:132"
+    ],
+    "background.low": [
+      "src/app/containers/app/MainPage.jsx:126"
+    ],
+    "background.highest": [
+      "src/app/containers/app/MiniNav.jsx:36",
+      "src/app/containers/app/MiniNav.jsx:155",
+      "src/app/widgets/Visualizer/Dashboard.jsx:73",
+      "src/app/widgets/Visualizer/Dashboard.jsx:85",
+      "src/app/widgets/Visualizer/PrimaryToolbar.jsx:65",
+      "src/app/widgets/Visualizer/index.jsx:186"
+    ],
+    "actions.active": [
+      "src/app/containers/app/components/NavLink.jsx:14"
+    ],
+    "actions.hovered": [
+      "src/app/containers/app/components/NavLink.jsx:16",
+      "src/app/pages/About/components/AlertButtonLink.jsx:10",
+      "src/app/pages/Administration/Commands/Commands.jsx:590",
+      "src/app/pages/Administration/Events/Events.js:570",
+      "src/app/pages/Administration/Machines/Machines.jsx:422",
+      "src/app/pages/Administration/Macros/Macros.jsx:437",
+      "src/app/pages/Administration/Users/Users.jsx:454",
+      "src/app/widgets/Autolevel/LandingView.jsx:14",
+      "src/app/widgets/Axes/DisplayPanel.jsx:62",
+      "src/app/widgets/Grbl/components/OverrideReadout.jsx:11",
+      "src/app/widgets/Grbl/components/Readout.jsx:12",
+      "src/app/widgets/Laser/components/OverrideReadout.jsx:13",
+      "src/app/widgets/Marlin/DigitalReadout.jsx:14",
+      "src/app/widgets/Marlin/Marlin.jsx:198",
+      "src/app/widgets/Smoothie/DigitalReadout.jsx:17",
+      "src/app/widgets/TinyG/DigitalReadout.jsx:14",
+      "src/app/widgets/TinyG/TinyG.jsx:203",
+      "src/app/widgets/Visualizer/SecondaryToolbar.jsx:180"
+    ],
+    "actions.current": [
+      "src/app/containers/app/components/NavLink.jsx:18"
+    ],
+    "error.text": [
+      "src/app/lib/validations.jsx:10",
+      "src/app/pages/Administration/components/FieldErrorText.jsx:36",
+      "src/app/pages/Administration/components/FieldTextLabel.jsx:29",
+      "src/app/widgets/Autolevel/ApplyView.jsx:198",
+      "src/app/widgets/Autolevel/ApplyView.jsx:237",
+      "src/app/widgets/Autolevel/SetupProbeView.jsx:57",
+      "src/app/widgets/Autolevel/StartProbeModal.jsx:61",
+      "src/app/widgets/Autolevel/StopProbeModal.jsx:40",
+      "src/app/widgets/Autolevel/TestProbeModal.jsx:53",
+      "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx:56",
+      "src/app/widgets/Axes/Settings/MDI/TableRecords.jsx:194",
+      "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx:60",
+      "src/app/widgets/Axes/Settings/index.jsx:130",
+      "src/app/widgets/Axes/Settings/index.jsx:150",
+      "src/app/widgets/Connection/Connection.jsx:886",
+      "src/app/widgets/Connection/Connection.jsx:930",
+      "src/app/widgets/Custom/modals/SettingsModal.jsx:79",
+      "src/app/widgets/Custom/modals/SettingsModal.jsx:99",
+      "src/app/widgets/Custom/modals/SettingsModal.jsx:111",
+      "src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx:69",
+      "src/app/widgets/Macro/modals/EditMacro.jsx:225",
+      "src/app/widgets/Macro/modals/NewMacro.jsx:186",
+      "src/app/widgets/Tool/Tool.jsx:237"
+    ],
+    "border.primary": [
+      "src/app/pages/About/components/AlertButtonLink.jsx:8"
+    ],
+    "_shadow.medium": [
+      "src/app/pages/Administration/Commands/Commands.jsx:558",
+      "src/app/pages/Administration/components/Overlay.jsx:12"
+    ],
+    "text.disabled": [
+      "src/app/pages/Administration/Commands/Commands.jsx:620",
+      "src/app/pages/Administration/Events/Events.js:600",
+      "src/app/pages/Administration/Machines/Machines.jsx:452",
+      "src/app/pages/Administration/Macros/Macros.jsx:467",
+      "src/app/pages/Administration/Users/Users.jsx:480"
+    ],
+    "error.icon": [
+      "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx:125",
+      "src/app/pages/Administration/components/FieldInput.jsx:80",
+      "src/app/pages/Administration/components/FieldTextarea.jsx:80",
+      "src/app/pages/Workspace/Workspace.jsx:504",
+      "src/app/widgets/Grbl/QueueReports.jsx:26"
+    ],
+    "warning.icon": [
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx:40",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx:40",
+      "src/app/widgets/Grbl/QueueReports.jsx:24"
+    ],
+    "info.icon": [
+      "src/app/pages/Administration/modals/ConfirmBulkDeleteRecordsModal.jsx:38",
+      "src/app/widgets/Grbl/QueueReports.jsx:21"
+    ],
+    "info.border": [
+      "src/app/pages/Workspace/Workspace.jsx:486"
+    ],
+    "background._fixed.dark.low": [
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx:85",
+      "src/app/widgets/Marlin/Controller.jsx:104",
+      "src/app/widgets/Smoothie/Controller.jsx:95",
+      "src/app/widgets/TinyG/Controller.jsx:70",
+      "src/app/widgets/Webcam/Webcam.jsx:178",
+      "src/app/widgets/Webcam/Webcam.jsx:285"
+    ],
+    "border._fixed.dark.secondary": [
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx:87",
+      "src/app/widgets/Marlin/Controller.jsx:106"
+    ],
+    "text._fixed.dark.primary": [
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx:88",
+      "src/app/widgets/Marlin/Controller.jsx:107",
+      "src/app/widgets/Smoothie/Controller.jsx:98",
+      "src/app/widgets/TinyG/Controller.jsx:73",
+      "src/app/widgets/Webcam/Webcam.jsx:291"
+    ],
+    "actions.enabled": [
+      "src/app/widgets/Visualizer/SecondaryToolbar.jsx:141"
+    ],
+    "text._fixed.light.accent": [
+      "src/app/widgets/Visualizer/index.jsx:163"
+    ],
+    "warning._onOverlay.text": [
+      "src/app/widgets/Visualizer/index.jsx:184"
+    ],
+    "warning._overlay": [
+      "src/app/widgets/Visualizer/index.jsx:191"
+    ]
+  },
+  "invalid": [],
+  "cssColorVariableReferences": 78,
+  "invalidCSSColorVariables": [],
+  "date": "2026-10-06",
+  "guideSources": [
+    "~/Code/trendmicro-frontend/tonic-ui/packages/react-docs/pages/migrations/migrating-from-v2-to-v3/index.page.mdx",
+    "~/Code/trendmicro-frontend/tonic-ui/packages/react-docs/pages/migrations/migrating-color-tokens-from-v2-to-v3/index.page.mdx"
+  ],
+  "react": {
+    "minimum": "18.3.0",
+    "declaredRange": "^18.3.0",
+    "installedReact": "18.3.1",
+    "installedReactDOM": "18.3.1",
+    "react19": "Not added to the application dependency range; current validation targets React 18."
+  },
+  "deprecatedAPI": {
+    "migratedPseudoGroups": 8,
+    "outsideInteractionCallSites": 4,
+    "remainingAppOccurrences": 0,
+    "pseudoSelectors": "Native CSS :focus/:hover/:active and combined-state selectors only; no data-state aliases, per user instruction."
+  },
+  "semanticCorrections": [
+    "Page uses background.low; navigation drawer uses background.high.",
+    "Navigation uses actions.current/hovered/active and text.accent for emphasis.",
+    "Error text uses error.text; error icons use error.icon.",
+    "Fixed dark Grbl/Marlin previews pair with fixed dark text and border colors.",
+    "Widget management preview and file drop indicator use semantic surfaces, text and borders.",
+    "Probe compensation warning text is paired with warning._overlay over an opaque semantic surface.",
+    "About link uses border.primary; Autolevel cards use background.medium and actions.hovered.",
+    "Startup body background follows the page CSS variable."
+  ],
+  "retainedDomainColors": [
+    "WebGL paths, probe diagrams and syntax colors",
+    "Explicit Widget color palettes",
+    "Camera reticles and media overlays",
+    "Fixed black loading scrims"
+  ],
+  "validation": {
+    "immutableOfflineInstall": "passed",
+    "frontendSuites": 78,
+    "frontendTests": 505,
+    "lintErrors": 0,
+    "existingLintWarnings": 4,
+    "migrationGuardViolations": 0,
+    "migrationGuardFixtureTests": 68,
+    "browser": {
+      "status": "user accepted scoped V3-GV evidence",
+      "report": "../browser/v3-guide-20261006-luna/report.json",
+      "cleanup": "../browser/v3-guide-20261006-luna/cleanup.json",
+      "testedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+      "finalSourceDiffSha256": "230dd0eeaae215be499ee615a4f774fad991da7dc522dae9cf2408fc91321450",
+      "finalAdjustment": "Removed 24 data-state selector aliases across 8 style groups; native selectors and declarations remain identical. Reconstructing selectors and blob hashes restores the exact browser-tested source diff hash. No new browser capture is claimed after this adjustment.",
+      "targetedEslint": "passed",
+      "migrationGuard": "0 violations"
+    }
+  },
+  "limits": [
+    "Fresh V3-GV scoped visual evidence and owned cleanup were accepted by the user before commit. NavLink programmatic focus was not acquired; SideNav key and listener-count warnings remain explicitly recorded in the browser report.",
+    "Inter and DM Mono loading remains an identified migration-guide follow-up outside the requested React/API/color corrections.",
+    "The prior V3-V screenshots describe their recorded source revisions, not these new visual changes."
+  ]
+}

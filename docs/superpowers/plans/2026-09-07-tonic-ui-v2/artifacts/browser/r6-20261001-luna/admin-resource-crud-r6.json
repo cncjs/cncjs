@@ -1,0 +1,569 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixtureRunId": 1790875957898,
+  "credentialsRecorded": false,
+  "gates": [
+    {
+      "name": "commands-create-read-update-delete",
+      "status": "passed",
+      "durationMs": 1562,
+      "created": "R6 command 1790875957898",
+      "readBack": true,
+      "updated": "R6 command 1790875957898 updated",
+      "removed": true
+    },
+    {
+      "name": "events-create-read-update-delete",
+      "status": "passed",
+      "durationMs": 1647,
+      "created": "R6 event 1790875957898",
+      "readBack": true,
+      "updated": "R6 event 1790875957898 updated",
+      "removed": true
+    },
+    {
+      "name": "macros-create-read-update-delete",
+      "status": "passed",
+      "durationMs": 1499,
+      "created": "R6 macro 1790875957898",
+      "readBack": true,
+      "updated": "R6 macro 1790875957898 updated",
+      "removed": true
+    }
+  ],
+  "api": [
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/commands",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands/21cced07-c955-41c8-9f4d-bc240a478c0b"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "POST",
+      "path": "/api/commands/delete",
+      "bodyKeys": [
+        "ids"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/commands/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/commands"
+    },
+    {
+      "status": 200,
+      "path": "/api/commands"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/events",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name",
+        "trigger"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18"
+    },
+    {
+      "status": 200,
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18",
+      "bodyKeys": [
+        "action",
+        "enabled",
+        "name",
+        "trigger"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18"
+    },
+    {
+      "status": 200,
+      "path": "/api/events/e617af77-6ac8-46e8-9247-e9263c6e4e18"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "POST",
+      "path": "/api/events/delete",
+      "bodyKeys": [
+        "ids"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/events/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/events"
+    },
+    {
+      "status": 200,
+      "path": "/api/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros",
+      "bodyKeys": [
+        "action",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e",
+      "bodyKeys": [
+        "action",
+        "name"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/38b75126-cfdf-46de-be47-537dcdcba71e"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "path": "/api/macros/delete",
+      "bodyKeys": [
+        "ids"
+      ]
+    },
+    {
+      "status": 200,
+      "path": "/api/macros/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscrib"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340056e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340056e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscrib"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Too"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscrib"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Too"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscrib"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "error",
+      "text": "Warning: validateDOMNesting(...): %s cannot appear as a descendant of <%s>.%s <button> button \n    at button\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/button/ButtonBase.js:23:103)\n    "
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Too"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

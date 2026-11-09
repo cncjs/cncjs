@@ -1,0 +1,654 @@
+[
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/main.45db539c9916cab3e241.bundle.js"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/main.css"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/images/32x32/loading.gif"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/i18n/en/controller.json"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/i18n/en/gcode.json"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/i18n/en/resource.json"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/api/signin"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/api/state"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWiZD"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWiZH&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWiZJ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/41c0f706d8ce93933771be0292757b92.woff2"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/assets/models/stl/bit.stl"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/api/machines?_=1789298657664"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/api/mdi?_=1789298657665"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/api/tool?_=1789298657666"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/images/logo-square-256x256.png"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/assets/textures/brushed-steel-texture.jpg"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWicD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWihZ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWihZ.0&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWik2&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWofx&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWog1&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWumh&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWuml&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QWvFz&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QW-tQ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QW-tV&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QX4-A&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QX4-H&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXB4x&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXB53&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXBPw&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXBQ4&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXBQA&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXF82&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXF88&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXF8F&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/api/machines?_=1789298799165"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXFAp&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXHBj&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXHBo&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKfD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKfK&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKfy&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKg2&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKiN&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKiU&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKiZ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKjt&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKjy&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKmB&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKmE&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKmJ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKnx&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKoH&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKrl&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKro&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKvm&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKwL&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXKzh&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXK-H&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL1V&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL1h&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL5Y&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL5z&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL9S&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXL9s&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLDO&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLDz&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLHD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLHP&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLLD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLLe&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLPA&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLPb&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLT4&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLTg&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLWu&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLX2&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLat&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLbD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLes&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLfF&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLio&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLjP&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLmc&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLmn&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLqe&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLrF&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLuY&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLu-&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLyV&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXLz4&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM0L&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM0W&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM4N&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM4w&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM8H&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM8Q&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMCD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMCO&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMGE&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMGa&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMJ_&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMKH&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMN_&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMOH&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMRv&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMSB&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMVs&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMW8&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMZh&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMZz&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMdd&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMdw&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMhe&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMhw&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMla&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMly&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMpT&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMpl&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMtN&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMtf&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMxH&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXMxY&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM_E&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXM_a&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXN38&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXN3P&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXN6_&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXN7H&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNB1&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNBL&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNEu&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNFC&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNIQ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNIZ&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNIs&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNJ7&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNMm&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNN1&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNQg&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNQy&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNUa&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNUt&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNYU&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNYl&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNcN&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNce&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNgP&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNgh&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNkD&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNsC&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXNw6&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXTPE&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXTPM&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXZWM&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXZWU&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "POST",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXfdG&sid=vQuMAyhYqdmBdbDFAAAA"
+  },
+  {
+    "method": "GET",
+    "url": "http://127.0.0.1:8080/socket.io/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IiIsIm5hbWUiOiIiLCJpYXQiOjE3ODkyOTg2NTcsImV4cCI6MTc5MTg5MDY1N30.erZ4R5lCInT1EmXJBlca6Vh-WUYR3i023rSloMqn-38&EIO=3&transport=polling&t=Q2QXfdO&sid=vQuMAyhYqdmBdbDFAAAA"
+  }
+]

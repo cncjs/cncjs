@@ -1,0 +1,33 @@
+{
+  "revision": "c82280d91fd0b46436e936dfa09c1be9ddd62815",
+  "run": "https://github.com/cheton/cncjs/actions/runs/37116468021",
+  "staticPackageChecks": {
+    "spinnerSSR": true,
+    "spinnerAnimation": true,
+    "loadingTranslationPreserved": true,
+    "spinnerPlaceholderResolved": true,
+    "legacyGifAbsent": true,
+    "semanticTextCSS": true,
+    "semanticSurfaceCSS": true,
+    "semanticBorderCSS": true
+  },
+  "entries": {
+    "app/index.html": {
+      "bytes": 3233,
+      "sha256": "afe5d3b67ca001a9efb64ff6ddc3d020cd0bab2e9c531ab5795b1af4a1522b91"
+    },
+    "app/main.css": {
+      "bytes": 187623,
+      "sha256": "6f00e6ca3a9d2c0e0d5f24e4cd34c54679370bd738301986f8340a53124866b0"
+    },
+    "server-cli.js": {
+      "bytes": 16130,
+      "sha256": "79d305dada055df9566cfa258c8f01cb7181d69e60132b8dd25c3854cd816928"
+    },
+    "package.json": {
+      "bytes": 1835,
+      "sha256": "75139c99f3bec4d8964870257642c5246bd33ae75281cafc5cff94b4d6254ff6"
+    }
+  },
+  "scope": "Static downloaded CI artifact review, not a local production build or browser execution"
+}

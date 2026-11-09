@@ -1,0 +1,565 @@
+{
+  "task": "V3-GV focused guide acceptance: navigation states, outside-close confirms, Axes errors/cards/drop, actual settings routes",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "runnerPid": 60778,
+  "assertions": [
+    {
+      "name": "Header and SideNav focus hover active styles at 1440 and 768",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "viewports": [
+          {
+            "width": 1440,
+            "header": {
+              "focus": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "color(srgb 0 0 0 / 0.64) none 0px",
+                "outlineColor": "color(srgb 0 0 0 / 0.64)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "hover": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 0px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "active": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": true,
+                "focus": true,
+                "color": "oklab(0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "oklab(0 0 0 / 0.96) none 0px",
+                "outlineColor": "oklab(0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              }
+            },
+            "sideNavButton": null,
+            "selectedNavLink": {
+              "programmaticFocusAcquired": false,
+              "hover": {
+                "tag": "A",
+                "text": "Workspace",
+                "aria": null,
+                "selected": "true",
+                "active": false,
+                "focus": false,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "color(srgb 0.435294 0.435294 0.435294 / 0.12)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 0,
+                  "y": 56,
+                  "width": 239,
+                  "height": 40
+                }
+              },
+              "active": {
+                "tag": "A",
+                "text": "Workspace",
+                "aria": null,
+                "selected": "true",
+                "active": true,
+                "focus": false,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "color(srgb 0.435294 0.435294 0.435294 / 0.12)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 0,
+                  "y": 56,
+                  "width": 239,
+                  "height": 40
+                }
+              }
+            }
+          },
+          {
+            "width": 768,
+            "header": {
+              "focus": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "oklab(0 0 0 / 0.947347)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "oklab(0 0 0 / 0.947347) none 2px",
+                "outlineColor": "oklab(0 0 0 / 0.947347)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "hover": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "active": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Toggle navigation",
+                "selected": null,
+                "active": true,
+                "focus": true,
+                "color": "oklab(0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "oklab(0 0 0 / 0.96) none 3px",
+                "outlineColor": "oklab(0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              }
+            },
+            "sideNavButton": {
+              "focus": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Close navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 0px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "hover": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Close navigation",
+                "selected": null,
+                "active": false,
+                "focus": true,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              },
+              "active": {
+                "tag": "BUTTON",
+                "text": "",
+                "aria": "Close navigation",
+                "selected": null,
+                "active": true,
+                "focus": true,
+                "color": "oklab(0 0 0 / 0.96)",
+                "background": "rgba(0, 0, 0, 0)",
+                "outline": "oklab(0 0 0 / 0.96) none 3px",
+                "outlineColor": "oklab(0 0 0 / 0.96)",
+                "rect": {
+                  "x": 16,
+                  "y": 4,
+                  "width": 40,
+                  "height": 40
+                }
+              }
+            },
+            "selectedNavLink": {
+              "programmaticFocusAcquired": false,
+              "hover": {
+                "tag": "A",
+                "text": "Workspace",
+                "aria": null,
+                "selected": "true",
+                "active": false,
+                "focus": false,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "color(srgb 0.435294 0.435294 0.435294 / 0.12)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 0,
+                  "y": 56,
+                  "width": 239,
+                  "height": 40
+                }
+              },
+              "active": {
+                "tag": "A",
+                "text": "Workspace",
+                "aria": null,
+                "selected": "true",
+                "active": true,
+                "focus": false,
+                "color": "color(srgb 0 0 0 / 0.96)",
+                "background": "color(srgb 0.435294 0.435294 0.435294 / 0.12)",
+                "outline": "color(srgb 0 0 0 / 0.96) none 3px",
+                "outlineColor": "color(srgb 0 0 0 / 0.96)",
+                "rect": {
+                  "x": 0,
+                  "y": 56,
+                  "width": 239,
+                  "height": 40
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Actual General Settings and Workspace Settings routes render in light and dark",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "pages": [
+          {
+            "theme": "light",
+            "key": "general",
+            "route": "/administration/general-settings",
+            "main": {
+              "text": "Controller Exception Handling Continue execution when an error is detected in the G-code program Enabling this option may cause machine damage if you don't have an Emergency Stop b",
+              "color": "color(srgb 0 0 0 / 0.8)",
+              "background": "rgb(238, 238, 238)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-7/screenshots/guide-general-settings-light-1440x900.png"
+          },
+          {
+            "theme": "light",
+            "key": "workspace",
+            "route": "/administration/workspace-settings",
+            "main": {
+              "text": "Export Import Restore Defaults The configuration file: /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc { \"version\": \"2.0.0-dev\", \"state\": { \"session\": { \"name\": \"\", \"token\"",
+              "color": "color(srgb 0 0 0 / 0.8)",
+              "background": "rgb(238, 238, 238)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-7/screenshots/guide-workspace-settings-light-1440x900.png"
+          },
+          {
+            "theme": "dark",
+            "key": "general",
+            "route": "/administration/general-settings",
+            "main": {
+              "text": "Controller Exception Handling Continue execution when an error is detected in the G-code program Enabling this option may cause machine damage if you don't have an Emergency Stop b",
+              "color": "color(srgb 1 1 1 / 0.8)",
+              "background": "rgb(7, 7, 7)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-7/screenshots/guide-general-settings-dark-1440x900.png"
+          },
+          {
+            "theme": "dark",
+            "key": "workspace",
+            "route": "/administration/workspace-settings",
+            "main": {
+              "text": "Export Import Restore Defaults The configuration file: /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc { \"version\": \"2.0.0-dev\", \"state\": { \"session\": { \"name\": \"\", \"token\"",
+              "color": "color(srgb 1 1 1 / 0.8)",
+              "background": "rgb(7, 7, 7)",
+              "rect": {
+                "x": 72,
+                "y": 0,
+                "width": 1368,
+                "height": 900
+              },
+              "overflowX": false
+            },
+            "screenshot": "history/guide-focused-attempt-7/screenshots/guide-workspace-settings-dark-1440x900.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Restore Defaults confirmation closes by outside pointer without confirming",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "dialog": {
+          "text": "Warning Are you sure you want to restore the default settings? /tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc Restore Defaults Cancel",
+          "opacity": "1",
+          "visibility": "visible",
+          "rect": {
+            "x": 427,
+            "y": 343,
+            "width": 586,
+            "height": 215
+          }
+        },
+        "outside": {
+          "point": {
+            "x": 8,
+            "y": 8
+          },
+          "stillVisible": false
+        },
+        "screenshot": "history/guide-focused-attempt-7/screenshots/guide-confirm-restore-defaults-open.png",
+        "confirmClicked": false
+      }
+    },
+    {
+      "name": "Import Workspace Settings confirmation closes by outside pointer without importing",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "dialog": {
+          "text": "Warning Are you sure you want to overwrite the workspace settings? 1 { 2 \"version\" : \"2.0.0-dev\" , 3 \"state\" : { 4 \"session\" : { 5 \"token\" : \"********\" 6 } 7 } 8 } Import Cancel",
+          "opacity": "1",
+          "visibility": "visible",
+          "rect": {
+            "x": 384,
+            "y": 254,
+            "width": 672,
+            "height": 393
+          }
+        },
+        "outside": {
+          "point": {
+            "x": 8,
+            "y": 8
+          },
+          "stillVisible": false
+        },
+        "screenshot": "history/guide-focused-attempt-7/screenshots/guide-confirm-import-settings-open.png",
+        "file": "workspace-settings-import-fixture.json",
+        "importClicked": false,
+        "mutationCount": 0
+      }
+    },
+    {
+      "name": "Confirm Delete Macro closes by outside pointer and does not delete",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "dialog": {
+          "text": "Delete Macro Are you sure you want to delete this macro? V3 guide visual fixture Cancel Delete",
+          "opacity": "1",
+          "visibility": "visible",
+          "rect": {
+            "x": 464,
+            "y": 290,
+            "width": 512,
+            "height": 320
+          }
+        },
+        "outside": {
+          "point": {
+            "x": 8,
+            "y": 8
+          },
+          "confirmationVisibleAfter": false,
+          "remainingDialogs": 1
+        },
+        "screenshot": "history/guide-focused-attempt-7/screenshots/guide-confirm-delete-macro-open.png",
+        "fixtureName": "V3 guide visual fixture",
+        "fixtureSource": "synthetic GET response only",
+        "confirmClicked": false,
+        "macroExecuted": false,
+        "noMutation": true
+      }
+    },
+    {
+      "name": "Axes Custom Commands required-field error is visible and semantic",
+      "status": "passed",
+      "durationMs": 0,
+      "detail": {
+        "error": {
+          "text": "This field is required.",
+          "color": "rgb(254, 70, 72)",
+          "fontSize": "14px",
+          "rect": {
+            "x": 489,
+            "y": 295,
+            "width": 462,
+            "height": 20
+          }
+        },
+        "screenshot": "history/guide-focused-attempt-7/screenshots/guide-axes-custom-command-required-error.png",
+        "submitWasBlank": true,
+        "validCommandSubmitted": false,
+        "bothDialogsCancelled": true
+      }
+    },
+    {
+      "name": "Autolevel landing card hover and disconnected file-drop state",
+      "status": "failed",
+      "durationMs": 8410,
+      "error": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('PROBE NEW SURFACE', { exact: true }).locator('..') to be visible\u001b[22m\n\n    at /Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:293:16\n    at async gate (/Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:79:94)\n    at async file:///Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/guide-focused-acceptance-v3.mjs:287:3",
+      "screenshot": "history/guide-focused-attempt-7/screenshots/focused-failure-autolevel-landing-card-hover-and-disconnected-file-drop-state.png"
+    }
+  ],
+  "screenshots": [
+    "history/guide-focused-attempt-7/screenshots/guide-header-focus-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-header-hover-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-header-active-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-focus-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-hover-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-active-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-header-focus-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-header-hover-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-header-active-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-close-active-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-close-focus-hover-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-focus-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-hover-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-sidenav-active-768x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-general-settings-light-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-workspace-settings-light-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-general-settings-dark-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-workspace-settings-dark-1440x900.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-restore-defaults-open.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-restore-defaults-outside-closed.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-import-settings-open.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-import-settings-outside-closed.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-delete-macro-open.png",
+    "history/guide-focused-attempt-7/screenshots/guide-confirm-delete-macro-outside-closed.png",
+    "history/guide-focused-attempt-7/screenshots/guide-axes-custom-command-required-error.png",
+    "history/guide-focused-attempt-7/screenshots/focused-failure-autolevel-landing-card-hover-and-disconnected-file-drop-state.png"
+  ],
+  "actions": [],
+  "events": {
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": [],
+    "consoleErrors": [
+      {
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+        "location": {
+          "url": "webpack-internal:///../../node_modules/@emotion/cache/dist/emotion-cache.browser.development.esm.js",
+          "line": 206,
+          "column": 16,
+          "lineNumber": 206,
+          "columnNumber": 16
+        }
+      },
+      {
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+        "location": {
+          "url": "webpack-internal:///../../node_modules/@emotion/cache/dist/emotion-cache.browser.development.esm.js",
+          "line": 206,
+          "column": 16,
+          "lineNumber": 206,
+          "columnNumber": 16
+        }
+      },
+      {
+        "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `SideNav`.  \n    at eval (webpack-internal:///./containers/app/SideNav.jsx:58:22)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react-base/dist/esm/box/index.js:18:66)\n    at eval (webpack-internal:///./containers/app/MainPage.jsx:62:90)\n    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react-base/dist/esm/box/index.js:18:66)\n    at Layout (webpack-internal:///./containers/app/App.jsx:65:83)\n    at App (webpack-internal:///./containers/app/App.jsx:81:29)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)\n    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)\n    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)\n    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:39:103)\n    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)\n    at ColorStyleProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-style/ColorStyleProvider.js:27:103)\n    at ColorModeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/color-mode/ColorModeProvider.js:50:103)\n    at DefaultPropsProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/default-props/DefaultPropsProvider.js:14:20)\n    at ThemeProvider (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:94:50)\n    at ThemeProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/theme/ThemeProvider.js:26:23)\n    at EnvironmentProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/environment/EnvironmentProvider.js:31:21)\n    at TonicProvider (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/provider/TonicProvider.js:33:23)\n    at QueryClientProvider (webpack-internal:///../../node_modules/@tanstack/react-query/build/lib/QueryClientProvider.mjs:48:3)\n    at I18nextProvider (webpack-internal:///../../node_modules/react-i18next/dist/es/I18nextProvider.js:11:19)\n    at GlobalProvider (webpack-internal:///./context.jsx:96:23)",
+        "location": {
+          "url": "webpack-internal:///../../node_modules/react/cjs/react.development.js",
+          "line": 209,
+          "column": 29,
+          "lineNumber": 209,
+          "columnNumber": 29
+        }
+      }
+    ],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/signin"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/workspace-settings-import-fixture.json",
+    "version": "2.0.0-dev",
+    "stateKeys": [],
+    "imported": false,
+    "macroCreated": false,
+    "macroExecuted": false,
+    "confirmationActions": 0,
+    "macroSource": "browser-only GET /api/macros synthetic response; no macro record persisted"
+  },
+  "completedAt": "2026-10-06T13:40:36.926Z",
+  "status": "partial-failures",
+  "browserClosed": true
+}

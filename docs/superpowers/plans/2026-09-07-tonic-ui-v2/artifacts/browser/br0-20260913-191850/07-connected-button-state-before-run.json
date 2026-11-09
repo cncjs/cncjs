@@ -1,0 +1,744 @@
+[
+  {
+    "i": 1,
+    "text": "CNCjs",
+    "aria": "CNCjs 2.0.0-dev - View release notes",
+    "title": "CNCjs 2.0.0-dev",
+    "disabled": false
+  },
+  {
+    "i": 3,
+    "text": "",
+    "aria": "Hide left panel",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 4,
+    "text": "Manage Widgets (1)",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 5,
+    "text": "",
+    "aria": "Collapse all left panel widgets",
+    "title": "Collapse All",
+    "disabled": false
+  },
+  {
+    "i": 6,
+    "text": "",
+    "aria": "Expand all left panel widgets",
+    "title": "Expand All",
+    "disabled": false
+  },
+  {
+    "i": 7,
+    "text": "Grbl",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 8,
+    "text": "Marlin",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 9,
+    "text": "Smoothie",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 10,
+    "text": "TinyG",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 11,
+    "text": "Serial Port",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 12,
+    "text": "Wi-Fi",
+    "aria": null,
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 13,
+    "text": "Close",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 14,
+    "text": "-10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 15,
+    "text": "-1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 16,
+    "text": "1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 17,
+    "text": "10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 18,
+    "text": "-10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 19,
+    "text": "-1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 20,
+    "text": "1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 21,
+    "text": "10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 22,
+    "text": "25%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 23,
+    "text": "50%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 24,
+    "text": "100%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 25,
+    "text": "G54 (P1)",
+    "aria": null,
+    "title": "Work Coordinate System",
+    "disabled": false
+  },
+  {
+    "i": 26,
+    "text": "3D View",
+    "aria": "3D View options",
+    "title": "Disable 3D View",
+    "disabled": false
+  },
+  {
+    "i": 28,
+    "text": "Upload G-code",
+    "aria": null,
+    "title": "Upload G-code",
+    "disabled": false
+  },
+  {
+    "i": 30,
+    "text": "",
+    "aria": "Run",
+    "title": "Run",
+    "disabled": false
+  },
+  {
+    "i": 31,
+    "text": "",
+    "aria": "Pause",
+    "title": "Pause",
+    "disabled": true
+  },
+  {
+    "i": 32,
+    "text": "",
+    "aria": "Stop",
+    "title": "Stop",
+    "disabled": true
+  },
+  {
+    "i": 33,
+    "text": "",
+    "aria": "Close G-code file",
+    "title": "Close",
+    "disabled": false
+  },
+  {
+    "i": 34,
+    "text": "",
+    "aria": "Top view",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 35,
+    "text": "",
+    "aria": "Front view",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 36,
+    "text": "",
+    "aria": "Right side view",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 37,
+    "text": "",
+    "aria": "Left side view",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 38,
+    "text": "",
+    "aria": "3D view",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 39,
+    "text": "",
+    "aria": "Zoom to fit",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 40,
+    "text": "",
+    "aria": "Zoom in",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 41,
+    "text": "",
+    "aria": "Zoom out",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 42,
+    "text": "",
+    "aria": "Camera mode: Pan",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 43,
+    "text": "",
+    "aria": "Collapse all right panel widgets",
+    "title": "Collapse All",
+    "disabled": false
+  },
+  {
+    "i": 44,
+    "text": "",
+    "aria": "Expand all right panel widgets",
+    "title": "Expand All",
+    "disabled": false
+  },
+  {
+    "i": 45,
+    "text": "Manage Widgets (1)",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 46,
+    "text": "",
+    "aria": "Hide right panel",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 47,
+    "text": "",
+    "aria": "Select work coordinate system",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 48,
+    "text": "",
+    "aria": "Go to zero: X",
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 49,
+    "text": "",
+    "aria": "Home: X",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 50,
+    "text": "",
+    "aria": "Move X backward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 51,
+    "text": "",
+    "aria": "Move X forward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 52,
+    "text": "",
+    "aria": "Zero out X work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 53,
+    "text": "",
+    "aria": "Set X work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 54,
+    "text": "",
+    "aria": "X axis actions",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 55,
+    "text": "",
+    "aria": "Go to zero: Y",
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 56,
+    "text": "",
+    "aria": "Home: Y",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 57,
+    "text": "",
+    "aria": "Move Y backward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 58,
+    "text": "",
+    "aria": "Move Y forward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 59,
+    "text": "",
+    "aria": "Zero out Y work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 60,
+    "text": "",
+    "aria": "Set Y work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 61,
+    "text": "",
+    "aria": "Y axis actions",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 62,
+    "text": "",
+    "aria": "Go to zero: Z",
+    "title": "",
+    "disabled": true
+  },
+  {
+    "i": 63,
+    "text": "",
+    "aria": "Home: Z",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 64,
+    "text": "",
+    "aria": "Move Z backward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 65,
+    "text": "",
+    "aria": "Move Z forward",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 66,
+    "text": "",
+    "aria": "Zero out Z work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 67,
+    "text": "",
+    "aria": "Set Z work offsets",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 68,
+    "text": "",
+    "aria": "Z axis actions",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 69,
+    "text": "",
+    "aria": "Move X negative Y positive",
+    "title": "Move X- Y+",
+    "disabled": false
+  },
+  {
+    "i": 70,
+    "text": "Y+",
+    "aria": "Move Y positive",
+    "title": "Move Y+",
+    "disabled": false
+  },
+  {
+    "i": 71,
+    "text": "",
+    "aria": "Move X positive Y positive",
+    "title": "Move X+ Y+",
+    "disabled": false
+  },
+  {
+    "i": 72,
+    "text": "Z+",
+    "aria": "Move Z positive",
+    "title": "Move Z+",
+    "disabled": false
+  },
+  {
+    "i": 73,
+    "text": "X-",
+    "aria": "Move X negative",
+    "title": "Move X-",
+    "disabled": false
+  },
+  {
+    "i": 74,
+    "text": "X0Y0",
+    "aria": null,
+    "title": "Move To XY Zero (G0 X0 Y0)",
+    "disabled": false
+  },
+  {
+    "i": 75,
+    "text": "X+",
+    "aria": "Move X positive",
+    "title": "Move X+",
+    "disabled": false
+  },
+  {
+    "i": 76,
+    "text": "Z0",
+    "aria": null,
+    "title": "Move To Z Zero (G0 Z0)",
+    "disabled": false
+  },
+  {
+    "i": 77,
+    "text": "",
+    "aria": "Move X negative Y negative",
+    "title": "Move X- Y-",
+    "disabled": false
+  },
+  {
+    "i": 78,
+    "text": "Y-",
+    "aria": "Move Y negative",
+    "title": "Move Y-",
+    "disabled": false
+  },
+  {
+    "i": 79,
+    "text": "",
+    "aria": "Move X positive Y negative",
+    "title": "Move X+ Y-",
+    "disabled": false
+  },
+  {
+    "i": 80,
+    "text": "Z-",
+    "aria": "Move Z negative",
+    "title": "Move Z-",
+    "disabled": false
+  },
+  {
+    "i": 81,
+    "text": "G21 (mm)",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 82,
+    "text": "1mm",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 83,
+    "text": "",
+    "aria": "Decrease step size",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 84,
+    "text": "",
+    "aria": "Increase step size",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 85,
+    "text": "New",
+    "aria": "New macro",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 86,
+    "text": "Export",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 87,
+    "text": "",
+    "aria": null,
+    "title": "Refresh",
+    "disabled": false
+  },
+  {
+    "i": 88,
+    "text": "Start New Probe",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 89,
+    "text": "Load Probe Data",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 90,
+    "text": "Z",
+    "aria": null,
+    "title": "Probe Z axis",
+    "disabled": false
+  },
+  {
+    "i": 91,
+    "text": "X",
+    "aria": null,
+    "title": "Probe X axis",
+    "disabled": false
+  },
+  {
+    "i": 92,
+    "text": "Y",
+    "aria": null,
+    "title": "Probe Y axis",
+    "disabled": false
+  },
+  {
+    "i": 93,
+    "text": "G38.2",
+    "aria": null,
+    "title": "G38.2 probe toward workpiece, stop on contact, signal error if failure",
+    "disabled": false
+  },
+  {
+    "i": 94,
+    "text": "G38.3",
+    "aria": null,
+    "title": "G38.3 probe toward workpiece, stop on contact",
+    "disabled": false
+  },
+  {
+    "i": 95,
+    "text": "G38.4",
+    "aria": null,
+    "title": "G38.4 probe away from workpiece, stop on loss of contact, signal error if failure",
+    "disabled": false
+  },
+  {
+    "i": 96,
+    "text": "G38.5",
+    "aria": null,
+    "title": "G38.5 probe away from workpiece, stop on loss of contact",
+    "disabled": false
+  },
+  {
+    "i": 97,
+    "text": "Probe Axis Z",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 98,
+    "text": "M7",
+    "aria": null,
+    "title": "Mist Coolant On (M7)",
+    "disabled": false
+  },
+  {
+    "i": 99,
+    "text": "M8",
+    "aria": null,
+    "title": "Flood Coolant On (M8)",
+    "disabled": false
+  },
+  {
+    "i": 100,
+    "text": "M9",
+    "aria": null,
+    "title": "Coolant Off (M9)",
+    "disabled": false
+  },
+  {
+    "i": 101,
+    "text": "M3",
+    "aria": null,
+    "title": "Spindle On, CW (M3)",
+    "disabled": false
+  },
+  {
+    "i": 102,
+    "text": "M4",
+    "aria": null,
+    "title": "Spindle On, CCW (M4)",
+    "disabled": false
+  },
+  {
+    "i": 103,
+    "text": "M5",
+    "aria": null,
+    "title": "Spindle Off (M5)",
+    "disabled": false
+  },
+  {
+    "i": 104,
+    "text": "-10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 105,
+    "text": "-1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 106,
+    "text": "1%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 107,
+    "text": "10%",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 108,
+    "text": "Laser Test",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  },
+  {
+    "i": 109,
+    "text": "Laser Off",
+    "aria": null,
+    "title": "",
+    "disabled": false
+  }
+]

@@ -1,0 +1,139 @@
+{
+  "conclusion": "success",
+  "headSha": "f050804ef6b485b0190f29557d79df43f53316b0",
+  "jobs": [
+    {
+      "completedAt": "2026-10-03T13:57:13Z",
+      "conclusion": "success",
+      "databaseId": 111216105790,
+      "name": "validate",
+      "startedAt": "2026-10-03T13:52:01Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-03T13:52:03Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-03T13:52:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:52:06Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-10-03T13:52:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:52:07Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v4",
+          "number": 3,
+          "startedAt": "2026-10-03T13:52:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:52:07Z",
+          "conclusion": "success",
+          "name": "Install Yarn launcher",
+          "number": 4,
+          "startedAt": "2026-10-03T13:52:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:53:12Z",
+          "conclusion": "success",
+          "name": "Install locked dependencies",
+          "number": 5,
+          "startedAt": "2026-10-03T13:52:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:53:18Z",
+          "conclusion": "success",
+          "name": "Migration guard and adversarial fixtures",
+          "number": 6,
+          "startedAt": "2026-10-03T13:53:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:55:05Z",
+          "conclusion": "success",
+          "name": "Frontend regression tests",
+          "number": 7,
+          "startedAt": "2026-10-03T13:53:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:55:22Z",
+          "conclusion": "success",
+          "name": "Lint",
+          "number": 8,
+          "startedAt": "2026-10-03T13:55:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:55:42Z",
+          "conclusion": "success",
+          "name": "Node and simulator tests",
+          "number": 9,
+          "startedAt": "2026-10-03T13:55:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:08Z",
+          "conclusion": "success",
+          "name": "Production build",
+          "number": 10,
+          "startedAt": "2026-10-03T13:55:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:08Z",
+          "conclusion": "success",
+          "name": "Verify packaged entry points",
+          "number": 11,
+          "startedAt": "2026-10-03T13:57:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:11Z",
+          "conclusion": "success",
+          "name": "Preserve production artifact",
+          "number": 12,
+          "startedAt": "2026-10-03T13:57:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:11Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v4",
+          "number": 23,
+          "startedAt": "2026-10-03T13:57:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:11Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 24,
+          "startedAt": "2026-10-03T13:57:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-03T13:57:11Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-03T13:57:11Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/cheton/cncjs/actions/runs/37127637668/job/111216105790"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/cheton/cncjs/actions/runs/37127637668"
+}

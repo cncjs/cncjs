@@ -1,414 +1,326 @@
-import { Space, TextLabel } from '@tonic-ui/react';
-import PropTypes from 'prop-types';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupAppend,
+  LinearProgress,
+  Space,
+  Text,
+} from '@tonic-ui/react';
+import { ChevronLeftIcon, PlayIcon, StopIcon } from '@tonic-ui/react-icons';
 import React from 'react';
-import { Button } from '@app/components/Buttons';
-import ProgressBar from '@app/components/ProgressBar';
-import FormGroup from '@app/components/FormGroup';
-import Input from '@app/components/FormControl/Input';
-import Infotip from '@app/components/Infotip';
-import InputGroup from '@app/components/InputGroup';
-import { Row, Col } from '@app/components/GridSystem';
 import i18n from '@app/lib/i18n';
 import { METRIC_UNITS } from '@app/constants';
 import { toDisplayUnits } from '@app/lib/units';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ZProbeDiagram from './ZProbeDiagram';
-import { PROBE_STATE_IDLE, PROBE_STATE_RUNNING, PROBE_STATE_PAUSED, PROBE_STATE_STOPPED } from './constants';
+import { PROBE_STATE_RUNNING } from './constants';
 import styles from './SetupProbeView.styl';
 
-const SetupProbeView = ({ state, actions }) => {
+const noop = () => {};
+
+/**
+ * @param {{id: string, label: string, value: *, unit?: string, error?: string, disabled?: boolean, min?: number, step?: number, name?: string, onChange?: Function, onFocus?: Function, onBlur?: Function}} props
+ */
+function NumberField({
+  id,
+  label,
+  value,
+  unit,
+  error,
+  disabled = false,
+  min,
+  step = 1,
+  name,
+  onChange = noop,
+  onFocus,
+  onBlur,
+}) {
+  return (
+    <FormControl minWidth="0">
+      <FormLabel htmlFor={id}>{label}</FormLabel>
+      <InputGroup>
+        <Input
+          aria-label={label}
+          flex="1"
+          minWidth="0"
+          disabled={disabled}
+          id={id}
+          min={min}
+          name={name}
+          onBlur={onBlur}
+          onChange={onChange}
+          onFocus={onFocus}
+          step={step}
+          type="number"
+          value={value}
+        />
+        {unit && (
+          <InputGroupAppend>
+            <InputGroupAddon>{unit}</InputGroupAddon>
+          </InputGroupAppend>
+        )}
+      </InputGroup>
+      {error && <Text color="error.text" fontSize="sm">{error}</Text>}
+    </FormControl>
+  );
+}
+
+/**
+ * @param {{value?: object, canClick?: boolean, validationErrors?: object, onBack?: Function, onClearanceZChange?: Function, onEndXChange?: Function, onEndYChange?: Function, onEndZChange?: Function, onInputFocus?: Function, onProbeAreaBlur?: Function, onProbeFeedrateChange?: Function, onShowStartProbeConfirmation?: Function, onShowStopProbeConfirmation?: Function, onShowTestProbeConfirmation?: Function, onStartXChange?: Function, onStartYChange?: Function, onStartZChange?: Function, onStepXChange?: Function, onStepYChange?: Function}} props
+ */
+function SetupProbeView({
+  value = {},
+  canClick = false,
+  validationErrors = {},
+  onBack = noop,
+  onClearanceZChange = noop,
+  onEndXChange = noop,
+  onEndYChange = noop,
+  onEndZChange = noop,
+  onInputFocus = noop,
+  onProbeAreaBlur = noop,
+  onProbeFeedrateChange = noop,
+  onShowStartProbeConfirmation = noop,
+  onShowStopProbeConfirmation = noop,
+  onShowTestProbeConfirmation = noop,
+  onStartXChange = noop,
+  onStartYChange = noop,
+  onStartZChange = noop,
+  onStepXChange = noop,
+  onStepYChange = noop,
+}) {
   const {
-    stepX, stepY, startX, startY, endX, endY,
-    clearanceZ, startZ, endZ, feedrate,
-    probeState, probeProgress, canClick, units,
-    validationErrors = {},
-  } = state;
-
-  const step = 1;
-  const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
-
+    stepX,
+    stepY,
+    startX,
+    startY,
+    endX,
+    endY,
+    clearanceZ,
+    startZ,
+    endZ,
+    feedrate,
+    probeState,
+    probeProgress,
+    units,
+  } = value;
+  const displayUnits = toDisplayUnits(units);
+  const feedrateUnits = units === METRIC_UNITS ? i18n._('mm/min') : i18n._('in/min');
   const numPointsX = Math.floor((endX - startX) / stepX) + 1;
   const numPointsY = Math.floor((endY - startY) / stepY) + 1;
   const totalPoints = numPointsX * numPointsY;
-
   const isProbing = probeState === PROBE_STATE_RUNNING;
-  const isPaused = probeState === PROBE_STATE_PAUSED;
-  const isStopped = probeState === PROBE_STATE_STOPPED;
-  const canGoBack = probeState === PROBE_STATE_IDLE || isPaused || isStopped;
+  const canGoBack = !isProbing;
+  const step = 1;
 
   return (
-    <div className={styles.setupProbeView}>
-      <div className={styles.sectionHeader}>
+    <Box className={styles.setupProbeView}>
+      <Box
+        alignItems="center" className={styles.sectionHeader} display="flex"
+        gap="2x"
+      >
         <Button
-          btnStyle="flat"
-          btnSize="sm"
-          compact
-          onClick={actions.backToLanding}
-          disabled={!canGoBack}
+          aria-label={i18n._('Back')} disabled={!canGoBack} onClick={onBack}
+          size="sm" variant="ghost"
         >
-          <i className="fa fa-chevron-left" />
+          <ChevronLeftIcon aria-hidden="true" size="1em" />
         </Button>
-        <Space width={12} />
         {i18n._('PROBE NEW SURFACE')}
-      </div>
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
-        <FormGroup>
-          <Button
-            btnStyle="flat"
-            onClick={actions.showTestProbeConfirmation}
-            disabled={!canClick || isProbing}
-          >
+      </Box>
+      <Box className={styles.section}>
+        <Text className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</Text>
+        <Box mb="3x">
+          <Button disabled={!canClick || isProbing} onClick={onShowTestProbeConfirmation} variant="ghost">
             {i18n._('Test Probe')}
           </Button>
-        </FormGroup>
-        <FormGroup>
+        </Box>
+        <Box mb="3x">
           <ZProbeDiagram
-            clearanceZ={clearanceZ}
-            startZ={startZ}
-            endZ={endZ}
-            feedrate={feedrate}
-            units={units}
+            clearanceZ={clearanceZ} endZ={endZ} feedrate={feedrate}
+            startZ={startZ} units={units}
           />
-        </FormGroup>
-        <Row>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('Start Z')}
-                {' '}
-                <Infotip
-                  placement="top"
-                  content={i18n._('The starting Z position for each probe cycle')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={startZ}
-                  step={step}
-                  onChange={actions.handleStartZChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.startZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startZ}</small>
-              )}
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('End Z')}
-                {' '}
-                <Infotip
-                  content={i18n._('The ending Z position for each probe cycle — triggers alarm if no contact')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={endZ}
-                  step={step}
-                  onChange={actions.handleEndZChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.endZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endZ}</small>
-              )}
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('Probe Feedrate')}
-                {' '}
-                <Infotip
-                  placement="top"
-                  content={i18n._('The feed rate for the probe descent')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={feedrate}
-                  min={1}
-                  step={1}
-                  onChange={actions.handleProbeFeedrateChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{feedrateUnits}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.feedrate && (
-                <small style={{ color: '#a94442' }}>{validationErrors.feedrate}</small>
-              )}
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('Clearance Z')}
-                {' '}
-                <Infotip
-                  placement="top"
-                  content={i18n._('The clearance Z position for rapid moves between probe points')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={clearanceZ}
-                  min={0}
-                  step={step}
-                  onChange={actions.handleClearanceZChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.clearanceZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.clearanceZ}</small>
-              )}
-            </FormGroup>
-          </Col>
-        </Row>
-      </div>
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Probe Area')}</div>
-        <div style={{ textAlign: 'center', color: '#666' }}>
+        </Box>
+        <Box display="grid" gap="3x" gridTemplateColumns="repeat(2, minmax(0, 1fr))">
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.startZ}
+            id="autolevel-start-z"
+            label={i18n._('Start Z')}
+            min={-1000}
+            onChange={onStartZChange}
+            step={step}
+            unit={displayUnits}
+            value={startZ}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.endZ}
+            id="autolevel-end-z"
+            label={i18n._('End Z')}
+            min={-1000}
+            onChange={onEndZChange}
+            step={step}
+            unit={displayUnits}
+            value={endZ}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.feedrate}
+            id="autolevel-feedrate"
+            label={i18n._('Probe Feedrate')}
+            min={1}
+            onChange={onProbeFeedrateChange}
+            step={1}
+            unit={feedrateUnits}
+            value={feedrate}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.clearanceZ}
+            id="autolevel-clearance-z"
+            label={i18n._('Clearance Z')}
+            min={0}
+            onChange={onClearanceZChange}
+            step={step}
+            unit={displayUnits}
+            value={clearanceZ}
+          />
+        </Box>
+      </Box>
+      <Box className={styles.section}>
+        <Text className={styles.sectionTitle}>{i18n._('Probe Area')}</Text>
+        <Text color="text.secondary" textAlign="center">
           {i18n._('{{count}} points', { count: totalPoints })}
-        </div>
+        </Text>
         <ProbeAreaDiagram
-          startX={startX}
-          startY={startY}
           endX={endX}
           endY={endY}
+          startX={startX}
+          startY={startY}
           stepX={stepX}
           stepY={stepY}
           units={units}
         />
-        <Row>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">{i18n._('Start X')}</TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  name="startX"
-                  value={startX}
-                  step={step}
-                  min={-1000}
-                  onChange={actions.handleStartXChange}
-                  onFocus={actions.handleInputFocus}
-                  onBlur={actions.handleProbeAreaBlur}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.startX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startX}</small>
-              )}
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">{i18n._('Start Y')}</TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  name="startY"
-                  value={startY}
-                  step={step}
-                  min={-1000}
-                  onChange={actions.handleStartYChange}
-                  onFocus={actions.handleInputFocus}
-                  onBlur={actions.handleProbeAreaBlur}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.startY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startY}</small>
-              )}
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">{i18n._('End X')}</TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  name="endX"
-                  value={endX}
-                  step={step}
-                  min={-1000}
-                  onChange={actions.handleEndXChange}
-                  onFocus={actions.handleInputFocus}
-                  onBlur={actions.handleProbeAreaBlur}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.endX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endX}</small>
-              )}
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">{i18n._('End Y')}</TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  name="endY"
-                  value={endY}
-                  step={step}
-                  min={-1000}
-                  onChange={actions.handleEndYChange}
-                  onFocus={actions.handleInputFocus}
-                  onBlur={actions.handleProbeAreaBlur}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.endY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endY}</small>
-              )}
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('Step X')}
-                {' '}
-                <Infotip
-                  placement="top"
-                  content={i18n._('The X spacing between probe points')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={stepX}
-                  step={step}
-                  onChange={actions.handleStepXChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.stepX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.stepX}</small>
-              )}
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <TextLabel mb="2x">
-                {i18n._('Step Y')}
-                {' '}
-                <Infotip
-                  placement="top"
-                  content={i18n._('The Y spacing between probe points')}
-                >
-                  <i className="fa fa-info-circle text-muted" />
-                </Infotip>
-              </TextLabel>
-              <InputGroup sm>
-                <Input
-                  type="number"
-                  value={stepY}
-                  step={step}
-                  onChange={actions.handleStepYChange}
-                  disabled={isProbing}
-                />
-                <InputGroup.Append>
-                  <InputGroup.Text>{toDisplayUnits(units)}</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-              {validationErrors.stepY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.stepY}</small>
-              )}
-            </FormGroup>
-          </Col>
-        </Row>
-      </div>
-      <div className={styles.section}>
+        <Box display="grid" gap="3x" gridTemplateColumns="repeat(2, minmax(0, 1fr))">
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.startX}
+            id="autolevel-start-x"
+            label={i18n._('Start X')}
+            min={-1000}
+            name="startX"
+            onBlur={onProbeAreaBlur}
+            onChange={onStartXChange}
+            onFocus={onInputFocus}
+            step={step}
+            unit={displayUnits}
+            value={startX}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.startY}
+            id="autolevel-start-y"
+            label={i18n._('Start Y')}
+            min={-1000}
+            name="startY"
+            onBlur={onProbeAreaBlur}
+            onChange={onStartYChange}
+            onFocus={onInputFocus}
+            step={step}
+            unit={displayUnits}
+            value={startY}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.endX}
+            id="autolevel-end-x"
+            label={i18n._('End X')}
+            min={-1000}
+            name="endX"
+            onBlur={onProbeAreaBlur}
+            onChange={onEndXChange}
+            onFocus={onInputFocus}
+            step={step}
+            unit={displayUnits}
+            value={endX}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.endY}
+            id="autolevel-end-y"
+            label={i18n._('End Y')}
+            min={-1000}
+            name="endY"
+            onBlur={onProbeAreaBlur}
+            onChange={onEndYChange}
+            onFocus={onInputFocus}
+            step={step}
+            unit={displayUnits}
+            value={endY}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.stepX}
+            id="autolevel-step-x"
+            label={i18n._('Step X')}
+            min={0}
+            onChange={onStepXChange}
+            step={step}
+            unit={displayUnits}
+            value={stepX}
+          />
+          <NumberField
+            disabled={isProbing}
+            error={validationErrors.stepY}
+            id="autolevel-step-y"
+            label={i18n._('Step Y')}
+            min={0}
+            onChange={onStepYChange}
+            step={step}
+            unit={displayUnits}
+            value={stepY}
+          />
+        </Box>
+      </Box>
+      <Box className={styles.section}>
         {isProbing && probeProgress && (
-          <div style={{ marginTop: 16 }}>
-            <div style={{ marginBottom: 8 }}>
-              {i18n._('Probing progress: {{current}}/{{total}} points', { current: probeProgress.current, total: probeProgress.total })}
-            </div>
-            <ProgressBar
-              variant="info"
-              min={0}
+          <Box mt="3x">
+            <Text mb="2x">
+              {i18n._('Probing progress: {{current}}/{{total}} points', {
+                current: probeProgress.current,
+                total: probeProgress.total,
+              })}
+            </Text>
+            <LinearProgress
+              aria-label={i18n._('Probe progress')}
               max={probeProgress.total}
-              now={probeProgress.current}
-              label={`${probeProgress.percentage}%`}
+              value={probeProgress.current}
+              variant="determinate"
             />
-          </div>
+            <Text color="text.secondary">{probeProgress.percentage}%</Text>
+          </Box>
         )}
         {!isProbing ? (
-          <Button
-            btnStyle="primary"
-            onClick={actions.showStartProbeConfirmation}
-            disabled={!canClick}
-          >
-            <i className="fa fa-play" />
+          <Button disabled={!canClick} onClick={onShowStartProbeConfirmation} variant="primary">
+            <PlayIcon aria-hidden="true" size="1em" />
+            <Space width="1x" />
             {i18n._('Start Probing')}
           </Button>
         ) : (
-          <Button
-            btnStyle="danger"
-            onClick={actions.showStopProbeConfirmation}
-          >
-            <i className="fa fa-stop" />
+          <Button onClick={onShowStopProbeConfirmation} variant="danger">
+            <StopIcon aria-hidden="true" size="1em" />
+            <Space width="1x" />
             {i18n._('Stop Probing')}
           </Button>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
-};
-
-SetupProbeView.propTypes = {
-  state: PropTypes.object.isRequired,
-  actions: PropTypes.object.isRequired,
-};
+}
 
 export default SetupProbeView;

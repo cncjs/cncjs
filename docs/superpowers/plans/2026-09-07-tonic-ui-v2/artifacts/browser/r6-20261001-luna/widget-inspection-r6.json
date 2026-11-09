@@ -1,0 +1,1222 @@
+{
+  "browserVersion": "153.0.8010.12",
+  "viewport": "1440x900",
+  "dpr": 1,
+  "result": [
+    {
+      "name": "Connection widget",
+      "rect": {
+        "x": 84,
+        "y": 96,
+        "width": 335,
+        "height": 527
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Grbl",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Marlin",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Smoothie",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "TinyG",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Serial Port",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Wi-Fi",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Serial port",
+          "title": "",
+          "text": "Choose a port",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Refresh",
+          "title": "Refresh",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Baud rate",
+          "title": "",
+          "text": "115200",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Refresh",
+          "title": "Refresh",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Open",
+          "disabled": true,
+          "expanded": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "",
+          "type": "checkbox",
+          "disabled": false
+        },
+        {
+          "name": "",
+          "type": "checkbox",
+          "disabled": false
+        },
+        {
+          "name": "",
+          "type": "checkbox",
+          "disabled": false
+        },
+        {
+          "name": "",
+          "type": "checkbox",
+          "disabled": false
+        }
+      ],
+      "text": "Connection Grbl Marlin Smoothie TinyG Serial Port Wi-Fi Serial port Choose a port Baud rate 115200 Set DTR line status upon opening Set RTS line status upon opening Use RTS/CTS flow control Connect automatically Open"
+    },
+    {
+      "name": "Console widget",
+      "rect": {
+        "x": 84,
+        "y": 631,
+        "width": 335,
+        "height": 75
+      },
+      "buttons": [
+        {
+          "name": "Clear console",
+          "title": "Clear all",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "Enter full screen",
+          "title": "Enter Full Screen",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Console No serial connection"
+    },
+    {
+      "name": "Grbl widget",
+      "rect": {
+        "x": 84,
+        "y": 714,
+        "width": 335,
+        "height": 38
+      },
+      "buttons": [
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Grbl"
+    },
+    {
+      "name": "Marlin widget",
+      "rect": {
+        "x": 84,
+        "y": 760,
+        "width": 335,
+        "height": 38
+      },
+      "buttons": [
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Marlin"
+    },
+    {
+      "name": "Smoothie widget",
+      "rect": {
+        "x": 84,
+        "y": 806,
+        "width": 335,
+        "height": 38
+      },
+      "buttons": [
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Smoothie"
+    },
+    {
+      "name": "TinyG widget",
+      "rect": {
+        "x": 84,
+        "y": 852,
+        "width": 335,
+        "height": 38
+      },
+      "buttons": [
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "TinyG"
+    },
+    {
+      "name": "Webcam widget",
+      "rect": {
+        "x": 84,
+        "y": 898,
+        "width": 335,
+        "height": 236
+      },
+      "buttons": [
+        {
+          "name": "Enable Webcam",
+          "title": "Enable",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Refresh webcam",
+          "title": "Refresh",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Mute",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Rotate Left",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Rotate Right",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Flip Horizontally",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Flip Vertically",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Crosshair",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Webcam Webcam is off"
+    },
+    {
+      "name": "3D Visualizer widget",
+      "rect": {
+        "x": 432,
+        "y": 48,
+        "width": 648,
+        "height": 852
+      },
+      "buttons": [
+        {
+          "name": "",
+          "title": "Work Coordinate System",
+          "text": "G54 (P1)",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "3D View",
+          "title": "Disable 3D View",
+          "text": "3D View",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "3D View options",
+          "title": "3D View options",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Upload G-code",
+          "text": "Upload G-code",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Upload G-code options",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Run",
+          "title": "Run",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Pause",
+          "title": "Pause",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Stop",
+          "title": "Stop",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Close G-code file",
+          "title": "Close",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Top View",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Front View",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Right Side View",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Left Side View",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "3D View",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Zoom to Fit",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Zoom In",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Zoom Out",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Camera mode: Pan",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "",
+          "type": "file",
+          "disabled": false
+        }
+      ],
+      "text": "G54 (P1) 3D View Upload G-code"
+    },
+    {
+      "name": "Axes widget",
+      "rect": {
+        "x": 1093,
+        "y": 96,
+        "width": 335,
+        "height": 436
+      },
+      "buttons": [
+        {
+          "name": "Toggle keypad jogging",
+          "title": "Keypad jogging",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Toggle manual data input mode",
+          "title": "Manual Data Input",
+          "text": "MDI",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Select work coordinate system",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Go to zero: X",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Home: X",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X backward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X forward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Zero out X work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Set X work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "X axis actions",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Go to zero: Y",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Home: Y",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Y backward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Y forward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Zero out Y work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Set Y work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Y axis actions",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Go to zero: Z",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Home: Z",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Z backward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Z forward",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Zero out Z work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Set Z work offsets",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Z axis actions",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X negative Y positive",
+          "title": "Move X- Y+",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Y positive",
+          "title": "Move Y+",
+          "text": "Y +",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X positive Y positive",
+          "title": "Move X+ Y+",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Z positive",
+          "title": "Move Z+",
+          "text": "Z +",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X negative",
+          "title": "Move X-",
+          "text": "X -",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Move To XY Zero (G0 X0 Y0)",
+          "text": "X 0 Y 0",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X positive",
+          "title": "Move X+",
+          "text": "X +",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Move To Z Zero (G0 Z0)",
+          "text": "Z 0",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X negative Y negative",
+          "title": "Move X- Y-",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Y negative",
+          "title": "Move Y-",
+          "text": "Y -",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move X positive Y negative",
+          "title": "Move X+ Y-",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Move Z negative",
+          "title": "Move Z-",
+          "text": "Z -",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "G21 (mm)",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "1mm",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Decrease step size",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "Increase step size",
+          "title": "",
+          "text": "",
+          "disabled": true,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Axes MDI Axis Machine Position Work Position X mm 0.000 0.000 Y mm 0.000 0.000 Z mm 0.000 0.000 Y + Z + X - X 0 Y 0 X + Z 0 Y - Z - G21 (mm) 1mm"
+    },
+    {
+      "name": "G-code widget",
+      "rect": {
+        "x": 1093,
+        "y": 540,
+        "width": 335,
+        "height": 83
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "G-code G-code not loaded"
+    },
+    {
+      "name": "Macro widget",
+      "rect": {
+        "x": 1093,
+        "y": 631,
+        "width": 335,
+        "height": 124
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "New macro",
+          "title": "",
+          "text": "New",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Export",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Refresh",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Macro New Export No macros available"
+    },
+    {
+      "name": "Autolevel Widget",
+      "rect": {
+        "x": 1093,
+        "y": 763,
+        "width": 335,
+        "height": 349.1875
+      },
+      "buttons": [
+        {
+          "name": "Move Autolevel widget",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Start New Probe",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Load Probe Data",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Autolevel 🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code."
+    },
+    {
+      "name": "Probe widget",
+      "rect": {
+        "x": 1093,
+        "y": 1120.1875,
+        "width": 335,
+        "height": 535
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Probe Z axis",
+          "text": "Z",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Probe X axis",
+          "text": "X",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Probe Y axis",
+          "text": "Y",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "G38.2 probe toward workpiece, stop on contact, signal error if failure",
+          "text": "G38.2",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "G38.3 probe toward workpiece, stop on contact",
+          "text": "G38.3",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "G38.4 probe away from workpiece, stop on loss of contact, signal error if failure",
+          "text": "G38.4",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "G38.5 probe away from workpiece, stop on loss of contact",
+          "text": "G38.5",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Probe Axis Z",
+          "disabled": true,
+          "expanded": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "Probe Depth",
+          "type": "number",
+          "disabled": false
+        },
+        {
+          "name": "Probe Feedrate",
+          "type": "number",
+          "disabled": false
+        },
+        {
+          "name": "Touch Plate Thickness",
+          "type": "number",
+          "disabled": false
+        },
+        {
+          "name": "Retraction Distance",
+          "type": "number",
+          "disabled": false
+        }
+      ],
+      "text": "Probe Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth in Probe Feedrate in/min Touch Plate Thickness in Retraction Distance in Probe Axis Z"
+    },
+    {
+      "name": "Tool widget",
+      "rect": {
+        "x": 1093,
+        "y": 1663.1875,
+        "width": 335,
+        "height": 79
+      },
+      "buttons": [
+        {
+          "name": "Refresh tool configuration",
+          "title": "Refresh",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        }
+      ],
+      "inputs": [],
+      "text": "Tool No available tool configuration"
+    },
+    {
+      "name": "Spindle widget",
+      "rect": {
+        "x": 1093,
+        "y": 1750.1875,
+        "width": 335,
+        "height": 268
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Mist Coolant On (M7)",
+          "text": "M7",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Flood Coolant On (M8)",
+          "text": "M8",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Coolant Off (M9)",
+          "text": "M9",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Spindle On, CW (M3)",
+          "text": "M3",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Spindle On, CCW (M4)",
+          "text": "M4",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "Spindle Off (M5)",
+          "text": "M5",
+          "disabled": true,
+          "expanded": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "Spindle Speed",
+          "type": "number",
+          "disabled": false
+        }
+      ],
+      "text": "Spindle Coolant M7 M8 M9 Spindle M3 M4 M5 Spindle Speed RPM"
+    },
+    {
+      "name": "Laser widget",
+      "rect": {
+        "x": 1093,
+        "y": 2026.1875,
+        "width": 335,
+        "height": 343
+      },
+      "buttons": [
+        {
+          "name": "Collapse",
+          "title": "Collapse",
+          "text": "",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "More options",
+          "title": "More",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "-10%",
+          "title": "",
+          "text": "-10%",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "-1%",
+          "title": "",
+          "text": "-1%",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "1%",
+          "title": "",
+          "text": "1%",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "10%",
+          "title": "",
+          "text": "10%",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Reset",
+          "title": "",
+          "text": "",
+          "disabled": false,
+          "expanded": null
+        },
+        {
+          "name": "Collapse",
+          "title": "",
+          "text": "−",
+          "disabled": false,
+          "expanded": "true"
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Laser Test",
+          "disabled": true,
+          "expanded": null
+        },
+        {
+          "name": "",
+          "title": "",
+          "text": "Laser Off",
+          "disabled": true,
+          "expanded": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "Test duration in milliseconds",
+          "type": "number",
+          "disabled": false
+        },
+        {
+          "name": "Maximum S value",
+          "type": "number",
+          "disabled": false
+        }
+      ],
+      "text": "Laser Laser Intensity Control 0% -10% -1% 1% 10% Laser Test − Power (%) 0% Test duration ms Maximum value S Laser Test Laser Off"
+    }
+  ],
+  "issues": {
+    "errors": [],
+    "failures": []
+  }
+}

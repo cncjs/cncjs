@@ -1,80 +1,68 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Button } from '@app/components/Buttons';
+import { Box, Button } from '@tonic-ui/react';
+import React from 'react';
 import controller from '@app/lib/controller';
+import { useAxes } from './context';
 
 const gapSize = 5;
 
-class MDI extends Component {
-  static propTypes = {
-    canClick: PropTypes.bool,
-    mdi: PropTypes.shape({
-      disabled: PropTypes.bool,
-      commands: PropTypes.array
-    })
-  };
+/**
+ * @returns {JSX.Element|null}
+ */
+function MDI() {
+  const { state: { canClick = false, mdi = { disabled: true, commands: [] } } } = useAxes();
+  const commands = mdi.commands || [];
 
-  renderMDIButtons() {
-    const { canClick, mdi } = this.props;
+  if (mdi.disabled || commands.length === 0) {
+    return null;
+  }
 
-    return mdi.commands.map(c => {
+  return (
+    <Box
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        marginTop: gapSize,
+        gap: gapSize,
+      }}
+    >
+      {commands.map(c => {
       // Calculate flex-basis from grid configuration (default to 4 = 3 columns per row)
-      const grid = c.grid || {};
-      const gridSize = grid.xs || grid.sm || grid.md || grid.lg || grid.xl || 4;
-      const itemsPerRow = 12 / gridSize;
-      const gapsPerRow = itemsPerRow - 1;
+        const grid = c.grid || {};
+        const gridSize = grid.xs || grid.sm || grid.md || grid.lg || grid.xl || 4;
+        const itemsPerRow = 12 / gridSize;
+        const gapsPerRow = itemsPerRow - 1;
 
-      // Calculate flex-basis accounting for gaps: (100% - total gap space) / items per row
-      const flexBasis = `calc((100% - ${gapsPerRow * gapSize}px) / ${itemsPerRow})`;
+        // Calculate flex-basis accounting for gaps: (100% - total gap space) / items per row
+        const flexBasis = `calc((100% - ${gapsPerRow * gapSize}px) / ${itemsPerRow})`;
 
-      return (
-        <div
-          key={c.id}
-          style={{
-            flexBasis: flexBasis,
-            maxWidth: flexBasis,
-            boxSizing: 'border-box'
-          }}
-        >
-          <Button
-            btnSize="sm"
-            btnStyle="flat"
+        return (
+          <Box
+            key={c.id}
             style={{
-              minWidth: 'auto',
-              width: '100%',
-            }}
-            disabled={!canClick}
-            onClick={() => {
-              controller.command('gcode', c.command);
+              flexBasis: flexBasis,
+              maxWidth: flexBasis,
+              boxSizing: 'border-box'
             }}
           >
-            {c.name}
-          </Button>
-        </div>
-      );
-    });
-  }
-
-  render() {
-    const { mdi } = this.props;
-
-    if (mdi.disabled || mdi.commands.length === 0) {
-      return null;
-    }
-
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          marginTop: gapSize,
-          gap: gapSize,
-        }}
-      >
-        {this.renderMDIButtons()}
-      </div>
-    );
-  }
+            <Button
+              size="sm"
+              variant="ghost"
+              style={{
+                minWidth: 'auto',
+                width: '100%',
+              }}
+              disabled={!canClick}
+              onClick={() => {
+                controller.command('gcode', c.command);
+              }}
+            >
+              {c.name}
+            </Button>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 }
 
 export default MDI;

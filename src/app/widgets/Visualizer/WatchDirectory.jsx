@@ -1,162 +1,375 @@
-import path from 'path';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import InfiniteTree from 'react-infinite-tree';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Box,
+  Button,
+  Flex,
+  LinearProgress,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spinner,
   Space,
+  Tree,
+  TreeItem,
+  TreeItemContent,
+  TreeItemToggle,
+  TreeItemToggleIcon,
 } from '@tonic-ui/react';
-import api from '@app/api';
-import Modal from '@app/components/Modal';
+import { AddIcon, FileOIcon, FolderOIcon, RefreshIcon, UploadIcon } from '@tonic-ui/react-icons';
+import { format } from 'date-fns';
+import { ensureArray } from 'ensure-type';
+import path from 'path';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { formatBytes } from '@app/lib/numeral';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
-import renderer from './renderer';
-import styles from './renderer.styl';
+import {
+  mapWatchDirectoryNodes,
+  WATCH_DIRECTORY_QUERY_KEY,
+  watchDirectoryQueryOptions,
+  useUploadWatchDirectoryFileMutation,
+} from './queries';
 import watchDirectoryStyles from './watch-directory.styl';
 
-class WatchDirectory extends Component {
-  static propTypes = {
-    state: PropTypes.object,
-    actions: PropTypes.object
-  };
+/**
+ * @param {object} value
+ * @returns {string}
+ */
+const formatDateModified = value => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '-' : format(date, 'PPpp');
+};
 
-  tableNode = null;
+/**
+ * @param {object} node
+ * @returns {string}
+ */
+const getNodeType = node => {
+  const type = node.props?.type;
+  if (type === 'd') {
+    return i18n._('File folder');
+  }
+  if (type === 'f') {
+    const extension = path.extname(node.name || '').slice(1);
+    return extension
+      ? i18n._('{{extname}} File', { extname: extension.toUpperCase() })
+      : i18n._('File');
+  }
+  return '';
+};
 
-  treeNode = null;
+/**
+ * @param {{
+ *   directoryPath: string,
+ *   expanded: boolean,
+ *   expandedPaths: Array<string>,
+ *   onLoadFile: Function,
+ *   rememberNodes: Function,
+ *   queryClient: object,
+ * }} props
+ */
+function DirectoryChildren({
+  directoryPath,
+  expanded,
+  expandedPaths,
+  onLoadFile,
+  rememberNodes,
+  queryClient,
+}) {
+  const query = useQuery({
+    ...watchDirectoryQueryOptions(directoryPath),
+    enabled: expanded,
+  });
+  const nodes = useMemo(() => mapWatchDirectoryNodes(query.data), [query.data]);
 
-  uploadInputEl = null;
+  useEffect(() => {
+    if (expanded) {
+      rememberNodes(nodes);
+    }
+  }, [expanded, nodes, rememberNodes]);
 
-  dropzoneNode = null;
-
-  watchDirChangeTimer = null;
-
-  state = {
-    dragging: false,
-    uploading: false,
-    uploadProgress: 0,
-    refreshing: false
-  };
-
-  componentDidMount() {
-    this.addResizeEventListener();
-    this.addDropZoneEventListeners();
-    this.loadFiles();
-    controller.addListener('watchdir:change', this.handleWatchDirChange);
+  if (!expanded) {
+    return null;
+  }
+  if (query.isLoading) {
+    return (
+      <Box role="status" px="3x" py="2x">
+        <Spinner size="sm" />
+        <Space width="2x" />
+        {i18n._('Loading...')}
+      </Box>
+    );
+  }
+  if (query.isError) {
+    return (
+      <Flex
+        alignItems="center"
+        gap="2x"
+        px="3x"
+        py="2x"
+        role="alert"
+      >
+        <Box>{i18n._('Unable to load directory')}</Box>
+        <Button size="sm" onClick={() => query.refetch()}>
+          {i18n._('Retry')}
+        </Button>
+      </Flex>
+    );
+  }
+  if (nodes.length === 0) {
+    return (
+      <Box px="3x" py="2x" color="text.secondary">
+        {i18n._('Empty directory')}
+      </Box>
+    );
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.watchDirChangeTimer);
-    this.removeResizeEventListener();
-    this.removeDropZoneEventListeners();
-    controller.removeListener('watchdir:change', this.handleWatchDirChange);
-  }
+  return (
+    <Box role="group">
+      {nodes.map(node => (
+        <WatchDirectoryNode
+          key={node.id}
+          node={node}
+          expandedPaths={expandedPaths}
+          onLoadFile={onLoadFile}
+          rememberNodes={rememberNodes}
+          queryClient={queryClient}
+        />
+      ))}
+    </Box>
+  );
+}
 
-  addDropZoneEventListeners() {
-    if (!this.dropzoneNode) {
+/**
+ * @param {{
+ *   expandedPaths: Array<string>,
+ *   node: object,
+ *   onLoadFile: Function,
+ *   rememberNodes: Function,
+ *   queryClient: object,
+ * }} props
+ */
+function WatchDirectoryNode({
+  expandedPaths,
+  node,
+  onLoadFile,
+  rememberNodes,
+  queryClient,
+}) {
+  const isDirectory = node.props?.type === 'd';
+  const dateModified = formatDateModified(node.props?.mtime);
+  const size = ['f', 'l'].includes(node.props?.type) ? formatBytes(node.props?.size, 0) : '';
+
+  const prefetch = useCallback(() => {
+    if (!isDirectory) {
       return;
     }
-    this.dropzoneNode.addEventListener('dragover', this.handleDragOver);
-    this.dropzoneNode.addEventListener('dragleave', this.handleDragLeave);
-    this.dropzoneNode.addEventListener('drop', this.handleDrop);
-  }
+    queryClient.prefetchQuery(watchDirectoryQueryOptions(node.id)).catch(() => {});
+  }, [isDirectory, node.id, queryClient]);
 
-  removeDropZoneEventListeners() {
-    if (!this.dropzoneNode) {
+  return (
+    <TreeItem
+      nodeId={node.id}
+      disabled={Boolean(node.props?.disabled)}
+      render={() => (
+        <TreeItemContent
+          data-node-id={node.id}
+          onDoubleClick={(event) => {
+            event.stopPropagation();
+            if (!isDirectory) {
+              onLoadFile(node);
+            }
+          }}
+        >
+          {isDirectory ? (
+            <TreeItemToggle onClick={prefetch}>
+              <TreeItemToggleIcon />
+            </TreeItemToggle>
+          ) : (
+            <Box width="4x" />
+          )}
+          <Box
+            as="span"
+            flex="1"
+            minWidth={0}
+            sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
+            {isDirectory ? <FolderOIcon aria-hidden="true" size="1em" /> : <FileOIcon aria-hidden="true" size="1em" />}
+            <Space width="2x" />
+            {node.name}
+          </Box>
+          <Box
+            as="span"
+            width="24%"
+            whiteSpace="nowrap"
+          >
+            {dateModified}
+          </Box>
+          <Box
+            as="span"
+            width="14%"
+            whiteSpace="nowrap"
+          >
+            {getNodeType(node)}
+          </Box>
+          <Box
+            as="span"
+            width="10%"
+            textAlign="right"
+            whiteSpace="nowrap"
+          >
+            {size}
+          </Box>
+        </TreeItemContent>
+      )}
+    >
+      {isDirectory && (
+        <DirectoryChildren
+          directoryPath={node.id}
+          expanded={expandedPaths.includes(node.id)}
+          expandedPaths={expandedPaths}
+          onLoadFile={onLoadFile}
+          rememberNodes={rememberNodes}
+          queryClient={queryClient}
+        />
+      )}
+    </TreeItem>
+  );
+}
+
+/**
+ * @param {{ state?: object, actions?: object }} props
+ */
+function WatchDirectory({ state = {}, actions = {} }) {
+  const queryClient = useQueryClient();
+  const uploadMutation = useUploadWatchDirectoryFileMutation();
+  const uploadInputRef = useRef(null);
+  const dropzoneRef = useRef(null);
+  const watchDirChangeTimer = useRef(null);
+  const mountedRef = useRef(true);
+  const [expanded, setExpanded] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const nodesByIdRef = useRef(new Map());
+  const rootQuery = useQuery(watchDirectoryQueryOptions(''));
+  const rootNodes = useMemo(() => mapWatchDirectoryNodes(rootQuery.data), [rootQuery.data]);
+  const updateModalParams = actions.updateModalParams;
+
+  const rememberNodes = useCallback((nodes) => {
+    nodes.forEach(node => nodesByIdRef.current.set(node.id, node));
+  }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (watchDirChangeTimer.current) {
+        clearTimeout(watchDirChangeTimer.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    rememberNodes(rootNodes);
+    if (rootQuery.isSuccess) {
+      setExpanded([]);
+      setSelected([]);
+      setSelectedNode(null);
+      if (typeof updateModalParams === 'function') {
+        updateModalParams({ selectedNode: null });
+      }
+    }
+  }, [rememberNodes, rootNodes, rootQuery.isSuccess, updateModalParams]);
+
+  useEffect(() => {
+    const handleWatchDirChange = () => {
+      if (watchDirChangeTimer.current) {
+        clearTimeout(watchDirChangeTimer.current);
+      }
+      watchDirChangeTimer.current = setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: [WATCH_DIRECTORY_QUERY_KEY] });
+      }, 200);
+    };
+
+    controller.addListener('watchdir:change', handleWatchDirChange);
+    return () => {
+      controller.removeListener('watchdir:change', handleWatchDirChange);
+      if (watchDirChangeTimer.current) {
+        clearTimeout(watchDirChangeTimer.current);
+      }
+    };
+  }, [queryClient]);
+
+  const prefetchDirectory = useCallback((directoryPath) => {
+    const node = nodesByIdRef.current.get(directoryPath);
+    if (!node || node.props?.type !== 'd') {
       return;
     }
-    this.dropzoneNode.removeEventListener('dragover', this.handleDragOver);
-    this.dropzoneNode.removeEventListener('dragleave', this.handleDragLeave);
-    this.dropzoneNode.removeEventListener('drop', this.handleDrop);
-  }
+    queryClient.prefetchQuery(watchDirectoryQueryOptions(directoryPath)).catch(() => {});
+  }, [queryClient]);
 
-  addResizeEventListener() {
-    window.addEventListener('resize', this.fitHeaderColumns);
-  }
+  const handleNodeFocus = useCallback((nodeId) => {
+    prefetchDirectory(nodeId);
+  }, [prefetchDirectory]);
 
-  removeResizeEventListener() {
-    window.removeEventListener('resize', this.fitHeaderColumns);
-  }
+  const handleNodeToggle = useCallback((nextExpanded) => {
+    const next = ensureArray(nextExpanded);
+    setExpanded(next);
+    next
+      .filter(nodeId => !expanded.includes(nodeId))
+      .forEach(prefetchDirectory);
+  }, [expanded, prefetchDirectory]);
 
-  loadFiles() {
-    this.setState({ refreshing: true });
-
-    api.watch.getFiles({ path: '' })
-      .then((res) => {
-        const body = res.body;
-        const data = body.files.map((file) => {
-          const { name, ...props } = file;
-
-          return {
-            id: path.join(body.path, name),
-            name: name,
-            props: {
-              ...props,
-              path: body.path || ''
-            },
-            loadOnDemand: props.type === 'd'
-          };
-        });
-
-        const tree = this.treeNode.tree;
-        tree.loadData(data);
-        this.props.actions.updateModalParams({ selectedNode: null });
-        this.fitHeaderColumns();
-      })
-      .catch((res) => {
-        // Ignore error
-      })
-      .then(() => {
-        this.setState({ refreshing: false });
-      });
-  }
-
-  handleClickUpload = () => {
-    this.uploadInputEl.value = null;
-    this.uploadInputEl.click();
-  };
-
-  handleChangeUploadFiles = (event) => {
-    this.uploadFiles(Array.from(event.target.files || []));
-  };
-
-  handleDragOver = (event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
-    if (!this.state.dragging) {
-      this.setState({ dragging: true });
+  const handleNodeSelect = useCallback((nextSelected) => {
+    const next = ensureArray(nextSelected);
+    const nodeId = next[next.length - 1];
+    const node = nodeId ? nodesByIdRef.current.get(nodeId) || null : null;
+    setSelected(next);
+    setSelectedNode(node);
+    if (typeof actions.updateModalParams === 'function') {
+      actions.updateModalParams({ selectedNode: node });
     }
-  };
+  }, [actions]);
 
-  handleDragLeave = (event) => {
-    event.preventDefault();
-    if (!this.dropzoneNode || !this.dropzoneNode.contains(event.relatedTarget)) {
-      this.setState({ dragging: false });
+  const loadFile = useCallback((node) => {
+    if (!node || node.props?.type !== 'f') {
+      return;
     }
-  };
+    if (typeof actions.loadFile === 'function') {
+      actions.loadFile(node.id);
+    }
+    if (typeof actions.closeModal === 'function') {
+      actions.closeModal();
+    }
+  }, [actions]);
 
-  handleDrop = (event) => {
-    event.preventDefault();
-    this.setState({ dragging: false });
-    this.uploadFiles(Array.from(event.dataTransfer.files || []));
-  };
+  const handleTreeKeyDown = useCallback((event) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+    const nodeId = selected[selected.length - 1];
+    const node = nodeId ? nodesByIdRef.current.get(nodeId) : null;
+    if (node?.props?.type === 'f') {
+      event.preventDefault();
+      loadFile(node);
+    }
+  }, [loadFile, selected]);
 
-  handleWatchDirChange = () => {
-    clearTimeout(this.watchDirChangeTimer);
-    this.watchDirChangeTimer = setTimeout(() => {
-      this.loadFiles();
-    }, 200);
-  };
-
-  uploadFiles = (files) => {
-    if (files.length === 0 || this.state.uploading) {
+  const uploadFiles = useCallback((files) => {
+    if (files.length === 0 || uploading) {
       return;
     }
 
-    this.setState({ uploading: true, uploadProgress: 0 });
-
-    const readers = files.map((file) => new Promise((resolve, reject) => {
+    setUploading(true);
+    setUploadProgress(0);
+    const readers = files.map(file => new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve({ file, data: reader.result });
       reader.onerror = reject;
@@ -170,9 +383,11 @@ class WatchDirectory extends Component {
         const updateProgress = () => {
           const uploaded = [...progressOf.values()].reduce((sum, value) => sum + value, 0);
           const percent = totalBytes > 0 ? (uploaded / totalBytes) * 100 : 100;
-          this.setState({ uploadProgress: Math.min(100, Math.round(percent)) });
+          if (mountedRef.current) {
+            setUploadProgress(Math.min(100, Math.round(percent)));
+          }
         };
-        const onProgress = (file) => (event) => {
+        const onProgress = file => (event) => {
           const { direction, loaded = 0 } = { ...event };
           if (direction !== 'upload') {
             return;
@@ -181,330 +396,207 @@ class WatchDirectory extends Component {
           updateProgress();
         };
 
-        return Promise.all(results.map(({ file, data }) => (
-          api.watch.uploadFile({
-            file: file.name,
-            data: data,
-            onProgress: onProgress(file)
-          })
-        )));
+        return Promise.all(results.map(({ file, data }) => uploadMutation.mutateAsync({
+          file: file.name,
+          data,
+          onProgress: onProgress(file),
+        })));
       })
-      .catch((err) => {
-        log.error('Failed to upload files to the watch directory:', err);
+      .catch((error) => {
+        log.error('Failed to upload files to the watch directory:', error);
       })
       .then(() => {
-        this.setState({ uploading: false, uploadProgress: 0 });
+        if (mountedRef.current) {
+          setUploading(false);
+          setUploadProgress(0);
+          queryClient.invalidateQueries({ queryKey: [WATCH_DIRECTORY_QUERY_KEY] });
+        }
       });
-  };
+  }, [queryClient, uploadMutation, uploading]);
 
-  addColumnGroup() {
-    if (!this.treeNode) {
-      return;
+  const handleDrop = useCallback((event) => {
+    event.preventDefault();
+    setDragging(false);
+    uploadFiles(Array.from(event.dataTransfer?.files || []));
+  }, [uploadFiles]);
+
+  const handleDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((event) => {
+    event.preventDefault();
+    if (!dropzoneRef.current || !dropzoneRef.current.contains(event.relatedTarget)) {
+      setDragging(false);
     }
+  }, []);
 
-    this.treeNode.tree.scrollElement.style.height = '240px';
-    this.treeNode.tree.scrollElement.style.overflowY = 'scroll';
-    this.treeNode.tree.scrollElement.style.overflowX = 'hidden';
-    const table = this.treeNode.tree.contentElement.parentNode;
-    const colgroup = document.createElement('colgroup');
-    table.appendChild(colgroup);
+  const selectedFile = selectedNode?.props?.type === 'f';
+  const { modal = {} } = state;
+  const { params = {} } = modal;
+  const canUpload = selectedFile;
 
-    for (let i = 0; i < 4; ++i) {
-      const col = document.createElement('col');
-      colgroup.appendChild(col);
-    }
-  }
-
-  fitHeaderColumns = () => {
-    const ready = this.tableNode && this.treeNode;
-    if (!ready) {
-      return;
-    }
-
-    const elTable = ReactDOM.findDOMNode(this.tableNode);
-    const elTree = this.treeNode.tree.options.el;
-    const tableHeaders = elTable.querySelectorAll('tr > th');
-    const colgroup = elTree.querySelector('colgroup');
-    const row = elTree.querySelector('tbody > tr');
-
-    if (!row) {
-      return;
-    }
-
-    const widths = [];
-    let i = 0;
-    let child = row.firstChild;
-    let col = colgroup.firstChild;
-    while (child && col) {
-      widths.push(Math.max(child.clientWidth, tableHeaders[i].clientWidth));
-      ++i;
-      child = child.nextSibling;
-      col = col.nextSibling;
-    }
-
-    const available = elTree.clientWidth - 8;
-    const maxColumnRatios = [0, 0.24, 0.14, 0.1];
-    for (let column = 1; column < widths.length; ++column) {
-      widths[column] = Math.min(widths[column], Math.round(available * maxColumnRatios[column]));
-    }
-
-    const othersTotal = widths.slice(1).reduce((sum, width) => sum + width, 0);
-    widths[0] = Math.max(Math.round(available * 0.4), available - othersTotal);
-
-    i = 0;
-    child = row.firstChild;
-    col = colgroup.firstChild;
-    while (child && col) {
-      col.style.minWidth = widths[i] + 'px';
-      col.style.width = widths[i] + 'px';
-      tableHeaders[i].style.width = widths[i] + 'px';
-      ++i;
-      child = child.nextSibling;
-      col = col.nextSibling;
-    }
-  };
-
-  render() {
-    const { state, actions } = this.props;
-    const { selectedNode = null } = state.modal.params;
-    const { dragging, uploading, uploadProgress, refreshing } = this.state;
-    const canUpload = selectedNode && selectedNode.props.type === 'f';
-
-    return (
-      <Modal
-        disableOverlay
-        size="md"
-        style={{ width: '80vw' }}
-        onClose={actions.closeModal}
-      >
-        <Modal.Header>
-          <Modal.Title>{i18n._('Watch Directory')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className={watchDirectoryStyles.toolbar}>
-            <input
-              ref={(node) => {
-                this.uploadInputEl = node;
-              }}
+  return (
+    <Modal
+      closeOnInteractOutside={false}
+      isClosable
+      isOpen
+      size="md"
+      onClose={actions.closeModal}
+    >
+      <ModalOverlay />
+      <ModalContent sx={{ width: '80vw' }}>
+        <ModalHeader>{i18n._('Watch Directory')}</ModalHeader>
+        <ModalBody>
+          <Flex alignItems="center" className={watchDirectoryStyles.toolbar}>
+            <Box
+              ref={uploadInputRef}
+              as="input"
               type="file"
-              multiple={true}
+              multiple
               style={{ display: 'none' }}
-              onChange={this.handleChangeUploadFiles}
+              onChange={event => uploadFiles(Array.from(event.target.files || []))}
             />
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={this.handleClickUpload}
+            <Button
+              aria-label={i18n._('Add')}
               disabled={uploading}
+              onClick={() => {
+                if (uploadInputRef.current) {
+                  uploadInputRef.current.value = null;
+                  uploadInputRef.current.click();
+                }
+              }}
             >
-              <i aria-hidden="true" className="fa fa-plus" />
-              <Space width="4" />
+              <AddIcon aria-hidden="true" size="1em" />
+              <Space width="1x" />
               {i18n._('Add')}
-            </button>
-            {uploading && (
-              <i aria-hidden="true" className="fa fa-circle-o-notch fa-spin" style={{ marginLeft: 8 }} />
-            )}
-            <button
-              type="button"
-              className="btn btn-default"
-              style={{ marginLeft: 'auto' }}
-              title={i18n._('Refresh')}
+            </Button>
+            {uploading && <Spinner size="sm" ml="2x" />}
+            <Button
               aria-label={i18n._('Refresh')}
-              onClick={() => this.loadFiles()}
+              disabled={rootQuery.isFetching}
+              marginLeft="auto"
+              onClick={() => rootQuery.refetch()}
             >
-              <i aria-hidden="true" className={classNames('fa fa-refresh', { 'fa-spin': refreshing })} />
-            </button>
-          </div>
-          <div
-            ref={(node) => {
-              this.dropzoneNode = node;
-            }}
-            className={classNames(watchDirectoryStyles.dropzone, {
-              [watchDirectoryStyles.dropzoneOver]: dragging
-            })}
+              {rootQuery.isFetching ? <Spinner size="xs" aria-hidden="true" /> : <RefreshIcon aria-hidden="true" size="1em" />}
+            </Button>
+          </Flex>
+          <Box
+            ref={dropzoneRef}
+            className={`${watchDirectoryStyles.dropzone} ${dragging ? watchDirectoryStyles.dropzoneOver : ''}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            <table
-              ref={node => {
-                this.tableNode = node;
-              }}
-              style={{ width: '100%' }}
+            <Flex
+              alignItems="center"
+              fontWeight="bold"
+              px="3x"
+              py="2x"
             >
-              <thead>
-                <tr>
-                  <th style={{ paddingLeft: 20 }}>{i18n._('Name')}</th>
-                  <th>{i18n._('Date modified')}</th>
-                  <th>{i18n._('Type')}</th>
-                  <th>{i18n._('Size')}</th>
-                </tr>
-              </thead>
-            </table>
-            <InfiniteTree
-              style={{ height: 240 }}
-              ref={node => {
-                if (!this.treeNode) {
-                  this.treeNode = node;
-                  this.addColumnGroup();
-                }
-              }}
-              noDataClass={styles.noData}
-              togglerClass={styles.treeToggler}
-              autoOpen={true}
-              layout="table"
-              loadNodes={(parentNode, done) => {
-                api.watch.getFiles({ path: path.join(parentNode.props.path, parentNode.name) })
-                  .then((res) => {
-                    const body = res.body;
-                    const nodes = body.files.map((file) => {
-                      const { name, ...props } = file;
-                      return {
-                        id: path.join(body.path, name),
-                        name: name,
-                        props: {
-                          ...props,
-                          path: body.path || ''
-                        },
-                        loadOnDemand: props.type === 'd'
-                      };
-                    });
-                    done(null, nodes);
-                  })
-                  .catch((res) => {
-                    // Ignore error
-                  });
-              }}
-              rowRenderer={renderer}
-              shouldSelectNode={(node) => {
-                const tree = this.treeNode.tree;
-                if (!node || (node === tree.getSelectedNode())) {
-                  return false; // Prevent from deselecting the current node
-                }
-                return true;
-              }}
-              onContentDidUpdate={() => {
-                this.fitHeaderColumns();
-              }}
-              onKeyDown={(event) => {
-                // Prevent the default scroll
-                event.preventDefault();
-
-                const tree = this.treeNode.tree;
-                const node = tree.getSelectedNode();
-                const nodeIndex = tree.getSelectedIndex();
-
-                if (event.keyCode === 13) { // Enter
-                  if (!node) {
-                    return;
-                  }
-                  if (node.props.type === 'd') {
-                    // Toggle expansion for directories
-                    if (node.state.open) {
-                      tree.closeNode(node);
-                    } else {
-                      tree.openNode(node);
-                    }
-                    return;
-                  }
-                  const file = path.join(node.props.path, node.name);
-                  actions.loadFile(file);
-                  actions.closeModal();
-                } else if (event.keyCode === 37) { // Left
-                  tree.closeNode(node);
-                } else if (event.keyCode === 38) { // Up
-                  const prevNode = tree.nodes[nodeIndex - 1] || node;
-                  tree.selectNode(prevNode);
-                } else if (event.keyCode === 39) { // Right
-                  tree.openNode(node);
-                } else if (event.keyCode === 40) { // Down
-                  const nextNode = tree.nodes[nodeIndex + 1] || node;
-                  tree.selectNode(nextNode);
-                }
-              }}
-              onSelectNode={(node) => {
-                actions.updateModalParams({ selectedNode: node });
-              }}
-              onDoubleClick={(event) => {
-                event.stopPropagation();
-
-                // Call setTimeout(fn, 0) to make sure it returns the last selected node
-                setTimeout(() => {
-                  const tree = this.treeNode.tree;
-                  const node = tree.getSelectedNode();
-
-                  if (node) {
-                    if (node.props.type === 'd') {
-                      // Toggle expansion for directories
-                      if (node.state.open) {
-                        tree.closeNode(node);
-                      } else {
-                        tree.openNode(node);
-                      }
-                      return;
-                    }
-                    const file = path.join(node.props.path, node.name);
-                    actions.loadFile(file);
-                    actions.closeModal();
-                  }
-                }, 0);
-              }}
-            />
+              <Box flex="1">{i18n._('Name')}</Box>
+              <Box width="24%">{i18n._('Date modified')}</Box>
+              <Box width="14%">{i18n._('Type')}</Box>
+              <Box width="10%" textAlign="right">{i18n._('Size')}</Box>
+            </Flex>
+            {rootQuery.isLoading && (
+              <Flex
+                alignItems="center"
+                justifyContent="center"
+                role="status"
+                style={{ height: 240 }}
+              >
+                <Spinner />
+                <Space width="2x" />
+                {i18n._('Loading...')}
+              </Flex>
+            )}
+            {rootQuery.isError && (
+              <Flex
+                alignItems="center"
+                gap="2x"
+                justifyContent="center"
+                role="alert"
+                style={{ height: 240 }}
+              >
+                <Box>{i18n._('Unable to load directory')}</Box>
+                <Button onClick={() => rootQuery.refetch()}>{i18n._('Retry')}</Button>
+              </Flex>
+            )}
+            {rootQuery.isSuccess && rootNodes.length === 0 && (
+              <Flex alignItems="center" justifyContent="center" style={{ height: 240 }}>
+                {i18n._('Empty directory')}
+              </Flex>
+            )}
+            {rootQuery.isSuccess && rootNodes.length > 0 && (
+              <Box style={{ height: 240, overflowY: 'auto', overflowX: 'hidden' }}>
+                <Tree
+                  aria-label={i18n._('Watch directory files')}
+                  expanded={expanded}
+                  id="watch-directory-tree"
+                  isSelectable
+                  isUnselectable
+                  selected={selected}
+                  onKeyDown={handleTreeKeyDown}
+                  onNodeFocus={handleNodeFocus}
+                  onNodeSelect={handleNodeSelect}
+                  onNodeToggle={handleNodeToggle}
+                >
+                  {rootNodes.map(node => (
+                    <WatchDirectoryNode
+                      key={node.id}
+                      node={node}
+                      expandedPaths={expanded}
+                      onLoadFile={loadFile}
+                      rememberNodes={rememberNodes}
+                      queryClient={queryClient}
+                    />
+                  ))}
+                </Tree>
+              </Box>
+            )}
             {dragging && (
-              <div className={watchDirectoryStyles.dropzoneHint}>
-                <i aria-hidden="true" className="fa fa-upload" />
-                <Space width="8" />
+              <Box className={watchDirectoryStyles.dropzoneHint}>
+                <UploadIcon aria-hidden="true" size="1em" />
+                <Space width="2x" />
                 {i18n._('Upload G-code')}
-              </div>
+              </Box>
             )}
             {uploading && (
-              <div className={watchDirectoryStyles.dropzoneHint}>
-                <div className={watchDirectoryStyles.progressLabel}>
-                  <i aria-hidden="true" className="fa fa-circle-o-notch fa-spin" />
-                  <Space width="8" />
+              <Box className={watchDirectoryStyles.dropzoneHint}>
+                <Box className={watchDirectoryStyles.progressLabel}>
+                  <Spinner size="xs" aria-hidden="true" />
+                  <Space width="2x" />
                   {i18n._('Upload G-code')} {uploadProgress}%
-                </div>
-                <div className="progress" style={{ marginBottom: 0 }}>
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    aria-label={i18n._('Upload G-code')}
-                    aria-valuenow={uploadProgress}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    style={{ width: uploadProgress + '%' }}
-                  />
-                </div>
-              </div>
+                </Box>
+                <LinearProgress
+                  aria-label={i18n._('Upload G-code')}
+                  min={0}
+                  max={100}
+                  value={uploadProgress}
+                  variant="determinate"
+                />
+              </Box>
             )}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-default"
-            onClick={actions.closeModal}
-          >
-            {i18n._('Cancel')}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-              const tree = this.treeNode.tree;
-              const node = tree.getSelectedNode();
-
-              if (node) {
-                const file = path.join(node.props.path, node.name);
-                actions.loadFile(file);
-                actions.closeModal();
-              }
-            }}
-            disabled={!canUpload}
-          >
-            {i18n._('Load G-code')}
-          </button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Flex alignItems="center" gap="2x">
+            <Button onClick={actions.closeModal}>{i18n._('Cancel')}</Button>
+            <Button
+              variant="primary"
+              disabled={!canUpload}
+              onClick={() => loadFile(selectedNode || params.selectedNode)}
+            >
+              {i18n._('Load G-code')}
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }
 
 export default WatchDirectory;

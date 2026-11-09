@@ -1,88 +1,91 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { Checkbox } from '@app/components/Checkbox';
-import Modal from '@app/components/Modal';
-import { ToastNotification } from '@app/components/Notifications';
-import { Button } from '@app/components/Buttons';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@tonic-ui/react';
+import React, { useRef, useState } from 'react';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import i18n from '@app/lib/i18n';
 import ZProbeDiagram from './ZProbeDiagram';
 
-class TestProbeModal extends PureComponent {
-  static propTypes = {
-    state: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequired,
+/**
+ * @param {{canConfirm?: boolean, onCancel?: Function, onConfirm?: Function, value?: object}} props
+ */
+function TestProbeModal({
+  canConfirm = false,
+  onCancel = () => {},
+  onConfirm = () => {},
+  value = {},
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLock = useRef(false);
+  const methods = useForm({ defaultValues: { safetyConfirmed: false }, mode: 'onSubmit' });
+  const safetyConfirmed = useWatch({ control: methods.control, name: 'safetyConfirmed' });
+  const { clearanceZ, startZ, endZ, feedrate, units } = value;
+
+  const submit = () => {
+    if (!canConfirm || !methods.getValues('safetyConfirmed') || submitLock.current) {
+      return;
+    }
+    submitLock.current = true;
+    setIsSubmitting(true);
+    onConfirm();
   };
 
-  state = {
-    safetyConfirmed: false,
-  };
-
-  handleCheckboxChange = () => {
-    this.setState({ safetyConfirmed: !this.state.safetyConfirmed });
-  };
-
-  handleStartTestProbe = () => {
-    this.props.actions.startTestProbe();
-  };
-
-  render() {
-    const { state, actions } = this.props;
-    const { clearanceZ, startZ, endZ, feedrate, units } = state;
-    const { safetyConfirmed } = this.state;
-
-    return (
-      <Modal disableOverlay size="sm" onClose={actions.closeModal}>
-        <Modal.Header>
-          <Modal.Title>
-            {i18n._('Test Probe')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="form-group">
-            <ToastNotification
-              type="warning"
-              style={{ marginBottom: 16 }}
-            >
+  return (
+    <Modal
+      closeOnInteractOutside={false} isClosable isOpen
+      onClose={onCancel} size="sm"
+    >
+      <ModalOverlay />
+      <FormProvider {...methods}>
+        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+          <ModalHeader>{i18n._('Test Probe')}</ModalHeader>
+          <ModalBody>
+            <Text color="error.text" mb="4x">
               {i18n._('The Z-axis will descend until electrical contact is detected. If probe wires are not connected, the tool, workpiece, or machine may be damaged.')}
-            </ToastNotification>
-          </div>
-          <div className="form-group">
-            {i18n._('A single probe test will be performed at the current XY position.')}
-          </div>
-          <div className="form-group" style={{ width: 320 }}>
-            <ZProbeDiagram
-              clearanceZ={clearanceZ}
-              startZ={startZ}
-              endZ={endZ}
-              feedrate={feedrate}
-              units={units}
+            </Text>
+            <Text mb="4x">{i18n._('A single probe test will be performed at the current XY position.')}</Text>
+            <Box mb="4x" width="320px">
+              <ZProbeDiagram
+                clearanceZ={clearanceZ} endZ={endZ} feedrate={feedrate}
+                startZ={startZ} units={units}
+              />
+            </Box>
+            <Controller
+              name="safetyConfirmed"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <FormControl>
+                  <Checkbox
+                    {...field}
+                    checked={field.value}
+                    onChange={event => field.onChange(event.target.checked)}
+                  >
+                    {i18n._('I confirm probe wires are correctly connected')}
+                  </Checkbox>
+                </FormControl>
+              )}
             />
-          </div>
-          <Checkbox
-            checked={safetyConfirmed}
-            onChange={this.handleCheckboxChange}
-          >
-            {i18n._('I confirm probe wires are correctly connected')}
-          </Checkbox>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            btnStyle="default"
-            onClick={actions.closeModal}
-          >
-            {i18n._('Cancel')}
-          </Button>
-          <Button
-            btnStyle="primary"
-            onClick={this.handleStartTestProbe}
-            disabled={!safetyConfirmed}
-          >
-            {i18n._('Start Test Probe')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onCancel} variant="secondary">{i18n._('Cancel')}</Button>
+            <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} type="submit" variant="primary">
+              {i18n._('Start Test Probe')}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </FormProvider>
+    </Modal>
+  );
 }
 
 export default TestProbeModal;

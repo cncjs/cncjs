@@ -1,38 +1,38 @@
-import get from 'lodash/get';
-import classNames from 'classnames';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { EditIcon } from '@tonic-ui/react-icons';
+import {
+  Box, Button, ButtonGroup, FormControl, FormInput, FormLabel, FormTextarea,
+  InputGroup, InputGroupAddon, InputGroupAppend, InputGroupPrepend,
+  Dropdown, DropdownButton, Text, Tooltip,
+} from '@tonic-ui/react';
 import { ensureNumber, ensureString } from 'ensure-type';
-import uniqueId from 'lodash/uniqueId';
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
-import Select from 'react-select';
-import styled from 'styled-components';
-import { Button } from '@app/components/Buttons';
-import Dropdown, { MenuItem } from '@app/components/Dropdown';
-import Image from '@app/components/Image';
-import {
-  METRIC_UNITS
-} from '@app/constants';
-import {
-  GRBL,
-  MARLIN,
-  SMOOTHIE,
-  TINYG,
-} from '@app/constants/controller';
-import Tooltip from '@app/components/Tooltip';
+import _isEqual from 'lodash/isEqual';
+import React, { useEffect, useRef, useState } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { METRIC_UNITS } from '@app/constants';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from '@app/constants/controller';
 import i18n from '@app/lib/i18n';
 import { mapValueToUnits } from '@app/lib/units';
 import {
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
-  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
 } from './constants';
 import iconPin from './images/pin.svg';
-import styles from './index.styl';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
+
+const positionPinSx = {
+  display: 'block',
+  width: '14px',
+  height: '14px',
+  backgroundColor: 'currentColor',
+  mask: `url("${iconPin}") center / contain no-repeat`,
+  WebkitMask: `url("${iconPin}") center / contain no-repeat`,
+};
 
 const TOOL_PROBE_OVERRIDE_WCS_EXAMPLE = `
 ; Probe the tool
@@ -40,7 +40,6 @@ G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_pr
 ; Set coordinate system offset
 G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]
 `.trim();
-
 const TOOL_PROBE_OVERRIDE_TLO_EXAMPLE = `
 ; Probe the tool
 G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]
@@ -57,780 +56,455 @@ const copyToClipboard = value => {
   el.style.position = 'absolute';
   el.style.left = '-9999px';
   document.body.appendChild(el);
-
-  const selected =
-    document.getSelection().rangeCount > 0
-      ? document.getSelection().getRangeAt(0)
-      : false;
+  const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
   el.select();
-
   document.execCommand('copy');
   document.body.removeChild(el);
-
   if (selected) {
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(selected);
   }
 };
 
-const IconButton = styled('button')`
-  appearance: none;
-  display: inline-block;
-  font-weight: normal;
-  text-align: center;
-  white-space: nowrap;
-  touch-action: manipulation;
-  cursor: pointer;
-  user-select: none;
-  background: none;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  min-width: 24px;
-  filter: invert(40%);
-  &:hover {
-    filter: none;
-  }
-`;
-
-const TextPreview = styled('div')`
-  font-family: "Segoe UI Mono", "SFMono-Medium", "SF Mono", Menlo, Consolas, Courier, monospace;
-  font-size: 13px;
-  line-height: 18px;
-  overflow: auto;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  white-space: pre;
-`;
-
-const TextEditable = styled('textarea')`
-  font-family: "Segoe UI Mono", "SFMono-Medium", "SF Mono", Menlo, Consolas, Courier, monospace;
-  font-size: 13px;
-  line-height: 18px;
-  padding: 8px;
-  background: none;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow-wrap: normal;
-  white-space: pre;
-  width: 100%;
-`;
-
-class Tool extends PureComponent {
-  static propTypes = {
-    state: PropTypes.object,
-    actions: PropTypes.object
-  };
-
-  fields = {
-    toolProbeCustomCommands: null,
-  };
-
-  timer = null;
-
-  state = {
-    toolProbeCustomCommands: '',
-    isToolProbeCustomCommandsEditable: false,
-    isToolProbeCommandsCopied: false,
-  };
-
-  renderToolChangePolicy = (option) => {
-    const style = {
-      color: '#333',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden'
-    };
-    return (
-      <div style={style} title={option.label}>{option.label}</div>
-    );
-  };
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const toolProbeCustomCommands = get(nextProps.state.toolConfig, 'toolProbeCustomCommands');
-    if (toolProbeCustomCommands !== this.state.toolProbeCustomCommands) {
-      this.setState({ toolProbeCustomCommands });
+export const getToolProbeCommands = (controllerType, toolChangePolicy) => {
+  const lines = ['; Probe the tool'];
+  if (controllerType === MARLIN) {
+    lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
+    if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+      lines.push('; Set the current work Z position (posz) to the touch plate height');
+      lines.push('G92 Z[touch_plate_height]');
+    } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+      lines.push('; Pause for 1 second');
+      lines.push('%wait 1');
+      lines.push('; Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)');
+      lines.push('G92 Z[posz - touch_plate_height]');
     }
+    return lines.join('\n');
+  }
+  if ([GRBL, SMOOTHIE, TINYG].includes(controllerType)) {
+    lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+    if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+      lines.push('; Set coordinate system offset');
+      lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+    } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+      lines.push('; Pause for 1 second');
+      lines.push('%wait 1');
+      lines.push('; Set tool length offset');
+      lines.push(controllerType === TINYG ? '{tofz:[posz - touch_plate_height]}' : 'G43.1 Z[posz - touch_plate_height]');
+    }
+    return lines.join('\n');
+  }
+  return '';
+};
+
+const policyOptions = [
+  [TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS, 'Ignore M6 commands (Default)'],
+  [TOOL_CHANGE_POLICY_SEND_M6_COMMANDS, 'Send M6 commands'],
+  [TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS, 'Manual Tool Change (WCS)'],
+  [TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO, 'Manual Tool Change (TLO)'],
+  [TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING, 'Manual Tool Change (Custom Probing)'],
+];
+
+/**
+ * @param {object} props
+ * @param {boolean} [props.canClick]
+ * @param {boolean} [props.connected]
+ * @param {object} [props.controller]
+ * @param {object} [props.machinePosition]
+ * @param {string} [props.units]
+ * @param {object} [props.value]
+ * @param {Function} [props.onChange]
+ */
+function Tool({
+  canClick = false,
+  connected = false,
+  controller = {},
+  machinePosition = {},
+  units = METRIC_UNITS,
+  value = null,
+  onChange = () => {},
+}) {
+  const [editable, setEditable] = useState(false);
+  const [customCommands, setCustomCommands] = useState('');
+  const [copied, setCopied] = useState(false);
+  const textareaRef = useRef(null);
+  const timerRef = useRef(null);
+  const isResettingRef = useRef(false);
+  const methods = useForm({
+    defaultValues: value ?? {},
+    mode: 'onSubmit',
+    resetOptions: { keepDirtyValues: true },
+  });
+  const { getValues, reset: resetForm, setValue, watch } = methods;
+
+  useEffect(() => () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Adopt an externally accepted value (e.g. a unit conversion or a refreshed
+    // configuration) without discarding fields the user has already modified.
+    if (!value) {
+      return;
+    }
+    if (_isEqual(getValues(), value)) {
+      return;
+    }
+    isResettingRef.current = true;
+    resetForm(value, { keepDirtyValues: true });
+    isResettingRef.current = false;
+
+    // Report the values that survived the reset, otherwise the owner would keep
+    // the externally accepted value for a field the user has already modified.
+    const nextValues = getValues();
+    if (!_isEqual(nextValues, value)) {
+      onChange(nextValues);
+    }
+  }, [value, getValues, resetForm, onChange]);
+
+  useEffect(() => {
+    const subscription = watch(nextValues => {
+      if (isResettingRef.current) {
+        return;
+      }
+      onChange(nextValues);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onChange]);
+
+  if (!value) {
+    return <Box color="text.secondary">{i18n._('No available tool configuration')}</Box>;
   }
 
-  render() {
-    const { state, actions } = this.props;
-    const {
-      canClick,
-      connected,
-      controller,
-      units,
-      toolConfig,
-    } = state;
-    const isReady = connected;
-    const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
-    const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
-    const step = (units === METRIC_UNITS) ? 1 : (1 / 16);
-    const canGetMachinePosition = canClick;
+  const displayUnits = units === METRIC_UNITS ? i18n._('mm') : i18n._('in');
+  const feedrateUnits = units === METRIC_UNITS ? i18n._('mm/min') : i18n._('in/min');
+  const step = units === METRIC_UNITS ? 1 : 1 / 16;
+  const policy = value.toolChangePolicy;
+  const isManual = [
+    TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+    TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+    TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
+  ].includes(policy);
+  const isDefaultProbe = [
+    TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+    TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  ].includes(policy);
+  const isCustomProbe = policy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING;
+  const commands = getToolProbeCommands(controller.type, policy);
 
-    if (!toolConfig) {
-      return (
-        <div className={styles.noData}>
-          {i18n._('No available tool configuration')}
-        </div>
-      );
-    }
+  const numberField = (name, label, unit, getNextValue) => (
+    <Controller
+      name={name}
+      render={({ field }) => (
+        <FormControl>
+          <FormLabel>{label}</FormLabel>
+          <InputGroup>
+            <FormInput
+              {...field}
+              aria-label={label}
+              flex="1"
+              minWidth="0"
+              min={0}
+              step={step}
+              type="number"
+              value={field.value ?? ''}
+              onChange={event => field.onChange(getNextValue(event.target.value))}
+            />
+            <InputGroupAppend>
+              <InputGroupAddon>{unit}</InputGroupAddon>
+            </InputGroupAppend>
+          </InputGroup>
+        </FormControl>
+      )}
+    />
+  );
 
-    const toolChangePolicy = get(toolConfig, 'toolChangePolicy');
-    const toolChangeX = get(toolConfig, 'toolChangeX');
-    const toolChangeY = get(toolConfig, 'toolChangeY');
-    const toolChangeZ = get(toolConfig, 'toolChangeZ');
-    const toolProbeX = get(toolConfig, 'toolProbeX');
-    const toolProbeY = get(toolConfig, 'toolProbeY');
-    const toolProbeZ = get(toolConfig, 'toolProbeZ');
-    const toolProbeCustomCommands = get(toolConfig, 'toolProbeCustomCommands');
-    const toolProbeCommand = get(toolConfig, 'toolProbeCommand');
-    const toolProbeDistance = get(toolConfig, 'toolProbeDistance');
-    const toolProbeFeedrate = get(toolConfig, 'toolProbeFeedrate');
-    const touchPlateHeight = get(toolConfig, 'touchPlateHeight');
-    const isManualToolChange = [
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
-    ].includes(toolChangePolicy);
-    const isToolProbeDefaultView = [
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-    ].includes(toolChangePolicy);
-    const isToolProbeCustomCommandsView = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING);
-
-    const toolProbeCommands = (() => {
-      const lines = [];
-
-      if (controller.type === MARLIN) {
-        lines.push('; Probe the tool');
-        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
-        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
-          lines.push('; Set the current work Z position (posz) to the touch plate height');
-          lines.push('G92 Z[touch_plate_height]');
-        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
-          lines.push('; Pause for 1 second');
-          lines.push('%wait 1');
-          lines.push('; Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)');
-          lines.push('G92 Z[posz - touch_plate_height]');
-        }
-        return lines.join('\n');
-      }
-
-      if (controller.type === GRBL || controller.type === SMOOTHIE) {
-        lines.push('; Probe the tool');
-        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
-        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
-          lines.push('; Set coordinate system offset');
-          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
-        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
-          lines.push('; Pause for 1 second');
-          lines.push('%wait 1');
-          lines.push('; Set tool length offset');
-          lines.push('G43.1 Z[posz - touch_plate_height]');
-        }
-        return lines.join('\n');
-      }
-
-      if (controller.type === TINYG) {
-        lines.push('; Probe the tool');
-        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
-        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
-          lines.push('; Set coordinate system offset');
-          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
-        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
-          lines.push('; Pause for 1 second');
-          lines.push('%wait 1');
-          lines.push('; Set tool length offset');
-          lines.push('{tofz:[posz - touch_plate_height]}');
-        }
-        return lines.join('\n');
-      }
-
-      return lines.join('\n');
-    })();
-
-    const handleClickCopyToolProbeCommands = (event) => {
-      copyToClipboard(toolProbeCommands);
-      this.setState({ isToolProbeCommandsCopied: true });
-
-      if (this.timer) {
-        clearTimeout(this.timer);
-        this.timer = null;
-      }
-
-      this.timer = setTimeout(() => {
-        this.setState({ isToolProbeCommandsCopied: false });
-      }, 1500);
-    };
-
-    return (
-      <div>
-        <div className="form-group">
-          <label className="control-label">{i18n._('Tool Change Policy')}</label>
-          <Select
-            backspaceRemoves={false}
-            className="sm"
-            clearable={false}
-            menuContainerStyle={{ zIndex: 5 }}
+  return (
+    <FormProvider {...methods}>
+      <Box>
+        <Box mb="4x">
+          <Controller
             name="toolChangePolicy"
-            onChange={(option) => {
-              const value = ensureNumber(option.value);
-              actions.setToolChangePolicy(value);
-            }}
-            options={[
-              {
-                value: String(TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS),
-                label: i18n._('Ignore M6 commands (Default)'),
-              },
-              {
-                value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
-                label: i18n._('Send M6 commands'),
-              },
-              {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS),
-                label: i18n._('Manual Tool Change (WCS)'),
-              },
-              {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO),
-                label: i18n._('Manual Tool Change (TLO)'),
-              },
-              {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING),
-                label: i18n._('Manual Tool Change (Custom Probing)'),
-              },
-            ]}
-            searchable={false}
-            value={toolChangePolicy}
-            valueRenderer={this.renderToolChangePolicy}
+            render={({ field }) => (
+              <FormControl>
+                <FormLabel>{i18n._('Tool Change Policy')}</FormLabel>
+                <Dropdown
+                  matchWidth
+                  items={policyOptions.map(([option, label]) => ({ value: option, label: i18n._(label) }))}
+                  value={field.value === null || field.value === undefined
+                    ? null
+                    : policyOptions.map(([option, label]) => ({ value: option, label: i18n._(label) }))
+                      .find(option => Number(option.value) === Number(field.value)) || null}
+                  renderItem={option => option?.label ?? ''}
+                  renderToggle={({ renderItem, value: selected }) => (
+                    <DropdownButton
+                      aria-label={i18n._('Tool Change Policy')}
+                      width="100%"
+                      variant="secondary"
+                    >
+                      {renderItem(selected)}
+                    </DropdownButton>
+                  )}
+                  onChange={option => field.onChange(ensureNumber(option?.value))}
+                />
+                {policy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS && <Text fontStyle="italic">{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</Text>}
+                {policy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS && <Text fontStyle="italic">{i18n._('This will send the line exactly as it is to the controller.')}</Text>}
+              </FormControl>
+            )}
           />
-          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS && (
-            <p style={{ marginTop: 4 }}>
-              <i>{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</i>
-            </p>
-          )}
-          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS && (
-            <p style={{ marginTop: 4 }}>
-              <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
-            </p>
-          )}
-        </div>
-        {isManualToolChange && (
-          <div>
-            <div className="form-group">
-              <label className="control-label">
-                {i18n._('Tool Change Position')}
-              </label>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: 8,
-                }}
-              >
-                {['x', 'y', 'z'].map(axis => {
-                  const axisLabel = {
-                    x: 'X',
-                    y: 'Y',
-                    z: 'Z',
-                  }[axis];
-                  const toolChangeAxisValue = {
-                    x: toolChangeX,
-                    y: toolChangeY,
-                    z: toolChangeZ,
-                  }[axis];
-
-                  return (
-                    <div
-                      key={axis}
-                      style={{ display: 'flex', columnGap: 8 }}
-                    >
-                      <div className="input-group input-group-sm">
-                        <div className="input-group-addon">
-                          {axisLabel}
-                        </div>
-                        <input
-                          type="number"
-                          className="form-control"
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            actions.setToolChangePosition({ [axis]: value });
-                          }}
-                          value={toolChangeAxisValue}
-                        />
-                        <div className="input-group-addon">{displayUnits}</div>
-                      </div>
-                      <button
-                        type="button"
-                        disabled={!canGetMachinePosition}
-                        onClick={() => {
-                          const value = state.machinePosition?.[axis];
-                          if (value !== undefined) {
-                            actions.setToolChangePosition({ [axis]: value });
-                          }
-                        }}
-                        className="btn btn-default"
-                        style={{ padding: '4px 8px' }}
-                        title={i18n._('Use the current machine position as the tool change position.')}
-                      >
-                        <Image src={iconPin} width="14" height="14" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="control-label">
-                {i18n._('Tool Probe Position')}
-              </label>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: 8,
-                }}
-              >
-                {['x', 'y', 'z'].map(axis => {
-                  const axisLabel = {
-                    x: 'X',
-                    y: 'Y',
-                    z: 'Z',
-                  }[axis];
-                  const toolProbeAxisValue = {
-                    x: toolProbeX,
-                    y: toolProbeY,
-                    z: toolProbeZ,
-                  }[axis];
-
-                  return (
-                    <div
-                      key={axis}
-                      style={{ display: 'flex', columnGap: 8 }}
-                    >
-                      <div className="input-group input-group-sm">
-                        <div className="input-group-addon">
-                          {axisLabel}
-                        </div>
-                        <input
-                          type="number"
-                          className="form-control"
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            actions.setToolProbePosition({ [axis]: value });
-                          }}
-                          value={toolProbeAxisValue}
-                        />
-                        <div className="input-group-addon">{displayUnits}</div>
-                      </div>
-                      <button
-                        type="button"
-                        disabled={!canGetMachinePosition}
-                        onClick={() => {
-                          const value = state.machinePosition?.[axis];
-                          if (value !== undefined) {
-                            actions.setToolProbePosition({ [axis]: value });
-                          }
-                        }}
-                        className="btn btn-default"
-                        style={{ padding: '4px 8px' }}
-                        title={i18n._('Use the current machine position as the tool probe position.')}
-                      >
-                        <Image src={iconPin} width="14" height="14" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            {isToolProbeCustomCommandsView && (
-              <div>
-                <div
-                  style={{
-                    display: 'flex',
-                    columnGap: 8,
-                    alignItems: 'center',
-                  }}
-                >
-                  <label className="control-label">
-                    {i18n._('Custom Tool Probe Commands')}
-                  </label>
-                  {!this.state.isToolProbeCustomCommandsEditable && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 5,
-                      }}
-                    >
-                      <Tooltip
-                        placement="bottom"
-                        content={i18n._('Edit')}
-                      >
-                        <IconButton
-                          onClick={() => {
-                            this.setState({ isToolProbeCustomCommandsEditable: true });
-                          }}
-                        >
-                          <i className="fa fa-fw fa-edit" />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  )}
-                </div>
-                {this.state.isToolProbeCustomCommandsEditable && (
-                  <div
-                    style={{
-                      marginBottom: 8,
-                    }}
-                  >
-                    <Dropdown
-                      onSelect={(eventKey) => {
-                        const el = ReactDOM.findDOMNode(this.fields.toolProbeCustomCommands);
-                        if (el) {
-                          insertAtCaret(el, eventKey);
-                        }
-                      }}
-                    >
-                      <Tooltip
-                        placement="bottom"
-                        content={i18n._('Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)')}
-                      >
-                        <Button
-                          btnSize="xs"
-                          btnStyle="flat"
-                          style={{
-                            minWidth: 'auto',
-                          }}
-                          onClick={() => {
-                            const value = TOOL_PROBE_OVERRIDE_WCS_EXAMPLE;
-                            this.setState({ toolProbeCustomCommands: value });
-                          }}
-                        >
-                          <i className="fa fa-fw fa-upload" />
-                          WCS
-                        </Button>
-                      </Tooltip>
-                      <Tooltip
-                        placement="bottom"
-                        content={i18n._('Import predefined tool probe commands to update the Tool Length Offset (TLO)')}
-                      >
-                        <Button
-                          btnSize="xs"
-                          btnStyle="flat"
-                          style={{
-                            minWidth: 'auto',
-                          }}
-                          onClick={() => {
-                            const value = TOOL_PROBE_OVERRIDE_TLO_EXAMPLE;
-                            this.setState({ toolProbeCustomCommands: value });
-                          }}
-                        >
-                          <i className="fa fa-fw fa-upload" />
-                          TLO
-                        </Button>
-                      </Tooltip>
-                      <Dropdown.Toggle btnSize="xs" />
-                      <Dropdown.Menu
-                        style={{
-                          height: 180,
-                          overflowY: 'auto',
-                        }}
-                      >
-                        {variables.map(v => {
-                          if (typeof v === 'object') {
-                            return (
-                              <MenuItem
-                                header={v.type === 'header'}
-                                key={uniqueId()}
-                              >
-                                {v.text}
-                              </MenuItem>
-                            );
-                          }
-
-                          return (
-                            <MenuItem
-                              eventKey={v}
-                              key={uniqueId()}
-                            >
-                              {v}
-                            </MenuItem>
-                          );
-                        })}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
-                )}
-                {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length > 0 && (
-                  <TextPreview
-                    style={{
-                      maxHeight: 150,
-                    }}
-                  >
-                    {toolProbeCustomCommands}
-                  </TextPreview>
-                )}
-                {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length === 0 && (
-                  <div className="text-error">
-                    {i18n._('Warning: No custom tool probe commands are defined')}
-                  </div>
-                )}
-                {this.state.isToolProbeCustomCommandsEditable && (
-                  <div>
-                    <div style={{ marginBottom: 8 }}>
-                      <TextEditable
-                        ref={c => {
-                          this.fields.toolProbeCustomCommands = c;
-                        }}
-                        style={{
-                          whiteSpace: 'pre',
-                          overflowWrap: 'normal',
-                          minHeight: 150,
-                          maxHeight: 200,
-                          resize: 'vertical',
-                          overflow: 'auto',
-                        }}
-                        value={this.state.toolProbeCustomCommands}
-                        onChange={(event) => {
-                          const value = event.target.value;
-                          this.setState({ toolProbeCustomCommands: value });
-                        }}
+        </Box>
+        {isManual && (
+          <Box>
+            <FormControl mb="4x">
+              <FormLabel>{i18n._('Tool Change Position')}</FormLabel>
+              {['x', 'y', 'z'].map(axis => (
+                <Controller
+                  key={axis}
+                  name={`toolChange${axis.toUpperCase()}`}
+                  render={({ field }) => (
+                    <InputGroup mb="2x">
+                      <InputGroupPrepend>
+                        <InputGroupAddon>{axis.toUpperCase()}</InputGroupAddon>
+                      </InputGroupPrepend>
+                      <FormInput
+                        {...field}
+                        aria-label={i18n._(`Tool Change ${axis.toUpperCase()}`)}
+                        flex="1"
+                        minWidth="0"
+                        type="number"
+                        value={field.value ?? ''}
                       />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', columnGap: 8 }}>
-                      <Button
-                        btnSize="sm"
-                        btnStyle="flat"
-                        onClick={() => {
-                          const value = this.state.toolProbeCustomCommands;
-                          actions.setToolProbeCustomCommands(value);
-
-                          this.setState({ isToolProbeCustomCommandsEditable: false });
-                        }}
-                      >
-                        {i18n._('OK')}
-                      </Button>
-                      <Button
-                        btnSize="sm"
-                        btnStyle="flat"
-                        onClick={() => {
-                          this.setState({
-                            toolProbeCustomCommands: toolProbeCustomCommands, // revert back
-                            isToolProbeCustomCommandsEditable: false,
-                          });
-                        }}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {isToolProbeDefaultView && (
-              <div>
-                <div className="form-group">
-                  <label className="control-label">
-                    {i18n._('Probe Command')}
-                  </label>
-                  <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
-                    <div className="btn-group btn-group-sm">
-                      <button
-                        type="button"
-                        className={classNames(
-                          'btn',
-                          'btn-default',
-                          { 'btn-select': toolProbeCommand === 'G38.2' }
-                        )}
-                        title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
-                        onClick={() => actions.setToolProbeCommand('G38.2')}
-                      >
-                        G38.2
-                      </button>
-                      <button
-                        type="button"
-                        className={classNames(
-                          'btn',
-                          'btn-default',
-                          { 'btn-select': toolProbeCommand === 'G38.3' }
-                        )}
-                        title={i18n._('G38.3 probe toward workpiece, stop on contact')}
-                        onClick={() => actions.setToolProbeCommand('G38.3')}
-                      >
-                        G38.3
-                      </button>
-                      <button
-                        type="button"
-                        className={classNames(
-                          'btn',
-                          'btn-default',
-                          { 'btn-select': toolProbeCommand === 'G38.4' }
-                        )}
-                        title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
-                        onClick={() => actions.setToolProbeCommand('G38.4')}
-                      >
-                        G38.4
-                      </button>
-                      <button
-                        type="button"
-                        className={classNames(
-                          'btn',
-                          'btn-default',
-                          { 'btn-select': toolProbeCommand === 'G38.5' }
-                        )}
-                        title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
-                        onClick={() => actions.setToolProbeCommand('G38.5')}
-                      >
-                        G38.5
-                      </button>
-                    </div>
-                  </div>
-                  {toolProbeCommand === 'G38.2' && (
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
-                    </p>
-                  )}
-                  {toolProbeCommand === 'G38.3' && (
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
-                    </p>
-                  )}
-                  {toolProbeCommand === 'G38.4' && (
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
-                    </p>
-                  )}
-                  {toolProbeCommand === 'G38.5' && (
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
-                    </p>
-                  )}
-                </div>
-                <div className="row no-gutters">
-                  <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                    <div className="form-group">
-                      <label className="control-label">{i18n._('Probe Distance')}</label>
-                      <div className="input-group input-group-sm">
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={toolProbeDistance}
-                          min={0}
-                          step={step}
-                          onChange={(event) => {
-                            const value = ensureNumber(event.target.value);
-                            if (value > 0) {
-                              actions.setToolProbeDistance(value);
-                            } else {
-                              const defaultToolProbeDistance = 1;
-                              const adjustedValue = mapValueToUnits(defaultToolProbeDistance, units);
-                              actions.setToolProbeDistance(adjustedValue);
-                            }
-                          }}
-                        />
-                        <div className="input-group-addon">{displayUnits}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-                    <div className="form-group">
-                      <label className="control-label">{i18n._('Probe Feedrate')}</label>
-                      <div className="input-group input-group-sm">
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={toolProbeFeedrate}
-                          min={0}
-                          step={step}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            if (value > 0) {
-                              actions.setToolProbeFeedrate(value);
-                            } else {
-                              const defaultToolProbeFeedrate = 10;
-                              const adjustedValue = mapValueToUnits(defaultToolProbeFeedrate, units);
-                              actions.setToolProbeFeedrate(adjustedValue);
-                            }
-                          }}
-                        />
-                        <span className="input-group-addon">{feedrateUnits}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row no-gutters">
-                  <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                    <div className="form-group">
-                      <label className="control-label">{i18n._('Touch Plate Height')}</label>
-                      <div className="input-group input-group-sm">
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={touchPlateHeight}
-                          min={0}
-                          step={step}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            actions.setTouchPlateHeight(value);
-                          }}
-                        />
-                        <span className="input-group-addon">{displayUnits}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      columnGap: 8,
-                      alignItems: 'center',
-                    }}
-                  >
-                    <label className="control-label">
-                      {i18n._('Tool Probe Commands')}
-                    </label>
-                    {isReady && (
-                      <div style={{ marginBottom: 5 }}>
-                        <Tooltip
-                          placement="bottom"
-                          content={this.state.isToolProbeCommandsCopied ? i18n._('Copied') : i18n._('Copy')}
-                          onMouseLeave={() => {
-                            this.setState({ isToolProbeCommandsCopied: false });
-                          }}
+                      <InputGroupAppend>
+                        <InputGroupAddon>{displayUnits}</InputGroupAddon>
+                      </InputGroupAppend>
+                      <InputGroupAppend>
+                        <Button
+                          aria-label={i18n._(`Use machine ${axis.toUpperCase()} position`)}
+                          disabled={!canClick}
+                          onClick={() => machinePosition[axis] !== undefined && field.onChange(machinePosition[axis])}
+                          variant="secondary"
                         >
-                          <IconButton
-                            onClick={handleClickCopyToolProbeCommands}
-                          >
-                            <i className="fa fa-copy" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    )}
-                  </div>
-                  {isReady && (
-                    <TextPreview
-                      style={{
-                        maxHeight: 150,
-                      }}
-                    >
-                      {toolProbeCommands}
-                    </TextPreview>
+                          <Box as="span" aria-hidden="true" sx={positionPinSx} />
+                        </Button>
+                      </InputGroupAppend>
+                    </InputGroup>
                   )}
-                  {!isReady && (
-                    <div>
-                      <i>{i18n._('Connect to the controller to view the tool probe commands.')}</i>
-                    </div>
+                />
+              ))}
+            </FormControl>
+            <FormControl mb="4x">
+              <FormLabel>{i18n._('Tool Probe Position')}</FormLabel>
+              {['x', 'y', 'z'].map(axis => (
+                <Controller
+                  key={axis}
+                  name={`toolProbe${axis.toUpperCase()}`}
+                  render={({ field }) => (
+                    <InputGroup mb="2x">
+                      <InputGroupPrepend>
+                        <InputGroupAddon>{axis.toUpperCase()}</InputGroupAddon>
+                      </InputGroupPrepend>
+                      <FormInput
+                        {...field}
+                        aria-label={i18n._(`Tool Probe ${axis.toUpperCase()}`)}
+                        flex="1"
+                        minWidth="0"
+                        type="number"
+                        value={field.value ?? ''}
+                      />
+                      <InputGroupAppend>
+                        <InputGroupAddon>{displayUnits}</InputGroupAddon>
+                      </InputGroupAppend>
+                      <InputGroupAppend>
+                        <Button
+                          aria-label={i18n._(`Use machine probe ${axis.toUpperCase()} position`)}
+                          disabled={!canClick}
+                          onClick={() => machinePosition[axis] !== undefined && field.onChange(machinePosition[axis])}
+                          variant="secondary"
+                        >
+                          <Box as="span" aria-hidden="true" sx={positionPinSx} />
+                        </Button>
+                      </InputGroupAppend>
+                    </InputGroup>
                   )}
-                </div>
-              </div>
+                />
+              ))}
+            </FormControl>
+            {isCustomProbe && (
+              <FormControl mb="4x">
+                <Box alignItems="center" display="flex" gap="2x">
+                  <FormLabel>{i18n._('Custom Tool Probe Commands')}</FormLabel>
+                  {!editable && (
+                    <Button
+                      aria-label={i18n._('Edit custom tool probe commands')} onClick={() => {
+                        setCustomCommands(ensureString(value.toolProbeCustomCommands)); setEditable(true);
+                      }} size="sm"
+                      variant="ghost"
+                    ><EditIcon aria-hidden="true" size="1em" />
+                    </Button>
+                  )}
+                </Box>
+                {!editable && ensureString(value.toolProbeCustomCommands).length > 0 && (
+                  <Text
+                    as="pre"
+                    backgroundColor="background.low"
+                    border="1px solid"
+                    borderColor="border.primary"
+                    borderRadius="sm"
+                    m="0"
+                    p="3x"
+                    maxHeight="150px"
+                    overflow="auto"
+                  >
+                    {value.toolProbeCustomCommands}
+                  </Text>
+                )}
+                {!editable && ensureString(value.toolProbeCustomCommands).length === 0 && <Text color="error.text">{i18n._('Warning: No custom tool probe commands are defined')}</Text>}
+                {editable && (
+                  <Box>
+                    <Box mb="2x">
+                      <Button onClick={() => setCustomCommands(TOOL_PROBE_OVERRIDE_WCS_EXAMPLE)} size="sm" variant="secondary">WCS</Button>
+                      <Button
+                        ml="2x" onClick={() => setCustomCommands(TOOL_PROBE_OVERRIDE_TLO_EXAMPLE)} size="sm"
+                        variant="secondary"
+                      >TLO
+                      </Button>
+                      <Dropdown
+                        items={variables.map(variable => (typeof variable === 'object' ? (
+                          {
+                            value: variable.text,
+                            type: 'custom',
+                            content: (
+                              <Text
+                                key={variable.text} color="text.secondary" px="3x"
+                                py="2x"
+                              >{variable.text}
+                              </Text>
+                            ),
+                          }
+                        ) : (
+                          {
+                            value: variable,
+                            content: variable,
+                            props: {
+                              key: variable,
+                              onClick: () => {
+                                const textarea = textareaRef.current; if (textarea) {
+                                  insertAtCaret(textarea, variable); setCustomCommands(textarea.value);
+                                }
+                              },
+                            },
+                          }
+                        )))}
+                        renderItem={item => item?.content}
+                        renderToggle={() => (
+                          <DropdownButton ml="2x" size="sm" variant="secondary">
+                            {i18n._('Insert variable')}
+                          </DropdownButton>
+                        )}
+                      />
+                    </Box>
+                    <FormTextarea
+                      aria-label={i18n._('Custom Tool Probe Commands')} ref={textareaRef} value={customCommands}
+                      onChange={event => setCustomCommands(event.target.value)} minHeight="150px" resize="vertical"
+                    />
+                    <Box display="flex" gap="2x" mt="2x">
+                      <Button
+                        aria-label={i18n._('Save custom tool probe commands')} onClick={() => {
+                          setValue('toolProbeCustomCommands', customCommands, { shouldDirty: true }); setEditable(false);
+                        }} variant="primary"
+                      >{i18n._('OK')}
+                      </Button>
+                      <Button
+                        aria-label={i18n._('Cancel custom tool probe commands')} onClick={() => {
+                          setCustomCommands(ensureString(value.toolProbeCustomCommands)); setEditable(false);
+                        }} variant="secondary"
+                      >{i18n._('Cancel')}
+                      </Button>
+                    </Box>
+                  </Box>
+                )}
+              </FormControl>
             )}
-          </div>
+            {isDefaultProbe && (
+              <Box>
+                <Controller
+                  name="toolProbeCommand"
+                  render={({ field }) => (
+                    <FormControl mb="4x">
+                      <FormLabel>{i18n._('Probe Command')}</FormLabel>
+                      <ButtonGroup size="sm">
+                        {['G38.2', 'G38.3', 'G38.4', 'G38.5'].map(command => (
+                          <Button
+                            key={command}
+                            onClick={() => field.onChange(command)}
+                            selected={field.value === command}
+                          >
+                            {command}
+                          </Button>
+                        ))}
+                      </ButtonGroup>
+                    </FormControl>
+                  )}
+                />
+                <Box
+                  display="grid" gap="4x" gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+                  mb="4x"
+                >
+                  {numberField('toolProbeDistance', i18n._('Probe Distance'), displayUnits, raw => (ensureNumber(raw) > 0 ? ensureNumber(raw) : mapValueToUnits(1, units)))}
+                  {numberField('toolProbeFeedrate', i18n._('Probe Feedrate'), feedrateUnits, raw => (ensureNumber(raw) > 0 ? raw : mapValueToUnits(10, units)))}
+                  {numberField('touchPlateHeight', i18n._('Touch Plate Height'), displayUnits, raw => raw)}
+                </Box>
+                <FormControl>
+                  <Box alignItems="center" display="flex" gap="2x">
+                    <FormLabel>{i18n._('Tool Probe Commands')}</FormLabel>
+                    {connected && (
+                      <Tooltip label={copied ? i18n._('Copied') : i18n._('Copy')}>
+                        <Button
+                          aria-label={i18n._('Copy tool probe commands')}
+                          onClick={() => {
+                            copyToClipboard(commands);
+                            setCopied(true);
+                            if (timerRef.current) {
+                              clearTimeout(timerRef.current);
+                            }
+                            timerRef.current = setTimeout(() => {
+                              timerRef.current = null;
+                              setCopied(false);
+                            }, 1500);
+                          }}
+                          size="sm"
+                          variant="ghost"
+                        >
+                          <FontAwesomeIcon aria-hidden="true" icon={faCopy} />
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </Box>
+                  {connected ? (
+                    <Text
+                      as="pre"
+                      backgroundColor="background.low"
+                      border="1px solid"
+                      borderColor="border.primary"
+                      borderRadius="sm"
+                      m="0"
+                      p="3x"
+                      maxHeight="150px"
+                      overflow="auto"
+                    >
+                      {commands}
+                    </Text>
+                  ) : <Text fontStyle="italic">{i18n._('Connect to the controller to view the tool probe commands.')}</Text>}
+                </FormControl>
+              </Box>
+            )}
+          </Box>
         )}
-      </div>
-    );
-  }
+      </Box>
+    </FormProvider>
+  );
 }
 
 export default Tool;

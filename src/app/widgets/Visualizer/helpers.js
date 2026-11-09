@@ -19,12 +19,12 @@ const getBoundingBox = (object) => {
   return boundingBox;
 };
 
-const loadSTL = (url) => new Promise(resolve => {
-  new STLLoader().load(url, resolve);
+const loadSTL = (url) => new Promise((resolve, reject) => {
+  new STLLoader().load(url, resolve, undefined, reject);
 });
 
-const loadTexture = (url) => new Promise(resolve => {
-  new THREE.TextureLoader().load(url, resolve);
+const loadTexture = (url) => new Promise((resolve, reject) => {
+  new THREE.TextureLoader().load(url, resolve, undefined, reject);
 });
 
 export {

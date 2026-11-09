@@ -1,0 +1,42 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "cleanup": [
+    {
+      "resource": "command",
+      "rows": [
+        {
+          "name": "R6 command 1790875612715",
+          "wasPresent": true,
+          "removed": true
+        },
+        {
+          "name": "R6 command 1790875612715 updated",
+          "wasPresent": false,
+          "removed": false
+        }
+      ]
+    },
+    {
+      "resource": "event",
+      "rows": [
+        {
+          "name": "R6 event 1790875612715",
+          "wasPresent": true,
+          "removed": true
+        },
+        {
+          "name": "R6 event 1790875612715 updated",
+          "wasPresent": false,
+          "removed": false
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "status": "completed"
+}

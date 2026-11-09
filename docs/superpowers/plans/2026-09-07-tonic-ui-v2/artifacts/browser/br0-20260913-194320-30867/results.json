@@ -1,0 +1,46 @@
+{
+  "session": "br0-20260913-194320-30867",
+  "status": "blocked",
+  "stage": "port-selection",
+  "fatal": {
+    "selector": "#react-select-2-input",
+    "resolved_element": "input[readonly].css-62g3xt-dummyInput",
+    "error": "locator.click timeout 15000ms: element is not visible",
+    "evidence": ["browser.log", "01-workspace.html", "01-workspace.aria.txt", "01-workspace.png"]
+  },
+  "claims": {
+    "workspace_loaded": true,
+    "port_menu_open": false,
+    "port_selected": false,
+    "connected": false,
+    "large_upload": "not-run",
+    "stop_gate": "not-run",
+    "resume_gate": "not-run",
+    "jog_press_release": "not-run",
+    "disconnect": "not-run",
+    "watch_directory": "not-run",
+    "macro": "not-run"
+  },
+  "runtime": {
+    "browser_version": "151.0.7922.34",
+    "executable_root": "/Users/cheton_wu/Library/Caches/ms-playwright",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "gpu": "default",
+    "theme": "light",
+    "profile": "/tmp/cncjs-br0-profile-Jl5VhF"
+  },
+  "fixtures": {
+    "watch_directories_including_root": 101,
+    "watch_files": 4900,
+    "large_path": "src/app/test/fixtures/browser/br0-large-100000.gcode",
+    "large_sha256": "45397ed84742e57ba0941be8c0035736bb5d39e6903a6cf7c5848ba985b2f19c"
+  },
+  "cleanup": {
+    "ports_8000_8080": "no listeners",
+    "ttyGRBL": "absent",
+    "evidence": "cleanup.log"
+  },
+  "source_changes": false,
+  "commit": false
+}

@@ -1,20 +1,74 @@
-import colornames from 'colornames';
+import theme from '@app/config/theme';
 import Toolpath from 'gcode-toolpath';
 import * as THREE from 'three';
 import log from '@app/lib/log';
 
-const defaultColor = new THREE.Color(colornames('lightgrey'));
-const motionColor = {
-  'G0': new THREE.Color(colornames('green')),
-  'G1': new THREE.Color(colornames('blue')),
-  'G2': new THREE.Color(colornames('deepskyblue')),
-  'G3': new THREE.Color(colornames('deepskyblue'))
+// Chart colors distinguish motion types; neutral marks completed segments.
+export const getVisualizerColors = resolvedTheme => ({
+  toolpath: {
+    G0: resolvedTheme.get('colors._chart.categorical.unpredictable.chart-7'),
+    G1: resolvedTheme.get('colors._chart.categorical.unpredictable.chart-8'),
+    G2: resolvedTheme.get('colors._chart.categorical.unpredictable.chart-2'),
+    G3: resolvedTheme.get('colors._chart.categorical.unpredictable.chart-13'),
+    completed: resolvedTheme.get('colors.neutral.icon'),
+  },
+  coordinate: {
+    x: resolvedTheme.get('colors.error._onOverlay.icon'),
+    y: resolvedTheme.get('colors.success.icon'),
+    z: resolvedTheme.get('colors.info.icon'),
+    grid: resolvedTheme.get('colors.border.secondary'),
+  },
+});
+
+export const getDefaultVisualizerColors = colorMode => getVisualizerColors(theme.toColorMode(colorMode));
+
+const disposeObjectResources = (object, disposedResources = new Set(), disposeResource) => {
+  const dispose = resource => {
+    if (!resource || disposedResources.has(resource)) {
+      return;
+    }
+    disposedResources.add(resource);
+    if (typeof disposeResource === 'function') {
+      disposeResource(resource);
+    } else if (typeof resource.dispose === 'function') {
+      resource.dispose();
+    }
+  };
+
+  object.traverse(child => {
+    if (child.geometry && !child.isSprite) {
+      dispose(child.geometry);
+    }
+    const materials = Array.isArray(child.material) ? child.material : [child.material];
+    materials.forEach(material => {
+      if (!material) {
+        return;
+      }
+      Object.keys(material).forEach(key => {
+        const value = material[key];
+        if (value && value.isTexture) {
+          dispose(value);
+        }
+      });
+      dispose(material);
+    });
+  });
+
+  return disposedResources;
 };
 
 class GCodeVisualizer {
-  constructor() {
+  constructor(colors = getDefaultVisualizerColors('light').toolpath) {
     this.group = new THREE.Object3D();
     this.geometry = new THREE.Geometry();
+    this.motionColors = {
+      G0: new THREE.Color(),
+      G1: new THREE.Color(),
+      G2: new THREE.Color(),
+      G3: new THREE.Color(),
+    };
+    this.completedColor = new THREE.Color();
+    this.setColors(colors);
 
     // Example
     // [
@@ -36,9 +90,8 @@ class GCodeVisualizer {
       // @param {object} v2 A 3D vector of the end point.
       addLine: (modal, v1, v2) => {
         const { motion } = modal;
-        const color = motionColor[motion] || defaultColor;
         this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
-        this.geometry.colors.push(color);
+        this.geometry.colors.push(this.motionColors[motion] || this.completedColor);
       },
       // @param {object} modal The modal object.
       // @param {object} v1 A 3D vector of the start point.
@@ -68,7 +121,7 @@ class GCodeVisualizer {
         );
         const divisions = 30;
         const points = arcCurve.getPoints(divisions);
-        const color = motionColor[motion] || defaultColor;
+        const color = this.motionColors[motion] || this.completedColor;
 
         for (let i = 0; i < points.length; ++i) {
           const point = points[i];
@@ -89,7 +142,7 @@ class GCodeVisualizer {
     while (this.group.children.length > 0) {
       const child = this.group.children[0];
       this.group.remove(child);
-      child.geometry.dispose();
+      disposeObjectResources(child);
     }
 
     toolpath.loadFromStringSync(gcode, (line, index) => {
@@ -102,10 +155,9 @@ class GCodeVisualizer {
     const workpiece = new THREE.Line(
       new THREE.Geometry(),
       new THREE.LineBasicMaterial({
-        color: defaultColor,
         linewidth: 1,
         vertexColors: THREE.VertexColors,
-        opacity: 0.5,
+        opacity: 0.9,
         transparent: true
       })
     );
@@ -123,6 +175,36 @@ class GCodeVisualizer {
     return this.group;
   }
 
+  dispose(disposeResource) {
+    if (this.disposed) {
+      return;
+    }
+    this.disposed = true;
+    const disposedResources = disposeObjectResources(
+      this.group,
+      new Set(),
+      disposeResource
+    );
+    if (this.geometry && !disposedResources.has(this.geometry)) {
+      if (typeof disposeResource === 'function') {
+        disposeResource(this.geometry);
+      } else if (typeof this.geometry.dispose === 'function') {
+        this.geometry.dispose();
+      }
+    }
+  }
+
+  setColors(colors) {
+    Object.keys(this.motionColors).forEach(motion => {
+      this.motionColors[motion].set(colors[motion]);
+    });
+    this.completedColor.set(colors.completed);
+    const workpiece = this.group.children[0];
+    if (workpiece) {
+      workpiece.geometry.colorsNeedUpdate = true;
+    }
+  }
+
   setFrameIndex(frameIndex) {
     if (this.frames.length === 0) {
       return;
@@ -138,7 +220,7 @@ class GCodeVisualizer {
     if (v1 < v2) {
       const workpiece = this.group.children[0];
       for (let i = v1; i < v2; ++i) {
-        workpiece.geometry.colors[i] = defaultColor;
+        workpiece.geometry.colors[i] = this.completedColor;
       }
       workpiece.geometry.colorsNeedUpdate = true;
     }

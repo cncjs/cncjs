@@ -1,0 +1,33 @@
+started_at=2026-09-13T19:11:32+0800
+process_tree:
+47566 38695 /bin/zsh -c ART='docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/br0-20260913-191005'\012{\012  echo "started_at=$(date '+%Y-%m-%dT%H:%M:%S%z')"\012  echo 'process_tree:'\012  pgrep -P 13121 -a || true\012  ps -axo pid,ppid,command | rg 'yarn dev|webpack|cncjs|grbl|serial-bridge|node .*server' || true\012  echo 'ports:'\012  lsof -nP -iTCP:8000 -sTCP:LISTEN || true\012  lsof -nP -iTCP:8080 -sTCP:LISTEN || true\012  echo 'tty:'\012  ls -l /tmp/ttyGRBL\012  echo 'fixture hashes:'\012  shasum -a 256 src/app/test/fixtures/browser/br0-small.gcode artifacts/browser/br0-large-100000.gcode 2>/dev/null || true\012} > "$ART/runtime-inventory.log"\012cat "$ART/runtime-inventory.log"\012find /Users/cheton_wu/.codex /Users/cheton_wu/.agents /opt/homebrew /usr/local -type f \( -name 'playwright.cjs' -o -name 'playwright.mjs' -o -name 'playwright.js' \) 2>/dev/null | head -30
+47570 47566 rg yarn dev|webpack|cncjs|grbl|serial-bridge|node .*server
+74744 74741 /Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node --experimental-vm-modules /var/folders/1q/4j_g0dln1rz5g0j9crmf4n3h0000gn/T/.tmpcBhLb7/kernel.js --session-id e6a2946b76a44a469d77d4f32f34d850 --working-dir /Users/cheton_wu/Code/cncjs/cncjs-cheton
+74745 74741 /Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node /var/folders/1q/4j_g0dln1rz5g0j9crmf4n3h0000gn/T/.tmpcBhLb7/trusted-worker.js /Users/cheton_wu/Code/cncjs/cncjs-cheton
+42976 38695 /bin/zsh -c env CONFIG_PATH=/tmp/cncjs-browser-test.cncrc SUPPRESS_WEBGL_WARNING=1 yarn dev 2>&1 | tee docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/br0-20260913-191005/lifecycle.log
+42977 42976 node /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/yarn dev
+45503 42977 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/node_modules/concurrently/dist/bin/concurrently.js --kill-others-on-fail --names simulator,app,server yarn run start-simulator-dev yarn run start-app-dev yarn run start-server-dev
+45539 45503 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/.nvm/versions/node/v24.15.0/lib/node_modules/corepack/dist/yarn.js run start-server-dev
+45604 45533 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/.yarn/releases/yarn-3.3.1.cjs run start-simulator-dev
+45612 45536 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/.yarn/releases/yarn-3.3.1.cjs run start-app-dev
+45613 45539 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/.yarn/releases/yarn-3.3.1.cjs run start-server-dev
+45682 45604 bash -c cd grbl-simulator && ./start-with-cncjs.sh
+45683 45613 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development bash scripts/start-server-dev.sh
+45684 45682 /bin/bash ./start-with-cncjs.sh
+45685 45612 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development webpack serve --progress --config webpack.config.development.js
+45706 45683 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/ --config /tmp/cncjs-browser-test.cncrc
+45707 45685 webpack     
+45708 45684 npm exec concurrently --kill-others --success first --names grbl-server,serial-bridge node grbl-server.js 51670 sleep 2; node serial-bridge.js 51670 /tmp/ttyGRBL         
+45837 45708 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node /Users/cheton_wu/Code/cncjs/cncjs-cheton/node_modules/.bin/concurrently --kill-others --success first --names grbl-server,serial-bridge node grbl-server.js 51670 sleep 2; node serial-bridge.js 51670 /tmp/ttyGRBL
+45838 45837 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node grbl-server.js 51670
+45839 45837 /bin/sh -c sleep 2; node serial-bridge.js 51670 /tmp/ttyGRBL
+46121 45839 /Users/cheton_wu/.nvm/versions/node/v24.15.0/bin/node serial-bridge.js 51670 /tmp/ttyGRBL
+ports:
+COMMAND   PID      USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    45706 cheton_wu   12u  IPv4 0x99f4ded8e279273f      0t0  TCP *:8000 (LISTEN)
+COMMAND   PID      USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    45707 cheton_wu   14u  IPv4 0xf34b7b0d78f5c820      0t0  TCP *:8080 (LISTEN)
+tty:
+lrwxr-xr-x@ 1 cheton_wu  wheel  12 Sep 13 19:11 /tmp/ttyGRBL -> /dev/ttys003
+fixture hashes:
+08c3db3f70e0f311bd9f30033191578605b7b8c240a8a2fcb2952fd261a842cd  src/app/test/fixtures/browser/br0-small.gcode

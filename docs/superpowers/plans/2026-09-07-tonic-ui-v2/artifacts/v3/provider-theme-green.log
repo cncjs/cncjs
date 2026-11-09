@@ -1,0 +1,10 @@
+PASS src/app/__tests__/GlobalProvider.test.jsx
+  ✓ returns to the live system theme after leaving an initially automatic appearance (244 ms)
+  ✓ stops following the system when returning to an initially explicit appearance (218 ms)
+  ✓ provides CSS variable definitions for semantic tokens and both color modes (9 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1.289 s
+Ran all test suites matching /src\/app\/__tests__\/GlobalProvider.test.jsx/i.

@@ -1,0 +1,134 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "port": 8080,
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "isolatedConfig": {
+    "path": "/tmp/cncjs-r6-20261001/config.cncrc",
+    "sha256": "bc804e275ab90f2d9d82996bcb189ca35177223d87a17d76ddfefc37e922b24a",
+    "rawConfigPersisted": false
+  },
+  "remainingTestRecords": [
+    {
+      "resource": "synthetic machine profiles",
+      "present": false,
+      "evidence": "profile-loaded-visibility-sequence-r6.json profileCleanup=removed"
+    },
+    {
+      "resource": "synthetic user account",
+      "present": false,
+      "evidence": "auth-signin-signout-cleanup-r6.json existsAfter=false"
+    },
+    {
+      "resource": "failed Command/Event CRUD records",
+      "present": false,
+      "evidence": "admin-failed-record-cleanup-r6.json status=completed"
+    },
+    {
+      "resource": "synthetic Macro records",
+      "present": false,
+      "evidence": "macro-live-browser-r6.json removed; baseline Macro removed by tooltip cleanup runner"
+    }
+  ],
+  "resourceCounts": [
+    {
+      "resource": "machines",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "resource": "users",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "resource": "commands",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "resource": "events",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "resource": "macros",
+      "status": 200,
+      "count": 0
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "status": "completed",
+  "processCleanup": {
+    "verifiedR6Pids": {
+      "currentBackend": 180,
+      "currentWebpackParent": 167,
+      "currentWebpack": 181,
+      "simulatorConcurrently": 182,
+      "simulatorChild": 209,
+      "simulatorShell": 211,
+      "serialBridge": 226,
+      "socatPty": 262,
+      "baselineWebpackParent": 96116,
+      "baselineWebpack": 96117
+    },
+    "stopSignal": "SIGTERM",
+    "pidsExited": true,
+    "portsClosed": {
+      "backend8000": true,
+      "current8080": true,
+      "baseline8082": true
+    },
+    "simulatorLinkExists": false
+  },
+  "temporaryFiles": {
+    "configPath": "/tmp/cncjs-r6-20261001/config.cncrc",
+    "configSha256": "bc804e275ab90f2d9d82996bcb189ca35177223d87a17d76ddfefc37e922b24a",
+    "configPresentAfterStop": false,
+    "authStateFilesRemainOnlyUnderTmp": false,
+    "cleanupAttemptRejectedByAutoReview": true,
+    "deletedAfterExplicitAuthorization": true,
+    "deletedAt": "2026-10-02T12:33:36.796655+00:00",
+    "deletedScope": [
+      "/tmp/cncjs-r6-20261001 (config/auth/logs/fixtures/raw evidence)",
+      "/tmp/cncjs-r6-baseline-src",
+      "/tmp/cncjs-r6-playwright",
+      "/tmp/cncjs-r6-playwright-browsers",
+      "/tmp/cncjs-r6-*.log (reviewed existing files only)",
+      "/tmp/r6-8000.html",
+      "/tmp/r6-8080.html"
+    ],
+    "remainingWithinScope": []
+  },
+  "localeCleanup": {
+    "files": 17,
+    "keysPreserved": [
+      "e.g., CNC Router",
+      "Enter a valid finite number.",
+      "Maximum must be greater than or equal to minimum.",
+      "X min",
+      "X max",
+      "Y min",
+      "Y max",
+      "Z min",
+      "Z max"
+    ],
+    "unrelatedGeneratedKeysRemovedPerFile": 51,
+    "jsonParsePassed": true,
+    "diffPerFile": {
+      "additions": 10,
+      "deletions": 1
+    }
+  },
+  "autoReview": {
+    "cleanupDeletionRejected": true,
+    "scope": "Removing the isolated config, all R6 /tmp logs, and raw temporary evidence together",
+    "reason": "Auto-review found the broad irreversible deletion scope was not explicitly authorized",
+    "retryAttempted": false,
+    "filesRemainUnderTmp": false,
+    "followUp": "Original broad deletion was not retried then. User explicitly authorized R6 temporary file deletion on2026-10-02; reviewed paths removed successfully."
+  }
+}

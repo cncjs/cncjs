@@ -1,0 +1,40 @@
+{
+  "removed": [],
+  "added": [
+    "CSSVariables",
+    "Dropdown",
+    "DropdownButton",
+    "DropdownChip",
+    "DropdownToggle"
+  ],
+  "versions": [
+    [
+      "react",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "react-base",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "react-hooks",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "react-icons",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "styled-system",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "theme",
+      "3.0.0-alpha.1"
+    ],
+    [
+      "utils",
+      "3.0.0-alpha.1"
+    ]
+  ]
+}

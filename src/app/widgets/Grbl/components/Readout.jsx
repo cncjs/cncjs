@@ -1,11 +1,21 @@
-import styled from 'styled-components';
-import Card from '@app/components/Card';
+import { Box } from '@tonic-ui/react';
+import React from 'react';
 
-const Readout = styled(Card)`
-    font-size: .75rem;
-    padding: .125rem .5rem;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: .25rem;
-`;
+/**
+ * @param {{ children?: React.ReactNode }} props
+ */
+function Readout(props) {
+  return (
+    <Box
+      {...props}
+      sx={{
+        backgroundColor: 'actions.hovered',
+        borderRadius: '.25rem',
+        fontSize: '.75rem',
+        padding: '.125rem .5rem',
+      }}
+    />
+  );
+}
 
 export default Readout;

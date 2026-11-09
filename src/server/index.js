@@ -15,13 +15,13 @@ import set from 'lodash/set';
 import size from 'lodash/size';
 import trimEnd from 'lodash/trimEnd';
 import uniqWith from 'lodash/uniqWith';
-import webappengine from 'webappengine';
 import app from './app';
 import settings from './config/settings';
 import serviceContainer from './service-container';
 import serviceEngine from './service-engine';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
+import webappengine from './lib/webappengine';
 
 const userStore = serviceContainer.resolve('userStore');
 const directoryWatcher = serviceContainer.resolve('directoryWatcher');
