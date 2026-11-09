@@ -3,7 +3,9 @@ FROM debian:bullseye as build-stage
 
 ENV BUILD_DIR /tmp/build
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION v18.20.4
+# Node.js 18 is end of life and has no fix for CVE-2026-111497 (Node2Shell,
+# Brotli decoder out-of-bounds write). Keep this on a patched LTS patch release.
+ENV NODE_VERSION v24.22.2
 ENV NODE_ENV production
 ENV NODE_PATH $NVM_DIR/$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
@@ -36,7 +38,9 @@ RUN npm install -g yarn && yarn --production
 FROM debian:bullseye
 
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION v18.20.4
+# Node.js 18 is end of life and has no fix for CVE-2026-111497 (Node2Shell,
+# Brotli decoder out-of-bounds write). Keep this on a patched LTS patch release.
+ENV NODE_VERSION v24.22.2
 ENV NODE_ENV production
 ENV NODE_PATH $NVM_DIR/$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
