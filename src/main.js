@@ -20,6 +20,15 @@ import {
 import launchServer from './server-cli';
 import pkg from './package.json';
 
+// Electron's Linux armv7l build reports arm_version "default" instead of the ARM ISA
+// version, so node-gyp-build cannot match its armv7 prebuild. The server, and with it
+// serialport, is only required by launchServer() inside showMainWindow, so this runs
+// before any native module is loaded.
+if (process.platform === 'linux' && process.arch === 'arm' && process.versions.electron &&
+    process.config.variables.arm_version === 'default' && !process.env.ARM_VERSION) {
+    process.env.ARM_VERSION = '7';
+}
+
 let mainWindow = null;
 let powerId = 0;
 const store = new Store();

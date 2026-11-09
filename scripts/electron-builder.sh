@@ -1,7 +1,6 @@
 #!/bin/bash
 
 __dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-electron_version=$(electron --version)
 
 display_usage() {
     npm run electron-builder -- --help
@@ -24,11 +23,5 @@ echo "Installing packages..."
 npm install --production
 npm dedupe
 popd
-
-echo "Rebuild native modules using electron ${electron_version}"
-npm run electron-rebuild -- \
-    --version=${electron_version:1} \
-    --module-dir=dist/cncjs \
-    --which-module=serialport
 
 cross-env USE_HARD_LINKS=false npm run electron-builder -- "$@"
