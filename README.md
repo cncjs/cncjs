@@ -101,11 +101,11 @@ receive that fix.
 | 24.22.1 or higher | Recommended   |
 | 26.12.1 or higher | Supported     |
 
-Only the 24 and 26 lines are built and tested here. 20 reached end-of-life before
-the fix was published, and 22 is no longer a supported line now that the 32-bit
-ARM packages are gone. Each supported line keeps receiving fixes in patch
-releases, so `24.22.1 or higher` includes `24.22.2` and every later `24.x`.
-Install the newest patch release.
+Only the 24 and 26 lines are supported, and CI builds and tests the 24 line.
+20 reached end-of-life before the fix was published; 22 is no longer a supported
+line. Each supported line keeps receiving fixes in patch releases, so
+`24.22.1 or higher` includes `24.22.2` and every later `24.x`. Install the newest
+patch release.
 
 The desktop app bundles its own Node.js runtime. The versions above do not apply
 to it.
