@@ -319,8 +319,11 @@ class AutolevelWidget extends PureComponent {
     handleProbeFeedrateChange: (event) => {
       this.setState({ feedrate: this.parseInputValue(event.target.value) });
     },
-    handleSerpentineChange: (event) => {
-      this.setState({ serpentine: event.target.checked });
+    handleScanPatternChange: (event) => {
+      this.setState({ scanPattern: event.target.value });
+    },
+    handleScanAxisChange: (event) => {
+      this.setState({ scanAxis: event.target.value });
     },
 
     // Probe operations
@@ -352,7 +355,7 @@ class AutolevelWidget extends PureComponent {
         startY, endY, stepY,
         clearanceZ, startZ, endZ,
         feedrate,
-        serpentine,
+        scanPattern, scanAxis,
       } = this.state;
       // Calculate total points
       const numPointsX = Math.floor((endX - startX) / stepX) + 1;
@@ -389,7 +392,8 @@ class AutolevelWidget extends PureComponent {
         startZ,
         endZ,
         feedrate,
-        serpentine,
+        scanPattern,
+        scanAxis,
       });
 
       log.info('Starting probe sequence');
@@ -750,11 +754,12 @@ class AutolevelWidget extends PureComponent {
       startX, startY, endX, endY,
       clearanceZ, startZ, endZ,
       feedrate,
-      serpentine,
+      scanPattern, scanAxis,
     } = this.state;
 
     this.config.set('minimized', minimized);
-    this.config.set('serpentine', serpentine);
+    this.config.set('scanPattern', scanPattern);
+    this.config.set('scanAxis', scanAxis);
 
     // Do not save config settings if the units just changed between in and mm
     if (this.unitsDidChange) {
@@ -832,7 +837,8 @@ class AutolevelWidget extends PureComponent {
       startZ: this.config.get('startZ', 5),
       endZ: this.config.get('endZ', -5),
       feedrate: this.config.get('feedrate', 25),
-      serpentine: this.config.get('serpentine', false),
+      scanPattern: this.config.get('scanPattern', 'raster'),
+      scanAxis: this.config.get('scanAxis', 'x'),
       // Probe state
       probeState: PROBE_STATE_IDLE,
       probeProgress: { current: 0, total: 0, percentage: 0 },
@@ -933,9 +939,13 @@ class AutolevelWidget extends PureComponent {
     }
     if (!this.isValidNumber(endX)) {
       errors.endX = invalidMsg;
+    } else if (endX < startX) {
+      errors.endX = i18n._('End X must be greater than or equal to Start X');
     }
     if (!this.isValidNumber(endY)) {
       errors.endY = invalidMsg;
+    } else if (endY < startY) {
+      errors.endY = i18n._('End Y must be greater than or equal to Start Y');
     }
     if (!this.isValidNumber(stepX)) {
       errors.stepX = invalidMsg;

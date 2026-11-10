@@ -16,7 +16,7 @@ const SetupProbeView = ({ state, actions }) => {
   const {
     stepX, stepY, startX, startY, endX, endY,
     clearanceZ, startZ, endZ, feedrate,
-    serpentine,
+    scanPattern, scanAxis,
     probeState, probeProgress, canClick, units,
     validationErrors = {},
   } = state;
@@ -280,23 +280,55 @@ const SetupProbeView = ({ state, actions }) => {
             </div>
           </div>
         </div>
-        <div className="checkbox" style={{ marginTop: 0, marginBottom: 5 }}>
-          <label>
-            <input
-              type="checkbox"
-              checked={!!serpentine}
-              onChange={actions.handleSerpentineChange}
-              disabled={isProbing}
-            />
-            {i18n._('Zigzag scan path')}
-            {' '}
-            <Infotip
-              placement="top"
-              content={i18n._('Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.')}
-            >
-              <i className="fa fa-info-circle text-muted" />
-            </Infotip>
-          </label>
+        <div className="row no-gutters">
+          <div className="col-xs-6" style={{ paddingRight: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Scan Pattern')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The order in which the probe points are visited. Raster scans each row in one direction. Zigzag alternates row direction so the head continues from where the previous row ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <select
+                className="form-control"
+                value={scanPattern}
+                onChange={actions.handleScanPatternChange}
+                disabled={isProbing}
+              >
+                <option value="raster">{i18n._('Raster')}</option>
+                <option value="zigzag">{i18n._('Zigzag')}</option>
+                <option value="spiral-in">{i18n._('Spiral In')}</option>
+                <option value="spiral-out">{i18n._('Spiral Out')}</option>
+              </select>
+            </div>
+          </div>
+          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Scan Axis')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The primary axis used for scanning. Along X scans rows; along Y scans columns.')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <select
+                className="form-control"
+                value={scanAxis}
+                onChange={actions.handleScanAxisChange}
+                disabled={isProbing}
+              >
+                <option value="x">{i18n._('X')}</option>
+                <option value="y">{i18n._('Y')}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div className={styles.section}>

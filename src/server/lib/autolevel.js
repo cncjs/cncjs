@@ -309,6 +309,319 @@ const compensatePoint = (pt, surface, units = METRIC_UNITS) => {
   };
 };
 
+const FLOAT_EPSILON = 1e-10;
+
+const SUPPORTED_SCAN_AXES = ['x', 'y'];
+
+const SUPPORTED_SCAN_PATTERNS = [
+  'raster',
+  'zigzag',
+  'spiral-in',
+  'spiral-out',
+];
+
+/**
+ * Generate axis positions without cumulative floating-point errors.
+ *
+ * @param {number} start
+ * @param {number} end
+ * @param {number} step
+ * @returns {number[]}
+ */
+const createAxisPositions = (start, end, step) => {
+  if (
+    !Number.isFinite(start) ||
+    !Number.isFinite(end) ||
+    !Number.isFinite(step) ||
+    step <= 0
+  ) {
+    throw new RangeError(
+      'Axis start, end, and step must be finite, with step > 0',
+    );
+  }
+
+  if (end < start) {
+    throw new RangeError('Axis end must be greater than or equal to start');
+  }
+
+  const count = Math.floor((end - start) / step + FLOAT_EPSILON);
+
+  return Array.from({ length: count + 1 }, (_, index) => {
+    const value = start + index * step;
+
+    // Prevent values such as 0.30000000000000004.
+    return Math.abs(value - end) <= FLOAT_EPSILON ? end : value;
+  });
+};
+
+/**
+ * Generate raster scan positions.
+ *
+ * scanAxis = 'x':
+ *   Scan every Y row from left to right.
+ *
+ * scanAxis = 'y':
+ *   Scan every X column from bottom to top.
+ *
+ * @param {Object} options
+ * @param {number[]} options.xPositions
+ * @param {number[]} options.yPositions
+ * @param {'x'|'y'} options.scanAxis
+ * @returns {{x: number, y: number}[]}
+ */
+const createRasterProbeXYPoints = ({
+  xPositions,
+  yPositions,
+  scanAxis,
+}) => {
+  const positions = [];
+
+  if (scanAxis === 'x') {
+    for (const y of yPositions) {
+      for (const x of xPositions) {
+        positions.push({ x, y });
+      }
+    }
+
+    return positions;
+  }
+
+  for (const x of xPositions) {
+    for (const y of yPositions) {
+      positions.push({ x, y });
+    }
+  }
+
+  return positions;
+};
+
+/**
+ * Generate zigzag scan positions.
+ *
+ * scanAxis = 'x':
+ *   Even rows scan left to right.
+ *   Odd rows scan right to left.
+ *
+ * scanAxis = 'y':
+ *   Even columns scan bottom to top.
+ *   Odd columns scan top to bottom.
+ *
+ * @param {Object} options
+ * @param {number[]} options.xPositions
+ * @param {number[]} options.yPositions
+ * @param {'x'|'y'} options.scanAxis
+ * @returns {{x: number, y: number}[]}
+ */
+const createZigzagProbeXYPoints = ({
+  xPositions,
+  yPositions,
+  scanAxis,
+}) => {
+  const positions = [];
+
+  if (scanAxis === 'x') {
+    for (let row = 0; row < yPositions.length; row += 1) {
+      const y = yPositions[row];
+
+      if (row % 2 === 0) {
+        for (const x of xPositions) {
+          positions.push({ x, y });
+        }
+      } else {
+        for (let index = xPositions.length - 1; index >= 0; index -= 1) {
+          positions.push({
+            x: xPositions[index],
+            y,
+          });
+        }
+      }
+    }
+
+    return positions;
+  }
+
+  for (let column = 0; column < xPositions.length; column += 1) {
+    const x = xPositions[column];
+
+    if (column % 2 === 0) {
+      for (const y of yPositions) {
+        positions.push({ x, y });
+      }
+    } else {
+      for (let index = yPositions.length - 1; index >= 0; index -= 1) {
+        positions.push({
+          x,
+          y: yPositions[index],
+        });
+      }
+    }
+  }
+
+  return positions;
+};
+
+/**
+ * Generate an outer-to-inner spiral.
+ *
+ * scanAxis = 'x':
+ *   +X -> +Y -> -X -> -Y
+ *
+ * scanAxis = 'y':
+ *   +Y -> +X -> -Y -> -X
+ *
+ * @param {Object} options
+ * @param {number[]} options.xPositions
+ * @param {number[]} options.yPositions
+ * @param {'x'|'y'} options.scanAxis
+ * @returns {{x: number, y: number}[]}
+ */
+const createSpiralInProbeXYPoints = ({
+  xPositions,
+  yPositions,
+  scanAxis,
+}) => {
+  if (xPositions.length === 0 || yPositions.length === 0) {
+    return [];
+  }
+
+  const grid = yPositions.map((y) => (
+    xPositions.map((x) => ({ x, y }))
+  ));
+
+  const positions = [];
+
+  let top = 0;
+  let bottom = grid.length - 1;
+  let left = 0;
+  let right = grid[0].length - 1;
+
+  while (top <= bottom && left <= right) {
+    if (scanAxis === 'x') {
+      // Move +X.
+      for (let column = left; column <= right; column += 1) {
+        positions.push(grid[top][column]);
+      }
+      top += 1;
+
+      // Move +Y.
+      for (let row = top; row <= bottom; row += 1) {
+        positions.push(grid[row][right]);
+      }
+      right -= 1;
+
+      // Move -X.
+      if (top <= bottom) {
+        for (let column = right; column >= left; column -= 1) {
+          positions.push(grid[bottom][column]);
+        }
+        bottom -= 1;
+      }
+
+      // Move -Y.
+      if (left <= right) {
+        for (let row = bottom; row >= top; row -= 1) {
+          positions.push(grid[row][left]);
+        }
+        left += 1;
+      }
+    } else {
+      // Move +Y.
+      for (let row = top; row <= bottom; row += 1) {
+        positions.push(grid[row][left]);
+      }
+      left += 1;
+
+      // Move +X.
+      for (let column = left; column <= right; column += 1) {
+        positions.push(grid[bottom][column]);
+      }
+      bottom -= 1;
+
+      // Move -Y.
+      if (left <= right) {
+        for (let row = bottom; row >= top; row -= 1) {
+          positions.push(grid[row][right]);
+        }
+        right -= 1;
+      }
+
+      // Move -X.
+      if (top <= bottom) {
+        for (let column = right; column >= left; column -= 1) {
+          positions.push(grid[top][column]);
+        }
+        top += 1;
+      }
+    }
+  }
+
+  return positions;
+};
+
+/**
+ * Generate an inner-to-outer spiral.
+ *
+ * @param {Object} options
+ * @param {number[]} options.xPositions
+ * @param {number[]} options.yPositions
+ * @param {'x'|'y'} options.scanAxis
+ * @returns {{x: number, y: number}[]}
+ */
+const createSpiralOutProbeXYPoints = (options) => {
+  const spiralInPositions = createSpiralInProbeXYPoints(options);
+  const positions = [];
+
+  for (
+    let index = spiralInPositions.length - 1;
+    index >= 0;
+    index -= 1
+  ) {
+    positions.push(spiralInPositions[index]);
+  }
+
+  return positions;
+};
+
+/**
+ * Generate probe points for a specific scan pattern and axis.
+ *
+ * @param {Object} options
+ * @param {number[]} options.xPositions
+ * @param {number[]} options.yPositions
+ * @param {'x'|'y'} options.scanAxis
+ * @param {'raster'|'zigzag'|'spiral-in'|'spiral-out'} options.scanPattern
+ * @returns {{x: number, y: number}[]}
+ */
+const createProbePath = ({
+  xPositions,
+  yPositions,
+  scanAxis,
+  scanPattern,
+}) => {
+  const scanOptions = {
+    xPositions,
+    yPositions,
+    scanAxis,
+  };
+
+  switch (scanPattern) {
+    case 'raster':
+      return createRasterProbeXYPoints(scanOptions);
+
+    case 'zigzag':
+      return createZigzagProbeXYPoints(scanOptions);
+
+    case 'spiral-in':
+      return createSpiralInProbeXYPoints(scanOptions);
+
+    case 'spiral-out':
+      return createSpiralOutProbeXYPoints(scanOptions);
+
+    default:
+      throw new RangeError(`Unsupported scan pattern: ${scanPattern}`);
+  }
+};
+
 /**
  * Creates probe XY points based on the given range and step configuration.
  *
@@ -319,8 +632,11 @@ const compensatePoint = (pt, surface, units = METRIC_UNITS) => {
  * @param {number} options.startY - Y-axis minimum
  * @param {number} options.endY - Y-axis maximum
  * @param {number} options.stepY - Y-axis step size
- * @param {boolean} [options.serpentine] - Visit odd rows right-to-left
- * @returns {array} Array of probe XY points [{x, y}, ...]
+ * @param {'x'|'y'} [options.scanAxis='x']
+ *   Primary axis used for scanning.
+ * @param {'raster'|'zigzag'|'spiral-in'|'spiral-out'} [options.scanPattern='raster']
+ *   Scanning path.
+ * @returns {{x: number, y: number}[]} Array of probe XY points [{x, y}, ...]
  */
 export const createProbeXYPoints = (options) => {
   const {
@@ -330,29 +646,27 @@ export const createProbeXYPoints = (options) => {
     startY = 0,
     endY = 0,
     stepY = 10,
-    serpentine = false,
+    scanAxis = 'x',
+    scanPattern = 'raster',
   } = ensurePlainObject(options);
 
-  const positions = [];
-
-  let row = 0;
-  for (let y = startY; y <= endY; y += stepY) {
-    const rowPositions = [];
-    for (let x = startX; x <= endX; x += stepX) {
-      rowPositions.push({ x, y });
-    }
-    // Serpentine (zigzag) path: odd rows are probed right-to-left, so the head
-    // continues from where the previous row ended instead of rapiding back to
-    // startX. Same points, same grid -- only the visit order changes, and the
-    // per-row return rapid disappears from the path.
-    if (serpentine && (row % 2 === 1)) {
-      rowPositions.reverse();
-    }
-    positions.push(...rowPositions);
-    row += 1;
+  if (!SUPPORTED_SCAN_AXES.includes(scanAxis)) {
+    throw new RangeError(`Unsupported scan axis: ${scanAxis}`);
   }
 
-  return positions;
+  if (!SUPPORTED_SCAN_PATTERNS.includes(scanPattern)) {
+    throw new RangeError(`Unsupported scan pattern: ${scanPattern}`);
+  }
+
+  const xPositions = createAxisPositions(startX, endX, stepX);
+  const yPositions = createAxisPositions(startY, endY, stepY);
+
+  return createProbePath({
+    xPositions,
+    yPositions,
+    scanAxis,
+    scanPattern,
+  });
 };
 
 /**

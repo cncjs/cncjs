@@ -645,6 +645,16 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "Yüklenecek dosyaları buraya sürükleyin",
   "Uploading...": "Yükleniyor...",
-  "Zigzag scan path": "",
-  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
+  "End X must be greater than or equal to Start X": "",
+  "End Y must be greater than or equal to Start Y": "",
+  "Scan Pattern": "",
+  "The order in which the probe points are visited. Raster scans each row in one direction. Zigzag alternates row direction so the head continues from where the previous row ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.": "",
+  "Raster": "",
+  "Zigzag": "",
+  "Spiral In": "",
+  "Spiral Out": "",
+  "Scan Axis": "",
+  "The primary axis used for scanning. Along X scans rows; along Y scans columns.": "",
+  "X": "",
+  "Y": ""
 }
