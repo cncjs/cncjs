@@ -173,6 +173,7 @@ module.exports = {
       patterns: [
         { from: 'sw.js', to: 'sw.js' },
         { from: 'manifest.webmanifest', to: 'manifest.webmanifest' },
+        { from: 'offline.html', to: 'offline.html' },
       ],
     })
   ],

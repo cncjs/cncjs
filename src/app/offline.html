@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CNCjs is offline</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { display: flex; align-items: center; justify-content: center;
+           background: #222; color: #eee; font-family: sans-serif; text-align: center; }
+    h1 { font-size: 1.8em; margin: 2em 0 .5em; }
+    p { margin: 0; opacity: .8; }
+  </style>
+</head>
+<body>
+  <div>
+    <img src="/images/logo-badge-256x256.png"/>
+    <h1>CNCjs is offline</h1>
+    <p>Make sure the server is running. This page will reload automatically when it is back.</p>
+  </div>
+  <script>
+    setInterval(function () {
+      fetch('./', { method: 'HEAD', cache: 'no-store' })
+        .then(function (res) { if (res.ok) { location.reload(); } })
+        .catch(function () { /* still down */ });
+    }, 1000);
+  </script>
+</body>
+</html>
