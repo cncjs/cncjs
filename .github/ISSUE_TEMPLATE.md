@@ -4,9 +4,9 @@ Describe the issue or feature request in detail. Take a screenshot or record a v
 
 #### Versions
 
-- CNCjs: 1.9.x
-- Node.js: 6.x
-- NPM: 5.x
+- CNCjs: 1.11.x
+- Node.js: 24.22.1
+- NPM: 11.x
 
 #### How Do You Install CNCjs?
 

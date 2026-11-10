@@ -65,7 +65,7 @@ jobs:
         # node-gyp-build resolves build/Release before prebuilds, so a binary
         # compiled on the runner ends up in every arch package: wrong ELF arch
         # for arm, and the runner's glibc floor for x64.
-        for dir in output/linux-unpacked output/linux-arm64-unpacked output/linux-armv7l-unpacked; do
+        for dir in output/linux-unpacked output/linux-arm64-unpacked; do
           if [ ! -d "$dir" ]; then
             echo "• FAIL: $dir missing after build"
             exit 1
@@ -111,9 +111,6 @@ jobs:
         cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
         cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb"
-        cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.armv7l.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm"
-        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage"
-        cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb"
         cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.aarch64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch64.rpm"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
         cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_arm64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
@@ -121,9 +118,6 @@ jobs:
         ln -sf ../../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
         tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
         rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
-        ln -sf ../../output/linux-armv7l-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
-        tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
-        rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
         ln -sf ../../output/linux-arm64-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
