@@ -68,7 +68,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 | Platform | Architectures |
 | :------- | :------------ |
-| Linux | x64, ARM64, armv7l (short-term support) |
+| Linux | x64, ARM64 |
 | macOS | x64, ARM64 |
 | Windows | x64 |
 
@@ -77,9 +77,9 @@ A 64-bit CPU running a 32-bit operating system cannot run the ARM64 desktop app.
 On Debian-based systems, check that `dpkg --print-architecture` reports `arm64`
 and `getconf LONG_BIT` reports `64` before installing the ARM64 package.
 
-Linux armv7l desktop packages remain available with Electron 22 for now.
-The Electron upgrade and the end of armv7l desktop support will be handled
-separately; this does not change the architecture policy for the Node.js server.
+Linux armv7l (32-bit ARM) desktop packages are no longer built. Node.js 24 and 26
+publish no armv7l binaries, so a 24 or 26 runtime has no 32-bit ARM build. The
+Docker image `cncjs/cncjs` is published for `linux/amd64` and `linux/arm64`.
 
 ## Browser Support
 
@@ -89,17 +89,32 @@ separately; this does not change the architecture policy for the Node.js server.
 
 ## Supported Node.js Versions
 
+The minimum versions below are the first releases of each line with the fix for
+[CVE-2026-111497](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)
+(Node2Shell, an out-of-bounds write in the bundled Brotli decoder that can permit
+remote code execution). Node.js 20 reached end-of-life on 2026-04-30 and does not
+receive that fix.
+
 | Version | Supported Level |
 | :------ |:--------------- |
-| <= 10   | Not supported   |
-| 12      | Supported       |
-| >= 14   | Recommended     |
+| < 24    | Not supported   |
+| 24.22.1 or higher | Recommended   |
+| 26.12.1 or higher | Supported     |
+
+Only the 24 and 26 lines are supported, and CI builds and tests the 24 line.
+20 reached end-of-life before the fix was published; 22 is no longer a supported
+line. Each supported line keeps receiving fixes in patch releases, so
+`24.22.1 or higher` includes `24.22.2` and every later `24.x`. Install the newest
+patch release.
+
+The desktop app bundles its own Node.js runtime. The versions above do not apply
+to it.
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 14 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 24.22.1 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -116,8 +131,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 14
-nvm use 14
+nvm install 24
+nvm use 24
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:

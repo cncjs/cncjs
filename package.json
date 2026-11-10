@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": "^24.22.1 || >=26.12.1"
   },
   "preferGlobal": true,
   "scripts": {
@@ -37,9 +37,8 @@
     "build:macos": "bash -c 'scripts/electron-builder.sh --macos --x64 --arm64'",
     "build:macos-x64": "bash -c 'scripts/electron-builder.sh --macos --x64'",
     "build:macos-arm64": "bash -c 'scripts/electron-builder.sh --macos --arm64'",
-    "build:linux": "bash -c 'scripts/electron-builder.sh --linux --x64 --arm64 --armv7l'",
+    "build:linux": "bash -c 'scripts/electron-builder.sh --linux --x64 --arm64'",
     "build:linux-x64": "bash -c 'scripts/electron-builder.sh --linux --x64'",
-    "build:linux-armv7l": "bash -c 'scripts/electron-builder.sh --linux --armv7l'",
     "build:linux-arm64": "bash -c 'scripts/electron-builder.sh --linux --arm64'",
     "build:windows": "bash -c 'scripts/electron-builder.sh --windows --x64'",
     "build:windows-x64": "bash -c 'scripts/electron-builder.sh --windows --x64'",
