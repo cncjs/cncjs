@@ -751,6 +751,47 @@ describe('GrblController', () => {
       expect(controller.probeState.config).toEqual(params);
     });
 
+    test('autolevel:start in full mode follows the selected scan pattern and direction', () => {
+      const { controller, writes } = setup();
+
+      controller.command('autolevel:start', {
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 1,
+        endZ: -1,
+        feedrate: 100,
+        scanDirection: 'x',
+        scanPattern: 'zigzag',
+      });
+      flushFeeder(controller);
+
+      expect(controller.probeState.probePoints).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ]);
+      expect(
+        writes
+          .map(write => write.data)
+          .filter(data => /^G0 X\d+ Y\d+/.test(data))
+      ).toEqual([
+        'G0 X0 Y0\n',
+        'G0 X10 Y0\n',
+        'G0 X20 Y0\n',
+        'G0 X20 Y10\n',
+        'G0 X10 Y10\n',
+        'G0 X0 Y10\n',
+      ]);
+    });
+
     test('the probe measurement is stored at the intended grid node with the measured Z', () => {
       const { controller } = setup();
       controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];

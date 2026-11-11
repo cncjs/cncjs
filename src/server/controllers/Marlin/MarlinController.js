@@ -1757,6 +1757,8 @@ class MarlinController {
             startZ,
             endZ,
             feedrate,
+            scanDirection = 'x',
+            scanPattern = 'raster',
           } = params;
 
           if (mode === 'test') {
@@ -1781,6 +1783,8 @@ class MarlinController {
             startY,
             endY,
             stepY,
+            scanDirection,
+            scanPattern,
           });
 
           // Reset probe state

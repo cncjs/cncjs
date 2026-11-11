@@ -572,6 +572,48 @@ describe('MarlinController', () => {
       });
     });
 
+    test('autolevel:start in full mode follows the selected scan pattern and direction', () => {
+      setup();
+
+      controller.command('autolevel:start', {
+        mode: 'full',
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 2,
+        endZ: -1,
+        feedrate: 100,
+        scanDirection: 'x',
+        scanPattern: 'zigzag',
+      });
+      drainFeeder(controller, writes);
+
+      expect(controller.probeState.probePoints).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ]);
+      expect(
+        writes
+          .map(write => write.data)
+          .filter(data => /^G0 X\d+ Y\d+/.test(data))
+      ).toEqual([
+        'G0 X0 Y0\n',
+        'G0 X10 Y0\n',
+        'G0 X20 Y0\n',
+        'G0 X20 Y10\n',
+        'G0 X10 Y10\n',
+        'G0 X0 Y10\n',
+      ]);
+    });
+
     test('autolevel:stop resets the machine and clears the probe state', () => {
       setup();
       controller.probeState.probedPositions = [{ x: 1, y: 2, z: 3 }];

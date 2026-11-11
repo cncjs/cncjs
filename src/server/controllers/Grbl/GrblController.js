@@ -1792,6 +1792,8 @@ class GrblController {
             startZ,
             endZ,
             feedrate,
+            scanDirection = 'x',
+            scanPattern = 'raster',
           } = params;
 
           if (mode === 'test') {
@@ -1816,6 +1818,8 @@ class GrblController {
             startY,
             endY,
             stepY,
+            scanDirection,
+            scanPattern,
           });
 
           // Reset probe state
