@@ -311,7 +311,7 @@ const compensatePoint = (pt, surface, units = METRIC_UNITS) => {
 
 const FLOAT_EPSILON = 1e-10;
 
-const SUPPORTED_SCAN_AXES = ['x', 'y'];
+const SUPPORTED_SCAN_DIRECTIONS = ['x', 'y'];
 
 const SUPPORTED_SCAN_PATTERNS = [
   'raster',
@@ -357,26 +357,26 @@ const createAxisPositions = (start, end, step) => {
 /**
  * Generate raster scan positions.
  *
- * scanAxis = 'x':
+ * scanDirection = 'x':
  *   Scan every Y row from left to right.
  *
- * scanAxis = 'y':
+ * scanDirection = 'y':
  *   Scan every X column from bottom to top.
  *
  * @param {Object} options
  * @param {number[]} options.xPositions
  * @param {number[]} options.yPositions
- * @param {'x'|'y'} options.scanAxis
+ * @param {'x'|'y'} options.scanDirection
  * @returns {{x: number, y: number}[]}
  */
 const createRasterProbeXYPoints = ({
   xPositions,
   yPositions,
-  scanAxis,
+  scanDirection,
 }) => {
   const positions = [];
 
-  if (scanAxis === 'x') {
+  if (scanDirection === 'x') {
     for (const y of yPositions) {
       for (const x of xPositions) {
         positions.push({ x, y });
@@ -398,28 +398,28 @@ const createRasterProbeXYPoints = ({
 /**
  * Generate zigzag scan positions.
  *
- * scanAxis = 'x':
+ * scanDirection = 'x':
  *   Even rows scan left to right.
  *   Odd rows scan right to left.
  *
- * scanAxis = 'y':
+ * scanDirection = 'y':
  *   Even columns scan bottom to top.
  *   Odd columns scan top to bottom.
  *
  * @param {Object} options
  * @param {number[]} options.xPositions
  * @param {number[]} options.yPositions
- * @param {'x'|'y'} options.scanAxis
+ * @param {'x'|'y'} options.scanDirection
  * @returns {{x: number, y: number}[]}
  */
 const createZigzagProbeXYPoints = ({
   xPositions,
   yPositions,
-  scanAxis,
+  scanDirection,
 }) => {
   const positions = [];
 
-  if (scanAxis === 'x') {
+  if (scanDirection === 'x') {
     for (let row = 0; row < yPositions.length; row += 1) {
       const y = yPositions[row];
 
@@ -463,22 +463,22 @@ const createZigzagProbeXYPoints = ({
 /**
  * Generate an outer-to-inner spiral.
  *
- * scanAxis = 'x':
+ * scanDirection = 'x':
  *   +X -> +Y -> -X -> -Y
  *
- * scanAxis = 'y':
+ * scanDirection = 'y':
  *   +Y -> +X -> -Y -> -X
  *
  * @param {Object} options
  * @param {number[]} options.xPositions
  * @param {number[]} options.yPositions
- * @param {'x'|'y'} options.scanAxis
+ * @param {'x'|'y'} options.scanDirection
  * @returns {{x: number, y: number}[]}
  */
 const createSpiralInProbeXYPoints = ({
   xPositions,
   yPositions,
-  scanAxis,
+  scanDirection,
 }) => {
   if (xPositions.length === 0 || yPositions.length === 0) {
     return [];
@@ -496,7 +496,7 @@ const createSpiralInProbeXYPoints = ({
   let right = grid[0].length - 1;
 
   while (top <= bottom && left <= right) {
-    if (scanAxis === 'x') {
+    if (scanDirection === 'x') {
       // Move +X.
       for (let column = left; column <= right; column += 1) {
         positions.push(grid[top][column]);
@@ -564,7 +564,7 @@ const createSpiralInProbeXYPoints = ({
  * @param {Object} options
  * @param {number[]} options.xPositions
  * @param {number[]} options.yPositions
- * @param {'x'|'y'} options.scanAxis
+ * @param {'x'|'y'} options.scanDirection
  * @returns {{x: number, y: number}[]}
  */
 const createSpiralOutProbeXYPoints = (options) => {
@@ -588,20 +588,20 @@ const createSpiralOutProbeXYPoints = (options) => {
  * @param {Object} options
  * @param {number[]} options.xPositions
  * @param {number[]} options.yPositions
- * @param {'x'|'y'} options.scanAxis
+ * @param {'x'|'y'} options.scanDirection
  * @param {'raster'|'zigzag'|'spiral-in'|'spiral-out'} options.scanPattern
  * @returns {{x: number, y: number}[]}
  */
 const createProbePath = ({
   xPositions,
   yPositions,
-  scanAxis,
+  scanDirection,
   scanPattern,
 }) => {
   const scanOptions = {
     xPositions,
     yPositions,
-    scanAxis,
+    scanDirection,
   };
 
   switch (scanPattern) {
@@ -632,8 +632,8 @@ const createProbePath = ({
  * @param {number} options.startY - Y-axis minimum
  * @param {number} options.endY - Y-axis maximum
  * @param {number} options.stepY - Y-axis step size
- * @param {'x'|'y'} [options.scanAxis='x']
- *   Primary axis used for scanning.
+ * @param {'x'|'y'} [options.scanDirection='x']
+ *   Axis that each sweep travels along: 'x' travels along X, 'y' travels along Y.
  * @param {'raster'|'zigzag'|'spiral-in'|'spiral-out'} [options.scanPattern='raster']
  *   Scanning path.
  * @returns {{x: number, y: number}[]} Array of probe XY points [{x, y}, ...]
@@ -646,12 +646,12 @@ export const createProbeXYPoints = (options) => {
     startY = 0,
     endY = 0,
     stepY = 10,
-    scanAxis = 'x',
+    scanDirection = 'x',
     scanPattern = 'raster',
   } = ensurePlainObject(options);
 
-  if (!SUPPORTED_SCAN_AXES.includes(scanAxis)) {
-    throw new RangeError(`Unsupported scan axis: ${scanAxis}`);
+  if (!SUPPORTED_SCAN_DIRECTIONS.includes(scanDirection)) {
+    throw new RangeError(`Unsupported scan direction: ${scanDirection}`);
   }
 
   if (!SUPPORTED_SCAN_PATTERNS.includes(scanPattern)) {
@@ -664,7 +664,7 @@ export const createProbeXYPoints = (options) => {
   return createProbePath({
     xPositions,
     yPositions,
-    scanAxis,
+    scanDirection,
     scanPattern,
   });
 };

@@ -1809,7 +1809,7 @@ class TinyGController {
             startZ,
             endZ,
             feedrate,
-            scanAxis = 'x',
+            scanDirection = 'x',
             scanPattern = 'raster',
           } = params;
 
@@ -1835,7 +1835,7 @@ class TinyGController {
             startY,
             endY,
             stepY,
-            scanAxis,
+            scanDirection,
             scanPattern,
           });
 

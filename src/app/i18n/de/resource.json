@@ -648,13 +648,13 @@
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",
-  "The order in which the probe points are visited. Raster scans each row in one direction. Zigzag alternates row direction so the head continues from where the previous row ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.": "",
   "Raster": "",
   "Zigzag": "",
   "Spiral In": "",
   "Spiral Out": "",
-  "Scan Axis": "",
-  "The primary axis used for scanning. Along X scans rows; along Y scans columns.": "",
-  "X": "",
-  "Y": ""
+  "The order in which the probe points are visited. Raster travels every line in one direction. Zigzag alternates line direction, so the head continues from where the previous line ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.": "",
+  "Scan Direction": "",
+  "The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.": "",
+  "Along X Axis": "",
+  "Along Y Axis": ""
 }

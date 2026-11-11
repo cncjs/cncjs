@@ -1681,7 +1681,7 @@ class SmoothieController {
             startZ,
             endZ,
             feedrate,
-            scanAxis = 'x',
+            scanDirection = 'x',
             scanPattern = 'raster',
           } = params;
 
@@ -1707,7 +1707,7 @@ class SmoothieController {
             startY,
             endY,
             stepY,
-            scanAxis,
+            scanDirection,
             scanPattern,
           });
 

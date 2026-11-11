@@ -36,7 +36,7 @@ describe('autolevel', () => {
         endY: 20,
         stepY: 10,
         scanPattern: 'zigzag',
-        scanAxis: 'x',
+        scanDirection: 'x',
       });
 
       expect(positions).toHaveLength(9);
@@ -64,7 +64,7 @@ describe('autolevel', () => {
         endY: 10,
         stepY: 10,
         scanPattern: 'zigzag',
-        scanAxis: 'x',
+        scanDirection: 'x',
       });
 
       expect(positions).toEqual([
@@ -86,7 +86,7 @@ describe('autolevel', () => {
         endY: 20,
         stepY: 10,
         scanPattern: 'zigzag',
-        scanAxis: 'y',
+        scanDirection: 'y',
       });
 
       expect(positions).toEqual([
@@ -111,7 +111,7 @@ describe('autolevel', () => {
         endY: 20,
         stepY: 10,
         scanPattern: 'spiral-in',
-        scanAxis: 'x',
+        scanDirection: 'x',
       });
 
       expect(positions).toHaveLength(9);
@@ -137,7 +137,7 @@ describe('autolevel', () => {
         endY: 20,
         stepY: 10,
         scanPattern: 'spiral-in',
-        scanAxis: 'y',
+        scanDirection: 'y',
       });
 
       expect(positions).toEqual([
@@ -184,8 +184,8 @@ describe('autolevel', () => {
       const positions = createProbeXYPoints(area);
 
       for (const scanPattern of ['zigzag', 'spiral-in', 'spiral-out']) {
-        for (const scanAxis of ['x', 'y']) {
-          const patternPositions = createProbeXYPoints({ ...area, scanPattern, scanAxis });
+        for (const scanDirection of ['x', 'y']) {
+          const patternPositions = createProbeXYPoints({ ...area, scanPattern, scanDirection });
 
           expect(patternPositions).toHaveLength(positions.length);
           expect([...patternPositions].sort(sortByXY)).toEqual([...positions].sort(sortByXY));
@@ -207,7 +207,7 @@ describe('autolevel', () => {
       })).toThrow(RangeError);
     });
 
-    test('should reject an unsupported scan axis', () => {
+    test('should reject an unsupported scan direction', () => {
       expect(() => createProbeXYPoints({
         startX: 0,
         endX: 20,
@@ -215,7 +215,7 @@ describe('autolevel', () => {
         startY: 0,
         endY: 20,
         stepY: 10,
-        scanAxis: 'z',
+        scanDirection: 'z',
       })).toThrow(RangeError);
     });
 

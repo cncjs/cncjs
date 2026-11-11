@@ -1792,7 +1792,7 @@ class GrblController {
             startZ,
             endZ,
             feedrate,
-            scanAxis = 'x',
+            scanDirection = 'x',
             scanPattern = 'raster',
           } = params;
 
@@ -1818,7 +1818,7 @@ class GrblController {
             startY,
             endY,
             stepY,
-            scanAxis,
+            scanDirection,
             scanPattern,
           });
 

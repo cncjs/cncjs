@@ -1757,7 +1757,7 @@ class MarlinController {
             startZ,
             endZ,
             feedrate,
-            scanAxis = 'x',
+            scanDirection = 'x',
             scanPattern = 'raster',
           } = params;
 
@@ -1783,7 +1783,7 @@ class MarlinController {
             startY,
             endY,
             stepY,
-            scanAxis,
+            scanDirection,
             scanPattern,
           });
 

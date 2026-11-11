@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'app/lib/i18n';
 import { toDisplayUnits } from 'app/lib/units';
+import { getScanPathEndpoints } from './scanPath';
 
 const SVG_WIDTH = 230;
 const SVG_HEIGHT = 140;
@@ -9,6 +10,29 @@ const AREA_LEFT = 30;
 const AREA_TOP = 10;
 const AREA_WIDTH = 160;
 const AREA_HEIGHT = 100;
+const MAX_POINTS_PER_AXIS = 20;
+const LABEL_OFFSET = 11;
+
+// Probe positions on one axis, matching the controller grid.
+const createAxisPositions = (start, end, step) => {
+  const count = Math.floor((end - start) / step + 1e-10) + 1;
+
+  return Array.from({ length: count }, (_, index) => (
+    Math.min(start + index * step, end)
+  ));
+};
+
+// Thin out the dot grid for display, always keeping the last position.
+const sampleAxisPositions = (positions) => {
+  const stride = Math.ceil(positions.length / MAX_POINTS_PER_AXIS);
+  const sampled = positions.filter((_, index) => index % stride === 0);
+
+  if (sampled[sampled.length - 1] !== positions[positions.length - 1]) {
+    sampled.push(positions[positions.length - 1]);
+  }
+
+  return sampled;
+};
 
 const ProbeAreaDiagram = ({
   startX,
@@ -17,32 +41,59 @@ const ProbeAreaDiagram = ({
   endY,
   stepX,
   stepY,
+  scanPattern,
+  scanDirection,
   units,
 }) => {
   const displayUnits = toDisplayUnits(units);
   const width = endX - startX;
   const height = endY - startY;
-  const numPointsX = Math.max(2, Math.floor(width / stepX) + 1);
-  const numPointsY = Math.max(2, Math.floor(height / stepY) + 1);
 
-  // Cap display grid to max ~20 per axis to avoid SVG clutter
-  const maxPerAxis = 20;
-  const displayX = Math.min(numPointsX, maxPerAxis);
-  const displayY = Math.min(numPointsY, maxPerAxis);
+  // Map a world position to the diagram. Both axes are scaled to the rectangle,
+  // so a probe point stops where its axis really stops.
+  const normalize = (value, start, span) => (span > 0 ? (value - start) / span : 0);
+  const toSvgX = (x) => AREA_LEFT + normalize(x, startX, width) * AREA_WIDTH;
+  const toSvgY = (y) => AREA_TOP + AREA_HEIGHT - normalize(y, startY, height) * AREA_HEIGHT;
 
-  // Grid dot positions within the area
+  const displayX = sampleAxisPositions(createAxisPositions(startX, endX, stepX));
+  const displayY = sampleAxisPositions(createAxisPositions(startY, endY, stepY));
   const dots = [];
-  for (let iy = 0; iy < displayY; iy++) {
-    for (let ix = 0; ix < displayX; ix++) {
-      dots.push({
-        x: AREA_LEFT + (ix / (displayX - 1)) * AREA_WIDTH,
-        y: AREA_TOP + (iy / (displayY - 1)) * AREA_HEIGHT,
-      });
-    }
-  }
+
+  displayX.forEach((x) => {
+    displayY.forEach((y) => {
+      dots.push({ x: toSvgX(x), y: toSvgY(y) });
+    });
+  });
 
   // Scale dot size: smaller when more dots
-  const dotRadius = Math.max(0.6, Math.min(2, 30 / Math.max(displayX, displayY)));
+  const dotRadius = Math.max(0.6, Math.min(2, 30 / Math.max(displayX.length, displayY.length)));
+
+  // START and END are the first and last point of the probe path, which is not
+  // the same pair of corners for every scan pattern.
+  const { start, end } = getScanPathEndpoints({
+    startX,
+    startY,
+    endX,
+    endY,
+    stepX,
+    stepY,
+    scanPattern,
+    scanDirection,
+  });
+
+  const midY = AREA_TOP + AREA_HEIGHT / 2;
+  const labelAnchor = (point, kind) => {
+    const y = toSvgY(point.y);
+    const isBelow = (kind === 'start') ? (y >= midY) : (y < midY);
+
+    return {
+      x: toSvgX(point.x),
+      y: isBelow ? y + LABEL_OFFSET : y - 5,
+    };
+  };
+
+  const startLabel = start && labelAnchor(start, 'start');
+  const endLabel = end && labelAnchor(end, 'end');
 
   return (
     <svg viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}>
@@ -69,48 +120,54 @@ const ProbeAreaDiagram = ({
         />
       ))}
 
-      {/* Start corner marker */}
-      <circle
-        cx={AREA_LEFT}
-        cy={AREA_TOP + AREA_HEIGHT}
-        r="4"
-        fill="#0066cc"
-        stroke="#fff"
-        strokeWidth="1"
-      />
-      <text
-        x={AREA_LEFT}
-        y={AREA_TOP + AREA_HEIGHT + 12}
-        textAnchor="middle"
-        fontSize="8"
-        fill="#0066cc"
-      >
-        {i18n._('START')}
-      </text>
+      {/* Path start marker */}
+      {start && (
+        <g>
+          <circle
+            cx={toSvgX(start.x)}
+            cy={toSvgY(start.y)}
+            r="4"
+            fill="#0066cc"
+          />
+          <text
+            x={startLabel.x}
+            y={startLabel.y}
+            textAnchor="middle"
+            fontSize="8"
+            fill="#0066cc"
+          >
+            {i18n._('START')}
+          </text>
+        </g>
+      )}
 
-      {/* End corner marker */}
-      <circle
-        cx={AREA_LEFT + AREA_WIDTH}
-        cy={AREA_TOP}
-        r="4"
-        fill="#cc0000"
-        stroke="#fff"
-        strokeWidth="1"
-      />
-      <text
-        x={AREA_LEFT + AREA_WIDTH}
-        y={AREA_TOP - 4}
-        textAnchor="middle"
-        fontSize="8"
-        fill="#cc0000"
-      >
-        {i18n._('END')}
-      </text>
+      {/* Path end marker: ring, so it reads as an end, not another probe point */}
+      {end && (
+        <g>
+          <circle
+            cx={toSvgX(end.x)}
+            cy={toSvgY(end.y)}
+            r="4"
+            fill="none"
+            stroke="#cc0000"
+            strokeWidth="2"
+          />
+          <text
+            x={endLabel.x}
+            y={endLabel.y}
+            textAnchor="middle"
+            fontSize="8"
+            fill="#cc0000"
+          >
+            {i18n._('END')}
+          </text>
+        </g>
+      )}
 
       {/* Width dimension label (bottom) */}
       <text
         x={AREA_LEFT + AREA_WIDTH / 2}
-        y={AREA_TOP + AREA_HEIGHT + 12}
+        y={AREA_TOP + AREA_HEIGHT + LABEL_OFFSET}
         textAnchor="middle"
         fontSize="9"
         fill="#666"
@@ -140,6 +197,8 @@ ProbeAreaDiagram.propTypes = {
   endY: PropTypes.number,
   stepX: PropTypes.number,
   stepY: PropTypes.number,
+  scanPattern: PropTypes.string,
+  scanDirection: PropTypes.string,
   units: PropTypes.string,
 };
 
