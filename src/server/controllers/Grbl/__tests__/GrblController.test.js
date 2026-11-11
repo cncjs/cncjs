@@ -194,6 +194,22 @@ const serialWrites = (socketEvents) => {
     .map(({ args }) => ({ data: args[0], source: args[1] && args[1].source }));
 };
 
+const waitForCallback = (callback, timeoutMs = 4000) => new Promise((resolve, reject) => {
+  const deadline = Date.now() + timeoutMs;
+  const check = () => {
+    if (callback.mock.calls.length > 0) {
+      resolve();
+      return;
+    }
+    if (Date.now() > deadline) {
+      reject(new Error(`callback was never invoked within ${timeoutMs} ms`));
+      return;
+    }
+    setTimeout(check, 2);
+  };
+  check();
+});
+
 describe('GrblController', () => {
   afterEach(() => {
     while (activeControllers.length > 0) {
@@ -861,7 +877,7 @@ describe('GrblController', () => {
       const callback = jest.fn();
 
       controller.command('autolevel:loadFromFile', filepath, callback);
-      await delay(100);
+      await waitForCallback(callback);
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toBe(null);
@@ -880,7 +896,7 @@ describe('GrblController', () => {
       const callback = jest.fn();
 
       controller.command('autolevel:loadFromFile', filepath, callback);
-      await delay(100);
+      await waitForCallback(callback);
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toEqual(expect.stringContaining('ENOENT'));
@@ -899,7 +915,7 @@ describe('GrblController', () => {
       const callback = jest.fn();
 
       controller.command('autolevel:saveToFile', filepath, callback);
-      await delay(100);
+      await waitForCallback(callback);
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toBe(null);

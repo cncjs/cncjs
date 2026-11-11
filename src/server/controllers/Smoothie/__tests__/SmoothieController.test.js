@@ -82,19 +82,18 @@ const seedModal = (controller, patch) => {
   };
 };
 
-const waitForCallback = (callback) => new Promise((resolve, reject) => {
-  let attempts = 0;
+const waitForCallback = (callback, timeoutMs = 4000) => new Promise((resolve, reject) => {
+  const deadline = Date.now() + timeoutMs;
   const check = () => {
     if (callback.mock.calls.length > 0) {
       resolve();
       return;
     }
-    if (attempts > 1000) {
-      reject(new Error('callback was never invoked'));
+    if (Date.now() > deadline) {
+      reject(new Error(`callback was never invoked within ${timeoutMs} ms`));
       return;
     }
-    attempts += 1;
-    setImmediate(check);
+    setTimeout(check, 2);
   };
   check();
 });
