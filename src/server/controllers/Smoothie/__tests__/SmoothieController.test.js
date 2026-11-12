@@ -707,6 +707,39 @@ describe('SmoothieController', () => {
       expect(controller.probeState.maxZ).toBeNull();
     });
 
+    test('autolevel:start in full mode follows the selected scan pattern and direction', () => {
+      const { controller, writes } = create();
+
+      controller.command('autolevel:start', {
+        ...gridParams,
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        scanDirection: 'x',
+        scanPattern: 'zigzag',
+      });
+      pumpFeeder(controller);
+
+      expect(controller.probeState.probePoints).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ]);
+      expect(
+        written(writes).filter(data => /^G0 X\d+ Y\d+/.test(data))
+      ).toEqual([
+        'G0 X0 Y0\n',
+        'G0 X10 Y0\n',
+        'G0 X20 Y0\n',
+        'G0 X20 Y10\n',
+        'G0 X10 Y10\n',
+        'G0 X0 Y10\n',
+      ]);
+    });
+
     test('the probe measurement is stored at the intended grid node with the measured Z', () => {
       const { controller } = create();
       controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];

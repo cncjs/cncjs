@@ -29,6 +29,37 @@
   color: #555;
 }
 
+.scan-path-preview {
+  display: flex;
+  justify-content: space-between;
+
+  .glyph {
+    flex: 1 1 0;
+    margin: 0 2px;
+    padding: 2px 0;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    opacity: .45;
+  }
+
+  .glyph.selected {
+    opacity: 1;
+    border-color: #b8a070;
+    background-color: #f5f0e0;
+  }
+
+  .glyph-label {
+    font-size: 10px;
+    line-height: 1.2;
+    color: #666;
+  }
+
+  .glyph.selected .glyph-label {
+    color: #333;
+  }
+}
+
 // Form adjustments
 .form-group {
   margin-bottom: 10px;

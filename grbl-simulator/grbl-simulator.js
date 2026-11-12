@@ -343,9 +343,17 @@ class GrblSimulator {
      * This runs continuously to execute queued commands
      */
     startPlannerExecutor() {
-        setInterval(() => {
+        this.plannerTimer = setInterval(() => {
             this.executePlannerQueue();
         }, 10); // Check every 10ms
+    }
+
+    /**
+     * Stop the planner executor loop
+     */
+    destroy() {
+        clearInterval(this.plannerTimer);
+        this.plannerTimer = null;
     }
 
     /**
