@@ -512,7 +512,10 @@ class Visualizer extends Component {
         log.info('[Visualizer] Created and added probe visualization to group');
       } else {
         // Update existing visualization with new config
-        const { startX, startY, endX, endY, snapX, snapY, interactable, units } = config;
+        const {
+          startX, startY, endX, endY, snapX, snapY, interactable, units,
+          stepX, stepY, scanPattern, scanDirection,
+        } = config;
 
         // Update all config values
         if (this.probeVisualization.config) {
@@ -527,6 +530,18 @@ class Visualizer extends Component {
           }
           if (interactable !== undefined) {
             this.probeVisualization.config.interactable = interactable;
+          }
+          if (stepX !== undefined) {
+            this.probeVisualization.config.stepX = stepX;
+          }
+          if (stepY !== undefined) {
+            this.probeVisualization.config.stepY = stepY;
+          }
+          if (scanPattern !== undefined) {
+            this.probeVisualization.config.scanPattern = scanPattern;
+          }
+          if (scanDirection !== undefined) {
+            this.probeVisualization.config.scanDirection = scanDirection;
           }
         }
 

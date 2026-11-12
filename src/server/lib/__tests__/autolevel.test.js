@@ -27,6 +27,206 @@ describe('autolevel', () => {
       ]);
     });
 
+    test('should scan zigzag rows along X: even rows left-to-right, odd rows right-to-left', () => {
+      const positions = createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanPattern: 'zigzag',
+        scanDirection: 'x',
+      });
+
+      expect(positions).toHaveLength(9);
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 }, // odd row: right to left
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+        { x: 0, y: 20 }, // even row: left to right again
+        { x: 10, y: 20 },
+        { x: 20, y: 20 },
+      ]);
+      // Odd row count: the path ends at endX instead of rapiding back
+      expect(positions[positions.length - 1]).toEqual({ x: 20, y: 20 });
+    });
+
+    test('should end an even number of zigzag rows back at startX', () => {
+      const positions = createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        scanPattern: 'zigzag',
+        scanDirection: 'x',
+      });
+
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 }, // odd row: right to left
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ]);
+    });
+
+    test('should scan zigzag columns along Y: even columns bottom-to-top, odd columns top-to-bottom', () => {
+      const positions = createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanPattern: 'zigzag',
+        scanDirection: 'y',
+      });
+
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 0, y: 10 },
+        { x: 0, y: 20 },
+        { x: 10, y: 20 }, // odd column: top to bottom
+        { x: 10, y: 10 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 }, // even column: bottom to top again
+        { x: 20, y: 10 },
+        { x: 20, y: 20 },
+      ]);
+    });
+
+    test('should spiral inward along X: +X, +Y, -X, -Y', () => {
+      const positions = createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanPattern: 'spiral-in',
+        scanDirection: 'x',
+      });
+
+      expect(positions).toHaveLength(9);
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 20, y: 20 },
+        { x: 10, y: 20 },
+        { x: 0, y: 20 },
+        { x: 0, y: 10 },
+        { x: 10, y: 10 }, // center
+      ]);
+    });
+
+    test('should spiral inward along Y: +Y, +X, -Y, -X', () => {
+      const positions = createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanPattern: 'spiral-in',
+        scanDirection: 'y',
+      });
+
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 0, y: 10 },
+        { x: 0, y: 20 },
+        { x: 10, y: 20 },
+        { x: 20, y: 20 },
+        { x: 20, y: 10 },
+        { x: 20, y: 0 },
+        { x: 10, y: 0 },
+        { x: 10, y: 10 }, // center
+      ]);
+    });
+
+    test('should spiral outward as the reverse of the inward spiral', () => {
+      const area = {
+        startX: 0,
+        endX: 30,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      };
+
+      const inward = createProbeXYPoints({ ...area, scanPattern: 'spiral-in' });
+      const outward = createProbeXYPoints({ ...area, scanPattern: 'spiral-out' });
+
+      expect(outward).toHaveLength(inward.length);
+      expect([...outward].reverse()).toEqual(inward);
+    });
+
+    test('should probe the same set of points for every scan pattern', () => {
+      const area = {
+        startX: 0,
+        endX: 35,
+        stepX: 10,
+        startY: 0,
+        endY: 35,
+        stepY: 10,
+      };
+      const sortByXY = (a, b) => (a.y - b.y) || (a.x - b.x);
+
+      const positions = createProbeXYPoints(area);
+
+      for (const scanPattern of ['zigzag', 'spiral-in', 'spiral-out']) {
+        for (const scanDirection of ['x', 'y']) {
+          const patternPositions = createProbeXYPoints({ ...area, scanPattern, scanDirection });
+
+          expect(patternPositions).toHaveLength(positions.length);
+          expect([...patternPositions].sort(sortByXY)).toEqual([...positions].sort(sortByXY));
+          // Same grid, different visit order -- otherwise the option would be a no-op
+          expect(patternPositions).not.toEqual(positions);
+        }
+      }
+    });
+
+    test('should reject an unsupported scan pattern', () => {
+      expect(() => createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanPattern: 'circular',
+      })).toThrow(RangeError);
+    });
+
+    test('should reject an unsupported scan direction', () => {
+      expect(() => createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+        scanDirection: 'z',
+      })).toThrow(RangeError);
+    });
+
+    test('should reject an invalid step', () => {
+      const area = { startX: 0, endX: 20, startY: 0, endY: 20, stepY: 10 };
+
+      expect(() => createProbeXYPoints({ ...area, stepX: 0 })).toThrow(RangeError);
+      expect(() => createProbeXYPoints({ ...area, stepX: -10 })).toThrow(RangeError);
+      expect(() => createProbeXYPoints({ ...area, stepX: NaN })).toThrow(RangeError);
+    });
+
     test('should generate points within range when end does not align with step', () => {
       const positions = createProbeXYPoints({
         startX: 0,
