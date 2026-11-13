@@ -97,7 +97,7 @@ const TextPreview = styled('div')`
   line-height: 18px;
   overflow: auto;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-strong);
   border-radius: 4px;
   white-space: pre;
 `;
@@ -108,7 +108,7 @@ const TextEditable = styled('textarea')`
   line-height: 18px;
   padding: 8px;
   background: none;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-strong);
   border-radius: 4px;
   overflow-wrap: normal;
   white-space: pre;
@@ -135,7 +135,7 @@ class Tool extends PureComponent {
 
   renderToolChangePolicy = (option) => {
     const style = {
-      color: '#333',
+      color: 'var(--color-text-alt)',
       textOverflow: 'ellipsis',
       overflow: 'hidden'
     };

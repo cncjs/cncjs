@@ -67,7 +67,7 @@ class StartProbeModal extends PureComponent {
                 />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ textAlign: 'center', color: '#666', marginBottom: 4 }}>
+                <div style={{ textAlign: 'center', color: 'var(--color-icon)', marginBottom: 4 }}>
                   {i18n._('{{count}} points', { count: totalPoints })}
                 </div>
                 <ProbeAreaDiagram

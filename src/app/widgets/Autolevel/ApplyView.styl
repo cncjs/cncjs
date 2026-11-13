@@ -4,8 +4,8 @@
   font-weight: 600;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #e0e0e0;
-  color: #333;
+  border-bottom: 2px solid var(--color-border-light);
+  color: var(--color-text-alt);
   letter-spacing: 0.3px;
 }
 
@@ -25,16 +25,16 @@
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #555;
+  color:  var(--color-text-mid);
 }
 
 // Probe data info
 .probe-data-info {
   padding: 12px;
-  background-color: #fafafa;
-  border: 1px solid #f0f0f0;
+  background-color: var(--color-surface-faint);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 3px;
-  font-size: 12px;  
+  font-size: 12px;
 }
 
 // G-code data info
@@ -43,8 +43,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background-color: #f0f7ff;
-  border: 1px solid #c4ddf6;
+  background-color: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
   border-radius: 3px;
   font-size: 12px;
   word-break: break-all;
@@ -55,11 +55,11 @@
   border: none;
   padding: 0 0 0 8px;
   cursor: pointer;
-  color: #999;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 
   &:hover {
-    color: #333;
+    color: var(--color-text-alt);
   }
 }
 
@@ -84,10 +84,10 @@
 // Warning box (insufficient probe data)
 .warning-box {
   font-size: 12px;
-  color: #856404;
+  color: var(--color-warning-text);
   padding: 12px;
-  background-color: #fff9e6;
-  border: 1px solid #ffeaa7;
+  background-color: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
   border-radius: 3px;
   line-height: 1.5;
 }
@@ -95,8 +95,8 @@
 // Pipeline progress state
 .pipeline-progress {
   padding: 16px 12px;
-  background-color: #f7fbff;
-  border: 1px solid #e3f0ff;
+  background-color: var(--color-info-bg-soft);
+  border: 1px solid var(--color-info-border-soft);
   border-radius: 3px;
   text-align: center;
 }
@@ -110,7 +110,7 @@
 
 .progress-bar {
   height: 4px;
-  background-color: #d4e5f7;
+  background-color: var(--color-info-track);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -137,8 +137,8 @@
   display: flex;
   align-items: flex-start;
   padding: 14px 12px;
-  background-color: #fff5f5;
-  border: 1px solid #ffe0e0;
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: 3px;
   margin-bottom: 12px;
 }
@@ -164,7 +164,7 @@
 
 .error-detail {
   font-size: 10px;
-  color: #999;
+  color: var(--color-text-muted);
   margin-top: 4px;
   word-break: break-word;
   line-height: 1.4;
@@ -174,7 +174,7 @@
 .no-data {
   text-align: center;
   padding: 24px 16px;
-  color: #aaa;
+  color: var(--color-text-dim);
   font-style: italic;
   font-size: 11px;
 }

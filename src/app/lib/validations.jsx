@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from './i18n';
 
 const Error = (props) => (
-  <div {...props} style={{ color: '#A94442' }} />
+  <div {...props} style={{ color: 'var(--color-error-text)' }} />
 );
 
 const required = (value, props, components) => {

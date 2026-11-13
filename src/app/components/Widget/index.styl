@@ -1,7 +1,7 @@
 @import './theme';
 
 .widget {
-    background-color: #FFF;
+    background-color: var(--color-surface);
     margin-bottom: 10px;
 
     &.widget-borderless {
@@ -13,7 +13,7 @@
         .widget-header + .widget-content,
         .widget-header + .widget-footer,
         .widget-content + .widget-footer {
-            border-top: 1px solid #ccc;
+            border-top: 1px solid var(--color-border-strong);
         }
     }
 
@@ -49,8 +49,8 @@
 
     .widget-header {
         clearfix();
-        background-color: #f6f7f8;
-        border: 1px solid #ccc;
+        background-color: var(--color-widget-header-bg);
+        border: 1px solid var(--color-border-strong);
         position: relative;
     }
     .widget-header-fixed {
@@ -86,7 +86,7 @@
 
     .widget-content,
     .widget-footer {
-        border: 1px solid #CCC;
+        border: 1px solid var(--color-border-strong);
         border-top: none;
     }
 
@@ -114,12 +114,12 @@
             position: relative;
             font-size: 14px;
             font-family: Arial, Helvetica, sans-serif;
-            border-left: 1px solid rgba(0, 0, 0, .09);
+            border-left: 1px solid var(--color-divider-subtle);
             margin: 0;
             text-align: center;
 
             &.disabled {
-                color: #bbb;
+                color: var(--color-placeholder);       // was #bbb
                 cursor: not-allowed;
             }
 
@@ -127,7 +127,7 @@
                 background-color: inherit;
             }
             &:hover {
-                background-color: rgba(0, 0, 0, .05);
+                background-color: var(--color-hover-overlay);
             }
 
             &.inverted {

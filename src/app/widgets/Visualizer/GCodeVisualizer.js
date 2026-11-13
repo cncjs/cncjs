@@ -1,14 +1,25 @@
-import colornames from 'colornames';
 import Toolpath from 'gcode-toolpath';
 import * as THREE from 'three';
 import log from 'app/lib/log';
+import { getScenePalette } from './scene-theme';
 
-const defaultColor = new THREE.Color(colornames('lightgrey'));
+const initialPalette = getScenePalette();
+const defaultColor = new THREE.Color(initialPalette.done);
 const motionColor = {
-  'G0': new THREE.Color(colornames('green')),
-  'G1': new THREE.Color(colornames('blue')),
-  'G2': new THREE.Color(colornames('deepskyblue')),
-  'G3': new THREE.Color(colornames('deepskyblue'))
+  'G0': new THREE.Color(initialPalette.rapid),
+  'G1': new THREE.Color(initialPalette.cut),
+  'G2': new THREE.Color(initialPalette.arc),
+  'G3': new THREE.Color(initialPalette.arc)
+};
+
+// Recolor in place: the geometry holds references to these shared Color objects,
+// so every vertex follows without reloading the G-code.
+export const setToolpathColors = ({ rapid, cut, arc, done }) => {
+  motionColor.G0.set(rapid);
+  motionColor.G1.set(cut);
+  motionColor.G2.set(arc);
+  motionColor.G3.set(arc);
+  defaultColor.set(done);
 };
 
 class GCodeVisualizer {
@@ -153,6 +164,13 @@ class GCodeVisualizer {
     }
 
     this.frameIndex = frameIndex;
+  }
+
+  refreshColors() {
+    const workpiece = this.group.children[0];
+    if (workpiece) {
+      workpiece.geometry.colorsNeedUpdate = true;
+    }
   }
 }
 

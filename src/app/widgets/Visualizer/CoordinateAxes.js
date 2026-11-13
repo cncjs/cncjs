@@ -47,11 +47,11 @@ class CoordinateAxes {
     // @param {object} bounds  { xmin, xmax, ymin, ymax, zmin, zmax }
     //                         All values are in the same world units.
     //                         Positive directions are drawn solid, negative dashed.
-    constructor({ minX = 0, maxX, minY = 0, maxY, minZ = 0, maxZ }) {
+    constructor({ minX = 0, maxX, minY = 0, maxY, minZ = 0, maxZ, colors = {} }) {
       const origin = new THREE.Vector3(0, 0, 0);
-      const red = colornames('red');
-      const green = colornames('green');
-      const blue = colornames('blue');
+      const red = colors.x || colornames('red');
+      const green = colors.y || colornames('green');
+      const blue = colors.z || colornames('blue');
 
       if (maxX > 0) {
         this.group.add(buildAxis(origin, new THREE.Vector3(maxX, 0, 0), red, false)); // +X solid

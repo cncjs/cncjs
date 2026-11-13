@@ -17,19 +17,19 @@
         :global {
             i.fa,
             span.fa {
-                color: #333;
+                color: var(--color-text-alt);
             }
         }
 
         &.highlight {
-            background-color: rgba(240, 240, 240, .8);
+            background-color: var(--color-keypad-highlight-bg);
             background-image: none;
             box-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
-            border-color: rgba(0, 0, 0, .4);
+            border-color: var(--color-keypad-highlight-border);
 
             &:hover,
             &.hover {
-                background-color: rgba(0, 0, 0, .1);
+                background-color: var(--color-hover-overlay-strong);
             }
 
             &:active,

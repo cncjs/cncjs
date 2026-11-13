@@ -1,0 +1,604 @@
+// @stylint off
+//
+// Dark overrides for components whose colors are baked into third-party CSS
+// (@trendmicro/react-*, Bootstrap, react-select). Their class names are hashed, so the
+// rules match the stable class-name prefix with [class*="..."], and use !important where
+// the package selectors are too specific to outrank. Everything is scoped to .theme-dark,
+// so the light theme is unaffected.
+
+@css {
+  .theme-dark .form-control {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .form-control[disabled],
+  .theme-dark .form-control[readonly] {
+    background-color: var(--color-input-disabled-bg);
+  }
+
+  .theme-dark .input-group-addon {
+    color: var(--color-text);
+    background-color: var(--color-surface-alt);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .btn-default:not(.btn-select) {
+    color: var(--color-text);
+    background-color: var(--btn-default-top);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .btn-default:not(.btn-select):hover,
+  .theme-dark .btn-default:not(.btn-select):focus {
+    background-color: var(--btn-default-hover-top);
+  }
+
+  .theme-dark .btn-default:not(.btn-select):active,
+  .theme-dark .btn-default:not(.btn-select).active {
+    background-color: var(--color-surface-active);
+  }
+
+  /* react-select v1 */
+  .theme-dark .Select-control {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .Select-menu-outer {
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .Select-option {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+  }
+
+  .theme-dark .Select-option.is-focused {
+    background-color: var(--color-surface-hover);
+  }
+
+  .theme-dark .Select-option.is-selected {
+    background-color: var(--color-surface-active);
+  }
+
+  .theme-dark .Select-placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .theme-dark .Select-value-label {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark .Select-input>input {
+    color: var(--color-text);
+  }
+
+  .theme-dark [class*="breadcrumbs---breadcrumbs---"]>li {
+    color: var(--color-text-subtle);
+  }
+
+  .theme-dark [class*="breadcrumbs---breadcrumbs---"]>li[class*="breadcrumbs---active---"] {
+    color: var(--color-text);
+  }
+
+  .theme-dark pre {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark [class*="buttons---btn-default---"] {
+    color: var(--color-text);
+    background-color: var(--btn-default-top);
+    background-image: linear-gradient(to bottom, var(--btn-default-top), var(--btn-default-bottom));
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark [class*="buttons---btn-default---"]:hover {
+    background-image: linear-gradient(to bottom, var(--btn-default-hover-top), var(--btn-default-hover-bottom));
+    border-color: var(--color-border-stronger);
+  }
+
+  .theme-dark [class*="buttons---btn-default---"]:active,
+  .theme-dark [class*="buttons---btn-default---"][class*="---active---"] {
+    background-image: none;
+    background-color: var(--color-surface-active);
+  }
+
+  .theme-dark .table>thead>tr>th,
+  .theme-dark .table>tbody>tr>th,
+  .theme-dark .table>tfoot>tr>th,
+  .theme-dark .table>thead>tr>td,
+  .theme-dark .table>tbody>tr>td,
+  .theme-dark .table>tfoot>tr>td,
+  .theme-dark .table-bordered,
+  .theme-dark .table-bordered>thead>tr>th,
+  .theme-dark .table-bordered>tbody>tr>th,
+  .theme-dark .table-bordered>tfoot>tr>th,
+  .theme-dark .table-bordered>thead>tr>td,
+  .theme-dark .table-bordered>tbody>tr>td,
+  .theme-dark .table-bordered>tfoot>tr>td {
+    border-color: var(--color-border);
+  }
+
+  .theme-dark [class*="buttons---btn-border---"] {
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+    background-image: none;
+  }
+
+  .theme-dark [class*="buttons---btn-border---"]:hover,
+  .theme-dark [class*="buttons---btn-border---"]:focus {
+    color: var(--color-text);
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-stronger);
+    background-image: none;
+  }
+
+  .theme-dark [class*="buttons---btn-border---"]:active,
+  .theme-dark [class*="buttons---btn-border---"][class*="---active---"] {
+    color: var(--color-text);
+    background-color: var(--color-surface-active);
+    border-color: var(--color-border-stronger);
+    background-image: none;
+  }
+
+  .theme-dark .panel {
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .panel-default {
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .panel-default>.panel-heading {
+    color: var(--color-text);
+    background-color: var(--color-surface-faint);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-dark .panel-footer {
+    background-color: var(--color-surface-faint);
+    border-top-color: var(--color-border-strong);
+  }
+
+  .theme-dark .well {
+    background-color: var(--color-well-bg);
+    border-color: var(--color-border-faint);
+  }
+
+  .theme-dark .progress {
+    background-color: var(--color-well-bg);
+  }
+
+  .theme-dark button[aria-label]>img[src^="data:image/svg+xml"] {
+    filter: invert(.8);
+  }
+
+  .theme-dark [class*="Console/index__select-all--"] {
+    filter: invert(.85);
+  }
+
+  .theme-dark [class*="buttons---btn-default---"][disabled]:hover,
+  .theme-dark [class*="buttons---btn-default---"][disabled]:focus,
+  .theme-dark [class*="buttons---btn-default---"][class*="---disabled---"]:hover,
+  .theme-dark [class*="buttons---btn-default---"][class*="---disabled---"]:focus {
+    background-color: var(--btn-default-top) !important;
+    background-image: none !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="buttons---btn-border---"][disabled]:hover,
+  .theme-dark [class*="buttons---btn-border---"][disabled]:focus,
+  .theme-dark [class*="buttons---btn-border---"][class*="---disabled---"]:hover,
+  .theme-dark [class*="buttons---btn-border---"][class*="---disabled---"]:focus {
+    background-color: var(--color-surface) !important;
+    background-image: none !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="buttons---btn-link---"][disabled],
+  .theme-dark [class*="buttons---btn-link---"][class*="---disabled---"] {
+    color: var(--color-text-disabled) !important;
+  }
+
+  .theme-dark [class*="buttons---btn-border---"]:focus {
+    border-color: #0096cc;
+  }
+
+  .theme-dark .Select-control .Select-multi-value-wrapper,
+  .theme-dark .Select-control .Select-value,
+  .theme-dark .Select-control .Select-value-label,
+  .theme-dark .Select-control .Select-input,
+  .theme-dark .Select-control .Select-input > input {
+    background: transparent !important;
+  }
+
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-border---"],
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-border---"]:hover,
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-border---"]:focus,
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-default---"],
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-default---"]:hover,
+  .theme-dark [class*="buttons---open---"] > [class*="buttons---dropdown-toggle---"][class*="buttons---btn-default---"]:focus {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface-active) !important;
+    background-image: none !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="Spindle/index__icon-fan--"] {
+    filter: invert(.85);
+  }
+
+  /* ===== @trendmicro/react-table ===== */
+  .theme-dark [class*="table---table-wrapper---"] {
+    border-color: var(--color-border) !important;
+  }
+
+  .theme-dark [class*="table---table---"] {
+    background-color: var(--color-surface) !important;
+  }
+
+  .theme-dark [class*="table---th---"] {
+    color: var(--color-text-subtle) !important;
+  }
+
+  .theme-dark [class*="table---th---"][class*="table---sortable-highlight---"] {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark [class*="table---th---"],
+  .theme-dark [class*="table---td---"] {
+    border-color: var(--color-border) !important;
+  }
+
+  .theme-dark [class*="table---thead---"] [class*="table---th---"],
+  .theme-dark [class*="table---thead---"] [class*="table---td---"] {
+    border-bottom-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="table---table-bordered---"] [class*="table---thead---"] [class*="table---th---"],
+  .theme-dark [class*="table---table-bordered---"] [class*="table---thead---"] [class*="table---td---"] {
+    background-color: var(--color-surface-active) !important;
+  }
+
+  .theme-dark [class*="table---th---"][class*="table---sortable---"]:hover {
+    background-color: var(--color-surface-hover) !important;
+  }
+
+  .theme-dark [class*="table---table-hover---"] [class*="table---tbody---"] [class*="table---tr---"]:hover,
+  .theme-dark [class*="table---table-hover---"] [class*="table---tbody---"] [class*="table---tr-hover---"] {
+    background-color: var(--color-surface-hover) !important;
+  }
+
+  .theme-dark [class*="table---table-placeholder---"] {
+    color: var(--color-text-muted) !important;
+  }
+
+  .theme-dark [class*="table---loader-overlay---"] {
+    background-color: var(--color-dropzone-bg) !important;
+  }
+
+  /* ===== @trendmicro/react-modal ===== */
+  .theme-dark [class*="modal---modal-content---"] {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="modal---modal-header---"] {
+    background-color: var(--color-surface) !important;
+    border-bottom-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="modal---modal-title---"] {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark [class*="modal---modal-footer---"] {
+    background-color: var(--color-surface-alt) !important;
+  }
+
+  .theme-dark [class*="modal---close---"] {
+    filter: invert(1);
+  }
+
+  /* ===== @trendmicro/react-form-control ===== */
+  .theme-dark [class*="form-control---form-control---"] {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="form-control---form-control---"]:focus {
+    border-color: #0096cc !important;
+  }
+
+  .theme-dark [class*="form-control---form-control---"]::placeholder {
+    color: var(--color-placeholder) !important;
+  }
+
+  .theme-dark [class*="form-control---form-control---"]:disabled,
+  .theme-dark [class*="form-control---form-control---"][readonly] {
+    background-color: var(--color-input-disabled-bg) !important;
+  }
+
+  /* ===== @trendmicro/react-dropdown ===== */
+  .theme-dark [class*="dropdown---dropdown-menu---"],
+  .theme-dark [class*="dropdown---dropdown-menu-wrapper---"] {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="dropdown---header---"] {
+    color: var(--color-text-subtle) !important;
+  }
+
+  .theme-dark [class*="dropdown---divider---"] {
+    background-color: var(--color-border-subtle) !important;
+  }
+
+  .theme-dark [class*="dropdown---menu-item---"] {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark [class*="dropdown---menu-item---"]:hover,
+  .theme-dark [class*="dropdown---menu-item---"]:focus {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface-active) !important;
+  }
+
+  .theme-dark [class*="dropdown---disabled---"]>[class*="dropdown---menu-item---"] {
+    color: var(--color-text-disabled) !important;
+  }
+
+  /* ===== @trendmicro/react-paginations ===== */
+  .theme-dark [class*="paginations---pagination---"]>li>a,
+  .theme-dark [class*="paginations---pagination---"]>li>span {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination---"]>li>a:hover,
+  .theme-dark [class*="paginations---pagination---"]>li>a:focus {
+    background-color: var(--color-surface-hover) !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination---"]>[class*="paginations---active---"]>a,
+  .theme-dark [class*="paginations---pagination---"]>[class*="paginations---active---"]>span {
+    background-color: var(--color-surface-active) !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination---"]>li>[class*="paginations---fa---"] {
+    color: var(--color-icon) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination-records---"],
+  .theme-dark [class*="paginations---pagination-input---"],
+  .theme-dark [class*="paginations---dropdown-toggle---"] {
+    color: var(--color-icon) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination-records---"]+[class*="paginations---dropdown---"] {
+    border-left-color: var(--color-border) !important;
+  }
+
+  .theme-dark [class*="paginations---pagination-input---"] input {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="paginations---dropdown-menu---"] {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="paginations---dropdown-menu---"]>li>a {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark [class*="paginations---dropdown-menu---"]>li>a:hover,
+  .theme-dark [class*="paginations---dropdown-menu---"]>li>a:focus {
+    background-color: var(--color-surface-active) !important;
+  }
+
+  /* ===== @trendmicro/react-popover ===== */
+  .theme-dark [class*="popover---popover---"] {
+    color: var(--color-text);
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="popover---popover-footer---"] {
+    background-color: var(--color-surface-alt) !important;
+  }
+
+  .theme-dark [class*="popover---top"]>[class*="popover---arrow---"] {
+    border-top-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="popover---top"]>[class*="popover---arrow---"]:after {
+    border-top-color: var(--color-surface) !important;
+  }
+
+  .theme-dark [class*="popover---right"]>[class*="popover---arrow---"] {
+    border-right-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="popover---right"]>[class*="popover---arrow---"]:after {
+    border-right-color: var(--color-surface) !important;
+  }
+
+  .theme-dark [class*="popover---bottom"]>[class*="popover---arrow---"] {
+    border-bottom-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="popover---bottom"]>[class*="popover---arrow---"]:after {
+    border-bottom-color: var(--color-surface) !important;
+  }
+
+  .theme-dark [class*="popover---left"]>[class*="popover---arrow---"] {
+    border-left-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="popover---left"]>[class*="popover---arrow---"]:after {
+    border-left-color: var(--color-surface) !important;
+  }
+
+  /* ===== @trendmicro/react-navs: tabs ===== */
+  .theme-dark [class*="navs---nav-tabs---"] {
+    border-bottom-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="navs---nav-tabs---"]>li>a {
+    color: var(--color-text-muted) !important;
+    background-color: var(--color-panel-bg) !important;
+    background-image: none !important;
+    border-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="navs---nav-tabs---"]>li>a:hover,
+  .theme-dark [class*="navs---nav-tabs---"]>li>a:focus {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface-hover) !important;
+    background-image: none !important;
+    border-color: var(--color-border-stronger) !important;
+  }
+
+  .theme-dark [class*="navs---nav-tabs---"]>li>a:active {
+    background-color: var(--color-surface-active) !important;
+    background-image: none !important;
+  }
+
+  .theme-dark [class*="navs---nav-tabs---"]>li[class*="navs---active---"]>a,
+  .theme-dark [class*="navs---nav-tabs---"]>li[class*="navs---active---"]>a:hover,
+  .theme-dark [class*="navs---nav-tabs---"]>li[class*="navs---active---"]>a:focus {
+    color: var(--color-text) !important;
+    background-color: var(--color-surface) !important;
+    background-image: none !important;
+    border-left-color: var(--color-border-strong) !important;
+    border-right-color: var(--color-border-strong) !important;
+  }
+
+  .theme-dark [class*="navs---nav---"]>li[class*="navs---disabled---"]>a {
+    color: var(--color-text-disabled) !important;
+  }
+
+  .theme-dark [class*="navs---nav-divider---"] {
+    background-color: var(--color-border) !important;
+  }
+
+  /* ===== @trendmicro/react-checkbox: replace the PNG sprite ===== */
+  .theme-dark [class*="checkbox---input-checkbox---"] + [class*="checkbox---control-indicator---"] {
+    position: relative;
+    background-image: none !important;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-stronger);
+    border-radius: 2px;
+  }
+  .theme-dark [class*="checkbox---control-checkbox---"]:not([class*="---disabled---"]):hover > [class*="checkbox---control-indicator---"] {
+    border-color: #0096cc;
+  }
+  .theme-dark [class*="checkbox---input-checkbox---"]:checked + [class*="checkbox---control-indicator---"],
+  .theme-dark [class*="checkbox---input-checkbox---"]:indeterminate + [class*="checkbox---control-indicator---"] {
+    background-color: #0096cc;
+    border-color: #0096cc;
+  }
+  .theme-dark [class*="checkbox---input-checkbox---"]:checked + [class*="checkbox---control-indicator---"]::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .theme-dark [class*="checkbox---input-checkbox---"]:indeterminate + [class*="checkbox---control-indicator---"]::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 6px;
+    width: 8px;
+    height: 2px;
+    background: #fff;
+  }
+
+  /* ===== @trendmicro/react-radio ===== */
+  .theme-dark [class*="radio---input-radio---"] + [class*="radio---control-indicator---"]::before {
+    background-color: var(--color-surface);
+    border-color: var(--color-border-stronger);
+  }
+  .theme-dark [class*="radio---input-radio---"]:checked + [class*="radio---control-indicator---"]::before {
+    background-color: #0096cc;
+    border-color: #0096cc;
+  }
+  .theme-dark [class*="radio---input-radio---"]:not(:checked):disabled + [class*="radio---control-indicator---"]::before {
+    background-color: var(--color-input-disabled-bg);
+  }
+
+  /* ======= @trendmicro/react-select ===== */
+  .theme-dark .Select.is-disabled > .Select-control,
+  .theme-dark .Select.is-focused > .Select-control,
+  .theme-dark .Select.is-focused:not(.is-open) > .Select-control,
+  .theme-dark .Select.is-open > .Select-control {
+    background-color: var(--color-surface) !important;
+  }
+
+  /* styles/bootstrap-override.styl (global, applies to both themes) */
+  [class*="dropdown---dropdown-toggle---"] > sub {
+      bottom: 0; 
+  }
+
+  /* Webcam toolbar icons (not the colored illustration, not already-inverted ones) */
+  .theme-dark [class*="Webcam/index__icon-"]:not([class*="index__icon-webcam--"]):not([class*="index__inverted--"]),
+  /* Visualizer workflow-control menu icons */
+  .theme-dark [class*="icon-perimeter-tracing-"] {
+    filter: invert(.85);
+  }
+
+  /* Visualizer footer toolbar icons (PNG and SVG) */
+  .theme-dark [class*="Visualizer/index__widget-footer--"] button img {
+    filter: invert(.62) !important;
+  }
+  .theme-dark [class*="Visualizer/index__widget-footer--"] button:hover img {
+    filter: invert(1) !important;
+  }
+  .theme-dark [class*="Visualizer/index__widget-footer--"] button.highlight img,
+  .theme-dark [class*="Visualizer/index__widget-footer--"] button.highlight:hover img {
+    filter: invert(0) !important;
+  }
+ 
+ .theme-dark [class*="buttons---dropdown-toggle---"][class*="buttons---btn-link---"]:not(:hover) {
+    color: var(--color-text) !important;
+  }
+
+  .theme-dark .btn-default img[src^="data:image/svg+xml"],
+  .theme-dark .btn-default img[src$=".svg"] {
+    filter: invert(.8);
+  }
+
+  /* The package gives i.fa its own #666, so the button's color never reaches the icon */
+  .theme-dark [class*="buttons---btn-border---"] i.fa,
+  .theme-dark [class*="buttons---btn-border---"] span.fa,
+  .theme-dark [class*="buttons---btn-default---"] i.fa,
+  .theme-dark [class*="buttons---btn-default---"] span.fa {
+    color: var(--color-icon);
+  }
+  .theme-dark [class*="buttons---btn-border---"]:hover i.fa,
+  .theme-dark [class*="buttons---btn-border---"]:hover span.fa,
+  .theme-dark [class*="buttons---btn-default---"]:hover i.fa,
+  .theme-dark [class*="buttons---btn-default---"]:hover span.fa {
+    color: var(--color-text);
+  }
+}

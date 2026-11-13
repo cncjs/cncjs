@@ -35,7 +35,10 @@ import Modal from './components/Modal';
 import ProtectedRoute from './components/ProtectedRoute';
 import Space from './components/Space';
 import './styles/vendor.styl';
+import './styles/theme.styl';
 import './styles/app.styl';
+import './styles/theme-overrides.styl';
+import { applyTheme } from './lib/theme';
 
 const renderPage = () => {
   const container = document.createElement('div');
@@ -60,6 +63,7 @@ const renderPage = () => {
   );
 };
 
+applyTheme();
 series([
   () => {
     const obj = qs.parse(window.location.search.slice(1));
@@ -100,7 +104,8 @@ series([
         if (authenticated) {
           try {
             const res = await api.getState();
-            const { allowAnonymousUsageDataCollection } = res.body || {};
+            const { allowAnonymousUsageDataCollection, theme } = res.body || {};
+            applyTheme(theme);
             if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
               GoogleAnalytics4.initialize([
                 {
@@ -173,7 +178,7 @@ series([
 
   { // Change backgrond color after loading complete
     const body = document.querySelector('body');
-    body.style.backgroundColor = '#222'; // sidebar background color
+    body.style.backgroundColor = 'var(--color-sidebar-bg)'; // sidebar background color
   }
 
   if (settings.error.corruptedWorkspaceSettings) {

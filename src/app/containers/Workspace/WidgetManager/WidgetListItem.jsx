@@ -28,17 +28,17 @@ class WidgetListItem extends PureComponent {
       const styles = {
         thumbnail: {
           fontSize: 100,
-          backgroundColor: '#f5f6f7',
-          color: checked ? 'rgba(64, 64, 64, 0.8)' : '#ccc',
-          textShadow: '2px 2px 2px #a0a0a0'
+          backgroundColor: 'var(--color-thumb-bg)',
+          color: checked ? 'var(--color-thumb-icon)' : 'var(--color-thumb-icon-off)',
+          textShadow: '2px 2px 2px var(--color-thumb-shadow)'
         },
         caption: {
-          color: '#333',
+          color: 'var(--color-text-alt)',
           fontWeight: 'bold',
           opacity: checked ? 1 : 0.6
         },
         details: {
-          color: '#333',
+          color: 'var(--color-text-alt)',
           height: 60,
           marginTop: 15,
           maxHeight: 60,
