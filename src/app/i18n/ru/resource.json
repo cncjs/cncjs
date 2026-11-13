@@ -667,7 +667,7 @@
   "Cyan": "Бирюзовый",
   "Red": "Красный",
   "Enter a number between {{min}} and {{max}}": "Введите число от {{min}} до {{max}}",
-  "Columns also limit how long a command you can type.": "Количество столбцов также ограничивает длину команды, которую можно ввести."
+  "Columns also limit how long a command you can type.": "Количество столбцов также ограничивает длину команды, которую можно ввести.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

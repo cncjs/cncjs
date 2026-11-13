@@ -665,7 +665,7 @@
   "Cyan": "Cyaan",
   "Red": "Rood",
   "Enter a number between {{min}} and {{max}}": "Voer een getal in tussen {{min}} en {{max}}",
-  "Columns also limit how long a command you can type.": "Het aantal kolommen beperkt ook de lengte van de opdrachten die u kunt typen."
+  "Columns also limit how long a command you can type.": "Het aantal kolommen beperkt ook de lengte van de opdrachten die u kunt typen.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

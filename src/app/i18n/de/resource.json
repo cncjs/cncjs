@@ -665,7 +665,7 @@
   "Cyan": "Cyan",
   "Red": "Rot",
   "Enter a number between {{min}} and {{max}}": "Geben Sie eine Zahl zwischen {{min}} und {{max}} ein",
-  "Columns also limit how long a command you can type.": "Die Spaltenzahl begrenzt auch die Länge eines Befehls, den Sie eingeben können."
+  "Columns also limit how long a command you can type.": "Die Spaltenzahl begrenzt auch die Länge eines Befehls, den Sie eingeben können.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

@@ -664,7 +664,7 @@
   "Cyan": "青色",
   "Red": "红色",
   "Enter a number between {{min}} and {{max}}": "请输入 {{min}} 到 {{max}} 之间的数字",
-  "Columns also limit how long a command you can type.": "列数也会限制可输入命令的长度。"
+  "Columns also limit how long a command you can type.": "列数也会限制可输入命令的长度。",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

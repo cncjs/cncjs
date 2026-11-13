@@ -667,7 +667,7 @@
   "Cyan": "Azurová",
   "Red": "Červená",
   "Enter a number between {{min}} and {{max}}": "Zadejte číslo od {{min}} do {{max}}",
-  "Columns also limit how long a command you can type.": "Počet sloupců také omezuje délku příkazu, který lze zadat."
+  "Columns also limit how long a command you can type.": "Počet sloupců také omezuje délku příkazu, který lze zadat.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

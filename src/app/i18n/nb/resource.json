@@ -665,7 +665,7 @@
   "Cyan": "Cyan",
   "Red": "Rød",
   "Enter a number between {{min}} and {{max}}": "Skriv inn et tall mellom {{min}} og {{max}}",
-  "Columns also limit how long a command you can type.": "Antall kolonner begrenser også hvor lang en kommando du kan skrive."
+  "Columns also limit how long a command you can type.": "Antall kolonner begrenser også hvor lang en kommando du kan skrive.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

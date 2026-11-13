@@ -665,7 +665,7 @@
   "Cyan": "Cián",
   "Red": "Piros",
   "Enter a number between {{min}} and {{max}}": "Adjon meg egy számot {{min}} és {{max}} között",
-  "Columns also limit how long a command you can type.": "Az oszlopok száma azt is korlátozza, milyen hosszú parancsot írhat be."
+  "Columns also limit how long a command you can type.": "Az oszlopok száma azt is korlátozza, milyen hosszú parancsot írhat be.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",

@@ -666,7 +666,7 @@
   "Cyan": "Ciano",
   "Red": "Vermelho",
   "Enter a number between {{min}} and {{max}}": "Introduza um número entre {{min}} e {{max}}",
-  "Columns also limit how long a command you can type.": "As colunas também limitam o comprimento dos comandos que pode escrever."
+  "Columns also limit how long a command you can type.": "As colunas também limitam o comprimento dos comandos que pode escrever.",
   "End X must be greater than or equal to Start X": "",
   "End Y must be greater than or equal to Start Y": "",
   "Scan Pattern": "",
