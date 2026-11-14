@@ -195,7 +195,7 @@ function Webcam({
               width={(100 * scale).toFixed(0) + '%'}
               height="auto"
               muted={muted}
-              video={!!deviceId ? deviceId : true}
+              video={typeof deviceId === 'string' && deviceId !== '' && deviceId !== '__default__' ? deviceId : true}
             />
           </Box>
         )}
