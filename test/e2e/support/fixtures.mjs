@@ -70,6 +70,32 @@ export const test = base.extend({
       if (window.location.origin !== origin) {
         return;
       }
+      // Never retain or call native camera/microphone APIs in isolated tests.
+      let mediaHandler = {};
+      const mediaDevices = {
+        getUserMedia: constraints => {
+          if (!mediaHandler.getUserMedia) {
+            return Promise.reject(new DOMException('Synthetic media handler not configured', 'NotAllowedError'));
+          }
+          return Promise.resolve().then(() => mediaHandler.getUserMedia(constraints));
+        },
+        enumerateDevices: () => (
+          mediaHandler.enumerateDevices
+            ? Promise.resolve().then(() => mediaHandler.enumerateDevices())
+            : Promise.resolve([])
+        ),
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      };
+      Object.defineProperty(navigator, 'mediaDevices', {
+        configurable: true,
+        value: mediaDevices,
+      });
+      window.__e2eMediaDevices = {
+        setHandler: handler => {
+          mediaHandler = handler || {};
+        },
+      };
       if (localStorage.getItem('e2e-seeded')) {
         return;
       }
