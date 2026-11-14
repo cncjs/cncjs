@@ -9,7 +9,7 @@
 
 ### 1. Comprehensive Skill File
 
-**Location**: `.claude/skills/cncjs-patterns.md`
+**Original location**: `.claude/skills/cncjs-patterns.md` (superseded by [contributor skills](../skills/README.md))
 
 **Contents:**
 - Project overview and tech stack
@@ -77,7 +77,8 @@ Six high-confidence instincts generated:
 
 ### Using the Skill
 
-The skill file is now available for Claude to reference when working on this codebase. It provides comprehensive context about:
+The original generated skill has been replaced by the contributor skills. See
+the [skill catalog](../skills/README.md) for current guidance on:
 - How to write commit messages
 - Project structure and architecture
 - Testing conventions
@@ -130,7 +131,7 @@ Then view their status:
 
 ## Next Steps
 
-1. **Review the skill file** at `.claude/skills/cncjs-patterns.md`
+1. **Review the current skills** in [the catalog](../skills/README.md)
 2. **Import the instincts** using `/instinct-import`
 3. **Apply patterns** when committing, testing, or developing
 4. **Evolve instincts** into skills/agents if needed using `/evolve`
