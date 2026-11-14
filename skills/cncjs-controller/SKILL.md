@@ -19,17 +19,27 @@ Source paths are repository-relative; reference links are skill-relative.
 ## Safety bottom lines
 
 - Automated verification uses mocks, fixtures, or `grbl-simulator` only. Never
-  require a physical controller, serial port, camera, or probe, and never use
+  require a physical controller, serial device, camera, or probe, and never use
   `socat` or a serial bridge in automated verification. Do not use a shared
   bridge, `~/.cncrc`, or a plain `yarn dev` server for validation.
+- For manual checks isolate the backend's `HOME` (`USERPROFILE` on Windows),
+  config, watch directory, simulator path, browser profile, and app origin.
+  Server startup deletes the session directory under that home; never clear an
+  existing browser profile's storage. Follow the verification reference.
+- Before `yarn build-dev`, account for its deletion of `output/*` and writes to
+  `src/package.json` and locale files. Never delete or overwrite unrelated data
+  without authorization; use an isolated checkout when needed.
 - Do not bypass the controller `write`/`writeln` closed-connection guard
   (`isClose()`), or `CNCEngine`'s missing/closed-port guard, and do not weaken
   either to make a test pass.
-- Realtime safety commands (`!`, `~`, `\x18`, `\x85`, override bytes) stay
-  single-byte `write` calls; never queue them through the feeder or sender.
-- Laser test never enables the laser without a motion mode, and always turns
-  it off after a timed test.
-- Grbl alarm keeps gating the feeder, and a streamed `error:` pauses the
+- Grbl realtime safety commands (`!`, `~`, `\x18`, `\x85`, override bytes)
+  require single-byte writes without a newline, not feeder or sender lines.
+  Captured controller strings do not prove serial-byte encoding. Other
+  controllers have different command encodings; trace their implementations.
+- Preserve each controller's laser-test on/off sequence, including the off
+  commands for positive-duration tests. Queued commands do not prove a physical
+  laser is off, and this skill never authorizes hardware access.
+- Grbl alarm keeps gating the feeder, and a Grbl streamed `error:` pauses the
   workflow unless `state.controller.exception.ignoreErrors` is set. Keep
   sender acknowledgments paired with `next()`.
 - Do not silently change alarm/error meanings, realtime byte mappings, or the
@@ -67,9 +77,10 @@ duplicate its rules here.
 
 ## Boundaries
 
-- Do not add serial-port, camera, probe, or hardware integration tests.
+- Do not add integration tests requiring physical serial devices, cameras,
+  probes, or other hardware. Simulator-backed probe tests are permitted.
 - Do not edit `grbl-simulator` to accommodate a broken controller expectation
   unless the simulator is wrong relative to Grbl; fix the consumer instead.
-- Do not introduce a second state-normalization path in a widget when the
-  `Axes` widget already owns unit conversion.
+- Trace the existing unit conversions in Axes, Visualizer, and Tool; do not add
+  another divergent normalization path.
 - Keep localization, layout, and release work in their own skills.

@@ -25,16 +25,21 @@ Source paths are repository-relative; reference links are skill-relative.
 
 - Never point a development instance at a shared or production server, a real
   serial port, physical hardware, or a camera. Use a task-owned local instance
-  with a task-owned config file and watch directory, and the repository
-  simulator. Do not use `~/.cncrc`, a plain `yarn dev` server, or a shared
-  serial path for validation.
+  with isolated `HOME` (`USERPROFILE` on Windows), config, watch directory,
+  simulator path, browser profile, and app origin. Server startup deletes the
+  session directory under that home; never clear an existing profile's storage.
+  Do not use `~/.cncrc`, a plain `yarn dev` server, or a shared serial path.
+- Before `yarn build-dev`, account for its deletion of `output/*` and writes to
+  `src/package.json` and locale files. Never delete or overwrite unrelated data
+  without authorization; use an isolated checkout when needed.
 - This checkout has no Playwright or e2e suite. Do not claim one exists or
   describe manual browser observation as an automated test.
 - Persisted workspace state is local (`localStorage.cnc` or the Electron user
   config), not server state. Do not send workspace layout to a server API.
 - Do not add retries, disable guards, or loosen assertions to make a manual
   check pass.
-- Do not add serial-port, camera, probe, or hardware integration tests.
+- Do not add integration tests requiring physical serial devices, cameras,
+  probes, or other hardware. Simulator-backed probe tests are permitted.
 
 ## Route the work
 
@@ -59,11 +64,11 @@ duplicate its rules here.
 2. Read the nearest existing tests and reuse their patterns. There is no
    widget test suite; the only app component test is the Webcam test. Server
    controller tests cover the command/state boundary.
-3. Prove local behavior with the available unit/component tests. Prove a
-   cross-boundary change at the highest available level, usually the
-   controller tests plus the in-process simulator; state what remains manual.
-   A mocked controller or direct component instance cannot certify Socket.IO
-   or server behavior.
+3. Prove local behavior with the available unit/component tests. For a
+   cross-boundary change, use tests for the affected controller and the
+   in-process simulator when applicable to Grbl; state what remains manual or
+   unverified. A mocked controller or direct component instance cannot certify
+   Socket.IO or server behavior.
 4. Verify persistence by reloading, not by one successful click. For visual
    changes, review the running app at the sizes and states you changed.
 5. Report the boundary exercised and the evidence kind: unit/component, mocked

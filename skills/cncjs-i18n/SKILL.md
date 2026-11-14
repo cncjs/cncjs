@@ -7,14 +7,29 @@ description: Run the CNCjs localization workflow, including string extraction, t
 
 ## Scope and safety
 
-- `build.config.js` is the language inventory. Frontend resources are in
-  `src/app/i18n/<language>/`; server resources are in
-  `src/server/i18n/<language>/`.
+- The scanner and frontend build language list is `build.config.js`; the
+  Settings selector separately uses `src/app/constants/i18n.js`, and the server
+  i18next whitelist is in `src/server/config/settings.base.js`. All three
+  currently list `en`, `cs`, `de`, `es`, `fr`, `hu`, `it`, `ja`, `nb`, `nl`,
+  `pt`, `pt-br`, `ru`, `tr`, `uk`, `zh-cn`, and `zh-tw`. Check each inventory
+  when adding or removing a language.
+- Frontend resources are in `src/app/i18n/<language>/`; server resources are in
+  `src/server/i18n/<language>/`. Do not assume every configured namespace file
+  exists: `src/server/i18n/uk/config.json` is currently absent.
 - Frontend namespaces are `controller`, `gcode`, and `resource`; server
   namespaces are `config` and `resource`. The namespace lists live in
   `src/app/config/settings.js` and `src/server/config/settings.base.js`.
-- The scanners write locale files. Inspect the working tree first and preserve
-  pre-existing edits; do not run a scanner just to see whether JSON parses.
+- The scanners write locale files and can remove unused keys. Inspect the
+  working tree first and preserve pre-existing edits; do not run a scanner just
+  to see whether JSON parses.
+- Build commands also have side effects. `yarn dev` starts with `build-dev`,
+  which clears `output/*`; `yarn build` invokes `build-prod`, which clears
+  `dist/*`. These builds synchronize `src/package.json` and run both scanners.
+  `build-latest` also clears `dist/*` and rewrites the version in
+  `src/package.json`; `yarn win-dev` removes and recreates `output`. Inspect
+  and preserve existing data and edits before running them; ask before deleting
+  untracked or generated user data. Do not use a build merely to extract or
+  validate translations.
 - Compare with English and nearby usages before changing keys. Keep `{{...}}`
   interpolation tokens, punctuation, and meaning consistent. Do not invent
   translations when uncertain. Report untranslated or unverified entries
@@ -29,24 +44,30 @@ description: Run the CNCjs localization workflow, including string extraction, t
 1. Use the existing call-site pattern: `i18n._('English text', { ... })` for
    frontend text, and `i18n.t('controller:Grbl.activeState.idle')` for explicit
    keys in the `controller` namespace. Pass `{ ns: 'gcode' }` for G-code labels,
-   as in `src/app/lib/gcode-text.js`. The scanner transform also recognizes
-   `i18n.__`. Explicit `i18n.t('controller:...')` keys are not scanner-managed.
-2. When source strings change, run the scanner from the project root. These are
-   the commands used by `scripts/build-dev.sh`, `scripts/build-prod.sh`, and
-   `scripts/build-latest.sh`:
+   as in `src/app/lib/gcode-text.js`. The frontend scanner transform also
+   recognizes `i18n.__`; explicit `i18n.t('controller:...')` keys are not
+   scanner-managed. The server scanner recognizes `i18n.t` and `t`, as well as
+   `i18n._` and `i18n.__` in its custom transform; for an existing server example,
+   see `t('loading')` in `src/server/app.js`.
+2. When source strings change, run the appropriate scanner from the project
+   root. Pass explicit input globs: the server scanner config does not provide a
+   default input. These commands correspond to those used by
+   `scripts/build-dev.sh`, `scripts/build-prod.sh`, and `scripts/build-latest.sh`:
 
    ```sh
    yarn i18next-scanner --config i18next-scanner.app.config.js 'src/app/**/*.{html,js,jsx}' '!src/app/i18n/**' '!**/node_modules/**'
    yarn i18next-scanner --config i18next-scanner.server.config.js 'src/server/**/*.{html,js,jsx}' '!src/server/i18n/**' '!**/node_modules/**'
    ```
 
-   `yarn build-dev`, `yarn build-prod`, and `yarn build-latest` run these
+   `yarn build-dev`, `yarn build-prod`, and `yarn build-latest` also run these
    automatically; `yarn dev` starts with `build-dev`. Review the resulting diff
    rather than assuming it only added new keys.
 3. Review generated changes. The frontend scanner uses the key as the English
-   value and an empty value for other languages; the server scanner inserts
-   `__L10N__` for new entries. Replace placeholders where translations are in
-   scope. Do not overwrite existing translations without checking their context.
+   value and an empty value for other languages. The server scanner's configured
+   default is `__L10N__`, but a nonempty call-site default can supply another
+   value, including for multiple languages. Replace placeholders where
+   translations are in scope. Do not overwrite existing translations without
+   checking their context.
 4. The app scanner covers the `gcode` and `resource` namespaces; the server
    scanner covers `resource`. Maintain `src/app/i18n/<language>/controller.json`
    and `src/server/i18n/<language>/config.json` manually. The frontend scanner

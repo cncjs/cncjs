@@ -44,7 +44,7 @@ describe an already-verified change.
 
 - Text matches the actual change, with no invented results, links, or CI claims.
 - Breaking changes include migration guidance.
-- Published-package changes carry the appropriate changeset; docs-only,
-  test-only, CI-only, and internal work do not.
+- Assess whether the change affects users or release artifacts and recommend an
+  appropriate changeset; a CI-only change can affect packaged releases.
 - State any unverified behavior. Do not perform unauthorized repository or
   external writes.

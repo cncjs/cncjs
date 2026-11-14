@@ -61,9 +61,9 @@ layout, configuration, or lifecycle.
   primary and default. Do not write tests that expect duplicates or default
   widgets in sortable groups. `store.set` merges arrays, so list updates use
   `store.replace`.
-- Workspace Settings import/export/restore operates on the local config via
-  `store.getConfig`/`store.persist` and reloads the page. Do not confuse the
-  local config store with the server's machine-state, user, or record APIs.
+- Workspace Settings import and restore persist the local config and reload
+  the page. Export reads the local config and downloads it without reloading.
+  Do not confuse this store with server machine-state, user, or record APIs.
 - Controller data arrives through the `src/app/lib/controller` singleton:
   `startup` provides `loadedControllers`, `baudrates`, and `ports`;
   `serialport:open` sets `port` and `type`; `serialport:close` clears them;
@@ -80,9 +80,10 @@ layout, configuration, or lifecycle.
   A widget starts as header-only unless exactly one controller is loaded or
   its controller type already matches. `serialport:open` then sets `isReady`
   from `controllerType`, and `serialport:close` restores the initial state.
-- The Grbl widget shows its info and command controls only when `isReady` is
-  true and `canClick()` returns true; `canClick()` requires a non-empty `port`
-  and a matching controller type.
+- The Grbl widget renders its info button and command dropdown when `isReady`
+  is true. `canClick()` requires a non-empty `port` and a matching controller
+  type, and disables individual command items; it does not gate the info button
+  or the dropdown's visibility.
 - Widgets that add direct listeners (for example Grbl, Marlin, Axes, Console,
   Visualizer) must remove them on unmount; state consumers must ignore
   `controller:state` reports for another controller type. Prefer the existing

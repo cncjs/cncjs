@@ -18,12 +18,15 @@ All source paths below are relative to the repository root.
 
 ## Conventions
 
-- Handlers use `res.send(...)` and status constants in `src/server/constants`.
-  Keep filesystem, shell, persistence, and controller work in the owning service
-  rather than copying it into route handlers.
-- Import service singletons directly from `src/server/services` or their module
-  (for example, `../../services/monitor`); isolated handler tests mock the
-  service module.
+- Many handlers use `res.send(...)` and status constants from
+  `src/server/constants`; others have different response needs. For example,
+  `api.gcode.download` writes and ends an attachment response. Follow the
+  endpoint's response contract rather than assuming all handlers return JSON.
+- Preserve existing service boundaries without assuming every operation belongs
+  to a service: handlers also access `configstore` or the controller store
+  directly. In `src/server/api/api.watch.js`, the monitor import is
+  `../services/monitor`; the adjacent `__tests__/api.watch.test.js` uses
+  `../../services/monitor` for its mock.
 - Use the narrowest `ensure-type` helper at untrusted boundaries such as request
   parameters, bodies, and controller input. Do not add a second normalization
   path inside otherwise trusted application code.

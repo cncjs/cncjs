@@ -1,31 +1,54 @@
 # Runtime support and packaging
 
-Covers supported Node.js lines, desktop architectures, local packaging, and the
-container image. Version numbers live in `package.json`,
-`grbl-simulator/package.json`, `Dockerfile`, the CI workflows, and the README;
-read them there rather than copying a number from a guide.
+Covers supported Node.js lines, Electron's runtime, desktop architectures,
+local packaging, and the container image. Read the current values in
+`package.json`, `grbl-simulator/package.json`, `Dockerfile`, CI, and the README
+rather than copying a number from a guide.
 
-## Runtime support changes
+## Runtime and architecture changes
 
-When changing supported Node.js lines or desktop architectures:
+- For a Node.js support change, update the root and simulator `engines.node`
+  ranges and README support table. Review both Dockerfile `NODE_VERSION` values
+  and each CI runtime selection; update them when needed. CI's tested Node.js
+  lines need not cover every supported line.
+- Electron bundles its own Node.js runtime. The root engine range, CI's host
+  Node.js, and Docker's Node.js do not update or prove the security of that
+  bundled runtime. Inspect the root Electron dependency and Electron's actual
+  bundled Node.js version and support when changing desktop runtime support.
+- For desktop architecture changes, update the relevant `build:*` scripts,
+  electron-builder configuration, CI jobs and artifact checks, and README
+  architecture table as applicable. Do not change Node.js engine ranges,
+  simulator, or Dockerfile merely because a desktop architecture changed.
+- Distinguish desktop targets from the host running the build, the npm package's
+  runtime platforms, and Docker's separately configured image platforms. A
+  listed desktop target does not by itself prove its native modules work.
+- Assess a changeset describing any user-visible support or artifact change;
+  see `cncjs-pr` for observed practice.
 
-1. Update `engines.node` in `package.json` and `grbl-simulator/package.json`.
-2. Update `NODE_VERSION` in `Dockerfile` and any CI `node-version` matrix that
-   encodes a line or minimum patch.
-3. Update the README "Supported Node.js Versions" and "Desktop App
-   Architectures" tables.
-4. Update packaging scripts and CI artifact checks when an architecture is
-   added or removed.
-5. Add a changeset describing the user-visible support change and the reason.
-6. Run the verification below.
-
-Derive the versions from the security or runtime source the change cites, then
-record them in the source files. Do not invent a minimum patch or carry a number
-over from an old issue or changeset.
+Derive new version requirements from the cited security or runtime source;
+do not invent a minimum patch or carry one over from an old issue or changeset.
 
 ## Desktop artifacts
 
-Packaging runs from the production build:
+Before running any build, inspect the affected paths and preserve user data.
+Ask before a command would delete existing generated or untracked data unless
+the user authorized that exact deletion:
+
+- `yarn build` runs `scripts/build-prod.sh`, which synchronizes
+  `src/package.json`, removes `dist/*`, and runs i18n scanners
+  that can rewrite source locale files. `yarn build-latest` has the same
+  effects and additionally stamps a commit-suffixed desktop version into
+  `src/package.json`; do not commit that stamp.
+- Development builds also synchronize the manifest and remove `output/*`; the
+  PowerShell variant removes the directory itself. Do not automatically
+  discard existing source or generated changes afterward.
+- `scripts/electron-builder.sh` deletes `dist/cncjs/node_modules`, runs
+  `npm install --production` and `npm dedupe` there, and invokes
+  electron-builder, which writes to `output/`. These steps may download packages
+  and change generated files or a lockfile in `dist/cncjs`.
+
+When authorized and the affected paths are safe, the local packaging commands
+begin with a production build:
 
 ```sh
 yarn build
@@ -34,31 +57,38 @@ yarn build:linux         # x64 and ARM64
 yarn build:windows-x64
 ```
 
-`scripts/electron-builder.sh` installs production dependencies in `dist/cncjs`
-and invokes electron-builder; artifacts land in `output/`. CI builds the
-supported targets and attaches them to the release. Packaging is not publishing:
-do not upload artifacts, create a GitHub release, or run the publish scripts
-unless asked.
+The root builder configuration currently sets `publish` to `null` and
+`npmRebuild` to `false`. Inspect configuration and environment before
+packaging; uploading artifacts, creating a GitHub release, or publishing
+remains a separate authorized action.
 
-`ci.yml` checks the Linux output before attaching it: it rejects runner-compiled
-native modules in the unpacked packages, loads the serialport addon with the
-shipped Electron binary, and re-reads every produced RPM. Do not weaken those
-checks when changing packaging.
+`ci.yml` searches both Linux unpacked directories for `.node` files matching
+`*/build/Release/*.node`. It runs `SerialPort.list()` using the shipped **x64**
+Electron binary; this is not an ARM64 runtime test or a
+physical-controller test. If `rpm` is installed, it queries metadata for each
+RPM present, but does not verify payload integrity or older RPM compatibility.
+The later asset-preparation step copies the expected named files. Do not weaken
+these checks or infer that they exercise macOS, Windows, or every Linux target.
 
 ## Container image
 
-`ci-docker-hub.yml` runs on version tags and publishes `cncjs/cncjs` for
-`linux/amd64` and `linux/arm64` using the production `dist/cncjs` artifact. A
-local `docker build` is a verification step only; do not push an image or move
-the `latest` tag without explicit authorization.
+`ci-docker-hub.yml` is configured for `v*` tag pushes and manual dispatch. Its
+own build job creates the production `dist/cncjs` artifact on a tag; the deploy
+job builds and pushes `linux/amd64` and `linux/arm64` images with both the
+derived tag and `latest`. A local `docker build` is verification only; do not
+push or dispatch without explicit authorization. See [Release](release.md)
+for token-trigger and dispatch caveats.
 
 ## Verification
 
-- Confirm the CI matrices and README tables agree with `engines.node` in both
-  packages.
-- Confirm the Dockerfile uses the intended runtime and that the build consumes
-  `dist/cncjs`.
-- For a packaging change, inspect the release PR diff and confirm the expected
-  files changed.
-- Run the repository checks that match the change and report exactly what ran;
-  do not claim unobserved results.
+- Compare the intended Node.js ranges with both package manifests, README,
+  Docker runtime, and CI selections as applicable; separately review Electron's
+  bundled runtime and the desktop and container target architectures.
+- For packaging, inspect the actual CI run and job logs, the expected asset
+  names, and release artifacts; a release PR diff or configured workflow is
+  not evidence that an artifact was produced, uploaded, or is usable.
+- Verify relevant package contents and native-module loading on each affected
+  target architecture, and install or smoke-test where feasible. Record what
+  was not tested, including hardware or older RPM compatibility.
+- Run checks appropriate to the changed boundary and report only observed
+  results; do not claim unobserved CI, runtime, or artifact verification.

@@ -22,14 +22,16 @@ All source paths below are relative to the repository root.
   fields, and lifecycle methods. Preserve their behavior when changing them; do
   not add `propTypes`, hooks, or another component library.
 - Use the existing shared components and `@trendmicro/react-*` packages. Style
-  with Stylus modules imported as `styles` plus global `src/app/styles`; do not
-  add CSS modules or Sass.
+  with Stylus: component `.styl` files are processed as CSS Modules and commonly
+  imported as `styles`; `src/app/styles` is processed globally. Do not add a
+  separate `.module.css` or Sass convention.
 - Import application modules with the `app/...` prefix, resolved from `src`.
   The webpack alias `@app` exists, but existing code uses `app/...`. Jest maps
   `app/...` to `src/app/...`.
-- Call server APIs through `src/app/api/index.js`. It applies the bearer token
-  from `store.get('session.token')`; do not bypass it with direct HTTP calls in
-  components or widgets.
+- Use `src/app/api/index.js` for app API calls. Its Superagent requests add a
+  bearer token from `store.get('session.token')` when one exists, and apply
+  no-cache headers. G-code download instead submits a form with the token in a
+  field; follow the existing transport for the endpoint.
 - Keep application and session state in the existing store and controller event
   flow. Use component state only for local UI state.
 - Widget layout, lifecycle, and persistence have a dedicated procedure; do not

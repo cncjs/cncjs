@@ -6,13 +6,15 @@ or fixture as simulator or hardware evidence.
 
 | Level | What runs | Proves | Does not prove |
 | --- | --- | --- | --- |
-| L0 Unit with fake connection | `createController` replaces `controller.connection` with `{ isOpen, write }`; logger is mocked | command bytes, feeder/sender sequencing, state updates, socket event payloads | serial transport, simulator behavior, browser wiring |
-| L1 In-process simulator | `yarn jest grbl-simulator` and `GrblController.autolevelSimulator.test.js` | real simulator parsing, planner, status, alarm, soft-reset logic; controller-to-simulator probe integration | TCP/serial transport, app UI |
-| L2 TCP simulator | `grbl-server.js` plus `test-client/main.js` | real socket transport and Grbl wire exchange | app UI, backend controller, Socket.IO |
-| L3 Isolated manual app | `yarn build-dev`, a task-owned config/watch backend, and a task-owned simulator bridge | developer smoke check of app, Socket.IO, engine, and controller | automated evidence; physical machine behavior |
+| L0 Unit with fake connection | `createController` replaces `controller.connection` with `{ isOpen, write }`; logger is mocked | controller write payloads, feeder/sender sequencing, state updates, socket event payloads | encoded serial bytes, serial transport, simulator behavior, browser wiring |
+| L1 In-process Grbl simulator | `yarn jest grbl-simulator` and `GrblController.autolevelSimulator.test.js` | Grbl simulator parsing, planner, status, alarm, soft-reset logic; Grbl controller-to-simulator probe integration | other controller protocols, TCP/serial transport, app UI |
+| L2 TCP Grbl simulator | `grbl-server.js` plus `test-client/main.js` | real socket transport and Grbl wire exchange | other controller protocols, app UI, backend controller, Socket.IO |
+| L3 Isolated manual Grbl app | `yarn build-dev`, an isolated backend and browser, and a task-owned simulator bridge | developer smoke check of app, Socket.IO, engine, and Grbl controller | other controller protocols, automated evidence, physical machine behavior |
 | L4 Hardware | not used | — | — |
 
 ## L0: server controller and parser tests
+
+Choose the affected controller's tests; these are Grbl examples:
 
 ```sh
 yarn jest src/server/controllers/Grbl/__tests__/GrblController.test.js
@@ -48,7 +50,7 @@ or frontend-only test script. Use this test only as a pattern if you add a
 focused component test; it proves component logic, not DOM or Socket.IO
 behavior.
 
-## L1: in-process simulator
+## L1: in-process Grbl simulator
 
 ```sh
 yarn jest grbl-simulator
@@ -63,7 +65,9 @@ script: both invoke Node directly, but the tests require Jest globals.
 `controller.connection.write` to `GrblSimulator.processLineAsync` and feeds the
 simulator's replies and `PRB` reports back through `controller.runner.parse`.
 Its two probe runs allow up to 70 seconds, so keep its timeout. This is real
-in-process simulator evidence for the controller, not TCP or app evidence.
+in-process Grbl simulator evidence for that controller, not TCP or app evidence.
+It does not verify Marlin, Smoothie, or TinyG behavior; use their own tests and
+an applicable integration scenario, or report the boundary unverified.
 
 ## L2: TCP simulator integration
 
@@ -100,36 +104,50 @@ This checkout has no Playwright configuration, no `test/e2e` directory, and no
 infrastructure, and do not run a plain `yarn dev` server or reuse
 `~/.cncrc`/`/tmp/ttyGRBL` for validation.
 
-A manual connection check is only valid when the backend uses a task-owned
-config file and watch directory, and the simulator uses a task-owned serial
-path:
+This is a Grbl-only manual check. It requires a task-owned backend home, config
+and watch directory, simulator path, browser profile, and loopback app origin:
 
-1. Inspect existing locale changes before `yarn build-dev`: it runs the
-   localization scanners, which write locale files.
-2. Create a task-owned directory with a `cncrc.json` and an empty `watch/`
-   directory. The config must list only the task-owned simulator path:
+1. Before `yarn build-dev`, inspect `output/`, `src/package.json`, and locale
+   files. The build removes `output/*`, `package-sync` rewrites
+   `src/package.json`, and the localization scanners write locale files.
+   Use a task-owned isolated checkout when needed; obtain permission before
+   deleting pre-existing generated, untracked, or unrelated data, and do not
+   overwrite unrelated edits. Run the build only when its effects are safe.
+2. Create a unique task-owned directory under `$TMPDIR` with empty `home/` and
+   `watch/` directories and a `cncrc.json`. List only the task-owned simulator
+   path in the config:
    `{ "ports": [{ "path": "<task-dir>/ttyGRBL", "manufacturer": "Grbl Simulator" }] }`.
+   This list supplements serial discovery; it does not block physical ports.
 3. The simulator TCP server listens on all interfaces. Only on a
    network-isolated host, start `node grbl-simulator/grbl-server.js <sim-port>`
    using a free task-owned port. Otherwise stop and report the connection as
    unverified. Confirm it started; do not connect to an existing service.
 4. Bridge the task-owned simulator port to the task-owned path:
    `node grbl-simulator/serial-bridge.js <sim-port> "<task-dir>/ttyGRBL"`.
-   This requires `socat`; it is a manual development convenience only.
+   This requires an already-installed `socat` and is a manual convenience only.
 5. Start the backend on a free port bound to loopback:
-   `NODE_ENV=development ./bin/cncjs -H 127.0.0.1 -c "<task-dir>/cncrc.json" -w "<task-dir>/watch" -p <backend-port> --controller Grbl`.
-6. Start the app dev server separately with
-   `WEBPACK_DEV_SERVER_HOST=127.0.0.1 PROXY_TARGET=http://127.0.0.1:<backend-port> yarn start-app-dev`.
-7. Connect the Connection widget to the task-owned path and exercise the
-   changed widget.
+   `HOME="<task-dir>/home" NODE_ENV=development ./bin/cncjs -H 127.0.0.1 -c "<task-dir>/cncrc.json" -w "<task-dir>/watch" -p <backend-port> --controller Grbl`.
+   `-c` and `-w` do not isolate sessions: startup recursively deletes
+   `$HOME/.cncjs-sessions`. On Windows, isolate `USERPROFILE` instead.
+6. Start the app dev server separately on a free task-owned loopback port:
+   `WEBPACK_DEV_SERVER_HOST=127.0.0.1 PROXY_TARGET=http://127.0.0.1:<backend-port> yarn start-app-dev --port <app-port>`.
+   Confirm the app server started at the intended origin and targets the
+   task-owned backend; never reuse an existing service. Webpack also writes
+   and cleans files under `output/cncjs/app`.
+7. Open that origin in a fresh task-owned browser profile or isolated disposable
+   browser context, with no saved workspace or credentials. Do not clear an
+   existing profile's `localStorage.cnc` or use Electron's existing user config.
+   Disable auto-reconnect before selecting the simulator path; the default
+   workspace enables it. Connect only to the task-owned path and exercise the
+   changed widget, never a discovered physical port.
+8. Stop only the task-owned processes when finished.
 
-If any of these steps cannot be completed with the documented options, report
-the manual connection as unverified and stop at the unit/simulator levels. Do
-not fall back to a shared config, a shared serial path, or a plain `yarn dev`
-server.
+If any prerequisite cannot be met, report the manual connection as unverified.
+Do not fall back to a shared home, config, browser profile, serial path, or
+plain `yarn dev` server.
 
-Manual observation is not an automated browser test, simulator execution, or
-physical-machine evidence.
+Manual browser observation is not an automated test or proof of physical
+behavior; UI observation alone does not prove simulator command execution.
 
 ## Reporting
 

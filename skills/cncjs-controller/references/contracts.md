@@ -14,7 +14,7 @@ contract, the code is authoritative.
 | Socket.IO boundary | `src/server/services/cncengine/CNCEngine.js` |
 | App socket client | `src/app/lib/controller/Controller.js`, `src/app/lib/controller/index.js` |
 | App connection UI and config | `src/app/widgets/Connection/index.jsx` |
-| App unit normalization | `src/app/widgets/Axes/index.jsx` |
+| App unit normalization | `src/app/widgets/{Axes,Visualizer,Tool}/index.jsx` |
 | Controller widgets | `src/app/widgets/{Grbl,Marlin,Smoothie,TinyG}/` |
 | Simulator | `grbl-simulator/grbl-simulator.js`, `grbl-server.js`, `test-client/` |
 
@@ -30,21 +30,24 @@ widget
   -> command handler -> Feeder / Sender / connection.write
 ```
 
-Telemetry and state:
+Telemetry and state, using Grbl status as an example:
 
 ```
 connection "data"
   -> runner.parse(line)
-  -> typed runner event
-  -> controller state/settings update
+  -> runner updates state when the parsed status changes
+  -> typed runner "status" event
+  -> controller's 250 ms query timer copies changed state/settings references
   -> controller.emit("controller:state" | "controller:settings", type, value)
   -> Socket.IO to registered sockets
   -> app Controller listeners -> widget setState
 ```
 
-`serialport:read` and `serialport:write` are console/terminal text, not state.
-The app may also attach direct listeners such as the `Axes` widget's
-`controller:state` handler; do not create a second, divergent unit conversion.
+The timer skips closed connections; typed events and client broadcasts are not
+the same event or necessarily simultaneous. Other reports and controllers
+need their own runner/event trace. `serialport:read` and `serialport:write`
+are console/terminal text, not state. Multiple widgets attach direct
+`controller:state` listeners and normalize positions independently.
 
 ## Connection identity
 
@@ -87,41 +90,50 @@ owned by `cncjs-workspace`. Examples from the current widgets:
 
 There is no widget test suite in this checkout, so widget code proves intent
 only, not protocol delivery. The server tests in
-`src/server/controllers/Grbl/__tests__/GrblController.test.js` assert the exact
-override bytes and the feeder/sender channels.
+`src/server/controllers/Grbl/__tests__/GrblController.test.js` assert the
+override character values and feeder/sender channels through a fake connection,
+not the encoded bytes delivered by a serial transport.
 
 ## Command surface
 
 Canonical commands are the keys of each controller's `command()` handler map.
-Shared commands include:
+The following are examples across the maps, not a guarantee of support for
+every controller. Check each handler, its payload, and whether it is a no-op:
 
 - `feedhold`, `cyclestart`, `statusreport`, `homing`, `sleep`, `unlock`,
   `reset`, `jogCancel`
-- `feedOverride`, `spindleOverride`, `rapidOverride` with the exact values
-  handled by each controller
+- `feedOverride`, `spindleOverride`, `rapidOverride`, with controller-specific
+  value ranges and behavior
 - `lasertest:on` with `(power, duration, maxS)` and `lasertest:off`
 - `gcode` with a string or array of lines, plus optional context
 - `gcode:load` with `(name, gcode, context?, callback)`, `gcode:unload`,
   `gcode:start`, `gcode:pause`, `gcode:resume`, and `gcode:stop` with optional
-  `{ force }`
+  `{ force }` where supported
 - `feeder:feed`, `feeder:start`, `feeder:stop`
 - `macro:load`, `macro:run`, `watchdir:load`
 - `autolevel:start`, `autolevel:stop`, `autolevel:getProbeState`,
   `autolevel:applyProbeCompensation`, `autolevel:loadFromFile`,
   `autolevel:saveToFile`
 
+For example, Marlin does not recognize `statusreport` or `jogCancel`; Smoothie
+also has no `jogCancel` handler. Marlin's `sleep`, `unlock`, and
+`rapidOverride` handlers are unsupported/no-ops, as are Smoothie's `sleep`
+and `rapidOverride` and TinyG's `sleep`. A handler's existence does not mean
+the operation is supported.
+
 The deprecated `start`, `stop`, `pause`, and `resume` aliases log a warning and
 forward to the `gcode:*` command. Do not add new callers for them.
 
 `gcode` feeds the Feeder line by line. `gcode:load` goes through the Sender and
 appends a `%wait` dwell so the planner drains before completion. `%wait`
-becomes a `G4 P...` line and holds the sender. `%msg` and `%<assignment>`
+holds the sender and produces `G4 P...` for Grbl and TinyG or `G4 S...` for
+Marlin and Smoothie. The delay is in seconds. `%msg` and `%<assignment>`
 (for example `%_x=posx`) are handled by the feeder/sender filters. `M0`/`M1`
 pause, and `M6` follows the configured tool-change policy.
 
 ## Controller state
 
-`GrblRunner.state` is the canonical server shape:
+Example Grbl server shape (`GrblRunner.state`); other controllers differ:
 
 ```js
 {
@@ -137,26 +149,31 @@ pause, and `M6` follows the configured tool-change policy.
 }
 ```
 
-`GrblRunner.settings` is `{ version, parameters, settings }`. The runner emits
-every parsed result but replaces `state`/`settings` only when the relevant
-subtree changes; the controller copies the new object and emits
-`controller:state`/`controller:settings` on reference change.
+`GrblRunner.settings` is `{ version, parameters, settings }`. Grbl replaces
+`state`/`settings` references when their relevant subtrees change. Its query
+timer copies and broadcasts those changed references while the connection is
+open; a typed runner event does not imply an immediate client broadcast.
 
-App-side normalization lives in the `Axes` widget, not in a Redux reducer:
+App-side normalization is not centralized: Axes, Visualizer, and Tool each
+process controller positions in their own `controller:state` listeners. Trace
+all affected consumers rather than assuming Axes supplies the others:
 
 - Grbl positions are converted from inches to millimetres when the singleton
   `controller.settings.settings.$13 > 0`.
 - Smoothie positions are converted when modal units are `G20`.
-- Marlin positions are treated as millimetres.
+- Axes and Tool treat Marlin positions as millimetres; Visualizer converts
+  Marlin positions when modal units are `G20`. This is current behavior, not
+  evidence that the consumers agree.
 - TinyG machine position (`sr.mpos`) is treated as millimetres; work position
   (`sr.wpos`) is converted when modal units are `G20`.
-- Units come from `parserstate.modal.units` (`G20`/`G21`), falling back to the
-  widget's current units.
+- Modal units come from `parserstate.modal.units` for Grbl and Smoothie,
+  `modal.units` for Marlin, and `sr.modal.units` for TinyG, falling back to
+  the widget's current units.
 
-Controller widgets render the reported state directly: Grbl reads
-`status.activeState`, TinyG reads `sr.machineState`, and each widget ignores
-`controller:state` reports for another controller type. Do not add a second
-conversion in a display component.
+Controller widgets render their reported state directly: Grbl reads
+`status.activeState`, TinyG reads `sr.machineState`, and controller-specific
+widgets ignore reports for other types. Avoid adding another divergent
+normalization path in a display component.
 
 Marlin position and temperature reports are merged server-side in
 `MarlinRunner`: `pos` merges into `state.pos`, and temperature merges
