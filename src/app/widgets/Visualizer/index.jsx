@@ -76,6 +76,9 @@ import {
   NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE,
 } from './constants';
 
+const CAMERA_POSITIONS = ['top', '3d', 'front', 'left', 'right'];
+const normalizeCameraPosition = value => (CAMERA_POSITIONS.includes(value) ? value : 'top');
+
 const translateExpression = (function() {
   const { Parser } = ExpressionEvaluator;
   const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
@@ -288,7 +291,7 @@ const getInitialState = config => ({
     },
   },
   cameraMode: config.get('cameraMode', CAMERA_MODE_PAN),
-  cameraPosition: 'top',
+  cameraPosition: normalizeCameraPosition(config.get('cameraPosition', 'top')),
   isAgitated: false,
 });
 
@@ -991,6 +994,9 @@ function VisualizerWidget({ widgetId }) {
   useEffect(() => {
     config.set('cameraMode', state.cameraMode);
   }, [config, state.cameraMode]);
+  useEffect(() => {
+    config.set('cameraPosition', state.cameraPosition);
+  }, [config, state.cameraPosition]);
   useEffect(() => {
     config.set('gcode.displayName', state.gcode.displayName);
   }, [config, state.gcode.displayName]);

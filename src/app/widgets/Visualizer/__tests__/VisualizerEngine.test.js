@@ -4,7 +4,7 @@ import theme from '@app/config/theme';
 import { getVisualizerColors } from '../GCodeVisualizer';
 import { createVisualizerEngine } from '../VisualizerEngine';
 import Visualizer from '../Visualizer';
-import { rectangularFixture } from './fixtures';
+import { metricUnitsFixture, rectangularFixture } from './fixtures';
 
 const mockRenderer = {
   clear: jest.fn(),
@@ -27,21 +27,28 @@ jest.mock('three', () => {
 
 jest.mock('@app/lib/three/TrackballControls', () => {
   const mockThree = jest.requireActual('three');
-  return jest.fn().mockImplementation(() => ({
-    addEventListener: jest.fn(),
-    dispose: jest.fn(),
-    handleResize: jest.fn(),
-    noPan: false,
-    noZoom: false,
-    object: { position: new mockThree.Vector3(), up: new mockThree.Vector3() },
-    panSpeed: 1,
-    reset: jest.fn(),
-    setMouseButtonState: jest.fn(),
-    target: new mockThree.Vector3(),
-    update: jest.fn(),
-    zoomIn: jest.fn(),
-    zoomOut: jest.fn(),
-  }));
+  return jest.fn().mockImplementation(object => {
+    const target = new mockThree.Vector3();
+    return {
+      addEventListener: jest.fn(),
+      dispose: jest.fn(),
+      handleResize: jest.fn(),
+      noPan: false,
+      noZoom: false,
+      object,
+      panSpeed: 1,
+      reset: jest.fn(() => {
+        target.set(0, 0, 0);
+        object.up.set(0, 1, 0);
+        object.position.set(0, 0, 200);
+      }),
+      setMouseButtonState: jest.fn(),
+      target,
+      update: jest.fn(),
+      zoomIn: jest.fn(),
+      zoomOut: jest.fn(),
+    };
+  });
 });
 
 jest.mock('@app/store/config', () => ({
@@ -100,6 +107,34 @@ describe('VisualizerEngine', () => {
   beforeEach(() => {
     Object.values(mockRenderer).forEach(value => value && value.mockClear && value.mockClear());
     mockRenderer.shadowMap = {};
+  });
+
+  test.each([
+    ['top', [0, 0, 200], [0, 1, 0]],
+    ['3d', [200, -200, 200], [0, 0, 1]],
+    ['front', [0, -200, 0], [0, 0, 1]],
+    ['left', [200, 0, 0], [0, 0, 1]],
+    ['right', [-200, 0, 0], [0, 0, 1]],
+  ])('keeps the %s camera through loading, centering, unloading, and reloading', (position, expectedPosition, expectedUp) => {
+    const container = document.createElement('div');
+    Object.defineProperty(container, 'clientWidth', { value: 640 });
+    Object.defineProperty(container, 'clientHeight', { value: 480 });
+    const engine = createVisualizerEngine({ container, viewState: { ...viewState, cameraPosition: position } });
+    const expectView = () => {
+      expect(engine.camera.position.toArray()).toEqual(expectedPosition);
+      expect(engine.camera.up.toArray()).toEqual(expectedUp);
+    };
+
+    expectView();
+    engine.load({ name: 'rectangle.gcode', content: rectangularFixture });
+    expectView();
+    engine.lookAtCenter();
+    expectView();
+    engine.unload();
+    expectView();
+    engine.load({ name: 'second.gcode', content: metricUnitsFixture });
+    expectView();
+    engine.dispose();
   });
 
   test('parses G-code synchronously, centers the toolpath, and renders the real scene', () => {

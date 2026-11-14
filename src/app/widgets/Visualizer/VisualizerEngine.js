@@ -389,21 +389,7 @@ class VisualizerEngine {
     }
 
     if (previousState.cameraPosition !== state.cameraPosition) {
-      if (state.cameraPosition === 'top') {
-        this.toTopView();
-      }
-      if (state.cameraPosition === '3d') {
-        this.to3DView();
-      }
-      if (state.cameraPosition === 'front') {
-        this.toFrontView();
-      }
-      if (state.cameraPosition === 'left') {
-        this.toLeftSideView();
-      }
-      if (state.cameraPosition === 'right') {
-        this.toRightSideView();
-      }
+      this.applyCameraPosition();
     }
 
     if (needUpdateScene) {
@@ -1174,6 +1160,27 @@ class VisualizerEngine {
     this.updateScene();
   }
 
+  applyCameraPosition() {
+    if (!this.camera || !this.controls) {
+      return;
+    }
+    if (this.viewState.cameraPosition === 'top') {
+      this.toTopView();
+    }
+    if (this.viewState.cameraPosition === '3d') {
+      this.to3DView();
+    }
+    if (this.viewState.cameraPosition === 'front') {
+      this.toFrontView();
+    }
+    if (this.viewState.cameraPosition === 'left') {
+      this.toLeftSideView();
+    }
+    if (this.viewState.cameraPosition === 'right') {
+      this.toRightSideView();
+    }
+  }
+
   lookAtCenter() {
     if (this.viewport) {
       this.viewport.update();
@@ -1181,6 +1188,7 @@ class VisualizerEngine {
     if (this.controls) {
       this.controls.reset();
     }
+    this.applyCameraPosition();
     this.updateScene();
   }
 
@@ -1230,6 +1238,7 @@ class VisualizerEngine {
       const target = new THREE.Vector3(0, 0, bbox.max.z);
       this.viewport.set(width, height, target);
     }
+    this.applyCameraPosition();
 
     this.updateScene();
     return { bbox };
@@ -1278,6 +1287,7 @@ class VisualizerEngine {
     if (this.viewport) {
       this.viewport.reset();
     }
+    this.applyCameraPosition();
     this.updateScene();
   }
 
