@@ -206,3 +206,90 @@ test('simulator: Grbl info tabs and override controls reflect actual controller 
   await spindleReset.click();
   await expect(intensity).toHaveText('100%');
 });
+
+const cameraViews = [
+  { id: 'top', label: 'Top View', position: [0, 0, 200], rotationX: 0 },
+  { id: '3d', label: '3D View', position: [200, -200, 200], rotationX: Math.PI / 4 },
+  { id: 'front', label: 'Front View', position: [0, -200, 0], rotationX: Math.PI / 2 },
+  { id: 'left', label: 'Left Side View', position: [200, 0, 0], rotationX: Math.PI / 2 },
+  { id: 'right', label: 'Right Side View', position: [-200, 0, 0], rotationX: Math.PI / 2 },
+];
+
+const readCameraView = page => page.evaluate(() => {
+  const metrics = window.__CNCJS_VISUALIZER_METRICS__;
+  const engine = metrics?.engines?.[0];
+  return engine ? {
+    cameraPosition: engine.cameraPosition,
+    cameraX: engine.cameraX,
+    cameraY: engine.cameraY,
+    cameraZ: engine.cameraZ,
+    cameraRotationX: engine.cameraRotationX,
+    hasGCode: engine.hasGCode,
+    loadCount: metrics.loadCount,
+  } : null;
+});
+
+const savedCameraView = page => page.evaluate(() => (
+  JSON.parse(localStorage.getItem('cnc') || '{}').state?.widgets?.visualizer?.cameraPosition
+));
+
+const expectCameraView = async (page, view) => {
+  const visualizer = widget(page, 'visualizer');
+  const toolbar = visualizer.getByRole('toolbar', { name: 'Visualizer camera toolbar' });
+  await expect(toolbar.getByRole('button', { name: view.label, exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(async () => (await readCameraView(page))?.cameraPosition).toBe(view.id);
+  await expect.poll(async () => {
+    const camera = await readCameraView(page);
+    const coordinates = camera && [camera.cameraX, camera.cameraY, camera.cameraZ];
+    return coordinates?.every(value => typeof value === 'number')
+      ? coordinates.map(value => Number(value.toFixed(3)))
+      : null;
+  }).toEqual(view.position);
+  await expect.poll(async () => (await readCameraView(page))?.cameraRotationX).toBeCloseTo(view.rotationX, 3);
+};
+
+for (const view of cameraViews) {
+  test(`simulator: selected camera view survives loading and unloading G-code: ${view.id}`, async ({ page, simulator }, testInfo) => {
+    expect(simulator.port).toBeGreaterThan(0);
+    const visualizer = widget(page, 'visualizer');
+    const toolbar = visualizer.getByRole('toolbar', { name: 'Visualizer camera toolbar' });
+    await toolbar.getByRole('button', { name: view.label, exact: true }).click();
+    await expectCameraView(page, view);
+    await expect.poll(async () => (await readCameraView(page))?.hasGCode).toBe(false);
+    const initialLoadCount = (await readCameraView(page)).loadCount;
+
+    await upload(page);
+    await expect.poll(async () => {
+      const camera = await readCameraView(page);
+      return camera?.hasGCode && camera.loadCount > initialLoadCount;
+    }).toBe(true);
+    await expectCameraView(page, view);
+    await capture(visualizer, testInfo, `camera-view-${view.id}-loaded`);
+    const firstLoadCount = (await readCameraView(page)).loadCount;
+
+    await upload(page, 'G21\nG90\nG1 X20 Y12 F600\nG1 X2 Y1 F600\n');
+    await expect.poll(async () => {
+      const camera = await readCameraView(page);
+      return camera?.hasGCode && camera.loadCount > firstLoadCount;
+    }).toBe(true);
+    await expectCameraView(page, view);
+    const secondLoadCount = (await readCameraView(page)).loadCount;
+
+    await visualizer.getByRole('button', { name: 'Close G-code file', exact: true }).click();
+    await expect.poll(async () => (await readCameraView(page))?.hasGCode).toBe(false);
+    expect((await readCameraView(page)).loadCount).toBe(secondLoadCount);
+    await expectCameraView(page, view);
+    await capture(visualizer, testInfo, `camera-view-${view.id}-unloaded`);
+
+    if (view.id === 'front') {
+      await expect.poll(() => savedCameraView(page)).toBe('front');
+      const connection = widget(page, 'connection');
+      await connection.getByRole('button', { name: 'Close', exact: true }).click();
+      const dialog = page.getByRole('dialog').filter({ hasText: 'Are you sure you want to close the connection?' });
+      await dialog.getByRole('button', { name: 'OK', exact: true }).click();
+      await expect(connection.getByRole('button', { name: 'Open', exact: true })).toBeVisible();
+      await expectCameraView(page, view);
+      await expect.poll(() => savedCameraView(page)).toBe('front');
+    }
+  });
+}
