@@ -82,22 +82,6 @@ const seedModal = (controller, patch) => {
   };
 };
 
-const waitForCallback = (callback, timeoutMs = 4000) => new Promise((resolve, reject) => {
-  const deadline = Date.now() + timeoutMs;
-  const check = () => {
-    if (callback.mock.calls.length > 0) {
-      resolve();
-      return;
-    }
-    if (Date.now() > deadline) {
-      reject(new Error(`callback was never invoked within ${timeoutMs} ms`));
-      return;
-    }
-    setTimeout(check, 2);
-  };
-  check();
-});
-
 beforeEach(() => {
   configOverrides = {};
   configGetSpy = jest.spyOn(config, 'get').mockImplementation((key, defaultValue) => (
@@ -807,8 +791,12 @@ describe('SmoothieController', () => {
       await fsp.writeFile(filepath, '0 0 -1.5 0 0 0 0 0 0\n10 0 -1.2 0 0 0 0 0 0\n', 'utf8');
       const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', filepath, callback);
-      await waitForCallback(callback);
+      await new Promise((resolve) => {
+        controller.command('autolevel:loadFromFile', filepath, (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       expect(callback).toHaveBeenCalledWith(null, expect.objectContaining({ success: true }));
       expect(controller.probeState.probedPositions).toEqual([
@@ -823,8 +811,12 @@ describe('SmoothieController', () => {
       const { controller } = create();
       const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', path.join(os.tmpdir(), 'cncjs-smoothie-missing-probe-file.txt'), callback);
-      await waitForCallback(callback);
+      await new Promise((resolve) => {
+        controller.command('autolevel:loadFromFile', path.join(os.tmpdir(), 'cncjs-smoothie-missing-probe-file.txt'), (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       const [err, payload] = callback.mock.calls[0];
       expect(typeof err).toBe('string');
@@ -841,8 +833,12 @@ describe('SmoothieController', () => {
       tempFiles.push(filepath);
       const callback = jest.fn();
 
-      controller.command('autolevel:saveToFile', filepath, callback);
-      await waitForCallback(callback);
+      await new Promise((resolve) => {
+        controller.command('autolevel:saveToFile', filepath, (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       expect(callback).toHaveBeenCalledWith(null, { success: true, filepath });
       await expect(fsp.readFile(filepath, 'utf8')).resolves.toBe(
