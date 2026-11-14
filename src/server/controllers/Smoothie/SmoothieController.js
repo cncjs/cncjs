@@ -640,6 +640,8 @@ class SmoothieController {
         startZ,
         endZ,
         feedrate,
+        scanDirection = 'x',
+        scanPattern = 'raster',
       } = params;
 
       if (mode === 'test') {
@@ -664,6 +666,8 @@ class SmoothieController {
         startY,
         endY,
         stepY,
+        scanDirection,
+        scanPattern,
       });
 
       // Reset probe state

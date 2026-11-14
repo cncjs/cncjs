@@ -46,6 +46,7 @@ import ApplyView from './ApplyView';
 import StartProbeModal from './StartProbeModal';
 import StopProbeModal from './StopProbeModal';
 import TestProbeModal from './TestProbeModal';
+import { SCAN_DIRECTIONS, SCAN_PATTERNS, getScanPointCount } from './scanPath';
 import {
   VIEW_APPLY,
   VIEW_LANDING,
@@ -83,6 +84,8 @@ const VISUALIZER_CONFIG_KEYS = new Set([
   'startY',
   'endX',
   'endY',
+  'scanPattern',
+  'scanDirection',
 ]);
 
 const noop = () => {};
@@ -104,6 +107,15 @@ const readProbeSettings = (config, units) => PROBE_SETTING_KEYS.reduce((settings
   return settings;
 }, {});
 
+const readScanSettings = config => {
+  const scanPattern = config.get('scanPattern', 'raster');
+  const scanDirection = config.get('scanDirection', 'x');
+  return {
+    scanPattern: SCAN_PATTERNS.includes(scanPattern) ? scanPattern : 'raster',
+    scanDirection: SCAN_DIRECTIONS.includes(scanDirection) ? scanDirection : 'x',
+  };
+};
+
 const createInitialState = ({ widgetConfig, controllerClient }) => ({
   connected: !!get(controllerClient, 'connection.ident'),
   units: METRIC_UNITS,
@@ -120,6 +132,7 @@ const createInitialState = ({ widgetConfig, controllerClient }) => ({
   },
   wizardView: VIEW_LANDING,
   ...readProbeSettings(widgetConfig, METRIC_UNITS),
+  ...readScanSettings(widgetConfig),
   probeState: PROBE_STATE_IDLE,
   probeProgress: { current: 0, total: 0, percentage: 0 },
   probedPositions: [],
@@ -223,7 +236,7 @@ const parseInputValue = raw => {
   return raw;
 };
 
-const isValidNumber = value => typeof value === 'number' && !Number.isNaN(value);
+const isValidNumber = value => typeof value === 'number' && Number.isFinite(value);
 
 const getValidationErrors = state => {
   const { clearanceZ, startZ } = state;
@@ -236,6 +249,12 @@ const getValidationErrors = state => {
       errors[key] = invalidMessage;
     }
   });
+  if (isValidNumber(state.startX) && isValidNumber(state.endX) && state.endX < state.startX) {
+    errors.endX = i18n._('End X must be greater than or equal to Start X');
+  }
+  if (isValidNumber(state.startY) && isValidNumber(state.endY) && state.endY < state.startY) {
+    errors.endY = i18n._('End Y must be greater than or equal to Start Y');
+  }
   ['stepX', 'stepY'].forEach(key => {
     if (!isValidNumber(state[key])) {
       errors[key] = invalidMessage;
@@ -334,13 +353,18 @@ function AutolevelWidget({
         units: nextState.units,
         snapX: nextState.stepX / 2,
         snapY: nextState.stepY / 2,
+        stepX: nextState.stepX,
+        stepY: nextState.stepY,
+        scanPattern: nextState.scanPattern,
+        scanDirection: nextState.scanDirection,
         interactable,
       },
     });
   }, []);
 
   const publishProbeAreaForView = useCallback(nextState => {
-    if (nextState.wizardView === VIEW_SETUP_PROBE || nextState.wizardView === VIEW_PROBING) {
+    if (nextState.wizardView === VIEW_SETUP_PROBE || nextState.wizardView === VIEW_PROBING ||
+        (nextState.wizardView === VIEW_APPLY && nextState.probedPositions.length > 0)) {
       publishProbeArea(nextState, nextState.wizardView === VIEW_SETUP_PROBE);
     }
   }, [publishProbeArea]);
@@ -390,6 +414,7 @@ function AutolevelWidget({
           units,
           controller: { type, state: controllerState },
           ...readProbeSettings(widgetConfig, units),
+          ...readScanSettings(widgetConfig),
         },
       };
       const nextState = autolevelReducer(stateRef.current, action);
@@ -406,7 +431,12 @@ function AutolevelWidget({
       dispatch({ type: 'UPDATE_PROBE', payload: data });
       publishProbeArea(nextState, false);
     };
-    const onProbeComplete = () => transition({ type: 'COMPLETE_PROBING' });
+    const onProbeComplete = () => {
+      const action = { type: 'COMPLETE_PROBING' };
+      const nextState = autolevelReducer(stateRef.current, action);
+      transition(action);
+      publishProbeAreaForView(nextState);
+    };
     const onProbeAreaUpdated = (_message, data = {}) => {
       if (['startX', 'startY', 'endX', 'endY'].every(key => isValidNumber(data[key]))) {
         const action = { type: 'AREA_UPDATED', payload: data };
@@ -482,6 +512,8 @@ function AutolevelWidget({
     PROBE_SETTING_KEYS.forEach(key => {
       widgetConfig.set(key, toMetric(state[key], state.units));
     });
+    widgetConfig.set('scanPattern', state.scanPattern);
+    widgetConfig.set('scanDirection', state.scanDirection);
     persistedUnitsRef.current = state.units;
   }, [state, widgetConfig]);
 
@@ -499,11 +531,11 @@ function AutolevelWidget({
     }
     delayedVisualizationRef.current = setTimeout(() => {
       if (mountedRef.current) {
-        publishProbeArea(stateRef.current, true);
+        publishProbeAreaForView(stateRef.current);
       }
       delayedVisualizationRef.current = null;
     }, 50);
-  }, [publishProbeArea, transition]);
+  }, [publishProbeAreaForView, transition]);
 
   const handleProbeFileLoaded = useCallback((filepath, data) => {
     try {
@@ -581,8 +613,11 @@ function AutolevelWidget({
     if (current.probeState === PROBE_STATE_RUNNING || !canClickForState(current) || Object.keys(validationErrors).length) {
       return;
     }
-    const totalPoints = (Math.floor((current.endX - current.startX) / current.stepX) + 1) *
-      (Math.floor((current.endY - current.startY) / current.stepY) + 1);
+    if (delayedVisualizationRef.current) {
+      clearTimeout(delayedVisualizationRef.current);
+      delayedVisualizationRef.current = null;
+    }
+    const totalPoints = getScanPointCount(current);
     transition({ type: 'START_PROBING', payload: { totalPoints } });
     pubsub.publish('autolevel:hideProbeVisualization');
     controller.command('autolevel:start', {
@@ -597,6 +632,8 @@ function AutolevelWidget({
       startZ: current.startZ,
       endZ: current.endZ,
       feedrate: current.feedrate,
+      scanPattern: current.scanPattern,
+      scanDirection: current.scanDirection,
     });
     log.info('Starting probe sequence');
   }, [transition]);
@@ -632,13 +669,15 @@ function AutolevelWidget({
   const handleProbeAreaBlur = useCallback(event => {
     const current = stateRef.current;
     const { startX, startY, endX, endY, units } = current;
-    const valid = [startX, startY, endX, endY].every(isValidNumber) && endX > startX && endY > startY;
+    const valid = [startX, startY, endX, endY].every(isValidNumber) && endX >= startX && endY >= startY;
     const inputName = event.target.name;
     if (!valid && inputName && previousValidValuesRef.current[inputName] !== undefined) {
-      transition({
+      const action = {
         type: 'SET_FIELD',
         payload: { field: inputName, value: previousValidValuesRef.current[inputName] },
-      });
+      };
+      transition(action);
+      publishProbeAreaForView(autolevelReducer(current, action));
       return;
     }
     if (valid && (current.wizardView === VIEW_SETUP_PROBE || current.wizardView === VIEW_PROBING)) {
@@ -646,7 +685,7 @@ function AutolevelWidget({
         config: { startX, startY, endX, endY, units },
       });
     }
-  }, [transition]);
+  }, [publishProbeAreaForView, transition]);
 
   const saveProbeData = useCallback(() => {
     const { probedPositions, probeFileName } = stateRef.current;
@@ -897,6 +936,8 @@ function AutolevelWidget({
             onInputFocus={handleInputFocus}
             onProbeAreaBlur={handleProbeAreaBlur}
             onProbeFeedrateChange={event => updateField('feedrate', event)}
+            onScanDirectionChange={event => updateField('scanDirection', event)}
+            onScanPatternChange={event => updateField('scanPattern', event)}
             onShowStartProbeConfirmation={() => openModal(MODAL_START_PROBE_CONFIRM)}
             onShowStopProbeConfirmation={() => openModal(MODAL_STOP_PROBE_CONFIRM)}
             onShowTestProbeConfirmation={() => openModal(MODAL_TEST_PROBE_CONFIRM)}
