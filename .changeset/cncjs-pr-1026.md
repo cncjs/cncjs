@@ -2,8 +2,7 @@
 "cncjs": patch
 ---
 
-fix(visualizer): keep the selected camera view when loading and closing G-code
-feat(visualizer): remember the selected camera view across sessions
+fix(visualizer): preserve and remember the selected camera view
 
 Loading a G-code file or closing it resets the 3D camera to the default top-down view through the trackball controls, but the toolbar selection did not change, so the highlighted button (for example 3D View) no longer matched the scene and the view had to be re-selected by clicking another view first. The Visualizer now re-applies the view selected in the toolbar after a load, an unload and when the widget mounts, so the scene follows the selection.
 
