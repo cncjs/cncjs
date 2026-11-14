@@ -347,7 +347,7 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.js$": [
+      "^.+\\.jsx?$": [
         "babel-jest",
         {
           "configFile": false,
@@ -359,7 +359,8 @@
                   "node": "current"
                 }
               }
-            ]
+            ],
+            "@babel/preset-react"
           ]
         }
       ]
@@ -376,6 +377,9 @@
       "text",
       "html"
     ],
+    "moduleNameMapper": {
+      "^app/(.*)$": "<rootDir>/src/app/$1"
+    },
     "modulePathIgnorePatterns": [
       "<rootDir>/build"
     ],
@@ -386,6 +390,7 @@
     "snapshotSerializers": [],
     "testEnvironment": "node",
     "testMatch": [
+      "<rootDir>/src/app/**/__tests__/**/*.test.js",
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
       "<rootDir>/grbl-simulator/__tests__/**/*.test.js"
     ],

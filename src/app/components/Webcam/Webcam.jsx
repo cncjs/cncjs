@@ -38,6 +38,8 @@ class Webcam extends Component {
 
     static requestToken = 0;
 
+    static stream = null;
+
     static mountedInstances = [];
 
     static userMediaRequested = false;
@@ -82,17 +84,22 @@ class Webcam extends Component {
       }
 
       Webcam.mountedInstances.push(this);
-
-      if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+      if (Webcam.stream) {
+        // Attach the stream already owned by the mounted instances.
+        // eslint-disable-next-line react/no-did-mount-set-state
+        this.setState({ hasUserMedia: true, stream: Webcam.stream });
+      } else if (!Webcam.userMediaRequested) {
         this.requestUserMedia();
       }
     }
 
     componentDidUpdate(prevProps) {
       if (prevProps.video !== this.props.video || prevProps.audio !== this.props.audio) {
-        // A different device was selected: release the current one, then open the new one
-        Webcam.stopStream(this.state.stream);
-        Webcam.userMediaRequested = false;
+        Webcam.stopStream(Webcam.stream);
+        Webcam.stream = null;
+        Webcam.mountedInstances.forEach(instance => {
+          instance.setState({ hasUserMedia: false, stream: null });
+        });
         this.requestUserMedia();
         return;
       }
@@ -108,27 +115,25 @@ class Webcam extends Component {
         Webcam.mountedInstances.splice(index, 1);
       }
 
-      const { hasUserMedia, stream } = this.state;
-
-      if (Webcam.mountedInstances.length === 0 && hasUserMedia) {
-        Webcam.stopStream(stream);
+      if (Webcam.mountedInstances.length === 0) {
+        Webcam.requestToken += 1;
+        Webcam.stopStream(Webcam.stream);
+        Webcam.stream = null;
         Webcam.userMediaRequested = false;
-        window.URL.revokeObjectURL(stream);
       }
 
       this.canvas = null;
       this.ctx = null;
     }
 
-    buildConstraints({ fallback = false } = {}) {
-      const { audio, video } = this.props;
+    buildConstraints() {
       const pick = (value) => {
-        if (!fallback && typeof value === 'string' && value.length > 0) {
+        if (typeof value === 'string' && value.length > 0) {
           return { deviceId: { exact: value } };
         }
         return !!value;
       };
-      return { audio: pick(audio), video: pick(video) };
+      return { audio: pick(this.props.audio), video: pick(this.props.video) };
     }
 
     requestUserMedia() {
@@ -137,44 +142,66 @@ class Webcam extends Component {
       }
 
       const token = ++Webcam.requestToken;
-
-      const request = (constraints) => {
+      const constraints = this.buildConstraints();
+      const selectedVideo = typeof this.props.video === 'string' && this.props.video.length > 0;
+      const isCurrent = () => token === Webcam.requestToken && Webcam.mountedInstances.length > 0;
+      const isMissing = err => err && (err.name === 'OverconstrainedError' || err.name === 'NotFoundError');
+      const request = (nextConstraints) => {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          return navigator.mediaDevices.getUserMedia(constraints);
+          return navigator.mediaDevices.getUserMedia(nextConstraints);
         }
         return new Promise((resolve, reject) => {
-          Webcam.getUserMedia.call(navigator, constraints, resolve, reject);
+          Webcam.getUserMedia.call(navigator, nextConstraints, resolve, reject);
         });
       };
 
-      request(this.buildConstraints())
+      Webcam.userMediaRequested = true;
+      request(constraints)
         .catch((err) => {
-          // The saved device may be gone (unplugged): fall back to the default device
-          if (err && (err.name === 'OverconstrainedError' || err.name === 'NotFoundError')) {
-            log.warn('Webcam: the selected device is unavailable, using the default device');
-            return request(this.buildConstraints({ fallback: true }));
+          if (!isCurrent()) {
+            return null;
           }
-          if (err && this.props.audio &&
-              (err.name === 'NotReadableError' || (err.name === 'NotAllowedError' && /system/i.test(err.message)))) {
-            log.warn('Webcam: audio is unavailable, showing video only');
-            return request({ ...this.buildConstraints(), audio: false });
+          if (selectedVideo && isMissing(err)) {
+            log.warn('Webcam: a media device is unavailable, trying the default camera');
+            return request({ ...constraints, video: true });
+          }
+          throw err;
+        })
+        .catch((err) => {
+          if (!isCurrent()) {
+            return null;
+          }
+          if (constraints.audio && constraints.video && err &&
+              (isMissing(err) || err.name === 'NotAllowedError' || err.name === 'NotReadableError')) {
+            log.warn('Webcam: unable to open audio and video, trying video only');
+            return request({ ...constraints, audio: false }).catch((videoErr) => {
+              if (!isCurrent()) {
+                return null;
+              }
+              if (selectedVideo && isMissing(videoErr)) {
+                return request({ ...constraints, audio: false, video: true });
+              }
+              throw videoErr;
+            });
           }
           throw err;
         })
         .then((stream) => {
-          if (token !== Webcam.requestToken || Webcam.mountedInstances.length === 0) {
-            // Superseded by a newer request, or nobody is mounted anymore: do not leak the device
+          if (!stream) {
+            return;
+          }
+          if (!isCurrent()) {
             Webcam.stopStream(stream);
             return;
           }
-          Webcam.userMediaRequested = true;
+          Webcam.stream = stream;
           Webcam.mountedInstances.forEach(instance => {
             instance.setState({ hasUserMedia: true, stream: stream });
           });
         })
         .catch((err) => {
-          log.error(`${err.name}: ${err.message}`);
-          if (token === Webcam.requestToken) {
+          if (isCurrent()) {
+            log.error(`${err.name}: ${err.message}`);
             Webcam.userMediaRequested = false;
             Webcam.mountedInstances.forEach(instance => {
               instance.setState({ hasUserMedia: false, stream: null });
