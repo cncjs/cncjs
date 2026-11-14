@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { IMPERIAL_UNITS, METRIC_UNITS } from '@app/constants';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
+import { getScanPathEndpoints, SCAN_DIRECTIONS, SCAN_PATTERNS } from '../Autolevel/scanPath';
 import TextSprite from './TextSprite';
 import { recordOwnedListenerDelta } from './metrics';
 
@@ -21,11 +22,28 @@ class ProbeVisualization {
       endY,
       snapX,
       snapY,
+      stepX,
+      stepY,
+      scanPattern = 'raster',
+      scanDirection = 'x',
       interactable = false, // Whether dragging/resizing is enabled
     } = config;
 
     // Store config for later updates
-    this.config = { startX, startY, endX, endY, units, snapX, snapY, interactable };
+    this.config = {
+      startX,
+      startY,
+      endX,
+      endY,
+      units,
+      snapX,
+      snapY,
+      stepX,
+      stepY,
+      scanPattern,
+      scanDirection,
+      interactable,
+    };
 
     // Calculate text sizes based on units
     this.labelSize = (units === IMPERIAL_UNITS) ? (25.4 / 2) : (10 / 2);
@@ -36,6 +54,9 @@ class ProbeVisualization {
     this.cornerHandles = [];
     this.interactionPlane = null;
     this.labels = [];
+    this.pathStartLabel = null;
+    this.pathEndLabel = null;
+    this.pathEndpointsValid = false;
 
     // Interaction state (for drag/resize)
     this.camera = camera;
@@ -57,11 +78,7 @@ class ProbeVisualization {
     // Draw "PROBE AREA" label at top
     this.labels.push(this.drawLabel(i18n._('PROBE AREA'), (startX + endX) / 2, endY + 5, 0));
 
-    // Draw "START" label at first corner
-    this.labels.push(this.drawLabel(i18n._('START'), startX - 5, startY - 5, 0));
-
-    // Draw "END" label at opposite corner
-    this.labels.push(this.drawLabel(i18n._('END'), endX + 5, endY + 5, 0));
+    this.updatePathLabels();
 
     // Create interactive elements only if no probe data (setup mode)
     if (probeData.length === 0) {
@@ -120,6 +137,60 @@ class ProbeVisualization {
         // Add Z-offset label next to the point
         this.drawZOffsetLabel(x, y, z, zOffset);
       });
+    }
+  }
+
+  /**
+   * Return the first and last actual grid points, or null endpoints for an
+   * incomplete or invalid configuration.
+   *
+   * @returns {{start: {x: number, y: number}|null, end: {x: number, y: number}|null}}
+   */
+  getPathEndpoints() {
+    const {
+      startX, startY, endX, endY, stepX, stepY, scanPattern, scanDirection,
+    } = this.config;
+
+    if (
+      ![startX, startY, endX, endY, stepX, stepY].every(Number.isFinite) ||
+      stepX <= 0 || stepY <= 0 ||
+      endX < startX || endY < startY ||
+      !SCAN_PATTERNS.includes(scanPattern) ||
+      !SCAN_DIRECTIONS.includes(scanDirection)
+    ) {
+      return { start: null, end: null };
+    }
+
+    return getScanPathEndpoints({
+      startX, startY, endX, endY, stepX, stepY, scanPattern, scanDirection,
+    });
+  }
+
+  updatePathLabels() {
+    const { start, end } = this.getPathEndpoints();
+    this.pathEndpointsValid = !!(start && end);
+
+    if (this.pathEndpointsValid) {
+      if (!this.pathStartLabel) {
+        this.pathStartLabel = this.drawLabel(i18n._('START'), start.x - 2.5, start.y - 5, 0);
+        this.labels.push(this.pathStartLabel);
+      }
+      if (!this.pathEndLabel) {
+        this.pathEndLabel = this.drawLabel(i18n._('END'), end.x + 2.5, end.y + 5, 0);
+        this.labels.push(this.pathEndLabel);
+      }
+
+      this.pathStartLabel.position.set(start.x - 2.5, start.y - 5, 0);
+      this.pathEndLabel.position.set(end.x + 2.5, end.y + 5, 0);
+    }
+
+    // Match the other labels' visibility without revealing an invalid path.
+    const visible = this.pathEndpointsValid && this.labels[0].visible;
+    if (this.pathStartLabel) {
+      this.pathStartLabel.visible = visible;
+    }
+    if (this.pathEndLabel) {
+      this.pathEndLabel.visible = visible;
     }
   }
 
@@ -456,15 +527,9 @@ class ProbeVisualization {
       this.interactionPlane.position.set((startX + endX) / 2, (startY + endY) / 2, 0);
     }
 
-    // Update labels
-    if (this.labels.length >= 3) {
-      // Update "Probe Area" label position
-      this.labels[0].position.set((startX + endX) / 2, endY + 5, 0);
-      // Update "Start" label position
-      this.labels[1].position.set(startX - 5, startY - 5, 0);
-      // Update "End" label position
-      this.labels[2].position.set(endX + 5, endY + 5, 0);
-    }
+    // Update the area label and the labels for the actual path endpoints.
+    this.labels[0].position.set((startX + endX) / 2, endY + 5, 0);
+    this.updatePathLabels();
 
     // Trigger scene update if callback provided
     if (this.sceneUpdateCallback) {
@@ -553,7 +618,8 @@ class ProbeVisualization {
       this.boundaryLine.visible = enabled;
     }
     this.labels.forEach(label => {
-      label.visible = enabled;
+      const isPathLabel = label === this.pathStartLabel || label === this.pathEndLabel;
+      label.visible = enabled && (!isPathLabel || this.pathEndpointsValid);
     });
 
     log.info(`[ProbeVisualization] Interactions ${enabled ? 'enabled' : 'disabled'} (interactive elements ${enabled ? 'visible' : 'hidden'})`);

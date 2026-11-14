@@ -29,6 +29,100 @@ async function upload(page, content = toolpath) {
   await expect(widget(page, 'visualizer').getByRole('button', { name: 'Run', exact: true })).toBeEnabled();
 }
 
+test('simulator: autolevel zigzag scans the selected grid', async ({ page, simulator }, testInfo) => {
+  test.setTimeout(120_000);
+  const root = widget(page, 'autolevel');
+  await root.getByRole('button', { name: 'Start New Probe', exact: true }).click();
+
+  const settings = [
+    ['Start X', '0'], ['End X', '2'], ['Step X', '1'],
+    ['Start Y', '0'], ['End Y', '1'], ['Step Y', '1'],
+    ['Start Z', '1'], ['End Z', '-5'], ['Clearance Z', '5'], ['Probe Feedrate', '3000'],
+  ];
+  for (const [label, value] of settings) {
+    await root.getByLabel(label, { exact: true }).fill(value);
+    await expect(root.getByLabel(label, { exact: true })).toHaveValue(value);
+  }
+
+  const choose = async (label, option) => {
+    const toggle = root.getByRole('button', { name: label, exact: true });
+    await toggle.click();
+    const menu = page.getByRole('menu');
+    await expect(menu).toBeVisible();
+    await expect.poll(() => menu.evaluate(element => element.contains(document.activeElement))).toBe(true);
+    await expect(menu.locator('[data-tonic="Collapse"]')).toHaveCSS('overflow', 'visible');
+    await menu.getByRole('menuitem', { name: option, exact: true }).click();
+    await expect(menu).toHaveCount(0);
+    await expect(toggle).toContainText(option);
+  };
+  await choose('Scan Pattern', 'Zigzag');
+  await choose('Scan Direction', 'Along X Axis');
+  await expect(root.getByText('6 points', { exact: true })).toBeVisible();
+
+  const marker = (diagram, label) => diagram.getByText(label, { exact: true })
+    .locator('xpath=..').locator('circle').evaluate(circle => [
+      Number(circle.getAttribute('cx')),
+      Number(circle.getAttribute('cy')),
+    ]);
+  const setupDiagram = root.getByRole('img', { name: 'Probe area diagram', exact: true });
+  await expect(setupDiagram).toBeVisible();
+  const setupEnd = await marker(setupDiagram, 'END');
+  expect(setupEnd).toEqual([30, 10]);
+  await capture(setupDiagram, testInfo, 'zigzag-setup-diagram');
+  await capture(root.getByRole('group', { name: 'Scan pattern preview', exact: true }), testInfo, 'zigzag-setup-preview');
+  for (const [label, value] of settings) {
+    await expect(root.getByLabel(label, { exact: true })).toHaveValue(value);
+  }
+
+  const beforeStart = simulator.commands.length;
+  const start = root.getByRole('button', { name: 'Start Probing', exact: true });
+  await expect(start).toBeEnabled();
+  await start.click();
+  const confirmation = page.getByRole('dialog');
+  const confirm = confirmation.getByRole('button', { name: 'Start Probing', exact: true });
+  const confirmationDiagram = confirmation.getByRole('img', { name: 'Probe area diagram', exact: true });
+  await expect(confirmationDiagram).toBeVisible();
+  const confirmationZ = confirmation.getByRole('img', { name: 'Z-axis probe diagram', exact: true });
+  await expect(confirmationZ).toContainText('Clearance Z: 5 mm');
+  await expect(confirmationZ).toContainText('Start Z: 1 mm');
+  await expect(confirmationZ).toContainText('End Z: -5 mm');
+  await expect(confirmationZ).toContainText('3000 mm/min');
+  expect(await marker(confirmationDiagram, 'END')).toEqual(setupEnd);
+  await capture(confirmation, testInfo, 'zigzag-confirmation');
+  await expect(confirm).toBeDisabled();
+  const safety = confirmation.getByRole('checkbox', {
+    name: 'I confirm probe wires are correctly connected',
+    exact: true,
+  });
+  await expect(safety).not.toBeChecked();
+  expect(simulator.commands.slice(beforeStart).filter(line => / CMD: G(?:0|38\.2)(?:\s|$)/.test(line))).toEqual([]);
+  await safety.locator('xpath=ancestor::label[1]').click();
+  await expect(safety).toBeChecked();
+  await expect(confirm).toBeEnabled();
+  await confirm.click();
+  await expect(confirmation).toHaveCount(0);
+
+  // The completed Apply view persists; the 6/6 setup progress can disappear immediately.
+  await expect(root.getByText('APPLY COMPENSATION', { exact: true })).toBeVisible({ timeout: 60_000 });
+  await expect(root.getByText('Points probed:', { exact: true }).locator('xpath=..')).toHaveText(/Points probed:\s*6/);
+  await expect(root.getByRole('button', { name: 'Load G-code file', exact: true })).toBeVisible();
+  const xyCommands = () => simulator.commands
+    .map(line => / CMD: (.+?) ->/.exec(line)?.[1])
+    .filter(line => line && /^G0(?:\s|$)/.test(line) && /(?:^|\s)[XY]/.test(line));
+  const probeCommands = () => simulator.commands.filter(line => / CMD: G38\.2(?:\s|$)/.test(line));
+  await expect.poll(xyCommands).toEqual([
+    'G0 X0 Y0', 'G0 X1 Y0', 'G0 X2 Y0',
+    'G0 X2 Y1', 'G0 X1 Y1', 'G0 X0 Y1',
+  ]);
+  await expect.poll(() => probeCommands().length).toBe(6);
+  expect(probeCommands().map(line => line.match(/ CMD: (.+?) ->/)[1])).toEqual([
+    'G38.2 Z-5 F1500',
+    ...Array(5).fill('G38.2 Z-5 F3000'),
+  ]);
+  expect(simulator.commands.filter(line => / CMD: G1(?:\s|$)/.test(line))).toEqual([]);
+  await capture(root, testInfo, 'zigzag-probe-results');
+});
+
 test('simulator: quick access toolbar sends controller commands to the isolated simulator', async ({ page, simulator }) => {
   const toolbar = page.getByRole('toolbar', { name: 'Quick access toolbar' });
   for (const [name, output] of [
