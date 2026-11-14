@@ -3,6 +3,7 @@
 These skills describe this checkout. Start with `skills/<name>/SKILL.md` and
 read only the references selected by its routing table. Source paths are
 repository-relative; `references/` links are relative to the skill directory.
+`AGENTS.md` is the shared instruction entry point; `CLAUDE.md` imports it.
 
 Codex and omp discover the relative links in `.agents/skills/`; Claude Code
 discovers the links in `.claude/skills/`. Both point to the same directories.

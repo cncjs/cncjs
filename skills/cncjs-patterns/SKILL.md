@@ -14,7 +14,7 @@ Source paths in this skill and its references are repository-relative.
 
 ## Baseline
 
-- Read `CLAUDE.md` for the stack, commands, and repository conventions; read
+- Read `AGENTS.md` for the stack, commands, and repository conventions; read
   `CONTRIBUTING.md` for contribution and localization guidance.
 - This checkout uses React 15.6 class components and Stylus. Reuse the owning
   component, store, API, service, or controller flow. Do not introduce a second
