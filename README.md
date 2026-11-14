@@ -98,21 +98,28 @@ receive that fix.
  Version | Supported Level
 :------- |:---------------
  < 24    | Not supported
- 24.22.1 or higher | Recommended
+ 24.22.1 or higher (24.x) | Recommended
+ 25.x, 26.0.0 – 26.11.x | Not supported
  26.12.1 or higher | Supported
 
-Only the 24 and 26 lines are supported, and CI builds and tests the 24 line.
-Each supported line keeps receiving fixes in patch releases, so `24.22.1 or higher`
-includes `24.22.2` and every later `24.x`. Install the newest patch release.
+The 24.x line is supported from 24.22.1. Node.js 26.12.1 and every later version
+are supported, so the 26.x line becomes supported at 26.12.1 and later major
+versions satisfy `engines.node`. Each supported line keeps receiving fixes in
+patch releases, so `24.22.1 or higher` in the 24.x line includes `24.22.2` and
+every later `24.x`. Install the newest patch release.
 
 The desktop app bundles its own Node.js runtime. The versions above do not apply
 to it.
+
+`yarn check:node-versions` verifies that Node.js versions named in `AGENTS.md`,
+`CLAUDE.md`, the skill directories, and this file agree with `engines.node`.
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 24.22.1 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Use a Node.js version from the [Supported Node.js Versions](#supported-nodejs-versions)
+table; the 24.x line is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm

@@ -9,6 +9,15 @@
 * [Build Desktop Apps](CONTRIBUTING.md#build-desktop-apps)
 * [Localization](CONTRIBUTING.md#localization)
 * [Translation Validation](CONTRIBUTING.md#translation-validation)
+* [Agent Skills](CONTRIBUTING.md#agent-skills)
+
+## Agent Skills
+
+The shared agent entry point is [AGENTS.md](AGENTS.md). Task-specific
+instructions live in [`skills/`](skills/README.md), with one `SKILL.md` per
+skill. Codex and omp discover links in `.agents/skills/`; Claude Code uses
+`.claude/skills/` and imports `AGENTS.md` through `CLAUDE.md`. Edit the skill
+files directly rather than maintaining client-specific copies.
 
 ## Troubleshooting
 
