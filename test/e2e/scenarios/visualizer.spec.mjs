@@ -6,6 +6,7 @@ import {
   openWorkspace,
   widget,
 } from '../support/fixtures.mjs';
+import { capture } from '../support/screenshots.mjs';
 
 const readMetrics = page => page.evaluate(() => {
   const metrics = window.__CNCJS_VISUALIZER_METRICS__;
@@ -531,3 +532,41 @@ test.describe('visualizer standalone scenarios', () => {
     await expect(visualizer.getByRole('button', { name: 'Zoom In', exact: true })).toBeEnabled();
   });
 });
+
+const persistedCameraViews = [
+  { id: 'top', label: 'Top View', position: [0, 0, 200], rotationX: 0 },
+  { id: '3d', label: '3D View', position: [200, -200, 200], rotationX: Math.PI / 4 },
+  { id: 'front', label: 'Front View', position: [0, -200, 0], rotationX: Math.PI / 2 },
+  { id: 'left', label: 'Left Side View', position: [200, 0, 0], rotationX: Math.PI / 2 },
+  { id: 'right', label: 'Right Side View', position: [-200, 0, 0], rotationX: Math.PI / 2 },
+];
+
+for (const view of persistedCameraViews) {
+  test(`selected camera view is restored after a page reload: ${view.id}`, async ({ page }, testInfo) => {
+    let visualizer = await openVisualizer(page, testInfo);
+    let toolbar = visualizer.getByRole('toolbar', { name: 'Visualizer camera toolbar' });
+    await toolbar.getByRole('button', { name: view.label, exact: true }).click();
+    await expect(toolbar.getByRole('button', { name: view.label, exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(() => page.evaluate(() => (
+      JSON.parse(localStorage.getItem('cnc') || '{}').state?.widgets?.visualizer?.cameraPosition
+    ))).toBe(view.id);
+
+    await page.reload();
+    visualizer = widget(page, 'visualizer');
+    await expect(visualizer).toBeVisible();
+    await waitForAppearance(page, testInfo);
+    await waitForMetrics(page);
+    toolbar = visualizer.getByRole('toolbar', { name: 'Visualizer camera toolbar' });
+    await expect(toolbar.getByRole('button', { name: view.label, exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(async () => (await readMetrics(page))?.cameraPosition).toBe(view.id);
+    await expect.poll(async () => {
+      const camera = await readMetrics(page);
+      const coordinates = camera && [camera.cameraX, camera.cameraY, camera.cameraZ];
+      return coordinates?.every(value => typeof value === 'number')
+        ? coordinates.map(value => Number(value.toFixed(3)))
+        : null;
+    }).toEqual(view.position);
+    await expect.poll(async () => (await readMetrics(page))?.cameraRotationX).toBeCloseTo(view.rotationX, 3);
+    await capture(visualizer, testInfo, `camera-view-${view.id}-restored`);
+  });
+}
