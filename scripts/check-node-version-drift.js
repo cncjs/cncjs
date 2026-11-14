@@ -67,7 +67,12 @@ const POLICY = {
   bundledRuntimeSyntax: 'bundles ... Node.js <version> runtime',
 };
 
-const splitTableRow = line => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(cell => cell.trim());
+const splitTableRow = line => line
+  .trim()
+  .replace(/^\|/, '')
+  .replace(/\|$/, '')
+  .split('|')
+  .map(cell => cell.trim());
 const isTableSeparator = cells => cells.length > 1 && cells.every(cell => /^:?-{3,}:?$/.test(cell));
 const isTableLine = line => line.includes('|');
 const matchAll = (text, regex) => [...text.matchAll(new RegExp(regex.source, regex.flags))];
@@ -104,8 +109,8 @@ function isOpenEndedFrom(engineRange, version) {
   const target = new semver.SemVer(`${version.major}.${version.minor}.${version.patch}`);
   const range = new semver.Range(engineRange);
   return range.set.some(comparators => {
-    const lower = comparators.find(item => (item.operator === '>=' && item.semver.compare(target) <= 0)
-      || (item.operator === '>' && item.semver.compare(target) < 0));
+    const lower = comparators.find(item => (item.operator === '>=' && item.semver.compare(target) <= 0) ||
+      (item.operator === '>' && item.semver.compare(target) < 0));
     const upper = comparators.some(item => item.operator === '<' || item.operator === '<=');
     return Boolean(lower) && !upper;
   });
@@ -136,8 +141,8 @@ function sentenceAt(text, offset) {
 
 function isBundledRuntime(sentence, token) {
   const version = escapeRegExp(token);
-  return new RegExp(String.raw`\bbundl(?:e|es|ed|ing)\b[^.!?]{0,120}\bNode(?:\.js)?\s+${version}\s+runtime`, 'i').test(sentence)
-    || new RegExp(String.raw`\bNode(?:\.js)?\s+${version}\s+runtime[^.!?]{0,120}\bbundl`, 'i').test(sentence);
+  return new RegExp(String.raw`\bbundl(?:e|es|ed|ing)\b[^.!?]{0,120}\bNode(?:\.js)?\s+${version}\s+runtime`, 'i').test(sentence) ||
+    new RegExp(String.raw`\bNode(?:\.js)?\s+${version}\s+runtime[^.!?]{0,120}\bbundl`, 'i').test(sentence);
 }
 
 function listVersions(text) {
