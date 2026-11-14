@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Dropdown,
+  DropdownButton,
   FormControl,
   FormLabel,
   Input,
@@ -10,13 +12,16 @@ import {
   LinearProgress,
   Space,
   Text,
+  Tooltip,
 } from '@tonic-ui/react';
-import { ChevronLeftIcon, PlayIcon, StopIcon } from '@tonic-ui/react-icons';
+import { ChevronLeftIcon, InfoIcon, PlayIcon, StopIcon } from '@tonic-ui/react-icons';
 import React from 'react';
 import i18n from '@app/lib/i18n';
 import { METRIC_UNITS } from '@app/constants';
 import { toDisplayUnits } from '@app/lib/units';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
+import ScanPatternPreview from './ScanPatternPreview';
+import { getScanPointCount } from './scanPath';
 import ZProbeDiagram from './ZProbeDiagram';
 import { PROBE_STATE_RUNNING } from './constants';
 import styles from './SetupProbeView.styl';
@@ -71,7 +76,52 @@ function NumberField({
 }
 
 /**
- * @param {{value?: object, canClick?: boolean, validationErrors?: object, onBack?: Function, onClearanceZChange?: Function, onEndXChange?: Function, onEndYChange?: Function, onEndZChange?: Function, onInputFocus?: Function, onProbeAreaBlur?: Function, onProbeFeedrateChange?: Function, onShowStartProbeConfirmation?: Function, onShowStopProbeConfirmation?: Function, onShowTestProbeConfirmation?: Function, onStartXChange?: Function, onStartYChange?: Function, onStartZChange?: Function, onStepXChange?: Function, onStepYChange?: Function}} props
+ * @param {{label: string, help: string, items: Array, value: string, disabled?: boolean, onChange?: Function}} props
+ */
+function ScanField({ label, help, items, value, disabled = false, onChange = noop }) {
+  const options = items.map(item => ({
+    ...item,
+    props: {
+      'data-selected': item.value === value ? '' : undefined,
+      'aria-current': item.value === value ? 'true' : undefined,
+    },
+  }));
+  return (
+    <FormControl minWidth="0">
+      <Box alignItems="center" display="flex" gap="1x">
+        <FormLabel>{label}</FormLabel>
+        <Tooltip label={help} placement="top">
+          <Box
+            as="span" aria-label={help} role="img"
+            tabIndex={0} sx={{ color: 'text.secondary', cursor: 'help' }}
+          >
+            <InfoIcon aria-hidden="true" size="1em" />
+          </Box>
+        </Tooltip>
+      </Box>
+      <Dropdown
+        autoSelect
+        disabled={disabled}
+        items={options}
+        matchWidth
+        value={options.find(item => item.value === value) || null}
+        renderItem={item => item?.label ?? ''}
+        renderToggle={({ renderItem, value: selected }) => (
+          <DropdownButton
+            aria-label={label} disabled={disabled} width="100%"
+            variant="secondary"
+          >
+            {renderItem(selected)}
+          </DropdownButton>
+        )}
+        onChange={item => onChange({ target: { value: item.value } })}
+      />
+    </FormControl>
+  );
+}
+
+/**
+ * @param {{value?: object, canClick?: boolean, validationErrors?: object, onBack?: Function, onClearanceZChange?: Function, onEndXChange?: Function, onEndYChange?: Function, onEndZChange?: Function, onInputFocus?: Function, onProbeAreaBlur?: Function, onProbeFeedrateChange?: Function, onScanDirectionChange?: Function, onScanPatternChange?: Function, onShowStartProbeConfirmation?: Function, onShowStopProbeConfirmation?: Function, onShowTestProbeConfirmation?: Function, onStartXChange?: Function, onStartYChange?: Function, onStartZChange?: Function, onStepXChange?: Function, onStepYChange?: Function}} props
  */
 function SetupProbeView({
   value = {},
@@ -85,6 +135,8 @@ function SetupProbeView({
   onInputFocus = noop,
   onProbeAreaBlur = noop,
   onProbeFeedrateChange = noop,
+  onScanDirectionChange = noop,
+  onScanPatternChange = noop,
   onShowStartProbeConfirmation = noop,
   onShowStopProbeConfirmation = noop,
   onShowTestProbeConfirmation = noop,
@@ -105,15 +157,15 @@ function SetupProbeView({
     startZ,
     endZ,
     feedrate,
+    scanPattern = 'raster',
+    scanDirection = 'x',
     probeState,
     probeProgress,
     units,
   } = value;
   const displayUnits = toDisplayUnits(units);
   const feedrateUnits = units === METRIC_UNITS ? i18n._('mm/min') : i18n._('in/min');
-  const numPointsX = Math.floor((endX - startX) / stepX) + 1;
-  const numPointsY = Math.floor((endY - startY) / stepY) + 1;
-  const totalPoints = numPointsX * numPointsY;
+  const totalPoints = getScanPointCount({ startX, endX, stepX, startY, endY, stepY });
   const isProbing = probeState === PROBE_STATE_RUNNING;
   const canGoBack = !isProbing;
   const step = 1;
@@ -200,6 +252,8 @@ function SetupProbeView({
         <ProbeAreaDiagram
           endX={endX}
           endY={endY}
+          scanDirection={scanDirection}
+          scanPattern={scanPattern}
           startX={startX}
           startY={startY}
           stepX={stepX}
@@ -286,6 +340,36 @@ function SetupProbeView({
             value={stepY}
           />
         </Box>
+        <Box
+          display="grid" gap="3x" gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+          mt="3x"
+        >
+          <ScanField
+            disabled={isProbing}
+            help={i18n._('The order in which the probe points are visited. Raster travels every line in one direction. Zigzag alternates line direction, so the head continues from where the previous line ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.')}
+            items={[
+              { value: 'raster', label: i18n._('Raster') },
+              { value: 'zigzag', label: i18n._('Zigzag') },
+              { value: 'spiral-in', label: i18n._('Spiral In') },
+              { value: 'spiral-out', label: i18n._('Spiral Out') },
+            ]}
+            label={i18n._('Scan Pattern')}
+            onChange={onScanPatternChange}
+            value={scanPattern}
+          />
+          <ScanField
+            disabled={isProbing}
+            help={i18n._('The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.')}
+            items={[
+              { value: 'x', label: i18n._('Along X Axis') },
+              { value: 'y', label: i18n._('Along Y Axis') },
+            ]}
+            label={i18n._('Scan Direction')}
+            onChange={onScanDirectionChange}
+            value={scanDirection}
+          />
+        </Box>
+        <ScanPatternPreview scanDirection={scanDirection} scanPattern={scanPattern} />
       </Box>
       <Box className={styles.section}>
         {isProbing && probeProgress && (

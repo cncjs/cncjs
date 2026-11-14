@@ -580,6 +580,120 @@ describe('MarlinController', () => {
       });
     });
 
+    test('autolevel:start follows a zigzag along Y', () => {
+      setup();
+      const expected = [
+        { x: 0, y: 0 }, { x: 0, y: 10 },
+        { x: 10, y: 10 }, { x: 10, y: 0 },
+      ];
+
+      controller.command('autolevel:start', {
+        startX: 0,
+        endX: 10,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 2,
+        endZ: -1,
+        feedrate: 100,
+        scanPattern: 'zigzag',
+        scanDirection: 'y',
+      });
+      drainFeeder(controller, writes);
+
+      expect(controller.probeState.probePoints).toEqual(expected);
+      expect(writes.map(write => write.data).filter(line => /^G0 X\d+ Y\d+/.test(line)))
+        .toEqual(expected.map(({ x, y }) => `G0 X${x} Y${y}\n`));
+    });
+
+    test('autolevel:start in full mode follows the selected scan pattern and direction', () => {
+      setup();
+
+      controller.command('autolevel:start', {
+        mode: 'full',
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 2,
+        endZ: -1,
+        feedrate: 100,
+        scanDirection: 'x',
+        scanPattern: 'zigzag',
+      });
+      drainFeeder(controller, writes);
+
+      expect(controller.probeState.probePoints).toEqual([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ]);
+      expect(
+        writes
+          .map(write => write.data)
+          .filter(data => /^G0 X\d+ Y\d+/.test(data))
+      ).toEqual([
+        'G0 X0 Y0\n',
+        'G0 X10 Y0\n',
+        'G0 X20 Y0\n',
+        'G0 X20 Y10\n',
+        'G0 X10 Y10\n',
+        'G0 X0 Y10\n',
+      ]);
+      expect(controller.probeState.config).toEqual({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 2,
+        endZ: -1,
+        feedrate: 100,
+      });
+    });
+
+    test.each([
+      [{ scanDirection: 'z' }, 'Unsupported scan direction: z'],
+      [{ scanPattern: 'circular' }, 'Unsupported scan pattern: circular'],
+      [{ stepX: 0 }, 'Axis start, end, and step must be finite, with step > 0'],
+      [{ stepY: -1 }, 'Axis start, end, and step must be finite, with step > 0'],
+      [{ endX: Infinity }, 'Axis start, end, and step must be finite, with step > 0'],
+      [{ startY: NaN }, 'Axis start, end, and step must be finite, with step > 0'],
+      [{ startX: 11 }, 'Axis end must be greater than or equal to start'],
+      [{ endY: -1 }, 'Axis end must be greater than or equal to start'],
+    ])('autolevel:start rejects %p before queuing G-code', (invalid, message) => {
+      setup();
+      const probeState = controller.probeState;
+      const params = {
+        startX: 0,
+        endX: 10,
+        stepX: 10,
+        startY: 0,
+        endY: 10,
+        stepY: 10,
+        clearanceZ: 5,
+        startZ: 2,
+        endZ: -1,
+        feedrate: 100,
+      };
+
+      expect(() => controller.command('autolevel:start', { ...params, ...invalid }))
+        .toThrow(new RangeError(message));
+      expect(writes).toEqual([]);
+      expect(controller.feeder.size()).toBe(0);
+      expect(controller.probeState).toBe(probeState);
+    });
+
     test('autolevel:stop resets the machine and clears the probe state', () => {
       setup();
       controller.probeState.probedPositions = [{ x: 1, y: 2, z: 3 }];

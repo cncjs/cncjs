@@ -66,7 +66,7 @@ export const test = base.extend({
       socketGuard.approveSimulator({
         port,
         commands: [
-          'autolevel:getProbeState', 'gcode', 'cycle_start', 'feed_hold', 'homing', 'sleep',
+          'autolevel:getProbeState', 'autolevel:start', 'autolevel:stop', 'gcode', 'cycle_start', 'feed_hold', 'homing', 'sleep',
           'unlock', 'reset', 'jog_cancel', 'feed_override', 'rapid_override', 'spindle_override',
           'sender_load', 'sender_start', 'sender_resume', 'sender_pause', 'sender_stop', 'sender_unload',
         ],
