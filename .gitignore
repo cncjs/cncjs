@@ -17,6 +17,14 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-.claude/
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/cncjs-controller
+!/.claude/skills/cncjs-i18n
+!/.claude/skills/cncjs-patterns
+!/.claude/skills/cncjs-pr
+!/.claude/skills/cncjs-version
+!/.claude/skills/cncjs-workspace
 .codex/
 .worktrees/
