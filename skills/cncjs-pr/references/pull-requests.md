@@ -18,9 +18,9 @@ has no commitlint configuration, so match the existing history rather than
 relying on an enforced linter: use the imperative mood, a lowercase description
 after the colon, no trailing period, and a subject short enough to scan.
 
-- Omit the scope when the change crosses areas; otherwise use a real path or
-  domain scope. Recent history uses `api`, `autolevel`, `deps`, `docker`,
-  `electron`, `gcode`, `grbl`, `grbl-simulator`, `l10n`, `release`,
+- Use a real path or domain scope when it describes the change; omit the scope
+  when no useful scope fits. Recent history uses `api`, `autolevel`, `deps`,
+  `docker`, `electron`, `gcode`, `grbl`, `grbl-simulator`, `l10n`, `release`,
   `visualizer`, `webcam`, and `widgets/Axes`.
 - Wrap identifiers, paths, and option names in backticks when it improves
   scanning; do not wrap the whole subject.
@@ -30,8 +30,8 @@ Controller scopes follow the change, not the file location alone:
 | Change | Scope |
 | --- | --- |
 | One controller pair (server and widget) | `(Grbl)`, `(Marlin)`, `(Smoothie)`, or `(TinyG)` |
-| Shared controller helper | Keep the controller scope; name the helper and any other affected controllers in the body |
-| Several controllers | Omit the scope and list every affected controller in the body |
+| Shared controller helper | Use a controller or domain scope when it fits; name affected controllers in the body |
+| Several controllers | A shared domain scope such as `(autolevel)` may fit; otherwise omit the scope. List affected controllers in the body |
 | Grbl simulator | `(grbl-simulator)` |
 | g2core-specific behavior | `(g2core)`; otherwise use `(TinyG)` |
 
