@@ -183,6 +183,10 @@ describe('Autolevel Visualizer integration acceptance', () => {
           interactable: true,
           snapX: 2.5,
           snapY: 2.5,
+          stepX: 5,
+          stepY: 5,
+          scanPattern: 'raster',
+          scanDirection: 'x',
           startX: 0,
           startY: 0,
           units: 'mm',
@@ -289,6 +293,8 @@ describe('Autolevel Visualizer integration acceptance', () => {
         startZ: 2,
         endZ: -1,
         feedrate: 100,
+        scanPattern: 'raster',
+        scanDirection: 'x',
       });
       expect(mockPublish.mock.calls.map(([eventName]) => eventName)).toEqual([
         'autolevel:hideProbeVisualization',

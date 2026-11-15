@@ -15,6 +15,7 @@ import React, { useRef, useState } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import i18n from '@app/lib/i18n';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
+import { getScanPointCount } from './scanPath';
 import ZProbeDiagram from './ZProbeDiagram';
 
 /**
@@ -32,11 +33,9 @@ function StartProbeModal({
   const safetyConfirmed = useWatch({ control: methods.control, name: 'safetyConfirmed' });
   const {
     startX, startY, endX, endY, stepX, stepY,
-    clearanceZ, startZ, endZ, feedrate, units,
+    clearanceZ, startZ, endZ, feedrate, units, scanPattern, scanDirection,
   } = value;
-  const numPointsX = Math.floor((endX - startX) / stepX) + 1;
-  const numPointsY = Math.floor((endY - startY) / stepY) + 1;
-  const totalPoints = numPointsX * numPointsY;
+  const totalPoints = getScanPointCount({ startX, endX, stepX, startY, endY, stepY });
 
   const submit = () => {
     if (!canConfirm || !methods.getValues('safetyConfirmed') || submitLock.current) {
@@ -75,8 +74,9 @@ function StartProbeModal({
                   {i18n._('{{count}} points', { count: totalPoints })}
                 </Text>
                 <ProbeAreaDiagram
-                  endX={endX} endY={endY} startX={startX}
-                  startY={startY} stepX={stepX} stepY={stepY}
+                  endX={endX} endY={endY} scanDirection={scanDirection}
+                  scanPattern={scanPattern} startX={startX} startY={startY}
+                  stepX={stepX} stepY={stepY}
                   units={units}
                 />
               </Box>
