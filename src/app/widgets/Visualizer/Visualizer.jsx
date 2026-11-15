@@ -252,6 +252,29 @@ class Visualizer extends Component {
       }
     }
 
+    // controls.reset() (used by load() and unload()) restores the initial top-down camera
+    // without the toolbar selection changing, so re-apply the selected view afterwards.
+    applyCameraPosition() {
+      if (!this.camera || !this.controls) {
+        return;
+      }
+      if (this.props.cameraPosition === 'top') {
+        this.toTopView();
+      }
+      if (this.props.cameraPosition === '3d') {
+        this.to3DView();
+      }
+      if (this.props.cameraPosition === 'front') {
+        this.toFrontView();
+      }
+      if (this.props.cameraPosition === 'left') {
+        this.toLeftSideView();
+      }
+      if (this.props.cameraPosition === 'right') {
+        this.toRightSideView();
+      }
+    }
+
     componentDidMount() {
       this.subscribe();
       this.addResizeEventListener();
@@ -269,6 +292,7 @@ class Visualizer extends Component {
       // fires on subsequent updates, so without this call the saved profile
       // never reaches the scene until the user re-selects it.
       this.changeMachineProfile();
+      this.applyCameraPosition();
     }
 
     componentDidUpdate(prevProps) {
@@ -411,21 +435,7 @@ class Visualizer extends Component {
       }
 
       if (prevProps.cameraPosition !== this.props.cameraPosition) {
-        if (this.props.cameraPosition === 'top') {
-          this.toTopView();
-        }
-        if (this.props.cameraPosition === '3d') {
-          this.to3DView();
-        }
-        if (this.props.cameraPosition === 'front') {
-          this.toFrontView();
-        }
-        if (this.props.cameraPosition === 'left') {
-          this.toLeftSideView();
-        }
-        if (this.props.cameraPosition === 'right') {
-          this.toRightSideView();
-        }
+        this.applyCameraPosition();
       }
     }
 
@@ -1287,6 +1297,7 @@ class Visualizer extends Component {
       if (this.controls) {
         this.controls.reset();
       }
+      this.applyCameraPosition();
       this.updateScene();
     }
 
@@ -1334,6 +1345,9 @@ class Visualizer extends Component {
         const target = new THREE.Vector3(0, 0, bbox.max.z);
         this.viewport.set(width, height, target);
       }
+
+      // unload() reset the camera to the default top view: restore the view selected in the toolbar
+      this.applyCameraPosition();
 
       // Update the scene
       this.updateScene();
@@ -1385,6 +1399,9 @@ class Visualizer extends Component {
       if (this.viewport) {
         this.viewport.reset();
       }
+
+      // unload() reset the camera to the default top view: restore the view selected in the toolbar
+      this.applyCameraPosition();
 
       // Update the scene
       this.updateScene();
