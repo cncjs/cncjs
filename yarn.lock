@@ -3029,9 +3029,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/cli@npm:^2.31.0":
-  version: 2.31.0
-  resolution: "@changesets/cli@npm:2.31.0"
+"@changesets/cli@npm:^2.31.1":
+  version: 2.31.1
+  resolution: "@changesets/cli@npm:2.31.1"
   dependencies:
     "@changesets/apply-release-plan": ^7.1.1
     "@changesets/assemble-release-plan": ^6.0.10
@@ -3061,7 +3061,7 @@ __metadata:
     term-size: ^2.1.0
   bin:
     changeset: bin.js
-  checksum: a5fa4ef5f19cb00146cc583660732dd3cd9e31d8c733fbd543560091931d1af674775c464bce29f9ec7fbe6781c22a4750538d8ec7509b01bcf4ec4533cd5a5f
+  checksum: ca688bd66af47bed3efe1f6d8a420edb34b727c8bfff96fc7cfce0e3fb54b1948c52f03381c7d06903ce53ba17c606e33ee6f5c7e5ee921189ac6501b27cfff3
   languageName: node
   linkType: hard
 
@@ -8691,7 +8691,7 @@ __metadata:
     "@babel/preset-env": ^7.28.6
     "@babel/preset-react": ^7.25.9
     "@babel/register": ^7.25.9
-    "@changesets/cli": ^2.31.0
+    "@changesets/cli": ^2.31.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.15
     "@serialport/parser-readline": ^10.0.0
     "@trendmicro/react-anchor": ~0.5.6
