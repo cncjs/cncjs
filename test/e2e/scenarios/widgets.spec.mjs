@@ -1017,6 +1017,150 @@ test.describe('axes and macro', () => {
 });
 
 test.describe('autolevel and probe', () => {
+  test('autolevel scan patterns and directions preview and persist on one grid', async ({ page }, testInfo) => {
+    test.setTimeout(120_000);
+    await openAllWidgets(page);
+    await waitForAppearance(page, testInfo);
+    const root = widget(page, 'autolevel');
+    await root.getByRole('button', { name: 'Start New Probe', exact: true }).click();
+    for (const [label, value] of [
+      ['Start X', '0'], ['End X', '20'], ['Step X', '10'],
+      ['Start Y', '0'], ['End Y', '10'], ['Step Y', '10'],
+    ]) {
+      await root.getByLabel(label, { exact: true }).fill(value);
+      await expect(root.getByLabel(label, { exact: true })).toHaveValue(value);
+    }
+
+    const patternToggle = root.getByRole('button', { name: 'Scan Pattern', exact: true });
+    const directionToggle = root.getByRole('button', { name: 'Scan Direction', exact: true });
+    const preview = root.getByRole('group', { name: 'Scan pattern preview', exact: true });
+    const diagram = root.getByRole('img', { name: 'Probe area diagram', exact: true });
+    const patterns = [
+      ['Raster', 'raster'],
+      ['Zigzag', 'zigzag'],
+      ['Spiral In', 'spiral-in'],
+      ['Spiral Out', 'spiral-out'],
+    ];
+    const endpoints = {
+      x: {
+        Raster: { start: [30, 110], end: [190, 10] },
+        Zigzag: { start: [30, 110], end: [30, 10] },
+        'Spiral In': { start: [30, 110], end: [30, 10] },
+        'Spiral Out': { start: [30, 10], end: [30, 110] },
+      },
+      y: {
+        Raster: { start: [30, 110], end: [190, 10] },
+        Zigzag: { start: [30, 110], end: [190, 10] },
+        'Spiral In': { start: [30, 110], end: [110, 110] },
+        'Spiral Out': { start: [110, 110], end: [30, 110] },
+      },
+    };
+    const dots = [[30, 10], [30, 110], [110, 10], [110, 110], [190, 10], [190, 110]];
+    const readDiagram = () => diagram.evaluate(svg => {
+      const marker = name => {
+        const text = [...svg.querySelectorAll('text')].find(node => node.textContent.trim() === name);
+        const circle = text?.parentElement.querySelector('circle');
+        return circle ? [Number(circle.getAttribute('cx')), Number(circle.getAttribute('cy'))] : null;
+      };
+      return {
+        dots: [...svg.querySelectorAll('circle[opacity="0.5"]')]
+          .map(circle => [Number(circle.getAttribute('cx')), Number(circle.getAttribute('cy'))])
+          .sort((a, b) => a[0] - b[0] || a[1] - b[1]),
+        start: marker('START'),
+        end: marker('END'),
+      };
+    });
+    const openScanMenu = async (toggle, selected) => {
+      await toggle.click();
+      const menu = page.getByRole('menu');
+      await expect(menu).toBeVisible();
+      await expect.poll(() => menu.evaluate(element => element.contains(document.activeElement))).toBe(true);
+      await expect(menu.locator('[data-tonic="Collapse"]')).toHaveCSS('overflow', 'visible');
+      const highlighted = menu.getByRole('menuitem', { name: selected, exact: true });
+      await expect(highlighted).toHaveAttribute('data-selected', '');
+      await expect(highlighted).toHaveAttribute('aria-current', 'true');
+      await expect(highlighted).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+      await expect(menu.locator('[role="menuitem"][data-selected]')).toHaveCount(1);
+      return menu;
+    };
+    const choose = async (toggle, selected, next, keyboard = false) => {
+      const menu = await openScanMenu(toggle, selected);
+      const item = menu.getByRole('menuitem', { name: next, exact: true });
+      if (keyboard) {
+        await page.keyboard.press('Home');
+        await expect(menu.getByRole('menuitem', { name: 'Raster', exact: true })).toBeFocused();
+        await page.keyboard.press('ArrowDown');
+        await expect(item).toBeFocused();
+        await page.keyboard.press('Enter');
+      } else {
+        await item.click();
+      }
+      await expect(menu).toHaveCount(0);
+      await expect(toggle).toContainText(next);
+      await expect(toggle).toBeFocused();
+      await openScanMenu(toggle, next);
+      await page.keyboard.press('Escape');
+      await expect(menu).toHaveCount(0);
+      await expect(toggle).toBeFocused();
+    };
+
+    let selectedPattern = 'Raster';
+    let selectedDirection = 'Along X Axis';
+    for (const [direction, label] of [['x', 'Along X Axis'], ['y', 'Along Y Axis']]) {
+      await choose(directionToggle, selectedDirection, label);
+      selectedDirection = label;
+      for (const [pattern, value] of patterns) {
+        await choose(patternToggle, selectedPattern, pattern, direction === 'x' && pattern === 'Zigzag');
+        selectedPattern = pattern;
+        await expect(preview).toBeVisible();
+        await expect(preview.getByRole('img', { name: pattern, exact: true })).toHaveAttribute('data-selected', '');
+        await expect(preview.locator('[role="img"][data-selected]')).toHaveCount(1);
+        for (const [other] of patterns.filter(([name]) => name !== pattern)) {
+          await expect(preview.getByRole('img', { name: other, exact: true })).not.toHaveAttribute('data-selected', '');
+        }
+        await expect.poll(readDiagram).toEqual({ dots, ...endpoints[direction][pattern] });
+        const labelsDoNotOverlap = await diagram.evaluate(svg => {
+          const bounds = [...svg.querySelectorAll('text')].map(text => text.getBoundingClientRect());
+          return bounds.every((a, index) => bounds.slice(index + 1).every(b => (
+            a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top
+          )));
+        });
+        expect(labelsDoNotOverlap).toBe(true);
+        await expect(root.getByRole('button', { name: 'Start Probing', exact: true })).toBeDisabled();
+        await capture(preview, testInfo, `scan-preview-${value}-${direction}`);
+        await capture(diagram, testInfo, `scan-diagram-${value}-${direction}`);
+      }
+    }
+
+    await expect.poll(async () => {
+      const config = (await readConfig(page)).widgets.autolevel || {};
+      return { scanPattern: config.scanPattern, scanDirection: config.scanDirection };
+    }).toEqual({ scanPattern: 'spiral-out', scanDirection: 'y' });
+    await page.reload();
+    await expect(root.getByRole('button', { name: 'Start New Probe', exact: true })).toBeVisible();
+    await root.getByRole('button', { name: 'Start New Probe', exact: true }).click();
+    await expect(patternToggle).toContainText('Spiral Out');
+    await expect(directionToggle).toContainText('Along Y Axis');
+    for (const [label, value] of [
+      ['Start X', '0'], ['End X', '20'], ['Step X', '10'],
+      ['Start Y', '0'], ['End Y', '10'], ['Step Y', '10'],
+    ]) {
+      await expect(root.getByLabel(label, { exact: true })).toHaveValue(value);
+    }
+    await openScanMenu(patternToggle, 'Spiral Out');
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('menu')).toHaveCount(0);
+    await expect(patternToggle).toBeFocused();
+    await openScanMenu(directionToggle, 'Along Y Axis');
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('menu')).toHaveCount(0);
+    await expect(preview.getByRole('img', { name: 'Spiral Out', exact: true })).toHaveAttribute('data-selected', '');
+    await expect.poll(readDiagram).toEqual({ dots, ...endpoints.y['Spiral Out'] });
+    await expect(root.getByRole('button', { name: 'Start Probing', exact: true })).toBeDisabled();
+    await capture(preview, testInfo, 'scan-preview-reloaded');
+    await capture(diagram, testInfo, 'scan-diagram-reloaded');
+  });
+
   test('autolevel diagrams keep labels legible and surfaces themed', async ({ page }, testInfo) => {
     await openAllWidgets(page);
     const root = widget(page, 'autolevel');

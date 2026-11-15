@@ -1448,6 +1448,10 @@ class VisualizerEngine {
     if (!this.probeVisualization) {
       return;
     }
+    const { stepX, stepY, scanPattern, scanDirection } = config;
+    const hasPathUpdate = this.probeVisualization.config &&
+      (stepX !== undefined || stepY !== undefined ||
+       scanPattern !== undefined || scanDirection !== undefined);
 
     if (this.probeVisualization.config) {
       const { snapX, snapY, units, interactable } = config;
@@ -1463,20 +1467,30 @@ class VisualizerEngine {
       if (interactable !== undefined) {
         this.probeVisualization.config.interactable = interactable;
       }
+      if (stepX !== undefined) {
+        this.probeVisualization.config.stepX = stepX;
+      }
+      if (stepY !== undefined) {
+        this.probeVisualization.config.stepY = stepY;
+      }
+      if (scanPattern !== undefined) {
+        this.probeVisualization.config.scanPattern = scanPattern;
+      }
+      if (scanDirection !== undefined) {
+        this.probeVisualization.config.scanDirection = scanDirection;
+      }
     }
 
-    if (probeData.length > 0 || config.startX !== undefined) {
+    if (probeData.length > 0 || config.startX !== undefined || hasPathUpdate) {
       if (probeData.length > 0 && this.probeVisualization.config) {
         this.probeVisualization.updateProbeData(probeData);
       }
       if (typeof this.probeVisualization.updateBounds === 'function' &&
-          config.startX !== undefined) {
-        this.probeVisualization.updateBounds(
-          config.startX,
-          config.startY,
-          config.endX,
-          config.endY
-        );
+          (config.startX !== undefined || hasPathUpdate)) {
+        const { startX, startY, endX, endY } = config.startX !== undefined
+          ? config
+          : this.probeVisualization.config;
+        this.probeVisualization.updateBounds(startX, startY, endX, endY);
       }
     }
 

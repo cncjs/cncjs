@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderAppUI } from '@app/test/render';
 import StartProbeModal from '../StartProbeModal';
@@ -22,7 +22,6 @@ jest.mock('@app/lib/i18n', () => ({
   default: { _: (value, options = {}) => value.replace(/{{(\w+)}}/g, (_match, key) => options[key]) },
 }));
 
-jest.mock('../ProbeAreaDiagram', () => () => null);
 jest.mock('../ZProbeDiagram', () => () => null);
 
 const value = {
@@ -152,6 +151,26 @@ describe('Autolevel probe dialogs', () => {
       view.dispose();
     }
   });
+
+  test('shows the same non-raster endpoint in setup and start confirmation', () => {
+    const scan = { ...value, endY: 5, scanPattern: 'zigzag', scanDirection: 'x' };
+    const setup = renderAppUI(<SetupProbeView value={scan} />);
+    let confirmation;
+    try {
+      const diagram = screen.getByRole('img', { name: 'Probe area diagram' });
+      const setupEnd = within(diagram).getByText('END').parentElement.querySelector('circle');
+      expect(setupEnd).toHaveAttribute('cx', '30');
+      expect(setupEnd).toHaveAttribute('cy', '10');
+      confirmation = renderAppUI(<StartProbeModal canConfirm value={scan} />);
+      const modalDiagram = within(screen.getByRole('dialog')).getByRole('img', { name: 'Probe area diagram' });
+      const modalEnd = within(modalDiagram).getByText('END').parentElement.querySelector('circle');
+      expect(modalEnd).toHaveAttribute('cx', setupEnd.getAttribute('cx'));
+      expect(modalEnd).toHaveAttribute('cy', setupEnd.getAttribute('cy'));
+    } finally {
+      confirmation?.dispose();
+      setup.dispose();
+    }
+  });
 });
 
 describe('Autolevel setup actions', () => {
@@ -178,6 +197,21 @@ describe('Autolevel setup actions', () => {
       expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled();
       fireEvent.click(screen.getByRole('button', { name: 'Stop Probing' }));
       expect(onStop).toHaveBeenCalledTimes(1);
+    } finally {
+      view.dispose();
+    }
+  });
+
+  test.each([
+    'The order in which the probe points are visited. Raster travels every line in one direction. Zigzag alternates line direction, so the head continues from where the previous line ended. Spiral visits the outer boundary first and works inward, or the reverse. Same points, same grid.',
+    'The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.',
+  ])('exposes the scan explanation on keyboard focus', async help => {
+    const view = renderAppUI(<SetupProbeView value={value} />);
+    try {
+      const trigger = screen.getByRole('img', { name: help });
+      expect(trigger).toHaveAttribute('tabindex', '0');
+      fireEvent.focus(trigger);
+      expect(await screen.findByRole('tooltip')).toHaveTextContent(help);
     } finally {
       view.dispose();
     }
