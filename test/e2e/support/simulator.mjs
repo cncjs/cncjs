@@ -87,7 +87,7 @@ export const test = base.extend({
       gcodeUploadPolicy.ident = null;
       try {
         const close = widget(page, 'connection').getByRole('button', { name: 'Close', exact: true });
-        if (!page.isClosed() && await close.isEnabled().catch(() => false)) {
+        if (!page.isClosed() && await close.count() > 0 && await close.isEnabled()) {
           await close.click();
           await page.getByRole('dialog').getByRole('button', { name: 'OK', exact: true }).click();
           await expect(widget(page, 'connection').getByRole('button', { name: 'Open', exact: true })).toBeVisible();
