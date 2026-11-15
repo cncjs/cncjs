@@ -285,7 +285,7 @@
     "@babel/preset-env": "^7.28.6",
     "@babel/preset-react": "^7.25.9",
     "@babel/register": "^7.25.9",
-    "@changesets/cli": "^2.31.1",
+    "@changesets/cli": "^3.0.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "babel-core": "~7.0.0-bridge.0",
     "babel-eslint": "~10.0.1",

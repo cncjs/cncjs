@@ -44,20 +44,22 @@ jobs:
         run: yarn install
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          title: "chore(release): version packages"
-          commit: "chore(release): version packages"
-          version: yarn ci-version
-          publish: yarn ci-publish
+          github-token: ${{ env.GITHUB_TOKEN }}
+          pr-title: "chore(release): version packages"
+          commit-message: "chore(release): version packages"
+          version-script: yarn ci-version
+          publish-script: yarn ci-publish
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+          YARN_NPM_PUBLISH_PROVENANCE: true
       - name: Determine published tag
         id: published-tag
         if: steps.changesets.outputs.published == 'true'
         env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
         run: |
           TAG=$(node -e '
             const packages = JSON.parse(process.env.PUBLISHED_PACKAGES);
