@@ -58,6 +58,108 @@ const setChecked = async (checkbox, checked) => {
   await expect(checkbox).toBeChecked({ checked });
 };
 
+const installSyntheticWebcam = async page => {
+  await page.evaluate(() => {
+    const state = {
+      requests: [],
+      streams: [],
+      canvases: [],
+      mode: 'normal',
+      deferNext: false,
+      resolvePending: null,
+      lateStream: null,
+      video: null,
+    };
+    const createStream = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 16;
+      canvas.height = 16;
+      canvas.getContext('2d').fillRect(0, 0, 16, 16);
+      const stream = canvas.captureStream(1);
+      state.canvases.push(canvas);
+      state.streams.push(stream);
+      return stream;
+    };
+    window.__webcamMedia = state;
+    window.__e2eMediaDevices.setHandler({
+      enumerateDevices: () => [
+        { kind: 'videoinput', deviceId: 'cam-a', label: 'Camera A' },
+        { kind: 'videoinput', deviceId: 'cam-b', label: 'Camera B' },
+      ],
+      getUserMedia: constraints => {
+        state.requests.push(JSON.parse(JSON.stringify(constraints)));
+        if (state.deferNext) {
+          state.deferNext = false;
+          return new Promise(resolve => {
+            state.resolvePending = () => {
+              state.lateStream = createStream();
+              resolve(state.lateStream);
+            };
+          });
+        }
+        if (state.mode === 'missing' && constraints.video?.deviceId?.exact === 'cam-b') {
+          throw new DOMException('Camera B is unavailable', 'NotFoundError');
+        }
+        if (state.mode === 'deny-audio' && constraints.audio) {
+          throw new DOMException('Synthetic audio denied', 'NotAllowedError');
+        }
+        return createStream();
+      },
+    });
+  });
+};
+
+const enableWebcam = async page => {
+  const root = widget(page, 'webcam');
+  await root.getByRole('button', { name: 'Enable Webcam', exact: true }).click();
+  await expect(root.getByRole('button', { name: 'Disable Webcam', exact: true })).toBeVisible();
+  await expect(root.locator('video')).toHaveCount(1);
+  await page.evaluate(() => {
+    window.__webcamMedia.video = document.querySelector('[data-widget-id="webcam"] video');
+  });
+};
+
+const selectWebcamDevice = async (page, label, id) => {
+  await openMore(page, 'webcam');
+  await clickMenuItem(page, 'Settings');
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.getByText('Webcam Settings', { exact: true })).toBeVisible();
+  const device = dialog.getByRole('button', { name: 'Choose a video device', exact: true });
+  await device.click();
+  await waitForMenuReady(page);
+  await expect(page.getByRole('menuitem', { name: label, exact: true })).toBeVisible();
+  await clickMenuItem(page, label);
+  await expect(device).toHaveText(label);
+  await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect.poll(async () => (await readConfig(page)).webcam?.deviceId).toBe(id);
+};
+
+const expectSyntheticStream = async (page, current, trackStates) => {
+  await expect.poll(() => page.evaluate(index => {
+    const state = window.__webcamMedia;
+    const video = document.querySelector('[data-widget-id="webcam"] video');
+    return {
+      sameElement: video === state.video,
+      attached: Boolean(video && state.streams[index] && video.srcObject === state.streams[index]),
+      tracks: state.streams.map(stream => stream.getTracks().map(track => track.readyState)),
+    };
+  }, current)).toEqual({
+    sameElement: true,
+    attached: true,
+    tracks: trackStates.map(trackState => [trackState]),
+  });
+};
+
+const removeWebcam = async page => {
+  await openMore(page, 'webcam');
+  await clickMenuItem(page, 'Remove Widget');
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Are you sure you want to remove this widget?' });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'OK', exact: true }).click();
+  await expect(widget(page, 'webcam')).toHaveCount(0);
+};
+
 /**
  * Local read-only Socket.IO snapshot. It publishes Grbl state on demand and
  * acknowledges the commands emitted by the widget surfaces under test without
@@ -337,6 +439,112 @@ test.describe('custom and webcam settings', () => {
     await expect(reopened.getByLabel('Stream URL')).toHaveValue('http://127.0.0.1:8080/?action=stream');
     await reopened.getByRole('button', { name: 'Cancel', exact: true }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('webcam selects devices and releases the previous stream', async ({ page, mockController }, testInfo) => {
+    await openWorkspace(page);
+    await mockController.ready();
+    expect(await page.evaluate(() => typeof window.__e2eMediaDevices?.setHandler)).toBe('function');
+    const defaultFacade = await page.evaluate(async () => {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        return { devices, error: null };
+      } catch (error) {
+        return { devices, error: error.name };
+      }
+    });
+    expect(defaultFacade).toEqual({ devices: [], error: 'NotAllowedError' });
+    await installSyntheticWebcam(page);
+    await enableWebcam(page);
+
+    await selectWebcamDevice(page, 'Camera A', 'cam-a');
+    await expectSyntheticStream(page, 0, ['live']);
+    await selectWebcamDevice(page, 'Camera B', 'cam-b');
+    await expectSyntheticStream(page, 1, ['ended', 'live']);
+    await selectWebcamDevice(page, 'Automatic detection', '__default__');
+    await expectSyntheticStream(page, 2, ['ended', 'ended', 'live']);
+    expect(await page.evaluate(() => window.__webcamMedia.requests)).toEqual([
+      { audio: true, video: { deviceId: { exact: 'cam-a' } } },
+      { audio: true, video: { deviceId: { exact: 'cam-b' } } },
+      { audio: true, video: true },
+    ]);
+    await capture(widget(page, 'webcam'), testInfo, 'webcam-synthetic-default');
+
+    await removeWebcam(page);
+    await expect.poll(() => page.evaluate(() => {
+      const state = window.__webcamMedia;
+      return {
+        detached: state.video.srcObject === null,
+        tracks: state.streams[2].getTracks().map(track => track.readyState),
+      };
+    })).toEqual({ detached: true, tracks: ['ended'] });
+  });
+
+  test('webcam falls back from a missing camera and from denied audio', async ({ page, mockController }, testInfo) => {
+    await openWorkspace(page);
+    await mockController.ready();
+    await installSyntheticWebcam(page);
+    await enableWebcam(page);
+
+    await selectWebcamDevice(page, 'Camera A', 'cam-a');
+    await expectSyntheticStream(page, 0, ['live']);
+    await page.evaluate(() => {
+      window.__webcamMedia.requests = [];
+      window.__webcamMedia.mode = 'missing';
+    });
+    await selectWebcamDevice(page, 'Camera B', 'cam-b');
+    await expectSyntheticStream(page, 1, ['ended', 'live']);
+    expect(await page.evaluate(() => window.__webcamMedia.requests)).toEqual([
+      { audio: true, video: { deviceId: { exact: 'cam-b' } } },
+      { audio: true, video: true },
+    ]);
+
+    await page.evaluate(() => {
+      window.__webcamMedia.requests = [];
+      window.__webcamMedia.mode = 'deny-audio';
+    });
+    await selectWebcamDevice(page, 'Camera A', 'cam-a');
+    await expectSyntheticStream(page, 2, ['ended', 'ended', 'live']);
+    expect(await page.evaluate(() => window.__webcamMedia.requests)).toEqual([
+      { audio: true, video: { deviceId: { exact: 'cam-a' } } },
+      { audio: false, video: { deviceId: { exact: 'cam-a' } } },
+    ]);
+    await capture(widget(page, 'webcam'), testInfo, 'webcam-synthetic-video-only');
+  });
+
+  test('webcam stops media that arrives after widget removal', async ({ page, mockController }, testInfo) => {
+    await openWorkspace(page);
+    await mockController.ready();
+    await installSyntheticWebcam(page);
+    await enableWebcam(page);
+
+    await selectWebcamDevice(page, 'Camera A', 'cam-a');
+    await expectSyntheticStream(page, 0, ['live']);
+    await page.evaluate(() => {
+      window.__webcamMedia.deferNext = true;
+    });
+    await selectWebcamDevice(page, 'Camera B', 'cam-b');
+    await expect.poll(() => page.evaluate(() => ({
+      pending: typeof window.__webcamMedia.resolvePending === 'function',
+      detached: window.__webcamMedia.video.srcObject === null,
+      tracks: window.__webcamMedia.streams[0].getTracks().map(track => track.readyState),
+    }))).toEqual({ pending: true, detached: true, tracks: ['ended'] });
+    await capture(widget(page, 'webcam'), testInfo, 'webcam-synthetic-pending');
+    await removeWebcam(page);
+    await page.evaluate(() => window.__webcamMedia.resolvePending());
+    await expect.poll(() => page.evaluate(() => ({
+      detached: window.__webcamMedia.video.srcObject === null,
+      tracks: window.__webcamMedia.lateStream?.getTracks().map(track => track.readyState),
+      requests: window.__webcamMedia.requests,
+    }))).toEqual({
+      detached: true,
+      tracks: ['ended'],
+      requests: [
+        { audio: true, video: { deviceId: { exact: 'cam-a' } } },
+        { audio: true, video: { deviceId: { exact: 'cam-b' } } },
+      ],
+    });
   });
 });
 
