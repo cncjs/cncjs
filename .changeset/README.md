@@ -6,3 +6,11 @@ find the full documentation for it [in our repository](https://github.com/change
 
 We have a quick list of common questions to get you started engaging with this project in
 [our documentation](https://github.com/changesets/changesets/blob/main/docs/common-questions.md).
+
+After `ci-release` publishes `cncjs`, it dispatches the desktop and Docker
+workflows using the published version tag. Check both runs for completion;
+dispatch success does not mean the assets or image were published.
+
+If a dispatch fails, run the corresponding workflow manually with the release
+tag. Re-running `ci-release` may not dispatch an already published version.
+The Docker workflow also updates the `latest` image tag.
