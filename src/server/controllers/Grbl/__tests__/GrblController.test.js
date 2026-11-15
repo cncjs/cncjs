@@ -817,8 +817,12 @@ describe('GrblController', () => {
       const filepath = createTempFile(PROBE_FIXTURE);
       const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', filepath, callback);
-      await delay(100);
+      await new Promise((resolve) => {
+        controller.command('autolevel:loadFromFile', filepath, (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toBe(null);
@@ -836,8 +840,12 @@ describe('GrblController', () => {
       const filepath = path.join(os.tmpdir(), 'grbl-controller-test-does-not-exist.gcode');
       const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', filepath, callback);
-      await delay(100);
+      await new Promise((resolve) => {
+        controller.command('autolevel:loadFromFile', filepath, (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toEqual(expect.stringContaining('ENOENT'));
@@ -855,8 +863,12 @@ describe('GrblController', () => {
       ];
       const callback = jest.fn();
 
-      controller.command('autolevel:saveToFile', filepath, callback);
-      await delay(100);
+      await new Promise((resolve) => {
+        controller.command('autolevel:saveToFile', filepath, (...args) => {
+          callback(...args);
+          resolve();
+        });
+      });
 
       const [err, result] = callback.mock.calls[0];
       expect(err).toBe(null);
