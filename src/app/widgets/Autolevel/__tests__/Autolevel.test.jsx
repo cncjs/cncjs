@@ -212,7 +212,6 @@ describe('Autolevel workflow owner', () => {
         expect(screen.getByRole('button', { name: 'Scan Pattern' })).toHaveTextContent(name);
       };
       await selectPattern('Spiral In');
-      await selectPattern('Spiral Out');
       await selectPattern('Raster');
       await selectPattern('Spiral Out');
       fireEvent.click(screen.getByRole('button', { name: 'Scan Pattern' }));
