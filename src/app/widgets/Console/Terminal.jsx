@@ -11,8 +11,8 @@ import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
-import { fitsOnRow, readInputLine } from './input';
-import { DEFAULT_FONT_SIZE, FONT_SIZE_PX, DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR } from './constants';
+import { fitsOnRow, readInputLine, colsKeepingPendingInput } from './input';
+import { DEFAULT_FONT_SIZE, FONT_SIZE_PX, DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN } from './constants';
 import { buildTerminalTheme } from './terminal-theme';
 
 Terminal.applyAddon(fit);
@@ -55,6 +55,13 @@ class TerminalWrapper extends PureComponent {
     verticalScrollbar = null;
     terminalContainer = null;
     term = null;
+    resizeObserver = null;
+    needsRemeasure = false;
+    remeasureScheduled = false;
+    remeasureFrame = null;
+    deferredResize = false;
+    keyBacklog = [];
+    drainTimer = null;
 
     eventHandler = {
       onResize: () => {
@@ -66,7 +73,7 @@ class TerminalWrapper extends PureComponent {
           this.syncScrollbarRail();
         }
       },
-      onKey: (() => {
+      handleKey: (() => {
         let historyCommand = '';
 
         return (key, event) => {
@@ -134,6 +141,7 @@ class TerminalWrapper extends PureComponent {
 
             onData(buffer);
             term.prompt();
+            this.applyDeferredResize();
             return;
           }
 
@@ -172,6 +180,7 @@ class TerminalWrapper extends PureComponent {
             term.eraseLine(term.buffer.y);
             term.buffer.x = 0;
             term.write(chalk.white(this.prompt));
+            this.applyDeferredResize();
             return;
           }
 
@@ -237,7 +246,8 @@ class TerminalWrapper extends PureComponent {
           }
 
           // Make sure the cursor position will not exceed the number of columns
-          if (term.buffer.x < term.cols) {
+          // Keep the last column free for the cursor
+          if (term.buffer.x < term.cols - 1) {
             let x = line.length - 1;
             for (; x > term.buffer.x; --x) {
               line[x] = line[x - 1];
@@ -246,6 +256,15 @@ class TerminalWrapper extends PureComponent {
           }
         };
       })(),
+      // xterm processes term.write() asynchronously, so a key handled before the previous key's write was
+      // processed sees a stale cursor and row: the last column can be overrun, and Enter could read an incomplete
+      // command. Queue the keys and handle them one at a time, each after xterm has caught up.
+      onKey: (key, event) => {
+        this.keyBacklog.push([key, event]);
+        if (!this.drainTimer) {
+          this.drainKeys();
+        }
+      },
       onPaste: (data, event) => {
         const { onData } = this.props;
         const lines = String(data).replace(/(\r\n|\r|\n)/g, '\n').split('\n');
@@ -283,6 +302,88 @@ class TerminalWrapper extends PureComponent {
       const offset = Math.min(0, scroller.scrollLeft - (contentWidth - visibleWidth));
       rail.style.transform = `translateX(${offset}px)`;
     };
+
+    isVisible() {
+      const el = ReactDOM.findDOMNode(this.terminalContainer);
+      return !!el && el.offsetWidth > 0 && el.offsetHeight > 0;
+    }
+
+    // xterm measures the cell size from a DOM element, which is 0 while the widget is collapsed
+    remeasure() {
+      if (!this.term) {
+        return;
+      }
+      const size = this.props.fontSize;
+      // xterm ignores setOption with an unchanged value: nudge it to force a re-measure
+      this.term.setOption('fontSize', size + 1);
+      this.term.setOption('fontSize', size);
+      this.needsRemeasure = false;
+      this.resize();
+      if (this.verticalScrollbar) {
+        this.verticalScrollbar.update();
+      }
+      this.syncScrollbarRail();
+    }
+
+    proposeCols() {
+      const el = ReactDOM.findDOMNode(this.terminalContainer);
+      const dims = this.term && this.term.renderer && this.term.renderer.dimensions;
+      if (!el || !dims || !dims.actualCellWidth) {
+        return null;
+      }
+      const style = window.getComputedStyle(el);
+      const padding = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+      // clientWidth excludes the borders, unlike the CSS width the fit addon uses; the screen is offset by canvasOffset
+      const usable = el.clientWidth - padding - this.canvasOffset;
+      return Math.min(TERMINAL_COLS_MAX, Math.max(TERMINAL_COLS_MIN, Math.floor(usable / dims.actualCellWidth)));
+    }
+
+    proposeRows() {
+      const el = ReactDOM.findDOMNode(this.terminalContainer);
+      const dims = this.term && this.term.renderer && this.term.renderer.dimensions;
+      if (!el || !dims || !dims.actualCellHeight) {
+        return null;
+      }
+      const bottomSpace = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
+      // clientHeight excludes the borders and the horizontal scrollbar, unlike the CSS height the fit addon
+      // uses. The canvas is drawn canvasOffset px lower than its layout box (see index.styl), and the
+      // container's bottom padding is kept free.
+      const usable = el.clientHeight - bottomSpace - this.canvasOffset;
+      return Math.max(1, Math.floor(usable / dims.actualCellHeight));
+    }
+
+    // The sizes come from an estimate of the cell size; rounding can leave the canvas a few pixels larger than the
+    // container. Measure the real canvas and drop rows/columns until it fits.
+    trimToFit({ cols, rows, pendingExtent }) {
+      const el = ReactDOM.findDOMNode(this.terminalContainer);
+      const canvas = el && el.querySelector('canvas');
+      if (!canvas) {
+        return;
+      }
+      const bottomSpace = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
+      const floorCols = Math.max(TERMINAL_COLS_MIN, pendingExtent + 1);
+      for (let attempts = 0; attempts < 3; ++attempts) {
+        const box = el.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
+        const overflowX = cols ? rect.right - (box.left + el.clientLeft + el.clientWidth) : 0;
+        const overflowY = rows ? rect.bottom - (box.top + el.clientTop + el.clientHeight - bottomSpace) : 0;
+        const dropCols = overflowX > 0 && this.term.cols > floorCols;
+        const dropRows = overflowY > 0 && this.term.rows > 1;
+        if (!dropCols && !dropRows) {
+          break;
+        }
+        this.term.resize(dropCols ? this.term.cols - 1 : this.term.cols, dropRows ? this.term.rows - 1 : this.term.rows);
+      }
+    }
+
+    // Called after a line was submitted or cancelled. term.write() is asynchronous, so the buffer still shows
+    // the old row at this point: say that nothing is pending instead of letting resize() read the buffer.
+    applyDeferredResize() {
+      if (this.deferredResize) {
+        this.deferredResize = false;
+        this.resize(undefined, undefined, { assumeEmptyInput: true });
+      }
+    }
 
     invertColor(bg) {
         const color = bg.replace('#', '');
@@ -355,9 +456,39 @@ class TerminalWrapper extends PureComponent {
       this.applyBackground(theme.background);
       this.resize();
       this.syncScrollbarRail();
+      this.needsRemeasure = !this.isVisible();
+      if (typeof ResizeObserver !== 'undefined') {
+        this.resizeObserver = new ResizeObserver(() => {
+          if (!this.needsRemeasure || this.remeasureScheduled) {
+            return;
+          }
+          // Do the work after the callback returns: resizing the observed element inside it is what
+          // produces "ResizeObserver loop completed with undelivered notifications"
+          this.remeasureScheduled = true;
+          this.remeasureFrame = window.requestAnimationFrame(() => {
+            this.remeasureScheduled = false;
+            this.remeasureFrame = null;
+            if (this.needsRemeasure && this.isVisible()) {
+              this.remeasure();
+            }
+          });
+        });
+        this.resizeObserver.observe(el);
+      }
     }
 
     componentWillUnmount() {
+      clearTimeout(this.drainTimer);
+      this.drainTimer = null;
+      this.keyBacklog = [];
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+        this.resizeObserver = null;
+      }
+      if (this.remeasureFrame) {
+        window.cancelAnimationFrame(this.remeasureFrame);
+        this.remeasureFrame = null;
+      }
       if (this.verticalScrollbar) {
         if (this.horizontalScroller) {
           this.horizontalScroller.removeEventListener('scroll', this.syncScrollbarRail);
@@ -388,6 +519,10 @@ class TerminalWrapper extends PureComponent {
       }
       if (nextProps.fontSize !== this.props.fontSize) {
         this.term.setOption('fontSize', nextProps.fontSize);
+        if (!this.isVisible()) {
+          // The cell size was measured while hidden (collapsed): re-measure when it is shown again
+          this.needsRemeasure = true;
+        }
       }
       if (nextProps.background !== this.props.background ||
           nextProps.textColor !== this.props.textColor ||
@@ -438,7 +573,7 @@ class TerminalWrapper extends PureComponent {
       return (w1 - w2);
     }
 
-    resize(cols = this.props.cols, rows = this.props.rows) {
+    resize(cols = this.props.cols, rows = this.props.rows, { assumeEmptyInput = false } = {}) {
       if (!(this.term && this.term.element)) {
         return;
       }
@@ -448,9 +583,20 @@ class TerminalWrapper extends PureComponent {
         return;
       }
 
-      cols = (!cols || cols === 'auto') ? geometry.cols : cols;
-      rows = (!rows || rows === 'auto') ? geometry.rows : rows;
-      this.term.resize(cols, rows);
+      const autoCols = !cols || cols === 'auto';
+      const autoRows = !rows || rows === 'auto';
+      const requestedCols = autoCols ? (this.proposeCols() || geometry.cols) : cols;
+      rows = autoRows ? (this.proposeRows() || geometry.rows) : rows;
+
+      // Never shrink below a command that is being typed: it would be hidden. Hold the shrink back until the
+      // line is submitted or cancelled (applyDeferredResize).
+      const pendingExtent = this.prompt.length + (assumeEmptyInput ? 0 : this.pendingInputLength());
+      this.deferredResize = requestedCols < this.term.cols && pendingExtent + 1 > requestedCols;
+      this.term.resize(colsKeepingPendingInput(requestedCols, pendingExtent, this.term.cols), rows);
+
+      if (autoCols || autoRows) {
+        this.trimToFit({ cols: autoCols, rows: autoRows, pendingExtent });
+      }
       this.syncScrollbarRail();
     }
 
@@ -496,7 +642,29 @@ class TerminalWrapper extends PureComponent {
       term.buffer.x = 0;
       term.write(chalk.yellow(message));
       term.prompt();
+      this.applyDeferredResize();
     }
+
+    writesPending() {
+      const { term } = this;
+      return !!term && (!!term.writeInProgress || !!(term.writeBuffer && term.writeBuffer.length));
+    }
+
+    drainKeys = () => {
+      this.drainTimer = null;
+      while (this.keyBacklog.length) {
+        if (!this.term) {
+          this.keyBacklog = [];
+          return;
+        }
+        if (this.writesPending()) {
+          this.drainTimer = setTimeout(this.drainKeys, 1);
+          return;
+        }
+        const [key, event] = this.keyBacklog.shift();
+        this.eventHandler.handleKey(key, event);
+      }
+    };
 
     recall(command) {
       const { term } = this;
@@ -511,20 +679,25 @@ class TerminalWrapper extends PureComponent {
       term.write(chalk.white(command));
     }
 
-    hasPendingInput() {
+    // Length of the command being typed (0 when the prompt is empty)
+    pendingInputLength() {
       if (!this.term) {
-        return false;
+        return 0;
       }
       const line = this.term.buffer.lines.get(this.term.buffer.ybase + this.term.buffer.y);
       if (!line) {
-        return false;
+        return 0;
       }
-      for (let x = this.prompt.length; x < line.length; ++x) {
+      for (let x = line.length - 1; x >= this.prompt.length; --x) {
         if ((line[x][1] || '').trim()) {
-          return true;
+          return x + 1 - this.prompt.length;
         }
       }
-      return false;
+      return 0;
+    }
+
+    hasPendingInput() {
+      return this.pendingInputLength() > 0;
     }
 
     render() {

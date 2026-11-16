@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { fitsOnRow, getInputCapacity, readInputLine } from '../input';
+import { colsKeepingPendingInput, fitsOnRow, getInputCapacity, readInputLine } from '../input';
 
 const PROMPT = '> ';
 
@@ -19,7 +19,7 @@ const read = (text, rowWidth, cols, isWrapped = false) => readInputLine({
 describe('console input line', () => {
   describe('readInputLine', () => {
     test.each([80, 254, 500])('returns a command that fills the row at %i columns, byte for byte', (cols) => {
-      const command = 'G1'.padEnd(cols - PROMPT.length, 'X');
+      const command = 'G1'.padEnd(cols - PROMPT.length - 1, 'X');
       const result = read(PROMPT + command, cols, cols);
       expect(result).toEqual({ ok: true, command });
       expect(`${result.command}\r`).toBe(`${command}\r`);
@@ -50,7 +50,7 @@ describe('console input line', () => {
   describe('fitsOnRow', () => {
     test.each([80, 254, 500])('accepts exactly the visible capacity at %i columns and rejects one more', (cols) => {
       const capacity = getInputCapacity(cols, PROMPT.length);
-      expect(capacity).toBe(cols - PROMPT.length);
+      expect(capacity).toBe(cols - PROMPT.length - 1);
       expect(fitsOnRow('x'.repeat(capacity), cols, PROMPT.length)).toBe(true);
       expect(fitsOnRow('x'.repeat(capacity + 1), cols, PROMPT.length)).toBe(false);
     });
@@ -59,4 +59,16 @@ describe('console input line', () => {
       expect(getInputCapacity(1, PROMPT.length)).toBe(0);
     });
   });
+});
+
+describe('colsKeepingPendingInput', () => {
+    test('does not shrink below the text being typed', () => {
+      expect(colsKeepingPendingInput(120, 152, 254)).toBe(153);
+    });
+
+    test('shrinks fully when the text fits, and always allows growing', () => {
+      expect(colsKeepingPendingInput(120, 40, 254)).toBe(120);
+      expect(colsKeepingPendingInput(120, 0, 254)).toBe(120);
+      expect(colsKeepingPendingInput(300, 280, 254)).toBe(300);
+    });
 });

@@ -3,7 +3,7 @@ import trimEnd from 'lodash/trimEnd';
 // Helpers for the console's single-row input line.
 
 // Characters of command text that fit on one row (the prompt takes part of it)
-export const getInputCapacity = (cols, promptLength) => Math.max(0, cols - promptLength);
+export const getInputCapacity = (cols, promptLength) => Math.max(0, cols - promptLength - 1);
 
 export const fitsOnRow = (command, cols, promptLength) => (
   String(command).length <= getInputCapacity(cols, promptLength)
@@ -35,3 +35,9 @@ export const readInputLine = ({ cells, isWrapped, cols, prompt }) => {
   }
   return { ok: true, command: trimEnd(command) };
 };
+
+// A narrower terminal must not hide a command that is being typed: never go below the width it needs.
+// `pendingExtent` is the prompt plus the typed text; growing is always allowed.
+export const colsKeepingPendingInput = (requestedCols, pendingExtent, currentCols) => (
+  requestedCols < currentCols ? Math.max(requestedCols, pendingExtent + 1) : requestedCols
+);

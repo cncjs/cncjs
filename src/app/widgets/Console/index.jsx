@@ -51,7 +51,8 @@ class ConsoleWidget extends PureComponent {
           isFullscreen: !state.isFullscreen,
           terminal: {
             ...state.terminal,
-            rows: state.isFullscreen ? this.config.get('terminalRows', TERMINAL_ROWS) : 'auto'
+            cols: state.isFullscreen ? this.getConfiguredCols() : 'auto',
+            rows: state.isFullscreen ? this.getConfiguredRows() : 'auto',
           }
         }), () => {
           this.resizeTerminal();
@@ -75,7 +76,7 @@ class ConsoleWidget extends PureComponent {
       },
       saveSettings: ({ fontSize, cols, rows, background, textColor, cursorColor }) => {
         // A narrower terminal could hide or wrap what is being typed: wait until the input is resolved
-        if (cols !== this.state.terminal.cols && this.terminal && this.terminal.hasPendingInput()) {
+        if (!this.state.isFullscreen && cols !== this.getConfiguredCols() && this.terminal && this.terminal.hasPendingInput()) {
           return i18n._('Finish or clear the command you are typing before changing the number of columns.');
         }
 
@@ -91,7 +92,7 @@ class ConsoleWidget extends PureComponent {
           terminal: {
             ...state.terminal,
             fontSize,
-            cols,
+            cols: state.isFullscreen ? 'auto' : cols,
             rows: state.isFullscreen ? 'auto' : rows,
             background,
             textColor,
@@ -105,7 +106,7 @@ class ConsoleWidget extends PureComponent {
         portal(({ onClose }) => (
           <Settings
             fontSize={terminal.fontSize}
-            cols={terminal.cols}
+            cols={this.getConfiguredCols()}
             rows={this.getConfiguredRows()}
             background={terminal.background}
             textColor={terminal.textColor}
@@ -198,7 +199,7 @@ class ConsoleWidget extends PureComponent {
         // Terminal
         terminal: {
           fontSize: this.config.get('fontSize', DEFAULT_FONT_SIZE),
-          cols: clamp(this.config.get('terminalCols', TERMINAL_COLS), TERMINAL_COLS_MIN, TERMINAL_COLS_MAX, TERMINAL_COLS),
+          cols: this.getConfiguredCols(),
           rows: this.getConfiguredRows(),
           cursorBlink: true,
           scrollback: 1000,
@@ -208,6 +209,10 @@ class ConsoleWidget extends PureComponent {
           cursorColor: this.config.get('terminalCursorColor', DEFAULT_CURSOR_COLOR)
         }
       };
+    }
+
+    getConfiguredCols() {
+      return clamp(this.config.get('terminalCols', TERMINAL_COLS), TERMINAL_COLS_MIN, TERMINAL_COLS_MAX, TERMINAL_COLS);
     }
 
     getConfiguredRows() {
