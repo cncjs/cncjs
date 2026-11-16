@@ -46,7 +46,7 @@ class TerminalWrapper extends PureComponent {
 
     prompt = '> ';
 
-    // Matches "canvas { transform: translate(5px, 5px) }" in index.styl, which adds 5px of scrollable width
+    // Matches :global(.xterm-screen) in index.styl, which adds 5px of scrollable width
     canvasOffset = 5;
     history = new History(1000);
     viewportElement = null;
