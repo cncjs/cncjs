@@ -678,5 +678,8 @@
   "Scan Direction": "",
   "The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.": "",
   "Along X Axis": "",
-  "Along Y Axis": ""
+  "Along Y Axis": "",
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "Comando não enviado: ele não cabe na largura do terminal. Reescreva o comando ou aumente as colunas nas configurações do console.",
+  "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Esta entrada do histórico não cabe na largura do terminal. Reescreva o comando ou aumente as colunas nas configurações do console para recuperá-la.",
+  "Finish or clear the command you are typing before changing the number of columns.": "Conclua ou apague o comando que você está digitando antes de alterar o número de colunas."
 }

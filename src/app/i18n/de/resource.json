@@ -677,5 +677,8 @@
   "Scan Direction": "",
   "The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.": "",
   "Along X Axis": "",
-  "Along Y Axis": ""
+  "Along Y Axis": "",
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "Befehl nicht gesendet: Er passt nicht in die Terminalbreite. Schreiben Sie den Befehl neu oder erhöhen Sie die Anzahl der Spalten in den Konsoleneinstellungen.",
+  "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Dieser Verlaufseintrag passt nicht in die Terminalbreite. Schreiben Sie den Befehl neu oder erhöhen Sie die Anzahl der Spalten in den Konsoleneinstellungen, um ihn abzurufen.",
+  "Finish or clear the command you are typing before changing the number of columns.": "Schließen Sie den Befehl, den Sie gerade eingeben, ab oder löschen Sie ihn, bevor Sie die Anzahl der Spalten ändern."
 }

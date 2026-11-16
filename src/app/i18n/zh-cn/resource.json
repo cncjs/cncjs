@@ -676,5 +676,8 @@
   "Scan Direction": "",
   "The axis each line travels along. Along X Axis sends every line from Start X to End X. Along Y Axis sends every line from Start Y to End Y.": "",
   "Along X Axis": "",
-  "Along Y Axis": ""
+  "Along Y Axis": "",
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "命令未发送：它超出了终端宽度。请重写命令，或在控制台设置中增加列数。",
+  "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "此历史记录条目超出了终端宽度。请重写命令，或在控制台设置中增加列数，以便调用它。",
+  "Finish or clear the command you are typing before changing the number of columns.": "更改列数之前，请先完成或清除正在输入的命令。"
 }
