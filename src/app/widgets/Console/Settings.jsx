@@ -1,6 +1,7 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import uuid from 'uuid';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import {
@@ -41,8 +42,11 @@ const colorLabel = (name) => ({
   red: i18n._('Red')
 }[name]);
 
+const describedBy = (...ids) => ids.filter(Boolean).join(' ') || undefined;
+
 const errorStyle = { color: 'var(--color-error-text, #a94442)' };
 const hintStyle = { color: 'var(--color-text-hint, #767676)', marginTop: 4 };
+const groupTitleStyle = { marginBottom: 5 };
 
 class Settings extends PureComponent {
     static propTypes = {
@@ -67,6 +71,9 @@ class Settings extends PureComponent {
       onCancel: noop
     };
 
+    // Unique per modal instance, so several Console widgets never share element ids
+    fieldId = uuid.v4();
+
     state = {
       fontSize: this.props.fontSize,
       cols: String(this.props.cols),
@@ -78,7 +85,10 @@ class Settings extends PureComponent {
     };
 
     handleChange = (name) => (event) => {
-      this.setState({ [name]: event.target.value });
+      this.setState({
+        [name]: event.target.value,
+        errors: { ...this.state.errors, [name]: undefined, form: undefined }
+      });
     };
 
     handleSave = () => {
@@ -97,7 +107,11 @@ class Settings extends PureComponent {
       }
 
       const { fontSize, background, textColor, cursorColor } = this.state;
-      this.props.onSave({ fontSize, cols, rows, background, textColor, cursorColor });
+      // onSave returns a message when the settings cannot be applied right now
+      const error = this.props.onSave({ fontSize, cols, rows, background, textColor, cursorColor });
+      if (error) {
+        this.setState({ errors: { form: error } });
+      }
     };
 
     handleCancel = () => {
@@ -106,6 +120,7 @@ class Settings extends PureComponent {
 
     render() {
       const { fontSize, cols, rows, background, textColor, cursorColor, errors } = this.state;
+      const id = this.fieldId;
       const theme = buildTerminalTheme(background, textColor, cursorColor);
 
       return (
@@ -115,66 +130,92 @@ class Settings extends PureComponent {
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
-              <label><strong>{i18n._('Font Size')}</strong></label>
-              <select className="form-control" value={fontSize} onChange={this.handleChange('fontSize')}>
+              <label htmlFor={`${id}-font-size`}><strong>{i18n._('Font Size')}</strong></label>
+              <select
+                id={`${id}-font-size`}
+                className="form-control"
+                value={fontSize}
+                onChange={this.handleChange('fontSize')}
+              >
                 <option value={FONT_SIZE_LARGE}>{i18n._('Large')}</option>
                 <option value={FONT_SIZE_MEDIUM}>{i18n._('Medium')}</option>
                 <option value={FONT_SIZE_SMALL}>{i18n._('Small')}</option>
               </select>
             </div>
 
-            <div className="form-group">
-              <label><strong>{i18n._('Terminal Size')}</strong></label>
+            <div className="form-group" role="group" aria-labelledby={`${id}-size`}>
+              <div id={`${id}-size`} style={groupTitleStyle}><strong>{i18n._('Terminal Size')}</strong></div>
               <div style={{ display: 'flex', columnGap: 12 }}>
                 <div style={{ flex: 1 }}>
-                  <label>{i18n._('Columns')}</label>
+                  <label htmlFor={`${id}-cols`}>{i18n._('Columns')}</label>
                   <input
+                    id={`${id}-cols`}
                     type="text"
                     inputMode="numeric"
                     className="form-control"
+                    aria-invalid={!!errors.cols}
+                    aria-describedby={describedBy(errors.cols && `${id}-cols-error`, `${id}-size-hint`)}
                     value={cols}
                     onChange={this.handleChange('cols')}
                   />
-                  {errors.cols && <small style={errorStyle}>{errors.cols}</small>}
+                  {errors.cols && <small id={`${id}-cols-error`} style={errorStyle}>{errors.cols}</small>}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label>{i18n._('Rows')}</label>
+                  <label htmlFor={`${id}-rows`}>{i18n._('Rows')}</label>
                   <input
+                    id={`${id}-rows`}
                     type="text"
                     inputMode="numeric"
                     className="form-control"
+                    aria-invalid={!!errors.rows}
+                    aria-describedby={describedBy(errors.rows && `${id}-rows-error`, `${id}-size-hint`)}
                     value={rows}
                     onChange={this.handleChange('rows')}
                   />
-                  {errors.rows && <small style={errorStyle}>{errors.rows}</small>}
+                  {errors.rows && <small id={`${id}-rows-error`} style={errorStyle}>{errors.rows}</small>}
                 </div>
               </div>
-              <div style={hintStyle}>
+              <div id={`${id}-size-hint`} style={hintStyle}>
                 {i18n._('Columns also limit how long a command you can type.')}
               </div>
             </div>
 
-            <div className="form-group">
-              <label><strong>{i18n._('Terminal Colors')}</strong></label>
+            <div className="form-group" role="group" aria-labelledby={`${id}-colors`}>
+              <div id={`${id}-colors`} style={groupTitleStyle}><strong>{i18n._('Terminal Colors')}</strong></div>
               <div style={{ display: 'flex', columnGap: 12 }}>
                 <div style={{ flex: 1 }}>
-                  <label>{i18n._('Background')}</label>
-                  <select className="form-control" value={background} onChange={this.handleChange('background')}>
+                  <label htmlFor={`${id}-background`}>{i18n._('Background')}</label>
+                  <select
+                    id={`${id}-background`}
+                    className="form-control"
+                    value={background}
+                    onChange={this.handleChange('background')}
+                  >
                     <option value={BACKGROUND_DARK}>{i18n._('Dark')}</option>
                     <option value={BACKGROUND_LIGHT}>{i18n._('Light')}</option>
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label>{i18n._('Text')}</label>
-                  <select className="form-control" value={textColor} onChange={this.handleChange('textColor')}>
+                  <label htmlFor={`${id}-text`}>{i18n._('Text')}</label>
+                  <select
+                    id={`${id}-text`}
+                    className="form-control"
+                    value={textColor}
+                    onChange={this.handleChange('textColor')}
+                  >
                     {TEXT_COLORS.map(name => (
                       <option key={name} value={name}>{colorLabel(name)}</option>
                     ))}
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label>{i18n._('Cursor')}</label>
-                  <select className="form-control" value={cursorColor} onChange={this.handleChange('cursorColor')}>
+                  <label htmlFor={`${id}-cursor`}>{i18n._('Cursor')}</label>
+                  <select
+                    id={`${id}-cursor`}
+                    className="form-control"
+                    value={cursorColor}
+                    onChange={this.handleChange('cursorColor')}
+                  >
                     {CURSOR_COLORS.map(name => (
                       <option key={name} value={name}>{colorLabel(name)}</option>
                     ))}
@@ -182,6 +223,7 @@ class Settings extends PureComponent {
                 </div>
               </div>
               <div
+                aria-hidden="true"
                 style={{
                   marginTop: 8,
                   padding: '6px 8px',
@@ -200,6 +242,8 @@ class Settings extends PureComponent {
                 </div>
               </div>
             </div>
+
+            {errors.form && <div role="alert" style={errorStyle}>{errors.form}</div>}
           </Modal.Body>
           <Modal.Footer>
             <button type="button" className="btn btn-default" onClick={this.handleCancel}>

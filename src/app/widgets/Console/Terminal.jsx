@@ -7,9 +7,11 @@ import ReactDOM from 'react-dom';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import chalk from 'app/lib/chalk';
+import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
+import { fitsOnRow, readInputLine } from './input';
 import { DEFAULT_FONT_SIZE, FONT_SIZE_PX, DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR } from './constants';
 import { buildTerminalTheme } from './terminal-theme';
 
@@ -102,12 +104,18 @@ class TerminalWrapper extends PureComponent {
 
           // Enter
           if (event.key === 'Enter') {
-            let buffer = '';
-            for (let x = this.prompt.length; x < line.length; ++x) {
-              const c = line[x][1] || '';
-              buffer += c;
+            const input = readInputLine({
+              cells: line,
+              isWrapped: line.isWrapped,
+              cols: term.cols,
+              prompt: this.prompt
+            });
+            if (!input.ok) {
+              // What is on screen is not the complete command that was typed: send nothing
+              this.notify(i18n._('Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.'));
+              return;
             }
-            buffer = trimEnd(buffer);
+            let buffer = input.command;
 
             if (buffer.length > 0) {
               // Clear history command
@@ -199,20 +207,14 @@ class TerminalWrapper extends PureComponent {
             } else if (this.history.index > 0) {
               historyCommand = this.history.back() || '';
             }
-            term.eraseLine(term.buffer.y);
-            term.buffer.x = 0;
-            term.write(chalk.white(this.prompt));
-            term.write(chalk.white(historyCommand));
+            this.recall(historyCommand);
             return;
           }
 
           // ArrowDown
           if (event.key === 'ArrowDown') {
             historyCommand = this.history.forward() || '';
-            term.eraseLine(term.buffer.y);
-            term.buffer.x = 0;
-            term.write(chalk.white(this.prompt));
-            term.write(chalk.white(historyCommand));
+            this.recall(historyCommand);
             return;
           }
 
@@ -485,6 +487,44 @@ class TerminalWrapper extends PureComponent {
       const restoreCursor = cursorLeft > 0 ? `\x1b[${cursorLeft}D` : '';
 
       this.term.write(`\x1b[2K\r${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`);
+    }
+
+    // Replace the input row by a notice and start a new prompt; nothing is sent
+    notify(message) {
+      const { term } = this;
+      term.eraseLine(term.buffer.y);
+      term.buffer.x = 0;
+      term.write(chalk.yellow(message));
+      term.prompt();
+    }
+
+    recall(command) {
+      const { term } = this;
+      if (!fitsOnRow(command, term.cols, this.prompt.length)) {
+        // Showing it would wrap it, and a wrapped command cannot be sent safely
+        this.notify(i18n._('This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.'));
+        return;
+      }
+      term.eraseLine(term.buffer.y);
+      term.buffer.x = 0;
+      term.write(chalk.white(this.prompt));
+      term.write(chalk.white(command));
+    }
+
+    hasPendingInput() {
+      if (!this.term) {
+        return false;
+      }
+      const line = this.term.buffer.lines.get(this.term.buffer.ybase + this.term.buffer.y);
+      if (!line) {
+        return false;
+      }
+      for (let x = this.prompt.length; x < line.length; ++x) {
+        if ((line[x][1] || '').trim()) {
+          return true;
+        }
+      }
+      return false;
     }
 
     render() {

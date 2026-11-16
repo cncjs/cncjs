@@ -13,7 +13,7 @@ export const FONT_SIZE_PX = {
 // Terminal size (the buffer starts with 254 bytes free; the terminating <LF> or <CR> counts as a byte)
 export const TERMINAL_COLS = 254;
 export const TERMINAL_ROWS = 15;
-export const TERMINAL_COLS_MIN = 40;
+export const TERMINAL_COLS_MIN = 80;
 export const TERMINAL_COLS_MAX = 500;
 export const TERMINAL_ROWS_MIN = 5;
 export const TERMINAL_ROWS_MAX = 100;
