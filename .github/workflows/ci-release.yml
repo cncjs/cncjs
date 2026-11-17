@@ -20,6 +20,7 @@ jobs:
     # [IMPORTANT] Prevent this action from running on forks
     if: github.repository == 'cncjs/cncjs'
     permissions:
+      actions: write        # to dispatch tag workflows
       contents: write       # to create release (changesets/action)
       issues: write         # to post issue comments (changesets/action)
       pull-requests: write  # to create pull request (changesets/action)
@@ -42,12 +43,42 @@ jobs:
       - name: Install Dependencies
         run: yarn install
       - name: Create Release Pull Request or Publish to npm
-        uses: changesets/action@v1
+        id: changesets
+        uses: changesets/action@v2
         with:
-          title: "chore(release): version packages"
-          commit: "chore(release): version packages"
-          version: yarn ci-version
-          publish: yarn ci-publish
+          github-token: ${{ env.GITHUB_TOKEN }}
+          pr-title: "chore(release): version packages"
+          commit-message: "chore(release): version packages"
+          version-script: yarn ci-version
+          publish-script: yarn ci-publish
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+          YARN_NPM_PUBLISH_PROVENANCE: true
+      - name: Determine published tag
+        id: published-tag
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
+        run: |
+          TAG=$(node -e '
+            const packages = JSON.parse(process.env.PUBLISHED_PACKAGES);
+            const pkg = packages.find((item) => item.name === "cncjs");
+            if (!pkg || !pkg.version) {
+              throw new Error("Published cncjs version not found");
+            }
+            console.log(`v${pkg.version}`);
+          ')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Dispatch desktop release
+        if: steps.published-tag.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ env.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.published-tag.outputs.tag }}
+        run: gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$RELEASE_TAG"
+      - name: Dispatch Docker release
+        if: ${{ !cancelled() && steps.published-tag.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ env.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.published-tag.outputs.tag }}
+        run: gh workflow run ci-docker-hub.yml --repo "$GITHUB_REPOSITORY" --ref "$RELEASE_TAG"
