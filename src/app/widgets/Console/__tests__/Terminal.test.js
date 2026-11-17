@@ -20,6 +20,9 @@ const makeTerm = ({ text = PROMPT, cols = 80, rowWidth = cols, isWrapped = false
     cells,
     buffer: { ybase: 0, y: 0, x: PROMPT.length, lines: { get: () => cells } },
     eraseLine: jest.fn(),
+    eraseAttr: jest.fn(() => 0),
+    updateRange: jest.fn(),
+    refresh: jest.fn(),
     write: jest.fn(),
     prompt: jest.fn()
   };
@@ -33,6 +36,37 @@ const create = (termOptions) => {
 };
 
 const press = (wrapper, name, text = name) => wrapper.eventHandler.onKey(text, { key: name });
+
+// Model xterm's asynchronous writes without duplicating the handler's cell shifts.
+const queueWrites = (term) => {
+  term.writeBuffer = [];
+  term.writeInProgress = false;
+  term.write = jest.fn(data => {
+    term.writeBuffer.push(data);
+    term.writeInProgress = true;
+  });
+  return () => {
+    term.writeBuffer.forEach(data => {
+      [...data].forEach(ch => {
+        if (ch === '\b') {
+          term.buffer.x -= 1;
+        } else {
+          term.cells[term.buffer.x] = [0, ch, 1];
+          term.buffer.x += 1;
+        }
+      });
+    });
+    term.writeBuffer = [];
+    term.writeInProgress = false;
+  };
+};
+
+const settle = (flush) => {
+  for (let i = 0; i < 600; ++i) {
+    flush();
+    jest.advanceTimersByTime(1);
+  }
+};
 
 describe('Terminal command submission', () => {
   test('sends the complete command exactly as typed', () => {
@@ -108,31 +142,6 @@ describe('Terminal key handling under fast input', () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
-  // Model xterm: write() only queues; the cursor and the cells change when the queue is flushed
-  const queueWrites = (term) => {
-    term.writeBuffer = [];
-    term.writeInProgress = false;
-    term.write = jest.fn(data => {
-      term.writeBuffer.push(data);
-      term.writeInProgress = true;
-    });
-    return () => {
-      term.writeBuffer.forEach(ch => {
-        term.cells[term.buffer.x] = [0, ch, 1];
-        term.buffer.x += 1;
-      });
-      term.writeBuffer = [];
-      term.writeInProgress = false;
-    };
-  };
-
-  const settle = (flush) => {
-    for (let i = 0; i < 600; ++i) {
-      flush();
-      jest.advanceTimersByTime(1);
-    }
-  };
-
   test('a burst of keys never overruns the last column', () => {
     const { wrapper, term } = create({ cols: 80 });
     const flush = queueWrites(term);
@@ -151,5 +160,113 @@ describe('Terminal key handling under fast input', () => {
     settle(flush);
     expect(onData).toHaveBeenCalledTimes(1);
     expect(onData).toHaveBeenCalledWith('G0 X10\r');
+  });
+});
+
+describe('Terminal insertion capacity', () => {
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
+
+  const moveTo = (wrapper, position) => {
+    press(wrapper, 'Home');
+    for (let i = 0; i < position; ++i) {
+      press(wrapper, 'ArrowRight');
+    }
+  };
+
+  [80, 254, 500].forEach(cols => {
+    const capacity = cols - PROMPT.length - 1;
+    const command = 'G1 F100'.padEnd(capacity - 4, ' ') + 'Z100';
+
+    [cols, cols + 20].forEach(rowWidth => {
+      ['start', 'middle', 'end'].forEach(position => {
+        test(`${cols} columns, row ${rowWidth}: rejects full insertion at ${position}`, () => {
+          const { wrapper, term, onData } = create({ cols, rowWidth, text: PROMPT + command });
+          const flush = queueWrites(term);
+          term.buffer.x = PROMPT.length + command.length;
+          if (position !== 'end') {
+            moveTo(wrapper, position === 'start' ? 0 : Math.floor(capacity / 2));
+          }
+          const row = term.cells.map(cell => [...cell]);
+          const cursor = term.buffer.x;
+          press(wrapper, ' ', ' ');
+          press(wrapper, ' ', ' ');
+          press(wrapper, 'X');
+          settle(flush);
+          expect(term.cells.map(cell => [...cell])).toEqual(row);
+          expect(term.buffer.x).toBe(cursor);
+          expect(term.write).not.toHaveBeenCalled();
+          expect(onData).not.toHaveBeenCalled();
+          press(wrapper, 'Enter', '\r');
+          expect(onData).toHaveBeenCalledTimes(1);
+          expect(onData).toHaveBeenCalledWith(command + '\r');
+        });
+      });
+    });
+
+    [0, Math.floor(capacity / 2)].forEach(position => {
+      test(`${cols} columns: accepts the last slot at ${position}`, () => {
+        const original = command.slice(0, -5) + command.slice(-4);
+        const { wrapper, term, onData } = create({ cols, text: PROMPT + original });
+        const flush = queueWrites(term);
+        moveTo(wrapper, position);
+        press(wrapper, 'X');
+        settle(flush);
+        const row = term.cells.map(cell => [...cell]);
+        const cursor = term.buffer.x;
+        press(wrapper, 'Y');
+        settle(flush);
+        expect(term.cells.map(cell => [...cell])).toEqual(row);
+        expect(term.buffer.x).toBe(cursor);
+        press(wrapper, 'Enter', '\r');
+        expect(onData).toHaveBeenCalledTimes(1);
+        expect(onData).toHaveBeenCalledWith(original.slice(0, position) + 'X' + original.slice(position) + '\r');
+      });
+    });
+
+    ['Backspace', 'Delete'].forEach(key => {
+      test(`${cols} columns: ${key} frees a slot`, () => {
+        const position = Math.floor(capacity / 2);
+        const { wrapper, term, onData } = create({ cols, text: PROMPT + command });
+        const flush = queueWrites(term);
+        moveTo(wrapper, position);
+        press(wrapper, key);
+        press(wrapper, 'X');
+        press(wrapper, 'Enter', '\r');
+        settle(flush);
+        const deleted = key === 'Backspace' ? position - 1 : position;
+        const expected = command.slice(0, deleted) + 'X' + command.slice(deleted + 1);
+        expect(onData).toHaveBeenCalledTimes(1);
+        expect(onData).toHaveBeenCalledWith(expected + '\r');
+      });
+    });
+
+    test(`${cols} columns: queued rejected keys preserve immediate submission`, () => {
+      const { wrapper, term, onData } = create({ cols, text: PROMPT + command });
+      const flush = queueWrites(term);
+      term.buffer.x = PROMPT.length + command.length;
+      press(wrapper, 'Home');
+      for (let i = 0; i < 20; ++i) {
+        press(wrapper, 'X');
+      }
+      press(wrapper, 'Enter', '\r');
+      settle(flush);
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(command + '\r');
+    });
+
+    test(`${cols} columns: cursor accounts for trailing spaces`, () => {
+      const trailing = 'G1' + ' '.repeat(capacity - 2);
+      const { wrapper, term, onData } = create({ cols, text: PROMPT + trailing });
+      const flush = queueWrites(term);
+      term.buffer.x = PROMPT.length + capacity;
+      const row = term.cells.map(cell => [...cell]);
+      press(wrapper, 'X');
+      settle(flush);
+      expect(term.cells.map(cell => [...cell])).toEqual(row);
+      expect(term.buffer.x).toBe(PROMPT.length + capacity);
+      expect(term.write).not.toHaveBeenCalled();
+      expect(onData).not.toHaveBeenCalled();
+    });
   });
 });

@@ -11,7 +11,7 @@ import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
-import { fitsOnRow, readInputLine, colsKeepingPendingInput } from './input';
+import { fitsOnRow, getInputCapacity, readInputLine, colsKeepingPendingInput } from './input';
 import { DEFAULT_FONT_SIZE, FONT_SIZE_PX, DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN } from './constants';
 import { buildTerminalTheme } from './terminal-theme';
 
@@ -242,6 +242,11 @@ class TerminalWrapper extends PureComponent {
           // Non-printable keys (e.g. ctrl-x)
           if (nonPrintableKey) {
             onData(key);
+            return;
+          }
+
+          const inputLength = Math.max(this.pendingInputLength(), term.buffer.x - this.prompt.length);
+          if (inputLength + key.length > getInputCapacity(term.cols, this.prompt.length)) {
             return;
           }
 
