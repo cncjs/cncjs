@@ -32,12 +32,24 @@
 
   .theme-dark .btn-default:not(.btn-select):hover,
   .theme-dark .btn-default:not(.btn-select):focus {
+    color: var(--color-text);
     background-color: var(--btn-default-hover-top);
   }
 
   .theme-dark .btn-default:not(.btn-select):active,
   .theme-dark .btn-default:not(.btn-select).active {
+    color: var(--color-text);
     background-color: var(--color-surface-active);
+  }
+
+  /* Bootstrap gives disabled buttons their own hover colors; keep them at rest */
+  .theme-dark .btn-default.disabled:not(.btn-select):hover,
+  .theme-dark .btn-default[disabled]:not(.btn-select):hover,
+  .theme-dark .btn-default.disabled:not(.btn-select):focus,
+  .theme-dark .btn-default[disabled]:not(.btn-select):focus {
+    color: var(--color-text);
+    background-color: var(--btn-default-top);
+    border-color: var(--color-border-strong);
   }
 
   /* react-select v1 */
@@ -98,13 +110,16 @@
     border-color: var(--color-border-strong);
   }
 
-  .theme-dark [class*="buttons---btn-default---"]:hover {
+  .theme-dark [class*="buttons---btn-default---"]:hover,
+  .theme-dark [class*="buttons---btn-default---"]:focus {
+    color: var(--color-text);
     background-image: linear-gradient(to bottom, var(--btn-default-hover-top), var(--btn-default-hover-bottom));
     border-color: var(--color-border-stronger);
   }
 
   .theme-dark [class*="buttons---btn-default---"]:active,
   .theme-dark [class*="buttons---btn-default---"][class*="---active---"] {
+    color: var(--color-text);
     background-image: none;
     background-color: var(--color-surface-active);
   }
@@ -304,8 +319,11 @@
     background-color: var(--color-surface-alt) !important;
   }
 
-  .theme-dark [class*="modal---close---"] {
-    filter: invert(1);
+  .theme-dark [class*="modal---close---"],
+  .theme-dark [class*="modal---close---"]:hover,
+  .theme-dark [class*="modal---close---"]:focus,
+  .theme-dark [class*="modal---close---"]:active {
+    filter: invert(1) !important;
   }
 
   /* ===== @trendmicro/react-form-control ===== */

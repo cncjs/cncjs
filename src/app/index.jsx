@@ -38,7 +38,7 @@ import './styles/vendor.styl';
 import './styles/theme.styl';
 import './styles/app.styl';
 import './styles/theme-overrides.styl';
-import { applyTheme } from './lib/theme';
+import { applyTheme, applyThemeFromState } from './lib/theme';
 
 const renderPage = () => {
   const container = document.createElement('div');
@@ -104,8 +104,8 @@ series([
         if (authenticated) {
           try {
             const res = await api.getState();
-            const { allowAnonymousUsageDataCollection, theme } = res.body || {};
-            applyTheme(theme);
+            const { allowAnonymousUsageDataCollection } = res.body || {};
+            applyThemeFromState(res);
             if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
               GoogleAnalytics4.initialize([
                 {

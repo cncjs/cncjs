@@ -19,7 +19,8 @@ import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
 import i18n from 'app/lib/i18n';
 import store from 'app/store';
-import { applyTheme, DEFAULT_THEME } from 'app/lib/theme';
+import { applyTheme, DEFAULT_THEME, normalizeTheme } from 'app/lib/theme';
+import { acknowledgeGeneralSave, canSaveGeneral, getGeneralChanges, getGeneralSubmission } from './general-state';
 import General from './General';
 import Workspace from './Workspace';
 import MachineProfiles from './MachineProfiles';
@@ -125,7 +126,8 @@ class Settings extends PureComponent {
                 },
                 // followed by data
                 allowAnonymousUsageDataCollection: !!allowAnonymousUsageDataCollection,
-                theme: theme || DEFAULT_THEME,
+                theme: normalizeTheme(theme),
+                loaded: true,
                 lang: i18next.language // TODO: Store language settings into the state
               };
 
@@ -147,65 +149,52 @@ class Settings extends PureComponent {
             });
         },
         save: () => {
-          const {
-            allowAnonymousUsageDataCollection,
-            theme = DEFAULT_THEME,
-            lang = 'en',
-          } = this.state.general;
+          if (!canSaveGeneral(this.state.general)) {
+            return;
+          }
 
-          this.setState({
+          // Everything below uses this snapshot, never this.state at response time
+          const submitted = getGeneralSubmission(this.state.general);
+          const changes = getGeneralChanges(submitted, this.initialState.general);
+
+          this.setState(state => ({
             general: {
-              ...this.state.general,
-              api: {
-                ...this.state.general.api,
-                err: false,
-                saving: true
-              }
+              ...state.general,
+              api: { ...state.general.api, err: false, saving: true }
             }
-          });
+          }));
 
-          const data = {
-            allowAnonymousUsageDataCollection,
-            theme
-          };
+          const request = Object.keys(changes).length > 0
+            ? api.setState(changes)
+            : Promise.resolve();
 
-          api.setState(data)
-            .then((res) => {
-              const nextState = {
-                ...this.state.general,
-                api: {
-                  ...this.state.general.api,
-                  err: false,
-                  saving: false
-                }
-              };
+          request
+            .then(() => {
+              const apiState = { ...this.state.general.api, err: false, saving: false };
 
-              // Update settings to initialState
-              this.initialState.general = nextState;
+              // The baseline becomes what was submitted; edits made meanwhile stay unsaved
+              this.initialState.general = acknowledgeGeneralSave(this.initialState.general, submitted, apiState);
 
-              this.setState({ general: nextState });
-              applyTheme(theme);
+              this.setState(state => ({ general: { ...state.general, api: apiState } }));
+              applyTheme(submitted.theme);
             })
             .catch((res) => {
-              this.setState({
+              // Nothing is acknowledged, applied or marked saved
+              this.setState(state => ({
                 general: {
-                  ...this.state.general,
-                  api: {
-                    ...this.state.general.api,
-                    err: true,
-                    saving: false
-                  }
+                  ...state.general,
+                  api: { ...state.general.api, err: true, saving: false }
                 }
-              });
+              }));
             })
             .then(() => {
-              if (lang === i18next.language) {
+              if (submitted.lang === i18next.language) {
                 return;
               }
 
-              i18next.changeLanguage(lang, (err, t) => {
+              i18next.changeLanguage(submitted.lang, (err, t) => {
                 const uri = new Uri(window.location.search);
-                uri.replaceQueryParam('lang', lang);
+                uri.replaceQueryParam('lang', submitted.lang);
                 window.location.search = uri.toString();
               });
             });
@@ -1110,7 +1099,8 @@ class Settings extends PureComponent {
           },
           allowAnonymousUsageDataCollection: false,
           theme: DEFAULT_THEME,
-          lang: i18next.language
+          lang: i18next.language,
+          loaded: false
         },
         // Workspace
         workspace: {

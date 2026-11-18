@@ -6,6 +6,8 @@ import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
 import { SUPPORTED_LANGUAGES } from 'app/constants/i18n';
 import i18n from 'app/lib/i18n';
+import { normalizeTheme } from 'app/lib/theme';
+import { canSaveGeneral } from '../general-state';
 import styles from './index.styl';
 
 class General extends PureComponent {
@@ -52,7 +54,7 @@ class General extends PureComponent {
     render() {
       const { state, stateChanged } = this.props;
       const lang = get(state, 'lang', 'en');
-      const theme = get(state, 'theme', 'dark');
+      const theme = normalizeTheme(get(state, 'theme'));
 
       if (state.api.loading) {
         return (
@@ -125,8 +127,9 @@ class General extends PureComponent {
                   alignItems: 'center',
                 }}
               >
-                <label>{i18n._('Theme:')}</label>
+                <label htmlFor="general-theme">{i18n._('Theme:')}</label>
                 <select
+                  id="general-theme"
                   className={classNames(
                     'form-control',
                     styles.formControl,
@@ -154,7 +157,7 @@ class General extends PureComponent {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  disabled={!stateChanged}
+                  disabled={!stateChanged || !canSaveGeneral(state)}
                   onClick={this.handlers.save}
                 >
                   {state.api.saving

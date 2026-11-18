@@ -1,19 +1,11 @@
 // .btn-default.btn-select
 .btn-default {
-    &.btn-select {
-        color: #fff;
-        background-color: #404040;
-        border-color: #383838;
-    }
+    &.btn-select,
     &.btn-select:focus,
-    &.btn-select.focus {
-        color: #fff;
-        background-color: #404040;
-        border-color: #383838;
-    }
+    &.btn-select.focus,
     &.btn-select:hover {
-        color: #fff;
-        background-color: #404040;
-        border-color: #383838;
+        color: var(--btn-selected-text);
+        background-color: var(--btn-selected-bg);
+        border-color: var(--btn-selected-border);
     }
 }
