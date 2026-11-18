@@ -30,6 +30,7 @@ import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import { getSceneThemeName, getScenePalette } from './scene-theme';
 import GCodeVisualizer, { setToolpathColors } from './GCodeVisualizer';
+import { disposeObject } from './dispose';
 import ProbeVisualization from './ProbeVisualization';
 import {
   CAMERA_MODE_PAN,
@@ -244,22 +245,6 @@ class Visualizer extends Component {
       this.cuttingPointer = null;
       this.limits = null;
       this.gcodeVisualizer = null;
-    }
-
-    // Release GPU resources of a removed object. Sprites share one geometry in three.js: leave it alone.
-    disposeObject(root) {
-      root.traverse((o) => {
-        if (o.geometry && !o.isSprite) {
-          o.geometry.dispose();
-        }
-        const materials = Array.isArray(o.material) ? o.material : [o.material];
-        materials.forEach((m) => {
-          if (m) {
-            m.map && m.map.dispose();
-            m.dispose();
-          }
-        });
-      });
     }
 
     applyCanvasColor(palette) {
@@ -887,7 +872,7 @@ class Visualizer extends Component {
         const obj = this.group.getObjectByName(name);
         if (obj) {
           this.group.remove(obj);
-          this.disposeObject(obj);
+          disposeObject(obj);
         }
       });
 
@@ -1120,6 +1105,9 @@ class Visualizer extends Component {
       _each(objsToRemove, (obj) => {
         this.scene.remove(obj);
       });
+
+      this.disposeObject(this.group);
+      this.renderer && this.renderer.dispose();
 
       if (this.controls) {
         this.controls.dispose();
