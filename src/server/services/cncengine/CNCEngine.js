@@ -199,36 +199,39 @@ class CNCEngine {
           this.sockets.splice(this.sockets.indexOf(socket), 1);
         });
 
-        // List the available serial ports
-        SerialPort.list()
-          .then(detected => {
-            // Merge by path: .cncrc entries override metadata of detected ports
-            const byPath = new Map();
-            detected.forEach(p => byPath.set(p.path, p));
-            ensureArray(config.get('ports', [])).forEach(p => {
-              const existing = byPath.get(p.path);
-              byPath.set(p.path, existing ? Object.assign({}, existing, p) : p);
-            });
-            const merged = Array.from(byPath.values());
+        socket.on('list', () => {
+          log.debug(`socket.list(): id=${socket.id}`);
 
-            const controllers = store.get('controllers', {});
-            const portsInUse = Object.keys(controllers)
-              .filter(port => {
-                const controller = controllers[port];
-                return controller && controller.isOpen();
+          SerialPort.list()
+            .then(detected => {
+              // Merge by path: .cncrc entries override metadata of detected ports
+              const byPath = new Map();
+              detected.forEach(p => byPath.set(p.path, p));
+              ensureArray(config.get('ports', [])).forEach(p => {
+                const existing = byPath.get(p.path);
+                byPath.set(p.path, existing ? Object.assign({}, existing, p) : p);
               });
+              const merged = Array.from(byPath.values());
 
-            const ports = merged.map(port => ({
-              port: port.path,
-              manufacturer: port.manufacturer,
-              inuse: portsInUse.indexOf(port.path) >= 0
-            }));
+              const controllers = store.get('controllers', {});
+              const portsInUse = Object.keys(controllers)
+                .filter(port => {
+                  const controller = controllers[port];
+                  return controller && controller.isOpen();
+                });
 
-            socket.emit('serialport:list', ports);
-          })
-          .catch(err => {
-            log.error(err);
-          });
+              const ports = merged.map(port => ({
+                port: port.path,
+                manufacturer: port.manufacturer,
+                inuse: portsInUse.indexOf(port.path) >= 0
+              }));
+
+              socket.emit('serialport:list', ports);
+            })
+            .catch(err => {
+              log.error(err);
+            });
+        });
 
         // Open serial port
         socket.on('open', (port, options, callback = noop) => {
