@@ -35,3 +35,30 @@
         background: url("./images/select-all.svg") no-repeat 0 0;
     }
 }
+
+.terminal-container {
+    border-top: 5px solid;
+    border-left: 5px solid;
+    border-right: 5px solid;
+    padding-bottom: 5px;
+
+    // Offset the xterm screen as a layout box, not just with a transform on the canvases: xterm takes
+    // mouse coordinates from the screen element's box, so it must move with what is drawn
+    :global(.xterm-screen) {
+        position: relative;
+        left: 5px;
+        top: 5px;
+    }
+
+    :global(.ps--scrolling-y) > :global(.ps__rail-y) {
+        opacity: .9;
+    }
+
+    &::-webkit-scrollbar { height: 15px }
+    &::-webkit-scrollbar-track { background-color: var(--terminal-bg) }
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--terminal-thumb);
+        border-radius: 8px;
+        border: 3px solid var(--terminal-bg);
+    }
+}

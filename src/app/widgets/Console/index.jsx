@@ -9,13 +9,17 @@ import Widget from 'app/components/Widget';
 import chalk from 'app/lib/chalk';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
+import Settings from './Settings';
+import { DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR, DEFAULT_FONT_SIZE, TERMINAL_COLS, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN, TERMINAL_ROWS, TERMINAL_ROWS_MAX, TERMINAL_ROWS_MIN } from './constants';
 
-// The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
-const TERMINAL_COLS = 254;
-const TERMINAL_ROWS = 15;
+const clamp = (value, min, max, fallback) => {
+  const n = Number(value);
+  return Number.isInteger(n) ? Math.min(max, Math.max(min, n)) : fallback;
+};
 
 class ConsoleWidget extends PureComponent {
     static propTypes = {
@@ -47,7 +51,8 @@ class ConsoleWidget extends PureComponent {
           isFullscreen: !state.isFullscreen,
           terminal: {
             ...state.terminal,
-            rows: state.isFullscreen ? TERMINAL_ROWS : 'auto'
+            cols: state.isFullscreen ? this.getConfiguredCols() : 'auto',
+            rows: state.isFullscreen ? this.getConfiguredRows() : 'auto',
           }
         }), () => {
           this.resizeTerminal();
@@ -68,7 +73,55 @@ class ConsoleWidget extends PureComponent {
           __sender__: this.senderId
         };
         controller.write(data, context);
-      }
+      },
+      saveSettings: ({ fontSize, cols, rows, background, textColor, cursorColor }) => {
+        // A narrower terminal could hide or wrap what is being typed: wait until the input is resolved
+        if (!this.state.isFullscreen && cols !== this.getConfiguredCols() && this.terminal && this.terminal.hasPendingInput()) {
+          return i18n._('Finish or clear the command you are typing before changing the number of columns.');
+        }
+
+        // Persisted here, not in componentDidUpdate: defaults must stay distinguishable from explicit choices,
+        // and while fullscreen the state holds rows = 'auto'
+        this.config.set('terminalCols', cols);
+        this.config.set('terminalRows', rows);
+        this.config.set('fontSize', fontSize);
+        this.config.set('terminalBackground', background);
+        this.config.set('terminalTextColor', textColor);
+        this.config.set('terminalCursorColor', cursorColor);
+        this.setState(state => ({
+          terminal: {
+            ...state.terminal,
+            fontSize,
+            cols: state.isFullscreen ? 'auto' : cols,
+            rows: state.isFullscreen ? 'auto' : rows,
+            background,
+            textColor,
+            cursorColor
+          }
+        }));
+        return null;
+      },
+      openSettings: () => {
+        const { terminal } = this.state;
+        portal(({ onClose }) => (
+          <Settings
+            fontSize={terminal.fontSize}
+            cols={this.getConfiguredCols()}
+            rows={this.getConfiguredRows()}
+            background={terminal.background}
+            textColor={terminal.textColor}
+            cursorColor={terminal.cursorColor}
+            onSave={(data) => {
+              const error = this.actions.saveSettings(data);
+              if (!error) {
+                onClose();
+              }
+              return error;
+            }}
+            onCancel={onClose}
+          />
+        ));
+      },
     };
 
     controllerEvents = {
@@ -132,9 +185,7 @@ class ConsoleWidget extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState) {
-      const {
-        minimized
-      } = this.state;
+      const { minimized } = this.state;
 
       this.config.set('minimized', minimized);
     }
@@ -147,13 +198,25 @@ class ConsoleWidget extends PureComponent {
 
         // Terminal
         terminal: {
-          cols: TERMINAL_COLS,
-          rows: TERMINAL_ROWS,
+          fontSize: this.config.get('fontSize', DEFAULT_FONT_SIZE),
+          cols: this.getConfiguredCols(),
+          rows: this.getConfiguredRows(),
           cursorBlink: true,
           scrollback: 1000,
-          tabStopWidth: 4
+          tabStopWidth: 4,
+          background: this.config.get('terminalBackground', DEFAULT_BACKGROUND),
+          textColor: this.config.get('terminalTextColor', DEFAULT_TEXT_COLOR),
+          cursorColor: this.config.get('terminalCursorColor', DEFAULT_CURSOR_COLOR)
         }
       };
+    }
+
+    getConfiguredCols() {
+      return clamp(this.config.get('terminalCols', TERMINAL_COLS), TERMINAL_COLS_MIN, TERMINAL_COLS_MAX, TERMINAL_COLS);
+    }
+
+    getConfiguredRows() {
+      return clamp(this.config.get('terminalRows', TERMINAL_ROWS), TERMINAL_ROWS_MIN, TERMINAL_ROWS_MAX, TERMINAL_ROWS);
     }
 
     subscribe() {
@@ -214,6 +277,13 @@ class ConsoleWidget extends PureComponent {
               {i18n._('Console')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
+              <Widget.Button
+                aria-label={i18n._('Console Settings')}
+                title={i18n._('Edit')}
+                onClick={actions.openSettings}
+              >
+                <i aria-hidden="true" className="fa fa-cog" />
+              </Widget.Button>
               <Widget.Button
                 aria-label="Clear console"
                 title={i18n._('Clear all')}
