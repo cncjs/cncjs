@@ -169,6 +169,7 @@ class GCodeVisualizer {
   refreshColors() {
     const workpiece = this.group.children[0];
     if (workpiece) {
+      workpiece.material.color.copy(defaultColor); // the tint follows the palette, like a fresh load
       workpiece.geometry.colorsNeedUpdate = true;
     }
   }

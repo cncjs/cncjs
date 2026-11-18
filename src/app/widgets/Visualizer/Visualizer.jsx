@@ -246,6 +246,22 @@ class Visualizer extends Component {
       this.gcodeVisualizer = null;
     }
 
+    // Release GPU resources of a removed object. Sprites share one geometry in three.js: leave it alone.
+    disposeObject(root) {
+      root.traverse((o) => {
+        if (o.geometry && !o.isSprite) {
+          o.geometry.dispose();
+        }
+        const materials = Array.isArray(o.material) ? o.material : [o.material];
+        materials.forEach((m) => {
+          if (m) {
+            m.map && m.map.dispose();
+            m.dispose();
+          }
+        });
+      });
+    }
+
     applyCanvasColor(palette) {
       if (this.renderer) {
         this.renderer.setClearColor(new THREE.Color(palette.canvas), palette.canvasOpacity);
@@ -766,7 +782,6 @@ class Visualizer extends Component {
 
       { // Coordinate Grid
         const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, palette.gridCenter, palette.grid);
-        // axis labels: color: palette.axisX / palette.axisY / palette.axisZ  (instead of colornames('red'|'green'|'blue'))
 
         _each(gridLine.children, (o) => {
           o.material.opacity = 0.15;
@@ -790,7 +805,7 @@ class Visualizer extends Component {
           z: 0,
           size: 20,
           text: 'X',
-          color: colornames('red')
+          color: palette.axisX
         });
         const axisYLabel = new TextSprite({
           x: 0,
@@ -798,7 +813,7 @@ class Visualizer extends Component {
           z: 0,
           size: 20,
           text: 'Y',
-          color: colornames('green')
+          color: palette.axisY
         });
         const axisZLabel = new TextSprite({
           x: 0,
@@ -806,7 +821,7 @@ class Visualizer extends Component {
           z: maxZ + labelOffset,
           size: 20,
           text: 'Z',
-          color: colornames('blue')
+          color: palette.axisZ
         });
 
         group.add(axisXLabel);
@@ -872,6 +887,7 @@ class Visualizer extends Component {
         const obj = this.group.getObjectByName(name);
         if (obj) {
           this.group.remove(obj);
+          this.disposeObject(obj);
         }
       });
 
