@@ -606,6 +606,10 @@
     filter: invert(.8);
   }
 
+  .theme-dark [class*="dropdown---menu-item---"] img[src^="data:image/svg+xml"] {
+    filter: invert(.8);
+  }
+
   /* The package gives i.fa its own #666, so the button's color never reaches the icon */
   .theme-dark [class*="buttons---btn-border---"] i.fa,
   .theme-dark [class*="buttons---btn-border---"] span.fa,
@@ -618,5 +622,13 @@
   .theme-dark [class*="buttons---btn-default---"]:hover i.fa,
   .theme-dark [class*="buttons---btn-default---"]:hover span.fa {
     color: var(--color-text);
+  }
+
+  .theme-dark [class*="Toggler/index__toggler--"]:focus:not(:focus-visible) {
+    outline: none;
+  }
+  .theme-dark [class*="Toggler/index__toggler--"]:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: -2px;
   }
 }
