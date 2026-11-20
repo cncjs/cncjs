@@ -3,11 +3,7 @@ import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
-
-const reloadPage = (forcedReload = true) => {
-  // Reload the current page, without using the cache
-  window.location.reload(forcedReload);
-};
+import { reloadPage } from 'app/lib/reload-page';
 
 const ServerDisconnected = (props) => (
   <Modal
@@ -24,7 +20,7 @@ const ServerDisconnected = (props) => (
     <Modal.Footer>
       <Button
         btnStyle="primary"
-        onClick={reloadPage}
+        onClick={() => reloadPage()}
       >
         {i18n._('Reload')}
       </Button>
