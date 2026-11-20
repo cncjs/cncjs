@@ -51,14 +51,19 @@ describe('offline.html recovery polling', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
-  it('does not reload on 502-504 or other non-success responses', async () => {
-    const fetchImpl = jest.fn(() => Promise.resolve({ ok: false, status: 502 }));
+  it('reloads once on a non-502-504 error such as 403, so the real response is shown', async () => {
+    const fetchImpl = jest.fn()
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      .mockResolvedValueOnce({ ok: false, status: 403 });
     const location = run(fetchImpl);
-    jest.advanceTimersByTime(3000);
+    jest.advanceTimersByTime(3000); // 503: still down
     await tick();
-    jest.advanceTimersByTime(3000);
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
     expect(location.reload).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(3000); // 403: server answered
+    await tick();
+    jest.advanceTimersByTime(60000);
+    expect(location.reload).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
   it('does not reload after a network failure, and retries', async () => {

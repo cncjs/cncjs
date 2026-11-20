@@ -41,12 +41,14 @@
           signal: controller.signal
         }).then(function (res) {
           clearTimeout(timer);
-          if (res.ok) {
-            done = true; // stop probing; reload exactly once
-            location.reload();
+          // Same rule as sw.js: only 502-504 mean the server is still down.
+          // Anything else (200, 403, ...) gets one normal reload so the real response is shown.
+          if (res.status >= 502 && res.status <= 504) {
+            schedule();
             return;
           }
-          schedule(); // 502-504 etc.: still down
+          done = true; // stop probing; reload exactly once
+          location.reload();
         }, function () {
           clearTimeout(timer);
           schedule(); // network failure or aborted probe
