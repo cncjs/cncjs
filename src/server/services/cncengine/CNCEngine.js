@@ -10,7 +10,6 @@ import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import monitor from '../monitor';
-import mergePorts from './mergePorts';
 import {
   GrblController,
   MarlinController,
@@ -50,6 +49,17 @@ const isValidController = (controller) => (
     // TinyG
     caseInsensitiveEquals(TINYG, controller)
 );
+
+export const mergePorts = (detectedPorts, configuredPorts) => {
+  // Configured entries override metadata while preserving first-seen path order.
+  const portsByPath = new Map();
+  detectedPorts.forEach(port => portsByPath.set(port.path, port));
+  configuredPorts.forEach(port => {
+    const existingPort = portsByPath.get(port.path);
+    portsByPath.set(port.path, existingPort ? Object.assign({}, existingPort, port) : port);
+  });
+  return Array.from(portsByPath.values());
+};
 
 class CNCEngine {
     controllerClass = {};

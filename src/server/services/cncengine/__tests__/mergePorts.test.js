@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import mergePorts from '../mergePorts';
+import { mergePorts } from '../CNCEngine';
 
 describe('mergePorts', () => {
   test('returns an empty list when neither source has ports', () => {
