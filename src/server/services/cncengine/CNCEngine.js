@@ -50,7 +50,7 @@ const isValidController = (controller) => (
     caseInsensitiveEquals(TINYG, controller)
 );
 
-export const mergePorts = (detectedPorts, configuredPorts) => {
+const mergePorts = (detectedPorts, configuredPorts) => {
   // Configured entries override metadata while preserving first-seen path order.
   const portsByPath = new Map();
   detectedPorts.forEach(port => portsByPath.set(port.path, port));
