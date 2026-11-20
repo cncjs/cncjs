@@ -10,6 +10,7 @@ import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import monitor from '../monitor';
+import mergePorts from './mergePorts';
 import {
   GrblController,
   MarlinController,
@@ -203,15 +204,9 @@ class CNCEngine {
           log.debug(`socket.list(): id=${socket.id}`);
 
           SerialPort.list()
-            .then(detected => {
-              // Merge by path: .cncrc entries override metadata of detected ports
-              const byPath = new Map();
-              detected.forEach(p => byPath.set(p.path, p));
-              ensureArray(config.get('ports', [])).forEach(p => {
-                const existing = byPath.get(p.path);
-                byPath.set(p.path, existing ? Object.assign({}, existing, p) : p);
-              });
-              const merged = Array.from(byPath.values());
+            .then(detectedPorts => {
+              const configuredPorts = ensureArray(config.get('ports', []));
+              const mergedPorts = mergePorts(detectedPorts, configuredPorts);
 
               const controllers = store.get('controllers', {});
               const portsInUse = Object.keys(controllers)
@@ -220,7 +215,7 @@ class CNCEngine {
                   return controller && controller.isOpen();
                 });
 
-              const ports = merged.map(port => ({
+              const ports = mergedPorts.map(port => ({
                 port: port.path,
                 manufacturer: port.manufacturer,
                 inuse: portsInUse.indexOf(port.path) >= 0
