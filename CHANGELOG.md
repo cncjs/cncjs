@@ -1,5 +1,18 @@
 # cncjs
 
+## 1.13.0
+
+### Minor Changes
+
+- dc8ea64: Add Progressive Web App support. CNCjs now ships a web app manifest and a minimal service worker, so it can be installed as a standalone app on supported browsers (HTTPS or localhost required; plain HTTP keeps working as before). When the server is unreachable, a cached offline page is shown, and it reloads the app automatically once the server is back.
+- 719450f: feat(console) Console widget: add settings for font size, terminal size and terminal colors, and fix the vertical scrollbar drifting out of view when scrolling horizontally.In fullscreen the terminal now fits the window width as well as its height. Commands that do not fit the terminal width are never sent truncated or hidden.
+  
+  Allows the user to theme and configure the console widget appearance.
+
+### Patch Changes
+
+- fa2eee6: Fix duplicate serial port entries in the Connection widget when a port listed in the `ports` section of `.cncrc` is also auto-detected. Detected and configured ports are now merged by path, with `.cncrc` values (e.g. `manufacturer`) taking precedence. Ports that are only detected or only configured are unchanged.
+
 ## 1.12.0
 
 ### Minor Changes
