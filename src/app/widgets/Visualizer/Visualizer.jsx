@@ -1106,7 +1106,7 @@ class Visualizer extends Component {
         this.scene.remove(obj);
       });
 
-      this.disposeObject(this.group);
+      disposeObject(this.group);
       this.renderer && this.renderer.dispose();
 
       if (this.controls) {
