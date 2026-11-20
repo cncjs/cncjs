@@ -270,3 +270,75 @@ describe('Terminal insertion capacity', () => {
     });
   });
 });
+
+describe('Terminal soft keyboard input', () => {
+  const keys = (fn) => fn.mock.calls.map(([k]) => k);
+  let wrapper;
+
+  // Simulates the browser: the keyboard changes the textarea, then 'input' fires
+  const type = (value, inputType = 'insertText') => {
+    wrapper.textarea.value = value;
+    wrapper.handleTextareaInput({ inputType });
+  };
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    ({ wrapper } = create());
+    wrapper.eventHandler.onKey = jest.fn();
+    wrapper.textarea = { value: '' };
+    wrapper.mirrored = '';
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('plain insertText input goes through the key path', () => {
+    wrapper.handleTextareaKeyDown({ keyCode: 229 });
+    type('$ ');
+    expect(keys(wrapper.eventHandler.onKey)).toEqual(['$', ' ']);
+    expect(wrapper.mirrored).toBe('$ ');
+  });
+
+  test('composition is typed live and corrected by diff', () => {
+    type('g', 'insertCompositionText');
+    type('g0', 'insertCompositionText');
+    type('G0', 'insertCompositionText'); // keyboard capitalized the word
+    expect(keys(wrapper.eventHandler.onKey)).toEqual(['g', '0', '\x7f', '\x7f', 'G', '0']);
+  });
+
+  test('re-composing text that was already committed sends nothing (SwiftKey)', () => {
+    type('1 2');
+    wrapper.eventHandler.onKey.mockClear();
+    type('1 2', 'insertCompositionText');
+    type('1 2');
+    expect(wrapper.eventHandler.onKey).not.toHaveBeenCalled();
+  });
+
+  test('deleteContentBackward becomes a Backspace key', () => {
+    type('abc');
+    wrapper.eventHandler.onKey.mockClear();
+    type('ab', 'deleteContentBackward');
+    expect(wrapper.eventHandler.onKey.mock.calls).toEqual([
+      ['\x7f', expect.objectContaining({ key: 'Backspace', keyCode: 8 })]
+    ]);
+  });
+
+  test('input following a real keydown is left to xterm (desktop)', () => {
+    wrapper.handleTextareaKeyDown({ keyCode: 65 });
+    type('a');
+    expect(wrapper.eventHandler.onKey).not.toHaveBeenCalled();
+    expect(wrapper.mirrored).toBe('a');
+
+    jest.runAllTimers();
+    wrapper.handleTextareaKeyDown({ keyCode: 229 });
+    type('a$');
+    expect(keys(wrapper.eventHandler.onKey)).toEqual(['$']);
+  });
+
+  test('pasted text is left to onPaste', () => {
+    type('G0 X10', 'insertFromPaste');
+    expect(wrapper.eventHandler.onKey).not.toHaveBeenCalled();
+    expect(wrapper.mirrored).toBe('G0 X10');
+  });
+});

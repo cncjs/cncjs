@@ -17,6 +17,11 @@ import { buildTerminalTheme } from './terminal-theme';
 
 Terminal.applyAddon(fit);
 
+// Minimal keyboard-event stand-in for text that arrives without a key event (soft keyboards)
+const softKeyEvent = (key, keyCode) => ({
+  key, keyCode, which: keyCode, ctrlKey: false, altKey: false, metaKey: false, shiftKey: false, preventDefault: () => {}, stopPropagation: () => {},
+});
+
 class TerminalWrapper extends PureComponent {
     static propTypes = {
       fontSize: PropTypes.number,
@@ -62,6 +67,9 @@ class TerminalWrapper extends PureComponent {
     deferredResize = false;
     keyBacklog = [];
     drainTimer = null;
+    textarea = null; // xterm's hidden input element, where soft keyboards deliver their text
+    realKeyDown = false; // set while a real (non-229) key is processed, so its 'input' event is not typed twice
+    mirrored = ''; // the textarea content that has already been passed to the console
 
     eventHandler = {
       onResize: () => {
@@ -451,6 +459,20 @@ class TerminalWrapper extends PureComponent {
       this.term.setOption('lineHeight', 1.2);
       this.term.setOption('letterSpacing', 1);
 
+      this.textarea = el.querySelector('.xterm-helper-textarea');
+      if (this.textarea) {
+        // Keep soft keyboards from auto-capitalizing or autocorrecting G-code
+        this.textarea.setAttribute('autocorrect', 'off');
+        this.textarea.setAttribute('autocapitalize', 'off');
+        this.textarea.setAttribute('autocomplete', 'off');
+        this.textarea.setAttribute('spellcheck', 'false');
+        // Soft keyboard input (see handleTextareaInput)
+        this.textarea.addEventListener('keydown', this.handleTextareaKeyDown);
+        this.textarea.addEventListener('input', this.handleTextareaInput);
+        this.textarea.value = '';
+        this.mirrored = '';
+      }
+
       const viewportElement = el.querySelector('.xterm-viewport');
       this.viewportElement = viewportElement;
       // Horizontal scrolling is native (on the container), so PerfectScrollbar must never offer it
@@ -503,6 +525,11 @@ class TerminalWrapper extends PureComponent {
         this.verticalRail = null;
         this.verticalScrollbar.destroy();
         this.verticalScrollbar = null;
+      }
+      if (this.textarea) {
+        this.textarea.removeEventListener('keydown', this.handleTextareaKeyDown);
+        this.textarea.removeEventListener('input', this.handleTextareaInput);
+        this.textarea = null;
       }
       if (this.term) {
         this.term.off('resize', this.eventHandler.onResize);
@@ -649,6 +676,50 @@ class TerminalWrapper extends PureComponent {
       term.prompt();
       this.applyDeferredResize();
     }
+
+    // Soft keyboards (Android) deliver text with keyCode 229, as plain 'insertText' input, as composition, or by
+    // re-composing text they committed earlier (SwiftKey). xterm 3.x turns none of this into 'key' events. We treat
+    // the helper textarea as the keyboard's view of the text: after every input, the difference to what was already
+    // passed on goes through the key path (Backspaces for what changed, then the new characters). The textarea is
+    // never modified here, because keyboards keep their own copy of it and re-send text that disappears.
+    sendSoftKey = (key, eventKey, keyCode) => {
+      this.eventHandler.onKey(key, softKeyEvent(eventKey, keyCode));
+    };
+
+    // A real keydown (anything but 229) is handled by xterm itself. On desktop the browser still fires 'input' for
+    // it afterwards, so mark it and only take over the new textarea content. Cleared after this event cycle, so input
+    // without any keydown (e.g. a tapped suggestion) is still handled.
+    handleTextareaKeyDown = (event) => {
+      if (event.keyCode !== 229) {
+        this.realKeyDown = true;
+        setTimeout(() => {
+          this.realKeyDown = false;
+        }, 0);
+      }
+    };
+
+    handleTextareaInput = (event) => {
+      const value = this.textarea ? this.textarea.value : '';
+      // Real keys are handled by xterm, pastes by onPaste: only keep the mirror in step
+      if (this.realKeyDown || String((event && event.inputType) || '').startsWith('insertFrom')) {
+        this.mirrored = value;
+        return;
+      }
+      const previous = this.mirrored;
+      let p = 0;
+      while (p < previous.length && p < value.length && previous[p] === value[p]) {
+        p++;
+      }
+      for (let i = previous.length; i > p; i--) {
+        this.sendSoftKey('\x7f', 'Backspace', 8);
+      }
+      [...value.slice(p)].forEach((ch) => {
+        if (ch >= ' ') {
+          this.sendSoftKey(ch, ch, ch.charCodeAt(0));
+        }
+      });
+      this.mirrored = value;
+    };
 
     writesPending() {
       const { term } = this;

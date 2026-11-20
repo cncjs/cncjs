@@ -54,6 +54,11 @@
         opacity: .9;
     }
 
+    :global(.xterm .composition-view),
+    :global(.xterm .composition-view.active) {
+        display: none !important
+    }
+
     &::-webkit-scrollbar { height: 15px }
     &::-webkit-scrollbar-track { background-color: var(--terminal-bg) }
     &::-webkit-scrollbar-thumb {
