@@ -50,6 +50,17 @@ const isValidController = (controller) => (
     caseInsensitiveEquals(TINYG, controller)
 );
 
+const mergePorts = (detectedPorts, configuredPorts) => {
+  // Configured entries override metadata while preserving first-seen path order.
+  const portsByPath = new Map();
+  detectedPorts.forEach(port => portsByPath.set(port.path, port));
+  configuredPorts.forEach(port => {
+    const existingPort = portsByPath.get(port.path);
+    portsByPath.set(port.path, existingPort ? Object.assign({}, existingPort, port) : port);
+  });
+  return Array.from(portsByPath.values());
+};
+
 class CNCEngine {
     controllerClass = {};
 
@@ -199,13 +210,13 @@ class CNCEngine {
           this.sockets.splice(this.sockets.indexOf(socket), 1);
         });
 
-        // List the available serial ports
         socket.on('list', () => {
           log.debug(`socket.list(): id=${socket.id}`);
 
           SerialPort.list()
-            .then(ports => {
-              ports = ports.concat(ensureArray(config.get('ports', [])));
+            .then(detectedPorts => {
+              const configuredPorts = ensureArray(config.get('ports', []));
+              const mergedPorts = mergePorts(detectedPorts, configuredPorts);
 
               const controllers = store.get('controllers', {});
               const portsInUse = Object.keys(controllers)
@@ -214,13 +225,11 @@ class CNCEngine {
                   return controller && controller.isOpen();
                 });
 
-              ports = ports.map(port => {
-                return {
-                  port: port.path,
-                  manufacturer: port.manufacturer,
-                  inuse: portsInUse.indexOf(port.path) >= 0
-                };
-              });
+              const ports = mergedPorts.map(port => ({
+                port: port.path,
+                manufacturer: port.manufacturer,
+                inuse: portsInUse.indexOf(port.path) >= 0
+              }));
 
               socket.emit('serialport:list', ports);
             })
