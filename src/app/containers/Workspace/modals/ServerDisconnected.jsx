@@ -4,6 +4,7 @@ import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import { reloadPage } from 'app/lib/reload-page';
+import ServerWatcher from './ServerWatcher';
 
 const ServerDisconnected = (props) => (
   <Modal
@@ -12,6 +13,7 @@ const ServerDisconnected = (props) => (
     showCloseButton={false}
   >
     <Modal.Body>
+      <ServerWatcher />
       <ModalTemplate type="error">
         <h5>{i18n._('Server has stopped working')}</h5>
         <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
