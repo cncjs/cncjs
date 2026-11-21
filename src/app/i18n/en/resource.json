@@ -656,6 +656,8 @@
   "Columns": "Columns",
   "Rows": "Rows",
   "Terminal Colors": "Terminal Colors",
+  "Black": "Black",
+  "White": "White",
   "Background": "Background",
   "Text": "Text",
   "Cursor": "Cursor",

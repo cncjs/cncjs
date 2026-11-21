@@ -1,6 +1,6 @@
-import { BACKGROUND_LIGHT } from './constants';
+import { BACKGROUND_WHITE } from './constants';
 
-// Each pair is [dark background, light background]
+// Each pair is [black background, white background]
 const BACKGROUND = ['#000000', '#ffffff'];
 const SELECTION = ['rgba(255, 255, 255, 0.3)', 'rgba(0, 0, 0, 0.25)'];
 const TEXT = {
@@ -17,7 +17,7 @@ const CURSOR = {
 };
 
 // xterm's default yellows and bright colors are unreadable on white
-const LIGHT_PALETTE = {
+const WHITE_BACKGROUND_PALETTE = {
   black: '#000000',
   red: '#cd3131',
   green: '#00bc00',
@@ -35,12 +35,12 @@ const LIGHT_PALETTE = {
 };
 
 export const buildTerminalTheme = (background, textColor, cursorColor) => {
-  const i = (background === BACKGROUND_LIGHT) ? 1 : 0;
+  const i = (background === BACKGROUND_WHITE) ? 1 : 0;
   const foreground = (TEXT[textColor] || TEXT.default)[i];
   const cursor = CURSOR[cursorColor] ? CURSOR[cursorColor][i] : foreground;
 
   return {
-    ...(i === 1 ? LIGHT_PALETTE : {}),
+    ...(i === 1 ? WHITE_BACKGROUND_PALETTE : {}),
     background: BACKGROUND[i],
     foreground,
     cursor,

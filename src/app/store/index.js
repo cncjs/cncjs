@@ -11,6 +11,7 @@ import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
 import defaultState from './defaultState';
+import { BACKGROUND_BLACK, BACKGROUND_WHITE } from '../widgets/Console/constants';
 
 const cnc = {
   version: settings.version,
@@ -105,6 +106,18 @@ const normalizeState = (state) => {
     set(state, 'widgets.axes.axes', configuredAxes);
   } else {
     set(state, 'widgets.axes.axes', defaultAxes);
+  }
+
+  // Migrate saved Console backgrounds, including forked widgets.
+  for (const [widgetId, config] of Object.entries(state.widgets)) {
+    if (widgetId !== 'console' && !widgetId.startsWith('console:')) {
+      continue;
+    }
+    if (config?.terminalBackground === 'dark') {
+      config.terminalBackground = BACKGROUND_BLACK;
+    } else if (config?.terminalBackground === 'light') {
+      config.terminalBackground = BACKGROUND_WHITE;
+    }
   }
 
   return state;

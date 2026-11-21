@@ -655,6 +655,8 @@
   "Columns": "列数",
   "Rows": "行数",
   "Terminal Colors": "终端颜色",
+  "Black": "黑色",
+  "White": "白色",
   "Background": "背景",
   "Text": "文本",
   "Cursor": "光标",

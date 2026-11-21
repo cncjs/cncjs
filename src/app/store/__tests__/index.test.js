@@ -62,3 +62,24 @@ test('loads and saves desktop settings through Electron IPC', async () => {
   expect(localStorage.getItem).not.toHaveBeenCalled();
   expect(localStorage.setItem).not.toHaveBeenCalled();
 });
+
+test('preserves legacy Console backgrounds on load and persists the named colors', async () => {
+  localStorage.getItem.mockReturnValue(JSON.stringify({
+    state: {
+      widgets: {
+        console: { terminalBackground: 'light' },
+        'console:copy': { terminalBackground: 'dark' }
+      }
+    }
+  }));
+
+  const store = await loadStore();
+  expect(store.get('widgets.console.terminalBackground')).toBe('white');
+  expect(store.get('widgets["console:copy"].terminalBackground')).toBe('black');
+
+  await store.persist({});
+  const [, saved] = localStorage.setItem.mock.lastCall;
+  const { widgets } = JSON.parse(saved).state;
+  expect(widgets.console.terminalBackground).toBe('white');
+  expect(widgets['console:copy'].terminalBackground).toBe('black');
+});

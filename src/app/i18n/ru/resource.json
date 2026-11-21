@@ -658,6 +658,8 @@
   "Columns": "Столбцы",
   "Rows": "Строки",
   "Terminal Colors": "Цвета терминала",
+  "Black": "Чёрный",
+  "White": "Белый",
   "Background": "Фон",
   "Text": "Текст",
   "Cursor": "Курсор",

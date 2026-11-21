@@ -657,6 +657,8 @@
   "Columns": "Colunas",
   "Rows": "Linhas",
   "Terminal Colors": "Cores do terminal",
+  "Black": "Preto",
+  "White": "Branco",
   "Background": "Fundo",
   "Text": "Texto",
   "Cursor": "Cursor",

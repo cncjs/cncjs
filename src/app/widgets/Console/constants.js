@@ -19,9 +19,9 @@ export const TERMINAL_ROWS_MIN = 5;
 export const TERMINAL_ROWS_MAX = 100;
 
 // Terminal colors
-export const BACKGROUND_DARK = 'dark';
-export const BACKGROUND_LIGHT = 'light';
-export const DEFAULT_BACKGROUND = BACKGROUND_DARK;
+export const BACKGROUND_BLACK = 'black';
+export const BACKGROUND_WHITE = 'white';
+export const DEFAULT_BACKGROUND = BACKGROUND_BLACK;
 export const DEFAULT_TEXT_COLOR = 'default';
 export const DEFAULT_CURSOR_COLOR = 'default';
 export const TEXT_COLORS = ['default', 'green', 'amber', 'cyan'];
