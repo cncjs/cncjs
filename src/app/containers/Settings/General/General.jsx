@@ -6,6 +6,8 @@ import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
 import { SUPPORTED_LANGUAGES } from 'app/constants/i18n';
 import i18n from 'app/lib/i18n';
+import { normalizeColorMode } from 'app/lib/theme';
+import { canSaveGeneral } from '../general-state';
 import styles from './index.styl';
 
 class General extends PureComponent {
@@ -30,6 +32,10 @@ class General extends PureComponent {
         const target = event.target;
         actions.changeLanguage(target.value);
       },
+      changeColorMode: (event) => {
+        const { actions } = this.props;
+        actions.changeColorMode(event.target.value);
+      },
       cancel: (event) => {
         const { actions } = this.props;
         actions.restoreSettings();
@@ -48,6 +54,7 @@ class General extends PureComponent {
     render() {
       const { state, stateChanged } = this.props;
       const lang = get(state, 'lang', 'en');
+      const colorMode = normalizeColorMode(get(state, 'colorMode'));
 
       if (state.api.loading) {
         return (
@@ -62,22 +69,30 @@ class General extends PureComponent {
       return (
         <form style={{ marginTop: -10 }}>
           <div style={{ marginBottom: 24 }}>
-            <h5>{i18n._('Data Collection')}</h5>
+            <h5>{i18n._('Appearance')}</h5>
             <div className={styles.formFields}>
-              <div className={styles.formGroup}>
-                <div className="checkbox">
-                  <label>
-                    <input
-                      ref={(node) => {
-                        this.fields.allowAnonymousUsageDataCollection = node;
-                      }}
-                      type="checkbox"
-                      checked={state.allowAnonymousUsageDataCollection}
-                      onChange={this.handlers.changeAllowAnonymousUsageDataCollection}
-                    />
-                    {i18n._('Enable anonymous usage data collection')}
-                  </label>
-                </div>
+              <div
+                className={styles.formGroup}
+                style={{
+                  display: 'flex',
+                  columnGap: '8px',
+                  alignItems: 'center',
+                }}
+              >
+                <label htmlFor="general-color-mode">{i18n._('Color mode:')}</label>
+                <select
+                  id="general-color-mode"
+                  className={classNames(
+                    'form-control',
+                    styles.formControl,
+                    styles.short
+                  )}
+                  value={colorMode}
+                  onChange={this.handlers.changeColorMode}
+                >
+                  <option value="light">{i18n._('Light')}</option>
+                  <option value="dark">{i18n._('Dark')}</option>
+                </select>
               </div>
             </div>
           </div>
@@ -109,6 +124,26 @@ class General extends PureComponent {
               </div>
             </div>
           </div>
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Data collection')}</h5>
+            <div className={styles.formFields}>
+              <div className={styles.formGroup}>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      ref={(node) => {
+                        this.fields.allowAnonymousUsageDataCollection = node;
+                      }}
+                      type="checkbox"
+                      checked={state.allowAnonymousUsageDataCollection}
+                      onChange={this.handlers.changeAllowAnonymousUsageDataCollection}
+                    />
+                    {i18n._('Enable anonymous usage data collection')}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className={styles.formActions}>
             <div className="row">
               <div className="col-md-12">
@@ -122,7 +157,7 @@ class General extends PureComponent {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  disabled={!stateChanged}
+                  disabled={!stateChanged || !canSaveGeneral(state)}
                   onClick={this.handlers.save}
                 >
                   {state.api.saving

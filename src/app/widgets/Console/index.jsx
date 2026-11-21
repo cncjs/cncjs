@@ -14,7 +14,7 @@ import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
 import Settings from './Settings';
-import { DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR, DEFAULT_FONT_SIZE, TERMINAL_COLS, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN, TERMINAL_ROWS, TERMINAL_ROWS_MAX, TERMINAL_ROWS_MIN } from './constants';
+import { DEFAULT_BACKGROUND, DEFAULT_TEXT_COLOR, DEFAULT_FONT_SIZE, FONT_SIZES, TERMINAL_COLS, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN, TERMINAL_ROWS, TERMINAL_ROWS_MAX, TERMINAL_ROWS_MIN } from './constants';
 
 const clamp = (value, min, max, fallback) => {
   const n = Number(value);
@@ -74,7 +74,7 @@ class ConsoleWidget extends PureComponent {
         };
         controller.write(data, context);
       },
-      saveSettings: ({ fontSize, cols, rows, background, textColor, cursorColor }) => {
+      saveSettings: ({ fontSize, cols, rows, background, textColor }) => {
         // A narrower terminal could hide or wrap what is being typed: wait until the input is resolved
         if (!this.state.isFullscreen && cols !== this.getConfiguredCols() && this.terminal && this.terminal.hasPendingInput()) {
           return i18n._('Finish or clear the command you are typing before changing the number of columns.');
@@ -87,7 +87,6 @@ class ConsoleWidget extends PureComponent {
         this.config.set('fontSize', fontSize);
         this.config.set('terminalBackground', background);
         this.config.set('terminalTextColor', textColor);
-        this.config.set('terminalCursorColor', cursorColor);
         this.setState(state => ({
           terminal: {
             ...state.terminal,
@@ -95,8 +94,7 @@ class ConsoleWidget extends PureComponent {
             cols: state.isFullscreen ? 'auto' : cols,
             rows: state.isFullscreen ? 'auto' : rows,
             background,
-            textColor,
-            cursorColor
+            textColor
           }
         }));
         return null;
@@ -110,7 +108,6 @@ class ConsoleWidget extends PureComponent {
             rows={this.getConfiguredRows()}
             background={terminal.background}
             textColor={terminal.textColor}
-            cursorColor={terminal.cursorColor}
             onSave={(data) => {
               const error = this.actions.saveSettings(data);
               if (!error) {
@@ -191,6 +188,7 @@ class ConsoleWidget extends PureComponent {
     }
 
     getInitialState() {
+      const fontSize = this.config.get('fontSize');
       return {
         minimized: this.config.get('minimized', false),
         isFullscreen: false,
@@ -198,15 +196,14 @@ class ConsoleWidget extends PureComponent {
 
         // Terminal
         terminal: {
-          fontSize: this.config.get('fontSize', DEFAULT_FONT_SIZE),
+          fontSize: FONT_SIZES.includes(fontSize) ? fontSize : DEFAULT_FONT_SIZE,
           cols: this.getConfiguredCols(),
           rows: this.getConfiguredRows(),
           cursorBlink: true,
           scrollback: 1000,
           tabStopWidth: 4,
           background: this.config.get('terminalBackground', DEFAULT_BACKGROUND),
-          textColor: this.config.get('terminalTextColor', DEFAULT_TEXT_COLOR),
-          cursorColor: this.config.get('terminalCursorColor', DEFAULT_CURSOR_COLOR)
+          textColor: this.config.get('terminalTextColor', DEFAULT_TEXT_COLOR)
         }
       };
     }

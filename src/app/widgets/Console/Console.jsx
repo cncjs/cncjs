@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import i18n from 'app/lib/i18n';
 import Terminal from './Terminal';
 import styles from './index.styl';
-import { DEFAULT_FONT_SIZE, FONT_SIZE_PX } from './constants';
 
 class Console extends PureComponent {
     static propTypes = {
@@ -32,7 +31,7 @@ class Console extends PureComponent {
               this.terminal = node;
             }
           }}
-          fontSize={FONT_SIZE_PX[state.terminal.fontSize] || FONT_SIZE_PX[DEFAULT_FONT_SIZE]}
+          fontSize={state.terminal.fontSize}
           cols={state.terminal.cols}
           rows={state.terminal.rows}
           cursorBlink={state.terminal.cursorBlink}
@@ -40,7 +39,6 @@ class Console extends PureComponent {
           tabStopWidth={state.terminal.tabStopWidth}
           background={state.terminal.background}
           textColor={state.terminal.textColor}
-          cursorColor={state.terminal.cursorColor}
           onData={actions.onTerminalData}
         />
       );

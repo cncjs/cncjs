@@ -5,16 +5,13 @@ import uuid from 'uuid';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import {
-  BACKGROUND_DARK,
-  BACKGROUND_LIGHT,
-  CURSOR_COLORS,
+  BACKGROUND_BLACK,
+  BACKGROUND_WHITE,
   DEFAULT_BACKGROUND,
-  DEFAULT_CURSOR_COLOR,
+  DEFAULT_FONT_STACK,
   DEFAULT_FONT_SIZE,
   DEFAULT_TEXT_COLOR,
-  FONT_SIZE_LARGE,
-  FONT_SIZE_MEDIUM,
-  FONT_SIZE_SMALL,
+  FONT_SIZES,
   TERMINAL_COLS,
   TERMINAL_COLS_MAX,
   TERMINAL_COLS_MIN,
@@ -38,8 +35,7 @@ const colorLabel = (name) => ({
   default: i18n._('Default'),
   green: i18n._('Green'),
   amber: i18n._('Amber'),
-  cyan: i18n._('Cyan'),
-  red: i18n._('Red')
+  cyan: i18n._('Cyan')
 }[name]);
 
 const describedBy = (...ids) => ids.filter(Boolean).join(' ') || undefined;
@@ -50,12 +46,11 @@ const groupTitleStyle = { marginBottom: 5 };
 
 class Settings extends PureComponent {
     static propTypes = {
-      fontSize: PropTypes.string,
+      fontSize: PropTypes.number,
       cols: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       background: PropTypes.string,
       textColor: PropTypes.string,
-      cursorColor: PropTypes.string,
       onSave: PropTypes.func,
       onCancel: PropTypes.func
     };
@@ -66,7 +61,6 @@ class Settings extends PureComponent {
       rows: TERMINAL_ROWS,
       background: DEFAULT_BACKGROUND,
       textColor: DEFAULT_TEXT_COLOR,
-      cursorColor: DEFAULT_CURSOR_COLOR,
       onSave: noop,
       onCancel: noop
     };
@@ -80,13 +74,12 @@ class Settings extends PureComponent {
       rows: String(this.props.rows),
       background: this.props.background,
       textColor: this.props.textColor,
-      cursorColor: this.props.cursorColor,
       errors: {}
     };
 
     handleChange = (name) => (event) => {
       this.setState({
-        [name]: event.target.value,
+        [name]: name === 'fontSize' ? Number(event.target.value) : event.target.value,
         errors: { ...this.state.errors, [name]: undefined, form: undefined }
       });
     };
@@ -106,9 +99,9 @@ class Settings extends PureComponent {
         return;
       }
 
-      const { fontSize, background, textColor, cursorColor } = this.state;
+      const { fontSize, background, textColor } = this.state;
       // onSave returns a message when the settings cannot be applied right now
-      const error = this.props.onSave({ fontSize, cols, rows, background, textColor, cursorColor });
+      const error = this.props.onSave({ fontSize, cols, rows, background, textColor });
       if (error) {
         this.setState({ errors: { form: error } });
       }
@@ -119,9 +112,9 @@ class Settings extends PureComponent {
     };
 
     render() {
-      const { fontSize, cols, rows, background, textColor, cursorColor, errors } = this.state;
+      const { fontSize, cols, rows, background, textColor, errors } = this.state;
       const id = this.fieldId;
-      const theme = buildTerminalTheme(background, textColor, cursorColor);
+      const theme = buildTerminalTheme(background, textColor);
 
       return (
         <Modal disableOverlay size="sm" onClose={this.handleCancel}>
@@ -129,22 +122,76 @@ class Settings extends PureComponent {
             <Modal.Title>{i18n._('Console Settings')}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <div
+              className="form-group"
+              aria-hidden="true"
+              style={{
+                padding: '6px 8px',
+                border: '1px solid var(--color-border-strong, #ccc)',
+                fontFamily: DEFAULT_FONT_STACK,
+                fontSize,
+                lineHeight: 1.2,
+                letterSpacing: 1,
+                background: theme.background,
+                color: theme.foreground
+              }}
+            >
+              <div>{'> $$'}</div>
+              <div>$0=10 (Step pulse time, microseconds)</div>
+              <div>
+                {'> '}
+                <span style={{ background: theme.cursor, color: theme.cursorAccent }}>&nbsp;</span>
+              </div>
+            </div>
+
             <div className="form-group">
-              <label htmlFor={`${id}-font-size`}><strong>{i18n._('Font Size')}</strong></label>
+              <label htmlFor={`${id}-font-size`}><strong>{i18n._('Font size')}</strong></label>
               <select
                 id={`${id}-font-size`}
+                style={{ width: 'auto' }}
                 className="form-control"
                 value={fontSize}
                 onChange={this.handleChange('fontSize')}
               >
-                <option value={FONT_SIZE_LARGE}>{i18n._('Large')}</option>
-                <option value={FONT_SIZE_MEDIUM}>{i18n._('Medium')}</option>
-                <option value={FONT_SIZE_SMALL}>{i18n._('Small')}</option>
+                {FONT_SIZES.map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
               </select>
             </div>
 
+            <div className="form-group" role="group" aria-labelledby={`${id}-colors`}>
+              <div id={`${id}-colors`} style={groupTitleStyle}><strong>{i18n._('Terminal colors')}</strong></div>
+              <div style={{ display: 'flex', columnGap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <label htmlFor={`${id}-background`}>{i18n._('Background color')}</label>
+                  <select
+                    id={`${id}-background`}
+                    className="form-control"
+                    value={background}
+                    onChange={this.handleChange('background')}
+                  >
+                    <option value={BACKGROUND_BLACK}>{i18n._('Black')}</option>
+                    <option value={BACKGROUND_WHITE}>{i18n._('White')}</option>
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label htmlFor={`${id}-text`}>{i18n._('Text color')}</label>
+                  <select
+                    id={`${id}-text`}
+                    className="form-control"
+                    value={textColor}
+                    onChange={this.handleChange('textColor')}
+                  >
+                    {TEXT_COLORS.map(name => (
+                      <option key={name} value={name}>{colorLabel(name)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div className="form-group" role="group" aria-labelledby={`${id}-size`}>
-              <div id={`${id}-size`} style={groupTitleStyle}><strong>{i18n._('Terminal Size')}</strong></div>
+              <div id={`${id}-size`} style={groupTitleStyle}><strong>{i18n._('Terminal size')}</strong></div>
               <div style={{ display: 'flex', columnGap: 12 }}>
                 <div style={{ flex: 1 }}>
                   <label htmlFor={`${id}-cols`}>{i18n._('Columns')}</label>
@@ -176,70 +223,7 @@ class Settings extends PureComponent {
                 </div>
               </div>
               <div id={`${id}-size-hint`} style={hintStyle}>
-                {i18n._('Columns also limit how long a command you can type.')}
-              </div>
-            </div>
-
-            <div className="form-group" role="group" aria-labelledby={`${id}-colors`}>
-              <div id={`${id}-colors`} style={groupTitleStyle}><strong>{i18n._('Terminal Colors')}</strong></div>
-              <div style={{ display: 'flex', columnGap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor={`${id}-background`}>{i18n._('Background')}</label>
-                  <select
-                    id={`${id}-background`}
-                    className="form-control"
-                    value={background}
-                    onChange={this.handleChange('background')}
-                  >
-                    <option value={BACKGROUND_DARK}>{i18n._('Dark')}</option>
-                    <option value={BACKGROUND_LIGHT}>{i18n._('Light')}</option>
-                  </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor={`${id}-text`}>{i18n._('Text')}</label>
-                  <select
-                    id={`${id}-text`}
-                    className="form-control"
-                    value={textColor}
-                    onChange={this.handleChange('textColor')}
-                  >
-                    {TEXT_COLORS.map(name => (
-                      <option key={name} value={name}>{colorLabel(name)}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor={`${id}-cursor`}>{i18n._('Cursor')}</label>
-                  <select
-                    id={`${id}-cursor`}
-                    className="form-control"
-                    value={cursorColor}
-                    onChange={this.handleChange('cursorColor')}
-                  >
-                    {CURSOR_COLORS.map(name => (
-                      <option key={name} value={name}>{colorLabel(name)}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div
-                aria-hidden="true"
-                style={{
-                  marginTop: 8,
-                  padding: '6px 8px',
-                  border: '1px solid var(--color-border-strong, #ccc)',
-                  fontFamily: 'Consolas, Menlo, Monaco, monospace',
-                  fontSize: 13,
-                  background: theme.background,
-                  color: theme.foreground
-                }}
-              >
-                <div>{'> $$'}</div>
-                <div>$0=10 (Step pulse time, microseconds)</div>
-                <div>
-                  {'> '}
-                  <span style={{ background: theme.cursor, color: theme.cursorAccent }}>&nbsp;</span>
-                </div>
+                {i18n._('Each command must fit on one line. Use more columns for longer commands.')}
               </div>
             </div>
 

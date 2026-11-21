@@ -355,7 +355,7 @@ class DateTimeRangePickerDropdown extends PureComponent {
               <div
                 style={{
                   display: 'inline-block',
-                  borderLeft: '1px solid #ddd',
+                  borderLeft: '1px solid var(--color-border)',
                   padding: 12
                 }}
               >

@@ -11,6 +11,7 @@ import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
 import defaultState from './defaultState';
+import { BACKGROUND_BLACK, BACKGROUND_WHITE } from '../widgets/Console/constants';
 
 const cnc = {
   version: settings.version,
@@ -19,11 +20,14 @@ const cnc = {
 
 const store = new ImmutableStore(defaultState);
 
+// Embedded browsers can report an Electron user agent without exposing Node.js.
+// Use desktop IPC only when the renderer can require Electron; otherwise use localStorage.
+const useElectronConfig = isElectron() && typeof window.require === 'function';
+
 const getConfig = async () => {
   let content = '';
 
-  // Check whether the code is running in Electron renderer process
-  if (isElectron()) {
+  if (useElectronConfig) {
     const electron = window.require('electron');
     content = await electron.ipcRenderer.invoke('read-user-config');
   } else {
@@ -47,8 +51,7 @@ const persist = async (data) => {
   try {
     const value = JSON.stringify(data, null, 2);
 
-    // Check whether the code is running in Electron renderer process
-    if (isElectron()) {
+    if (useElectronConfig) {
       const electron = window.require('electron');
       await electron.ipcRenderer.invoke('write-user-config', value);
     } else {
@@ -103,6 +106,21 @@ const normalizeState = (state) => {
     set(state, 'widgets.axes.axes', configuredAxes);
   } else {
     set(state, 'widgets.axes.axes', defaultAxes);
+  }
+
+  // Normalize saved Console colors, including forked widgets.
+  for (const [widgetId, config] of Object.entries(state.widgets)) {
+    if (widgetId !== 'console' && !widgetId.startsWith('console:')) {
+      continue;
+    }
+    if (config?.terminalBackground === 'dark') {
+      config.terminalBackground = BACKGROUND_BLACK;
+    } else if (config?.terminalBackground === 'light') {
+      config.terminalBackground = BACKGROUND_WHITE;
+    }
+    if (config && Object.prototype.hasOwnProperty.call(config, 'terminalCursorColor')) {
+      delete config.terminalCursorColor;
+    }
   }
 
   return state;

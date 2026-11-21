@@ -101,7 +101,7 @@ class Marlin extends PureComponent {
                     <div className="table-form-col table-form-col-label">
                       <FadeInOut disabled={!extruderIsHeating} from={0.3} to={1}>
                         <IconExtruder
-                          color={extruderIsHeating ? '#000' : '#666'}
+                          color={extruderIsHeating ? 'var(--color-icon-active)' : 'var(--color-icon)'}
                           size={24}
                         />
                       </FadeInOut>
@@ -161,7 +161,7 @@ class Marlin extends PureComponent {
                     <div className="table-form-col table-form-col-label">
                       <FadeInOut disabled={!heatedBedIsHeating} from={0.3} to={1}>
                         <IconHeatedBed
-                          color={heatedBedIsHeating ? '#000' : '#666'}
+                          color={heatedBedIsHeating ? 'var(--color-icon-active)' : 'var(--color-icon)'}
                           size={24}
                         />
                       </FadeInOut>

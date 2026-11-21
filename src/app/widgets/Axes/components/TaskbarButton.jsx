@@ -29,7 +29,7 @@ const TaskbarButton = styled.button`
     }
 
     &:hover {
-        background-color: #e6e6e6;
+        background-color: var(--color-action-hover-bg);
         text-decoration: none;
     }
 
