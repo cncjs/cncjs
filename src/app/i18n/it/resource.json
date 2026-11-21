@@ -529,7 +529,7 @@
   "CLR": "CANCELLA",
   "Set RTS line status upon opening": "Imposta lo stato della linea RTS all'apertura",
   "Use RTS/CTS flow control": "Utilizzare il controllo di flusso RTS/CTS",
-  "Data Collection": "Raccolta Dati",
+  "Data collection": "Raccolta dati",
   "Enable anonymous usage data collection": "Abilita la raccolta anonima dei dati di utilizzo",
   "Display language:": "Lingua dell'interfaccia:",
   "Tool Widget": "Widget Utensile",
@@ -683,5 +683,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Questa voce della cronologia non entra nella larghezza del terminale. Riscrivi il comando o aumenta le colonne nelle impostazioni della console per richiamarla.",
   "Finish or clear the command you are typing before changing the number of columns.": "Completa o cancella il comando che stai digitando prima di modificare il numero di colonne.",
   "Appearance": "Aspetto",
-  "Theme:": "Tema:"
+  "Color mode:": "Modalità colore:"
 }

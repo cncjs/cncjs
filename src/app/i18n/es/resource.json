@@ -529,7 +529,7 @@
   "CLR": "EN 0",
   "Set RTS line status upon opening": "Establecer el estado de la línea RTS al abrir",
   "Use RTS/CTS flow control": "Utilizar control de flujo RTS/CTS",
-  "Data Collection": "Recolección de Datos",
+  "Data collection": "Recolección de datos",
   "Enable anonymous usage data collection": "Habilitar la recolección de datos de uso anónimos",
   "Display language:": "Idioma de visualización:",
   "Tool Widget": "Widget de Herramienta",
@@ -683,5 +683,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Esta entrada del historial no cabe en el ancho del terminal. Reescriba el comando o aumente las columnas en la configuración de la consola para recuperarla.",
   "Finish or clear the command you are typing before changing the number of columns.": "Termine o borre el comando que está escribiendo antes de cambiar el número de columnas.",
   "Appearance": "Apariencia",
-  "Theme:": "Tema:"
+  "Color mode:": "Modo de color:"
 }

@@ -529,7 +529,7 @@
   "CLR": "TEMİZLE",
   "Set RTS line status upon opening": "Açılışta RTS hat durumunu ayarla",
   "Use RTS/CTS flow control": "RTS/CTS akış kontrolü kullanın",
-  "Data Collection": "Veri Toplama",
+  "Data collection": "Veri toplama",
   "Enable anonymous usage data collection": "Anonim kullanım verisi toplamayı etkinleştir",
   "Display language:": "Gösterim dili:",
   "Tool Widget": "Alet Araçları",
@@ -682,5 +682,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Bu geçmiş girdisi terminal genişliğine sığmıyor. Geri çağırmak için komutu yeniden yazın veya Konsol Ayarları’ndaki Sütunlar değerini artırın.",
   "Finish or clear the command you are typing before changing the number of columns.": "Sütun sayısını değiştirmeden önce yazmakta olduğunuz komutu tamamlayın veya silin.",
   "Appearance": "Görünüm",
-  "Theme:": "Tema:"
+  "Color mode:": "Renk modu:"
 }

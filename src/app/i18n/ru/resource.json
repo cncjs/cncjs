@@ -529,7 +529,7 @@
   "CLR": "ОЧИСТИТЬ",
   "Set RTS line status upon opening": "Установить статус линии RTS при открытии",
   "Use RTS/CTS flow control": "Используйте контроль потока RTS/CTS",
-  "Data Collection": "Сбор данных",
+  "Data collection": "Сбор данных",
   "Enable anonymous usage data collection": "Включить анонимный сбор данных о использовании",
   "Display language:": "Язык отображения:",
   "Tool Widget": "Виджет инструмента",
@@ -684,5 +684,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Эта запись истории не помещается в ширину терминала. Перепишите команду или увеличьте число столбцов в настройках консоли, чтобы вызвать её.",
   "Finish or clear the command you are typing before changing the number of columns.": "Завершите или удалите вводимую команду, прежде чем менять число столбцов.",
   "Appearance": "Внешний вид",
-  "Theme:": "Тема:"
+  "Color mode:": "Цветовой режим:"
 }

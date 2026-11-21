@@ -69,22 +69,30 @@ class General extends PureComponent {
       return (
         <form style={{ marginTop: -10 }}>
           <div style={{ marginBottom: 24 }}>
-            <h5>{i18n._('Data Collection')}</h5>
+            <h5>{i18n._('Appearance')}</h5>
             <div className={styles.formFields}>
-              <div className={styles.formGroup}>
-                <div className="checkbox">
-                  <label>
-                    <input
-                      ref={(node) => {
-                        this.fields.allowAnonymousUsageDataCollection = node;
-                      }}
-                      type="checkbox"
-                      checked={state.allowAnonymousUsageDataCollection}
-                      onChange={this.handlers.changeAllowAnonymousUsageDataCollection}
-                    />
-                    {i18n._('Enable anonymous usage data collection')}
-                  </label>
-                </div>
+              <div
+                className={styles.formGroup}
+                style={{
+                  display: 'flex',
+                  columnGap: '8px',
+                  alignItems: 'center',
+                }}
+              >
+                <label htmlFor="general-theme">{i18n._('Color mode:')}</label>
+                <select
+                  id="general-theme"
+                  className={classNames(
+                    'form-control',
+                    styles.formControl,
+                    styles.short
+                  )}
+                  value={theme}
+                  onChange={this.handlers.changeTheme}
+                >
+                  <option value="light">{i18n._('Light')}</option>
+                  <option value="dark">{i18n._('Dark')}</option>
+                </select>
               </div>
             </div>
           </div>
@@ -117,30 +125,22 @@ class General extends PureComponent {
             </div>
           </div>
           <div style={{ marginBottom: 24 }}>
-            <h5>{i18n._('Appearance')}</h5>
+            <h5>{i18n._('Data collection')}</h5>
             <div className={styles.formFields}>
-              <div
-                className={styles.formGroup}
-                style={{
-                  display: 'flex',
-                  columnGap: '8px',
-                  alignItems: 'center',
-                }}
-              >
-                <label htmlFor="general-theme">{i18n._('Theme:')}</label>
-                <select
-                  id="general-theme"
-                  className={classNames(
-                    'form-control',
-                    styles.formControl,
-                    styles.short
-                  )}
-                  value={theme}
-                  onChange={this.handlers.changeTheme}
-                >
-                  <option value="light">{i18n._('Light')}</option>
-                  <option value="dark">{i18n._('Dark')}</option>
-                </select>
+              <div className={styles.formGroup}>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      ref={(node) => {
+                        this.fields.allowAnonymousUsageDataCollection = node;
+                      }}
+                      type="checkbox"
+                      checked={state.allowAnonymousUsageDataCollection}
+                      onChange={this.handlers.changeAllowAnonymousUsageDataCollection}
+                    />
+                    {i18n._('Enable anonymous usage data collection')}
+                  </label>
+                </div>
               </div>
             </div>
           </div>

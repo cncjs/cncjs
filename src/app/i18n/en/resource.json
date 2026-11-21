@@ -529,7 +529,7 @@
   "CLR": "CLR",
   "Set RTS line status upon opening": "Set RTS line status upon opening",
   "Use RTS/CTS flow control": "Use RTS/CTS flow control",
-  "Data Collection": "Data Collection",
+  "Data collection": "Data collection",
   "Enable anonymous usage data collection": "Enable anonymous usage data collection",
   "Display language:": "Display language:",
   "Tool Widget": "Tool Widget",
@@ -682,5 +682,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.",
   "Finish or clear the command you are typing before changing the number of columns.": "Finish or clear the command you are typing before changing the number of columns.",
   "Appearance": "Appearance",
-  "Theme:": "Theme:"
+  "Color mode:": "Color mode:"
 }

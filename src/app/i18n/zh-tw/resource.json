@@ -529,7 +529,7 @@
   "CLR": "清除",
   "Set RTS line status upon opening": "開啟時設置 RTS 線路狀態",
   "Use RTS/CTS flow control": "使用 RTS/CTS 流量控制",
-  "Data Collection": "數據收集",
+  "Data collection": "數據收集",
   "Enable anonymous usage data collection": "啟用匿名使用數據收集",
   "Display language:": "顯示語言：",
   "Tool Widget": "工具元件",
@@ -681,5 +681,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "此歷史記錄項目超出終端機寬度。請重寫指令，或在主控台設定中增加欄數，以便叫出。",
   "Finish or clear the command you are typing before changing the number of columns.": "變更欄數之前，請先完成或清除正在輸入的指令。",
   "Appearance": "外觀",
-  "Theme:": "主題："
+  "Color mode:": "色彩模式："
 }

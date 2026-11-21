@@ -529,7 +529,7 @@
   "CLR": "TÖRLÉS",
   "Set RTS line status upon opening": "Az RTS vonal állapotának beállítása a megnyitáskor",
   "Use RTS/CTS flow control": "RTS/CTS áramlásvezérlés használata",
-  "Data Collection": "Adatgyűjtés",
+  "Data collection": "Adatgyűjtés",
   "Enable anonymous usage data collection": "Anonim használati adatok gyűjtésének engedélyezése",
   "Display language:": "Megjelenítési nyelv:",
   "Tool Widget": "Szerszám Widget",
@@ -682,5 +682,5 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Ez az előzményelem nem fér el a terminál szélességében. Írja át a parancsot, vagy növelje az Oszlopok értékét a konzol beállításaiban, hogy előhívhassa.",
   "Finish or clear the command you are typing before changing the number of columns.": "Fejezze be vagy törölje a most beírt parancsot, mielőtt módosítja az oszlopok számát.",
   "Appearance": "Megjelenés",
-  "Theme:": "Téma:"
+  "Color mode:": "Színmód:"
 }
