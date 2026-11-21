@@ -156,7 +156,7 @@ class WorkflowControl extends PureComponent {
           <ButtonToolbar>
             <ButtonGroup
               style={{
-                backgroundColor: 'white',
+                backgroundColor: 'var(--color-surface)',
               }}
             >
               <Button
@@ -201,7 +201,7 @@ class WorkflowControl extends PureComponent {
               btnStyle="flat"
               btnSize="sm"
               style={{
-                backgroundColor: 'white',
+                backgroundColor: 'var(--color-surface)',
               }}
             >
               <Button

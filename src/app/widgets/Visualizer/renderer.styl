@@ -5,11 +5,11 @@
 
     .selected&,
     .selected&:hover {
-        background: #deecfd;
+        background: var(--color-tree-selected-bg);
     }
 
     &:hover {
-        background: #f2fdff;
+        background: var(--color-tree-hover-bg);
     }
     &:disabled,
     &[disabled] {
@@ -32,12 +32,12 @@
     width: 18px;
     text-align: center;
     cursor: pointer;
-    color: #666;
+    color: var(--color-icon);
     margin-left: -2px;
     margin-right: 2px;
 
     &:hover {
-        color: #333;
+        color: var(--color-text-alt);
         text-decoration: none;
     }
 }

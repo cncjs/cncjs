@@ -8,7 +8,7 @@
         left: $sidebar-width;
         right: 0;
         z-index: 100;
-        background-color: rgba(255, 255, 255, .5);
+        background-color: var(--color-dropzone-bg);
         border: 4px dashed #286090;
         text-align: center;
         pointer-events: none;
@@ -22,7 +22,7 @@
             top: 25%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #666;
+            color: var(--color-icon);
             font-size: 32px;
         }
     }
@@ -48,15 +48,15 @@
         position: relative;
     }
     .primary-container {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid var(--color-border-strong);
     }
     .secondary-container {
-        border-left: 1px solid #ccc;
+        border-left:  1px solid var(--color-border-strong);
     }
     .primary-container,
     .secondary-container {
         vertical-align: top;
-        background-color: #f6f7f8;
+        background-color: var(--color-panel-bg);
         width: 360px;
         max-width: 360px;
         min-width: 360px;
@@ -68,7 +68,7 @@
     }
     .primary-toggler,
     .secondary-toggler {
-        background-color: #f6f7f8;
+        background-color: var(--color-panel-bg);
         padding-top: 5px;
         text-align: center;
         width: $toggler-width;
@@ -77,10 +77,10 @@
         height: 'calc(100vh - %s)' % ($navbar-height);
     }
     .primary-toggler {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid var(--color-border-strong);
     }
     .secondary-toggler {
-        border-left: 1px solid #ccc;
+        border-left:  1px solid var(--color-border-strong);
     }
     .default-container {
         min-width: 360px;

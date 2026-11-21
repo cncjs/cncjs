@@ -82,6 +82,14 @@ class ConfigStore extends events.EventEmitter {
         ...this.config.state
       };
 
+      // Keep reload read-only; the next settings save persists the migrated key.
+      if (this.has('state.theme')) {
+        if (!this.has('state.colorMode')) {
+          this.config.state.colorMode = this.config.state.theme;
+        }
+        delete this.config.state.theme;
+      }
+
       return true;
     }
 

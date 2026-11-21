@@ -5,8 +5,8 @@ import uuid from 'uuid';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import {
-  BACKGROUND_DARK,
-  BACKGROUND_LIGHT,
+  BACKGROUND_BLACK,
+  BACKGROUND_WHITE,
   CURSOR_COLORS,
   DEFAULT_BACKGROUND,
   DEFAULT_CURSOR_COLOR,
@@ -191,8 +191,8 @@ class Settings extends PureComponent {
                     value={background}
                     onChange={this.handleChange('background')}
                   >
-                    <option value={BACKGROUND_DARK}>{i18n._('Dark')}</option>
-                    <option value={BACKGROUND_LIGHT}>{i18n._('Light')}</option>
+                    <option value={BACKGROUND_BLACK}>{i18n._('Black')}</option>
+                    <option value={BACKGROUND_WHITE}>{i18n._('White')}</option>
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>

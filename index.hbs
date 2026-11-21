@@ -1,7 +1,8 @@
 <!doctype html>
-<html>
+<html data-color-mode="{{colorMode}}">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="{{colorMode}}">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title>{{title}}</title>
 <meta name="description" content="">
@@ -15,8 +16,11 @@
 </head>
 <body>
 <div id="loading" role="status" aria-live="polite" aria-label="Loading application" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-    <div style="background: transparent url('{{webroot}}images/32x32/loading.gif') no-repeat 0 0; height: 32px; width: 32px; display: block; margin: 0 auto;"></div>
-    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: normal; color: #222; text-align: center; margin-top: 10px;">{{loading}}</div>
+    <svg class="startup-spinner" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke-width="3" aria-hidden="true" focusable="false">
+        <circle cx="16" cy="16" r="13" stroke="var(--color-border-strong)"/>
+        <path d="M16 3a13 13 0 0 1 13 13" stroke="currentColor" stroke-linecap="round"/>
+    </svg>
+    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: normal; color: var(--color-text, CanvasText); text-align: center; margin-top: 10px;">{{loading}}</div>
 </div>
 </body>
 </html>

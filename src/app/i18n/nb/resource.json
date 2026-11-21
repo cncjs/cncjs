@@ -529,7 +529,7 @@
   "CLR": "SLETT",
   "Set RTS line status upon opening": "Sett RTS-linjestatus ved åpning",
   "Use RTS/CTS flow control": "Bruk RTS/CTS strømstyring",
-  "Data Collection": "Datainnsamling",
+  "Data collection": "Datainnsamling",
   "Enable anonymous usage data collection": "Aktiver anonym datainnsamling",
   "Display language:": "Visningsspråk:",
   "Tool Widget": "Verktøy-widget",
@@ -656,6 +656,8 @@
   "Columns": "Kolonner",
   "Rows": "Rader",
   "Terminal Colors": "Terminalfarger",
+  "Black": "Svart",
+  "White": "Hvit",
   "Background": "Bakgrunn",
   "Text": "Tekst",
   "Cursor": "Markør",
@@ -680,5 +682,7 @@
   "Along Y Axis": "Langs Y-aksen",
   "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "Kommandoen ble ikke sendt: den passer ikke i terminalbredden. Skriv kommandoen på nytt eller øk antall kolonner i konsollinnstillingene.",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Denne historikkoppføringen passer ikke i terminalbredden. Skriv kommandoen på nytt eller øk antall kolonner i konsollinnstillingene for å hente den frem.",
-  "Finish or clear the command you are typing before changing the number of columns.": "Fullfør eller slett kommandoen du skriver før du endrer antall kolonner."
+  "Finish or clear the command you are typing before changing the number of columns.": "Fullfør eller slett kommandoen du skriver før du endrer antall kolonner.",
+  "Appearance": "Utseende",
+  "Color mode:": "Fargemodus:"
 }

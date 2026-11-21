@@ -63,7 +63,7 @@ class Connection extends PureComponent {
       const notLoading = !(state.loading);
       const canChangePort = notLoading;
       const style = {
-        color: canChangePort ? '#333' : '#ccc',
+        color: canChangePort ? 'var(--color-text-alt)' : 'var(--color-text-off)',
         textOverflow: 'ellipsis',
         overflow: 'hidden'
       };
@@ -86,7 +86,7 @@ class Connection extends PureComponent {
       const notInUse = !(this.isPortInUse(state.port));
       const canChangeBaudrate = notLoading && notInUse;
       const style = {
-        color: canChangeBaudrate ? '#333' : '#ccc',
+        color: canChangeBaudrate ? 'var(--color-text-alt)' : 'var(--color-text-off)',
         textOverflow: 'ellipsis',
         overflow: 'hidden'
       };

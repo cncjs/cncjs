@@ -337,6 +337,7 @@ const appMain = () => {
     return {
       webroot: webroot,
       lang: lng,
+      colorMode: config.get('state.colorMode') === 'dark' ? 'dark' : 'light',
       title: `${t('title')} ${settings.version}`,
       loading: t('loading')
     };

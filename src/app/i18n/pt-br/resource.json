@@ -529,7 +529,7 @@
   "CLR": "LIMPAR",
   "Set RTS line status upon opening": "Definir status da linha RTS na abertura",
   "Use RTS/CTS flow control": "Use o controle de fluxo RTS/CTS",
-  "Data Collection": "Coleta de Dados",
+  "Data collection": "Coleta de dados",
   "Enable anonymous usage data collection": "Ativar coleta de dados de uso anônima",
   "Display language:": "Idioma de exibição:",
   "Tool Widget": "Widget de Ferramenta",
@@ -657,6 +657,8 @@
   "Columns": "Colunas",
   "Rows": "Linhas",
   "Terminal Colors": "Cores do terminal",
+  "Black": "Preto",
+  "White": "Branco",
   "Background": "Plano de fundo",
   "Text": "Texto",
   "Cursor": "Cursor",
@@ -681,5 +683,7 @@
   "Along Y Axis": "Ao longo do eixo Y",
   "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "Comando não enviado: ele não cabe na largura do terminal. Reescreva o comando ou aumente as colunas nas configurações do console.",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Esta entrada do histórico não cabe na largura do terminal. Reescreva o comando ou aumente as colunas nas configurações do console para recuperá-la.",
-  "Finish or clear the command you are typing before changing the number of columns.": "Conclua ou apague o comando que você está digitando antes de alterar o número de colunas."
+  "Finish or clear the command you are typing before changing the number of columns.": "Conclua ou apague o comando que você está digitando antes de alterar o número de colunas.",
+  "Appearance": "Aparência",
+  "Color mode:": "Modo de cor:"
 }

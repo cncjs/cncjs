@@ -529,7 +529,7 @@
   "CLR": "CLR",
   "Set RTS line status upon opening": "Définir l'état de la ligne RTS à l'ouverture",
   "Use RTS/CTS flow control": "Utiliser le contrôle de flux RTS/CTS",
-  "Data Collection": "Collecte de données",
+  "Data collection": "Collecte de données",
   "Enable anonymous usage data collection": "Activer la collecte anonyme des données d'utilisation",
   "Display language:": "Langue d'affichage :",
   "Tool Widget": "Module outil",
@@ -657,6 +657,8 @@
   "Columns": "Colonnes",
   "Rows": "Lignes",
   "Terminal Colors": "Couleurs du terminal",
+  "Black": "Noir",
+  "White": "Blanc",
   "Background": "Arrière-plan",
   "Text": "Texte",
   "Cursor": "Curseur",
@@ -681,5 +683,7 @@
   "Along Y Axis": "Le long de l'axe Y",
   "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "Commande non envoyée : elle ne tient pas dans la largeur du terminal. Réécrivez la commande ou augmentez le nombre de colonnes dans les paramètres de la console.",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Cette entrée de l’historique ne tient pas dans la largeur du terminal. Réécrivez la commande ou augmentez le nombre de colonnes dans les paramètres de la console pour la rappeler.",
-  "Finish or clear the command you are typing before changing the number of columns.": "Terminez ou effacez la commande en cours de saisie avant de modifier le nombre de colonnes."
+  "Finish or clear the command you are typing before changing the number of columns.": "Terminez ou effacez la commande en cours de saisie avant de modifier le nombre de colonnes.",
+  "Appearance": "Apparence",
+  "Color mode:": "Mode de couleur :"
 }

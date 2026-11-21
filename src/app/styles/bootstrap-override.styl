@@ -15,6 +15,12 @@ label {
     text-decoration: none;
 }
 
+// Keep keyboard focus rings, including on active Bootstrap buttons.
+:focus:not(:focus-visible),
+.btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
 // Tooltip
 .tooltip-inner {
     max-width: 240px;
