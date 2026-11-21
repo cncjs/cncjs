@@ -2,6 +2,6 @@
 "cncjs": minor
 ---
 
-feat(theme): add a light/dark theme setting
+feat(theme): add a light/dark theme setting ([#1028](https://github.com/cncjs/cncjs/pull/1028))
 
-Adds a Theme option (Light or Dark) under Settings > General > Appearance. Light is the default and keeps the existing look. Colors are defined as CSS custom properties in `src/app/styles/theme.styl`, selected by a `theme-light` or `theme-dark` class on the document element that is applied at startup and when the setting is saved. The selected theme is stored with the server settings, so it is shared by all browsers using the same server. Stylesheets and inline styles use the variables instead of hard-coded colors, `src/app/styles/theme-overrides.styl` covers components whose colors come from third-party CSS, and the Visualizer scene (grid, axes, labels, toolpath and canvas) takes its colors from a per-theme palette and recolors live when the theme changes.
+Adds a Color mode option (Light or Dark) under Settings > General > Appearance. Light is the default and keeps the existing look. The server applies the saved color mode in the initial HTML, including on the loading and sign-in pages, so a saved Dark mode does not start with a Light flash. The setting is shared by all browsers using the same server. App styles use the color tokens in `src/app/styles/theme.styl`, and the Visualizer recolors its scene when the mode changes.

@@ -38,7 +38,7 @@ import './styles/vendor.styl';
 import './styles/theme.styl';
 import './styles/app.styl';
 import './styles/theme-overrides.styl';
-import { applyTheme, applyThemeFromState } from './lib/theme';
+import { applyThemeFromState } from './lib/theme';
 
 const renderPage = () => {
   const container = document.createElement('div');
@@ -63,7 +63,6 @@ const renderPage = () => {
   );
 };
 
-applyTheme();
 series([
   () => {
     const obj = qs.parse(window.location.search.slice(1));

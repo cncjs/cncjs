@@ -2,8 +2,8 @@
 //
 // Theme tokens. Every themed color is a CSS custom property defined once per theme:
 // :root/.theme-light holds the original (light) values, .theme-dark the dark values.
-// The class is toggled on <html> by src/app/lib/theme.js. To theme a new surface, add a
-// token to both blocks and use var(--your-token) in the stylesheet or inline style.
+// The server sets the initial class on <html>, and src/app/lib/theme.js keeps it current.
+// To theme a new surface, define its token in both blocks and use var(--your-token).
 
 @css {
   :root,

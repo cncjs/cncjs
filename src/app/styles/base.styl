@@ -16,6 +16,24 @@ body {
     }
 }
 
+.startup-spinner {
+    display: block;
+    margin: 0 auto;
+    color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .startup-spinner {
+        animation: startup-spin 800ms linear infinite;
+    }
+}
+
+@keyframes startup-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /*
  * Remove text-shadow in selection highlight: h5bp.com/i
  * These selection rule sets have to be separate.
