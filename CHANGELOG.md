@@ -1,5 +1,24 @@
 # cncjs
 
+## 1.13.0
+
+### Minor Changes
+
+- dc8ea64: Add Progressive Web App support. CNCjs now ships a web app manifest and a minimal service worker, so it can be installed as a standalone app on supported browsers (HTTPS or localhost required; plain HTTP keeps working as before). When the server is unreachable, a cached offline page is shown, and it reloads the app automatically once the server is back.
+- 719450f: feat(console) Console widget: add settings for font size, terminal size and terminal colors, and fix the vertical scrollbar drifting out of view when scrolling horizontally.In fullscreen the terminal now fits the window width as well as its height. Commands that do not fit the terminal width are never sent truncated or hidden.
+  
+  Choose a font size in pixels and preview it with the terminal colors before saving.
+  
+  The terminal background options are Black and White. Existing background selections are preserved, and the cursor follows the text color.
+- f3e3078: feat(theme): add a light/dark color mode setting ([#1028](https://github.com/cncjs/cncjs/pull/1028))
+  
+  Adds a Color mode option (Light or Dark) under Settings > General > Appearance. Light is the default and keeps the existing look. The server applies the saved color mode in the initial HTML, including on the loading and sign-in pages, so a saved Dark mode does not start with a Light flash. The setting is shared by all browsers using the same server. App styles use the color tokens in `src/app/styles/theme.styl`, and the Visualizer recolors its scene when the mode changes.
+
+### Patch Changes
+
+- f3e3078: Fix workspace settings in embedded browsers that report an Electron user agent but do not expose Node APIs. These browsers use local storage; the CNCjs desktop app still uses its existing settings file.
+- fa2eee6: Fix duplicate serial port entries in the Connection widget when a port listed in the `ports` section of `.cncrc` is also auto-detected. Detected and configured ports are now merged by path, with `.cncrc` values (e.g. `manufacturer`) taking precedence. Ports that are only detected or only configured are unchanged.
+
 ## 1.12.0
 
 ### Minor Changes
