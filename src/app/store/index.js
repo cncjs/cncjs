@@ -19,11 +19,14 @@ const cnc = {
 
 const store = new ImmutableStore(defaultState);
 
+// Embedded browsers can report an Electron user agent without exposing Node.js.
+// Use desktop IPC only when the renderer can require Electron; otherwise use localStorage.
+const useElectronConfig = isElectron() && typeof window.require === 'function';
+
 const getConfig = async () => {
   let content = '';
 
-  // Check whether the code is running in Electron renderer process
-  if (isElectron()) {
+  if (useElectronConfig) {
     const electron = window.require('electron');
     content = await electron.ipcRenderer.invoke('read-user-config');
   } else {
@@ -47,8 +50,7 @@ const persist = async (data) => {
   try {
     const value = JSON.stringify(data, null, 2);
 
-    // Check whether the code is running in Electron renderer process
-    if (isElectron()) {
+    if (useElectronConfig) {
       const electron = window.require('electron');
       await electron.ipcRenderer.invoke('write-user-config', value);
     } else {
