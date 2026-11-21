@@ -38,7 +38,7 @@ import './styles/vendor.styl';
 import './styles/theme.styl';
 import './styles/app.styl';
 import './styles/theme-overrides.styl';
-import { applyThemeFromState } from './lib/theme';
+import { applyColorModeFromState } from './lib/theme';
 
 const renderPage = () => {
   const container = document.createElement('div');
@@ -104,7 +104,7 @@ series([
           try {
             const res = await api.getState();
             const { allowAnonymousUsageDataCollection } = res.body || {};
-            applyThemeFromState(res);
+            applyColorModeFromState(res);
             if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
               GoogleAnalytics4.initialize([
                 {

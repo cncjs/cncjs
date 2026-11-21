@@ -19,7 +19,7 @@ import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
 import i18n from 'app/lib/i18n';
 import store from 'app/store';
-import { applyTheme, DEFAULT_THEME, normalizeTheme } from 'app/lib/theme';
+import { applyColorMode, DEFAULT_COLOR_MODE, normalizeColorMode } from 'app/lib/theme';
 import { acknowledgeGeneralSave, canSaveGeneral, getGeneralChanges, getGeneralSubmission } from './general-state';
 import General from './General';
 import Workspace from './Workspace';
@@ -114,7 +114,7 @@ class Settings extends PureComponent {
             .then((res) => {
               const {
                 allowAnonymousUsageDataCollection,
-                theme,
+                colorMode,
               } = { ...res.body };
 
               const nextState = {
@@ -126,7 +126,7 @@ class Settings extends PureComponent {
                 },
                 // followed by data
                 allowAnonymousUsageDataCollection: !!allowAnonymousUsageDataCollection,
-                theme: normalizeTheme(theme),
+                colorMode: normalizeColorMode(colorMode),
                 loaded: true,
                 lang: i18next.language // TODO: Store language settings into the state
               };
@@ -176,7 +176,7 @@ class Settings extends PureComponent {
               this.initialState.general = acknowledgeGeneralSave(this.initialState.general, submitted, apiState);
 
               this.setState(state => ({ general: { ...state.general, api: apiState } }));
-              applyTheme(submitted.theme);
+              applyColorMode(submitted.colorMode);
             })
             .catch((res) => {
               // Nothing is acknowledged, applied or marked saved
@@ -222,11 +222,11 @@ class Settings extends PureComponent {
             }
           });
         },
-        changeTheme: (theme) => {
+        changeColorMode: (colorMode) => {
           this.setState({
             general: {
               ...this.state.general,
-              theme
+              colorMode
             }
           });
         }
@@ -1098,7 +1098,7 @@ class Settings extends PureComponent {
             saving: false
           },
           allowAnonymousUsageDataCollection: false,
-          theme: DEFAULT_THEME,
+          colorMode: DEFAULT_COLOR_MODE,
           lang: i18next.language,
           loaded: false
         },

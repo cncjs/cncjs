@@ -12,7 +12,7 @@ const loaded = (over = {}) => ({
   loaded: true,
   api,
   allowAnonymousUsageDataCollection: false,
-  theme: 'dark',
+  colorMode: 'dark',
   lang: 'en',
   ...over
 });
@@ -21,8 +21,8 @@ const loaded = (over = {}) => ({
 const serverSet = (server, data) => Object.assign(server, data);
 
 describe('getGeneralSubmission', () => {
-  test('an invalid theme is submitted as light', () => {
-    expect(getGeneralSubmission(loaded({ theme: 'bogus' })).theme).toBe('light');
+  test('an invalid colorMode is submitted as light', () => {
+    expect(getGeneralSubmission(loaded({ colorMode: 'bogus' })).colorMode).toBe('light');
   });
 
   test('defaults the language and coerces the checkbox to a boolean', () => {
@@ -37,9 +37,9 @@ describe('getGeneralChanges', () => {
     expect(getGeneralChanges(getGeneralSubmission(loaded()), loaded())).toEqual({});
   });
 
-  test('sends only the theme when only the theme changed', () => {
-    const submitted = getGeneralSubmission(loaded({ theme: 'light' }));
-    expect(getGeneralChanges(submitted, loaded())).toEqual({ theme: 'light' });
+  test('sends only the colorMode when only the colorMode changed', () => {
+    const submitted = getGeneralSubmission(loaded({ colorMode: 'light' }));
+    expect(getGeneralChanges(submitted, loaded())).toEqual({ colorMode: 'light' });
   });
 
   test('sends only data collection when only that changed', () => {
@@ -55,49 +55,49 @@ describe('getGeneralChanges', () => {
 
 describe('two browsers with the same loaded theme', () => {
   test('an unrelated save in a stale browser does not restore its old theme', () => {
-    const server = { theme: 'dark', allowAnonymousUsageDataCollection: false };
+    const server = { colorMode: 'dark', allowAnonymousUsageDataCollection: false };
 
-    // Both browsers load theme=dark
-    const initialA = loaded({ theme: 'dark' });
-    const initialB = loaded({ theme: 'dark' });
+    // Both browsers load colorMode=dark
+    const initialA = loaded({ colorMode: 'dark' });
+    const initialB = loaded({ colorMode: 'dark' });
 
     // Browser A switches to Light and saves
-    const submittedA = getGeneralSubmission(loaded({ theme: 'light' }));
+    const submittedA = getGeneralSubmission(loaded({ colorMode: 'light' }));
     serverSet(server, getGeneralChanges(submittedA, initialA));
-    expect(server.theme).toBe('light');
+    expect(server.colorMode).toBe('light');
 
     // Browser B (still holding the old Dark) only changes data collection and saves
-    const submittedB = getGeneralSubmission(loaded({ theme: 'dark', allowAnonymousUsageDataCollection: true }));
+    const submittedB = getGeneralSubmission(loaded({ colorMode: 'dark', allowAnonymousUsageDataCollection: true }));
     serverSet(server, getGeneralChanges(submittedB, initialB));
 
     expect(server.allowAnonymousUsageDataCollection).toBe(true);
-    expect(server.theme).toBe('light'); // not overwritten by B's stale value
+    expect(server.colorMode).toBe('light'); // not overwritten by B's stale value
   });
 
-  test('a browser that changed the theme still wins for the theme', () => {
-    const server = { theme: 'light' };
-    const initialB = loaded({ theme: 'light' });
-    const submittedB = getGeneralSubmission(loaded({ theme: 'dark' }));
+  test('a browser that changed the colorMode still wins for the theme', () => {
+    const server = { colorMode: 'light' };
+    const initialB = loaded({ colorMode: 'light' });
+    const submittedB = getGeneralSubmission(loaded({ colorMode: 'dark' }));
     serverSet(server, getGeneralChanges(submittedB, initialB));
-    expect(server.theme).toBe('dark'); // last write wins when the user actually changed it
+    expect(server.colorMode).toBe('dark'); // last write wins when the user actually changed it
   });
 });
 
 describe('acknowledgeGeneralSave', () => {
   test('an edit made while a save is pending stays unsaved', () => {
-    const initial = loaded({ theme: 'dark' });
-    const submitted = getGeneralSubmission(loaded({ theme: 'light' })); // Save pressed with Light
-    const formWhenResponseArrives = loaded({ theme: 'dark' }); // user switched back meanwhile
+    const initial = loaded({ colorMode: 'dark' });
+    const submitted = getGeneralSubmission(loaded({ colorMode: 'light' })); // Save pressed with Light
+    const formWhenResponseArrives = loaded({ colorMode: 'dark' }); // user switched back meanwhile
     const baseline = acknowledgeGeneralSave(initial, submitted, api);
 
-    expect(baseline.theme).toBe('light'); // what was applied and persisted
+    expect(baseline.colorMode).toBe('light'); // what was applied and persisted
     expect(isEqual(baseline, formWhenResponseArrives)).toBe(false); // so Save stays enabled
   });
 
   test('without later edits the form equals the baseline (Save disabled)', () => {
-    const submitted = getGeneralSubmission(loaded({ theme: 'light' }));
+    const submitted = getGeneralSubmission(loaded({ colorMode: 'light' }));
     const baseline = acknowledgeGeneralSave(loaded(), submitted, api);
-    expect(isEqual(baseline, loaded({ theme: 'light' }))).toBe(true);
+    expect(isEqual(baseline, loaded({ colorMode: 'light' }))).toBe(true);
   });
 
   test('keeps fields the save did not touch', () => {

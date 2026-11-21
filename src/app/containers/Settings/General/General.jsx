@@ -6,7 +6,7 @@ import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
 import { SUPPORTED_LANGUAGES } from 'app/constants/i18n';
 import i18n from 'app/lib/i18n';
-import { normalizeTheme } from 'app/lib/theme';
+import { normalizeColorMode } from 'app/lib/theme';
 import { canSaveGeneral } from '../general-state';
 import styles from './index.styl';
 
@@ -32,9 +32,9 @@ class General extends PureComponent {
         const target = event.target;
         actions.changeLanguage(target.value);
       },
-      changeTheme: (event) => {
+      changeColorMode: (event) => {
         const { actions } = this.props;
-        actions.changeTheme(event.target.value);
+        actions.changeColorMode(event.target.value);
       },
       cancel: (event) => {
         const { actions } = this.props;
@@ -54,7 +54,7 @@ class General extends PureComponent {
     render() {
       const { state, stateChanged } = this.props;
       const lang = get(state, 'lang', 'en');
-      const theme = normalizeTheme(get(state, 'theme'));
+      const colorMode = normalizeColorMode(get(state, 'colorMode'));
 
       if (state.api.loading) {
         return (
@@ -79,16 +79,16 @@ class General extends PureComponent {
                   alignItems: 'center',
                 }}
               >
-                <label htmlFor="general-theme">{i18n._('Color mode:')}</label>
+                <label htmlFor="general-color-mode">{i18n._('Color mode:')}</label>
                 <select
-                  id="general-theme"
+                  id="general-color-mode"
                   className={classNames(
                     'form-control',
                     styles.formControl,
                     styles.short
                   )}
-                  value={theme}
-                  onChange={this.handlers.changeTheme}
+                  value={colorMode}
+                  onChange={this.handlers.changeColorMode}
                 >
                   <option value="light">{i18n._('Light')}</option>
                   <option value="dark">{i18n._('Dark')}</option>

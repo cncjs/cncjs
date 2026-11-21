@@ -5,8 +5,7 @@ describe('GCodeVisualizer theme refresh', () => {
   let setToolpathColors;
 
   beforeAll(() => {
-    // scene-theme.js reads the theme class at import time
-    global.document = { documentElement: { classList: { contains: () => false } } };
+    global.document = { documentElement: { getAttribute: () => null } };
     ({ default: GCodeVisualizer, setToolpathColors } = require('../GCodeVisualizer'));
   });
 

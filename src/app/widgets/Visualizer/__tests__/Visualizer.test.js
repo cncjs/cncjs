@@ -2,7 +2,7 @@
 // stubs for anything Visualizer.jsx touches at import time, as in GCodeVisualizer.test.js
 global.document = global.document || {
     createElement: () => ({ getContext: () => ({}) }),
-    documentElement: { classList: { contains: () => false } },
+    documentElement: { getAttribute: () => null },
 };
 global.localStorage = {
     getItem: () => null,

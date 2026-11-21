@@ -28,7 +28,7 @@ import CuttingPointer from './CuttingPointer';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
-import { getSceneThemeName, getScenePalette } from './scene-theme';
+import { getSceneColorMode, getScenePalette } from './scene-theme';
 import GCodeVisualizer, { setToolpathColors } from './GCodeVisualizer';
 import { disposeObject } from './dispose';
 import ProbeVisualization from './ProbeVisualization';
@@ -90,10 +90,10 @@ class Visualizer extends Component {
 
     sceneThemeName = null;
 
-    themeObserver = null;
+    colorModeObserver = null;
 
-    applySceneTheme = () => {
-      const name = getSceneThemeName();
+    applySceneColorMode = () => {
+      const name = getSceneColorMode();
       const palette = getScenePalette(name);
       if (name === this.sceneThemeName) {
         return;
@@ -284,8 +284,8 @@ class Visualizer extends Component {
         const el = ReactDOM.findDOMNode(this.node);
         this.createScene(el);
         this.resizeRenderer();
-        this.themeObserver = new MutationObserver(this.applySceneTheme);
-        this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        this.colorModeObserver = new MutationObserver(this.applySceneColorMode);
+        this.colorModeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
       }
 
       // Apply any machine profile already in the store (e.g., hydrated from
@@ -444,9 +444,9 @@ class Visualizer extends Component {
       this.unsubscribe();
       this.removeResizeEventListener();
       store.removeListener('change', this.changeMachineProfile);
-      if (this.themeObserver) {
-        this.themeObserver.disconnect();
-        this.themeObserver = null;
+      if (this.colorModeObserver) {
+        this.colorModeObserver.disconnect();
+        this.colorModeObserver = null;
       }
       this.clearScene();
     }
@@ -919,7 +919,7 @@ class Visualizer extends Component {
         return;
       }
 
-      this.sceneThemeName = getSceneThemeName();
+      this.sceneThemeName = getSceneColorMode();
       setToolpathColors(getScenePalette(this.sceneThemeName));
       const palette = getScenePalette(this.sceneThemeName);
 

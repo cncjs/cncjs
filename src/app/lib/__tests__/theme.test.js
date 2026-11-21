@@ -1,65 +1,62 @@
 /* eslint-env jest */
-import { DEFAULT_THEME, THEMES, applyTheme, applyThemeFromState, normalizeTheme } from '../theme';
+import { DEFAULT_COLOR_MODE, COLOR_MODES, applyColorMode, applyColorModeFromState, normalizeColorMode } from '../theme';
 
 const installDocument = () => {
-  const classes = new Set();
+  const attributes = new Map();
   global.document = {
     documentElement: {
-      classList: {
-        toggle: (name, force) => (force ? classes.add(name) : classes.delete(name)),
-        contains: (name) => classes.has(name)
-      }
+      setAttribute: (name, value) => attributes.set(name, value)
     }
   };
-  return classes;
+  return attributes;
 };
 
 afterEach(() => {
   delete global.document;
 });
 
-describe('theme', () => {
-  test('Light is the default and both themes are known', () => {
-    expect(DEFAULT_THEME).toBe('light');
-    expect(THEMES).toEqual(['light', 'dark']);
+describe('color mode', () => {
+  test('Light is the default and both color modes are known', () => {
+    expect(DEFAULT_COLOR_MODE).toBe('light');
+    expect(COLOR_MODES).toEqual(['light', 'dark']);
   });
 
-  test.each([[undefined], [null], [''], ['purple'], [42]])('normalizeTheme(%p) falls back to light', (value) => {
-    expect(normalizeTheme(value)).toBe('light');
+  test.each([[undefined], [null], [''], ['purple'], [42]])('normalizeColorMode(%p) falls back to light', (value) => {
+    expect(normalizeColorMode(value)).toBe('light');
   });
 
-  test.each([['light'], ['dark']])('normalizeTheme keeps %s', (value) => {
-    expect(normalizeTheme(value)).toBe(value);
+  test.each([['light'], ['dark']])('normalizeColorMode keeps %s', (value) => {
+    expect(normalizeColorMode(value)).toBe(value);
   });
 
-  test('applyTheme sets exactly one theme class and replaces the previous one', () => {
-    const classes = installDocument();
-    applyTheme('dark');
-    expect([...classes]).toEqual(['theme-dark']);
-    applyTheme('light');
-    expect([...classes]).toEqual(['theme-light']);
+  test('applyColorMode sets and replaces the root color mode attribute', () => {
+    const attributes = installDocument();
+    applyColorMode('dark');
+    expect(attributes.get('data-color-mode')).toBe('dark');
+    applyColorMode('light');
+    expect(attributes.get('data-color-mode')).toBe('light');
   });
 
-  test('applyTheme with no or an invalid value applies the default', () => {
-    const classes = installDocument();
-    applyTheme('dark');
-    applyTheme('bogus');
-    expect([...classes]).toEqual(['theme-light']);
-    applyTheme();
-    expect([...classes]).toEqual(['theme-light']);
+  test('applyColorMode with no or an invalid value applies the default', () => {
+    const attributes = installDocument();
+    applyColorMode('dark');
+    applyColorMode('bogus');
+    expect(attributes.get('data-color-mode')).toBe('light');
+    applyColorMode();
+    expect(attributes.get('data-color-mode')).toBe('light');
   });
 
-  // Startup (token sign-in) and Login (interactive sign-in) both call applyThemeFromState(res)
+  // Startup (token sign-in) and Login (interactive sign-in) both call applyColorModeFromState(res)
   test.each([
-    [{ body: { theme: 'dark' } }, 'theme-dark'],
-    [{ body: { theme: 'light' } }, 'theme-light'],
-    [{ body: { theme: 'bogus' } }, 'theme-light'],
-    [{ body: {} }, 'theme-light'],
-    [{}, 'theme-light'],
-    [undefined, 'theme-light']
-  ])('applyThemeFromState(%j)', (res, expected) => {
-    const classes = installDocument();
-    applyThemeFromState(res);
-    expect([...classes]).toEqual([expected]);
+    [{ body: { colorMode: 'dark' } }, 'dark'],
+    [{ body: { colorMode: 'light' } }, 'light'],
+    [{ body: { colorMode: 'bogus' } }, 'light'],
+    [{ body: {} }, 'light'],
+    [{}, 'light'],
+    [undefined, 'light']
+  ])('applyColorModeFromState(%j)', (res, expected) => {
+    const attributes = installDocument();
+    applyColorModeFromState(res);
+    expect(attributes.get('data-color-mode')).toBe(expected);
   });
 });

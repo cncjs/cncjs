@@ -1,9 +1,9 @@
-import { normalizeTheme } from 'app/lib/theme';
+import { normalizeColorMode } from 'app/lib/theme';
 
 // The values being saved, captured when Save is pressed
 export const getGeneralSubmission = (general) => ({
   allowAnonymousUsageDataCollection: !!general.allowAnonymousUsageDataCollection,
-  theme: normalizeTheme(general.theme),
+  colorMode: normalizeColorMode(general.colorMode),
   lang: general.lang || 'en'
 });
 
@@ -13,8 +13,8 @@ export const getGeneralChanges = (submitted, initial) => {
   if (submitted.allowAnonymousUsageDataCollection !== initial.allowAnonymousUsageDataCollection) {
     changes.allowAnonymousUsageDataCollection = submitted.allowAnonymousUsageDataCollection;
   }
-  if (submitted.theme !== initial.theme) {
-    changes.theme = submitted.theme;
+  if (submitted.colorMode !== initial.colorMode) {
+    changes.colorMode = submitted.colorMode;
   }
   return changes;
 };

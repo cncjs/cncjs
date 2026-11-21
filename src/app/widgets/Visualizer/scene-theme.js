@@ -29,8 +29,8 @@ const PALETTES = {
   }
 };
 
-export const getSceneThemeName = () => (
-  document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light'
+export const getSceneColorMode = () => (
+  document.documentElement.getAttribute('data-color-mode') === 'dark' ? 'dark' : 'light'
 );
 
-export const getScenePalette = (name) => PALETTES[name || getSceneThemeName()] || PALETTES.light;
+export const getScenePalette = (name) => PALETTES[name || getSceneColorMode()] || PALETTES.light;

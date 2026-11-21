@@ -1,13 +1,13 @@
 // @stylint off
 //
 // Theme tokens. Every themed color is a CSS custom property defined once per theme:
-// :root/.theme-light holds the original (light) values, .theme-dark the dark values.
-// The server sets the initial class on <html>, and src/app/lib/theme.js keeps it current.
+// :root/[data-color-mode="light"] holds the original (light) values, [data-color-mode="dark"] the dark values.
+// The server sets the initial attribute on <html>, and src/app/lib/theme.js keeps it current.
 // To theme a new surface, define its token in both blocks and use var(--your-token).
 
 @css {
   :root,
-  .theme-light {
+  [data-color-mode="light"] {
     color-scheme: light;
     --color-sidebar-bg: #222;
     --color-content-bg: #fff;
@@ -103,7 +103,7 @@
     --tap-highlight: #222222;
   }
 
-  .theme-dark {
+  [data-color-mode="dark"] {
     color-scheme: dark;
     --color-sidebar-bg: #111;
     --color-content-bg: #1e1e1e;
