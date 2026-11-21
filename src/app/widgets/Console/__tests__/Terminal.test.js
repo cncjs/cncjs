@@ -35,6 +35,35 @@ const create = (termOptions) => {
   return { wrapper, onData, term: wrapper.term };
 };
 
+test('redraws and refits the terminal when only the font size changes', () => {
+  const previous = { ...TerminalWrapper.defaultProps };
+  const next = { ...previous, fontSize: 16 };
+  const wrapper = new TerminalWrapper(previous);
+  const terminalOptions = { fontSize: previous.fontSize };
+  let renderedSize = previous.fontSize;
+  wrapper.term = {
+    setOption: (key, value) => {
+      terminalOptions[key] = value;
+      if (key === 'fontSize') {
+        renderedSize = null; // xterm clears the canvas before measuring the new font size
+      } else if (key === 'theme') {
+        renderedSize = terminalOptions.fontSize;
+      }
+    }
+  };
+  wrapper.isVisible = () => true;
+  const measuredFonts = [];
+  wrapper.resize = () => measuredFonts.push(terminalOptions.fontSize);
+  wrapper.syncScrollbarRail = () => {};
+
+  wrapper.componentWillReceiveProps(next);
+  wrapper.props = next;
+  wrapper.componentDidUpdate(previous);
+
+  expect(measuredFonts).toEqual([16]);
+  expect(renderedSize).toBe(16);
+});
+
 const press = (wrapper, name, text = name) => wrapper.eventHandler.onKey(text, { key: name });
 
 // Model xterm's asynchronous writes without duplicating the handler's cell shifts.

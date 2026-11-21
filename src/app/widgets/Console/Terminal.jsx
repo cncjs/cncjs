@@ -12,7 +12,7 @@ import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
 import { fitsOnRow, getInputCapacity, readInputLine, colsKeepingPendingInput } from './input';
-import { DEFAULT_FONT_SIZE, FONT_SIZE_PX, DEFAULT_BACKGROUND, DEFAULT_CURSOR_COLOR, DEFAULT_TEXT_COLOR, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN } from './constants';
+import { DEFAULT_FONT_STACK, DEFAULT_FONT_SIZE, DEFAULT_BACKGROUND, DEFAULT_TEXT_COLOR, TERMINAL_COLS_MAX, TERMINAL_COLS_MIN } from './constants';
 import { buildTerminalTheme } from './terminal-theme';
 
 Terminal.applyAddon(fit);
@@ -27,12 +27,11 @@ class TerminalWrapper extends PureComponent {
       tabStopWidth: PropTypes.number,
       background: PropTypes.string,
       textColor: PropTypes.string,
-      cursorColor: PropTypes.string,
       onData: PropTypes.func
     };
 
     static defaultProps = {
-      fontSize: FONT_SIZE_PX[DEFAULT_FONT_SIZE],
+      fontSize: DEFAULT_FONT_SIZE,
       cols: 'auto',
       rows: 'auto',
       cursorBlink: true,
@@ -40,7 +39,6 @@ class TerminalWrapper extends PureComponent {
       tabStopWidth: 4,
       background: DEFAULT_BACKGROUND,
       textColor: DEFAULT_TEXT_COLOR,
-      cursorColor: DEFAULT_CURSOR_COLOR,
       onData: () => {}
     };
 
@@ -399,7 +397,7 @@ class TerminalWrapper extends PureComponent {
     }
 
     getTheme(props = this.props) {
-      return buildTerminalTheme(props.background, props.textColor, props.cursorColor);
+      return buildTerminalTheme(props.background, props.textColor);
     }
 
     applyBackground(color) {
@@ -430,6 +428,7 @@ class TerminalWrapper extends PureComponent {
         cursorBlink,
         scrollback,
         tabStopWidth,
+        fontFamily: DEFAULT_FONT_STACK,
         fontSize,
         theme
       });
@@ -447,7 +446,6 @@ class TerminalWrapper extends PureComponent {
       this.term.fit();
       this.term.focus(false);
 
-      this.term.setOption('fontFamily', 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif');
       this.term.setOption('lineHeight', 1.2);
       this.term.setOption('letterSpacing', 1);
 
@@ -522,19 +520,23 @@ class TerminalWrapper extends PureComponent {
       if (nextProps.tabStopWidth !== this.props.tabStopWidth) {
         this.term.setOption('tabStopWidth', nextProps.tabStopWidth);
       }
-      if (nextProps.fontSize !== this.props.fontSize) {
+      const sizeChanged = nextProps.fontSize !== this.props.fontSize;
+      if (sizeChanged) {
         this.term.setOption('fontSize', nextProps.fontSize);
-        if (!this.isVisible()) {
-          // The cell size was measured while hidden (collapsed): re-measure when it is shown again
-          this.needsRemeasure = true;
-        }
       }
-      if (nextProps.background !== this.props.background ||
-          nextProps.textColor !== this.props.textColor ||
-          nextProps.cursorColor !== this.props.cursorColor) {
+      if (sizeChanged && !this.isVisible()) {
+        // The cell size was measured while hidden (collapsed): re-measure when it is shown again
+        this.needsRemeasure = true;
+      }
+      const colorsChanged = nextProps.background !== this.props.background ||
+        nextProps.textColor !== this.props.textColor;
+      if (sizeChanged || colorsChanged) {
+        // xterm may clear the canvas without redrawing if cell metrics are unchanged.
         const theme = this.getTheme(nextProps);
         this.term.setOption('theme', theme);
-        this.applyBackground(theme.background);
+        if (colorsChanged) {
+          this.applyBackground(theme.background);
+        }
       }
     }
 

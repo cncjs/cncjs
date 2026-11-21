@@ -108,7 +108,7 @@ const normalizeState = (state) => {
     set(state, 'widgets.axes.axes', defaultAxes);
   }
 
-  // Migrate saved Console backgrounds, including forked widgets.
+  // Normalize saved Console colors, including forked widgets.
   for (const [widgetId, config] of Object.entries(state.widgets)) {
     if (widgetId !== 'console' && !widgetId.startsWith('console:')) {
       continue;
@@ -117,6 +117,9 @@ const normalizeState = (state) => {
       config.terminalBackground = BACKGROUND_BLACK;
     } else if (config?.terminalBackground === 'light') {
       config.terminalBackground = BACKGROUND_WHITE;
+    }
+    if (config && Object.prototype.hasOwnProperty.call(config, 'terminalCursorColor')) {
+      delete config.terminalCursorColor;
     }
   }
 

@@ -67,8 +67,8 @@ test('preserves legacy Console backgrounds on load and persists the named colors
   localStorage.getItem.mockReturnValue(JSON.stringify({
     state: {
       widgets: {
-        console: { terminalBackground: 'light' },
-        'console:copy': { terminalBackground: 'dark' }
+        console: { terminalBackground: 'light', terminalCursorColor: 'red' },
+        'console:copy': { terminalBackground: 'dark', terminalCursorColor: 'cyan' }
       }
     }
   }));
@@ -82,4 +82,6 @@ test('preserves legacy Console backgrounds on load and persists the named colors
   const { widgets } = JSON.parse(saved).state;
   expect(widgets.console.terminalBackground).toBe('white');
   expect(widgets['console:copy'].terminalBackground).toBe('black');
+  expect(widgets.console).not.toHaveProperty('terminalCursorColor');
+  expect(widgets['console:copy']).not.toHaveProperty('terminalCursorColor');
 });
