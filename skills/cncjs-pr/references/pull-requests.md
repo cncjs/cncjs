@@ -38,8 +38,8 @@ Use a conventional commit subject:
 
 Use the types in `commitlint.config.js`: `build`, `chore`, `ci`, `cd`, `docs`,
 `feat`, `fix`, `i18n`, `l10n`, `perf`, `refactor`, `revert`, `style`, and `test`.
-Keep the header within the configured 128-character limit. Prefer the
-imperative mood, a lowercase description, and no trailing period.
+Keep the title short enough to scan. Prefer the imperative mood, a lowercase
+description, and no trailing period.
 
 - Use a real path or domain scope when it describes the change; omit the scope
   when no useful scope fits. Recent history uses `api`, `autolevel`, `deps`,

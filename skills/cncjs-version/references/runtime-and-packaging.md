@@ -43,9 +43,10 @@ the user authorized that exact deletion:
   PowerShell variant removes the directory itself. Do not automatically
   discard existing source or generated changes afterward.
 - `scripts/electron-builder.sh` deletes `dist/cncjs/node_modules`, runs
-  `npm install --production` and `npm dedupe` there, and invokes
-  electron-builder, which writes to `output/`. These steps may download packages
-  and change generated files or a lockfile in `dist/cncjs`.
+  `npm install --production` and `npm dedupe` there, then launches Electron
+  Builder from the root via `yarn run electron-builder`. The builder writes to
+  `output/`; the staging install may download packages and change generated
+  files or a lockfile in `dist/cncjs`.
 
 When authorized and the affected paths are safe, the local packaging commands
 begin with a production build:

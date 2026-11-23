@@ -3,7 +3,7 @@
 __dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 display_usage() {
-    npm run electron-builder -- --help
+    yarn run electron-builder --help
 }
 
 if [ $# -le 1 ]; then
@@ -24,4 +24,4 @@ npm install --production
 npm dedupe
 popd
 
-cross-env USE_HARD_LINKS=false npm run electron-builder -- "$@"
+cross-env USE_HARD_LINKS=false yarn run electron-builder "$@"
