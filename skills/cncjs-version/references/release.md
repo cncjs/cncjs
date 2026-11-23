@@ -6,40 +6,78 @@ release action.
 
 ## Workflow sources
 
-- Read `.changeset/config.json` and the current release workflows to determine
-  the base branch, triggers, and versioning flow for this checkout. Do not
-  hard-code branch roles, PR targets, or merge directions in shared skills.
-- Follow the owning versioning workflow, not old manual
+- Read `.changeset/config.json` (`baseBranch`, `changelog`, `access`),
+  `package.json` scripts, and the relevant `.github/workflows/` files at the
+  ref being assessed. Changesets `baseBranch` does not define the push
+  trigger; the repository guard is separate from both the trigger and the
+  intended ref. Do not hard-code branch roles, PR targets, or merge directions.
+- Follow the workflow that owns versioning, not old manual
   `chore(release): publish` history or a policy copied from another branch.
-- Root `package.json` owns the version, `yarn package-sync` generates
-  `src/package.json`, and Changesets consumes release notes into `CHANGELOG.md`.
+- Root `package.json` owns the published version. `yarn package-sync` updates
+  selected fields in `src/package.json`, and Changesets writes release notes
+  into `CHANGELOG.md`. See [Dependencies](dependencies.md) for the fields.
 
 ## Normal release flow
 
-1. Each user-visible change carries a changeset; see `cncjs-pr`.
-2. After the change lands on the release line, `ci-release` runs
-   `changesets/action`. It opens or updates the release PR titled
-   `chore(release): version packages`.
-3. The release PR runs `yarn ci-version`, which is
-   `changeset version && node scripts/package-sync.js && yarn install --mode=update-lockfile`.
-   That updates the version, synchronizes `src/package.json`, consumes the
-   changesets, and updates the lockfile.
-4. Merging the release PR runs `yarn ci-publish`, which is
-   `yarn build && changeset publish`. Changesets publishes the `cncjs` package
-   and creates the release tag.
-5. The tag triggers `.github/workflows/ci.yml`, which builds and attaches the
-   desktop artifacts, and `.github/workflows/ci-docker-hub.yml`, which builds and
-   pushes the multi-architecture container image.
+1. Assess changesets for user-facing changes and release artifacts; see
+   `cncjs-pr`. Compare `.changeset/config.json` with the workflow's actual push
+   branches rather than assuming `baseBranch` defines the workflow trigger.
+2. On a configured branch push or explicit dispatch, `ci-release` runs
+   `changesets/action` only in `cncjs/cncjs`. With nonempty pending changesets,
+   the action runs `yarn ci-version` **before** creating or updating its
+   `chore(release): version packages` PR. The command runs `changeset version`,
+   `node scripts/package-sync.js`, and `yarn install --mode=update-lockfile`,
+   producing version, changelog, changeset-removal, synchronized manifest, and
+   possibly lockfile changes in that PR.
+3. After an authorized merge, a later qualifying `ci-release` run with no
+   pending changesets attempts `yarn ci-publish` (`yarn build && changeset
+   publish`) for unpublished versions; a branch push without a release PR can
+   also reach that path. If new changesets are pending, the action instead
+   prepares another version PR. The workflow grants OIDC permission and sets
+   npm provenance for trusted publishing; actual publication depends on the run
+   and registry configuration.
+4. On a successful publish, Changesets creates a local tag; the action's default
+   release behavior pushes it and creates a GitHub release. Check the action
+   configuration and run logs, and verify publication, remote tag, and release
+   separately. Do not assume every step succeeded.
+5. When `steps.changesets.outputs.published == 'true'`, `Determine published
+   tag` reads the `published-packages` output, finds `cncjs`, and derives
+   `v${pkg.version}`. `Dispatch desktop release` and `Dispatch Docker release`
+   explicitly dispatch `ci.yml` and `ci-docker-hub.yml` at that tag. Those
+   workflows also listen for tag pushes, but a matching ref alone does not
+   prove either ran or published its artifacts.
 
-Inspect `ci.yml` for the current artifact and prerelease triggers. Do not delete,
-re-upload, or retag workflow-managed GitHub release assets by hand.
+**Token-trigger caveat:** `ci-release` uses the repository `GITHUB_TOKEN`.
+GitHub normally suppresses workflow runs from its push events, including a tag
+the action pushes. That is why the explicit dispatches matter. An
+action-created or updated PR's `pull_request` checks may require approval.
+See GitHub's
+[workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow).
+Inspect the actual runs and tag before diagnosing or deciding how to proceed.
+
+A qualifying branch run of `ci.yml` uses `yarn build-latest`; the workflow's
+configured latest branch also refreshes its `<branch>-latest` GitHub release
+and assets. Those assets are workflow-managed; do not delete, re-upload, or
+retag them by hand.
+
+`yarn ci-dispatch` delegates to `gh workflow run ci.yml --repo cncjs/cncjs
+--ref`; dispatch requires explicit authorization. Both packaging workflows
+also accept `workflow_dispatch`, but their behavior depends on the selected
+ref: for example, Docker's production build step runs only for a tag, and its
+deploy job pushes both a ref-derived image tag and `latest`. Dispatch can
+therefore publish or replace artifacts; confirm the exact target and scope.
 
 ## What a release PR should contain
 
-- The expected version in `package.json` and `src/package.json`.
+- The expected version in root `package.json` and the synchronized version in
+  `src/package.json`, without unintended changes to its maintained fields.
 - The expected generated `CHANGELOG.md` sections and removed changeset files.
-- A `yarn.lock` change only from the versioning command.
+- Any `yarn.lock` changes generated by the versioning command, with no unrelated
+  dependency updates.
 - No unrelated source changes.
+
+`yarn build-latest` stamps a commit-suffixed version into `src/package.json` in
+the working tree. Do not commit that change.
 
 If the release PR has conflicts or an unexpected version, stop and report the
 discrepancy. Do not force-push, rewrite history, or edit the version by hand to
@@ -47,18 +85,32 @@ make it match.
 
 ## Verification
 
-- Inspect the release PR diff and confirm the expected files changed.
+- To verify intended behavior, inspect configuration and scripts at the
+  relevant ref. To verify versioning, inspect the generated release PR diff.
+- For release outcome, verify the exact `cncjs` version in npm, the remote
+  tag, and the GitHub release independently. Inspect each dispatch step in
+  `ci-release` and its corresponding run for that tag. Check desktop release
+  assets and the published Docker image independently; successful dispatch or
+  a green build is not proof that those artifacts are available.
 - Report exactly which checks ran; do not claim CI, release, or artifact results
   you did not observe.
 
 ## Troubleshooting
 
-- **Tag exists but assets are missing:** check the `ci.yml` run for that tag; do
-  not create a replacement tag.
-- **npm published but no tag:** `changeset publish` owns tag creation; inspect
-  the release workflow rather than tagging manually.
-- **Docker image missing:** check the `ci-docker-hub` run for the tag and the
-  production artifact it consumes.
+- **Release PR not opened:** check pending changesets, the `ci-release` run,
+  trigger, repository guard, and action permissions; fork jobs are skipped.
+- **npm version or remote tag missing:** inspect the publish action logs,
+  registry result, and tag creation and push. A missing result is diagnostic,
+  not permission to publish or create a replacement tag.
+- **npm published but assets or image missing:** check the tag derivation,
+  both dispatch steps, and their matching runs at the published tag. If a
+  dispatch succeeded, inspect its run for build or upload failures; for Docker,
+  check the production artifact it consumes. Do not push replacement artifacts.
+- **Dispatch failed after publication:** `.changeset/README.md` directs you
+  to dispatch only the failed workflow with the existing release tag, and
+  only with explicit authorization for that exact dispatch. Docker also
+  updates `latest`. Do not rerun publication as recovery; an already published
+  version may not trigger another dispatch.
 - **Version PR shows an unexpected bump:** check the changeset bump types and
   the current version on the release branch; fix the changesets before merging,
   not the generated version.

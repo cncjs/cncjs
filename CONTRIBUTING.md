@@ -3,6 +3,8 @@
 ## Index
 * [Troubleshooting](CONTRIBUTING.md#troubleshooting)
 * [Code Contributions](CONTRIBUTING.md#code-contributions)
+* [Pull Requests](CONTRIBUTING.md#pull-requests)
+* [Changesets](CONTRIBUTING.md#changesets)
 * [Keeping a Fork Up-to-date](CONTRIBUTING.md#keeping-a-fork-up-to-date)
 * [Running Local Development Server](CONTRIBUTING.md#running-local-development-server)
 * [Running Production Build](CONTRIBUTING.md#running-production-build)
@@ -86,6 +88,41 @@ $ git push origin my-feature-branch
 Go to https://github.com/username/cncjs and select your feature branch. Click on the <kbd>New pull request</kbd> button and fill out the form.
 
 ![image](https://cloud.githubusercontent.com/assets/447801/16153975/6a41541c-34db-11e6-997c-5781b8fa8f68.png)
+
+### Pull Requests
+
+Use a conventional title: `<type>(<scope>): <description>`. Omit the scope
+when none fits. Use a specific, lowercase description without a trailing
+period, for example `fix(webcam): retain the selected camera on reconnect`.
+Do not append the PR number to the title. Confirm the intended base branch
+before submitting.
+
+| Section | Include |
+| --- | --- |
+| `Summary` | Always. State what changed and who or what it affects. |
+| `Changes` | When the change spans multiple areas. List the main changes, not every file. |
+| `Motivation` | When the reason is not clear from the summary. |
+| `Testing` | Always. Report what you ran and the result, or say that nothing ran. |
+| `Migration` | For breaking changes. Explain what breaks and how to migrate. |
+
+Use `Closes #NNN` only for a confirmed issue the change resolves. See the
+[PR guide](skills/cncjs-pr/references/pull-requests.md) for the template and
+review checklist.
+
+### Changesets
+
+Add a Changeset for changes that affect users of a release or its delivered
+artifacts. Contributor documentation and tooling that affect neither do not
+need one.
+
+Draft the release note if needed, but open the pull request before creating the
+file. Once the PR number is known, add `.changeset/cncjs-pr-<number>.md` to the
+same branch. For additional independent changes in the same PR, use
+`.changeset/cncjs-pr-<number>-<slug>.md`. Do not create a placeholder or
+duplicate an existing entry.
+
+See the [Changesets guide](skills/cncjs-pr/references/changesets.md) for bump
+selection and examples.
 
 ## Keeping a Fork Up-to-date
 
