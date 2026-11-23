@@ -15,6 +15,13 @@ Source paths are repository-relative; reference links are skill-relative.
 
 ## Baseline and authorization
 
+- Before running commands, classify the task as dependency, runtime or
+  packaging, or release work. Explanation and audit are read-only; they do
+  not authorize execution.
+- For release work, read `.changeset/config.json`, `package.json` scripts,
+  and the relevant `.github/workflows/` files at the ref in question.
+  Distinguish Changesets `baseBranch`, the workflow trigger, the job's
+  repository guard, and the intended execution ref.
 - Publish, tag, push, deploy, artifact upload, Docker push, GitHub release, and
   workflow dispatch require the user's explicit authorization for that exact
   action.
@@ -35,8 +42,8 @@ Source paths are repository-relative; reference links are skill-relative.
 
 ## Route by task
 
-Read the matching reference before changing files; combine routes only when the
-change spans responsibilities.
+Read the matching reference before acting; combine routes only when the task
+spans responsibilities.
 
 | When the task involves | Read |
 | --- | --- |
@@ -53,6 +60,9 @@ change spans responsibilities.
   separate from the root Node.js engine.
 - Assess a changeset for user-visible support, packaging, shipped-dependency,
   or CI artifact changes; see `cncjs-pr` for observed practice.
+- For release work, separate configuration inspection, review of the generated
+  version PR, and proof of publication and artifacts. Each answers a different
+  question; one cannot substitute for another.
 - Run checks appropriate to the changed boundary and report their observed
   results. Do not imply CI, release, or artifact verification that did not run.
 - No external release action was performed without authorization.

@@ -14,14 +14,16 @@ Source paths are repository-relative; reference links are skill-relative.
 
 ## Baseline and authorization
 
-- Inspect the actual diff, recent history, and relevant `.changeset/` entries.
-  Do not describe work from a user summary alone.
-- Identify the change type, intended PR target, published-package impact,
-  breaking changes, and verification actually performed. Read the current
-  checkout's configuration and workflows; do not infer or silently retarget it.
-- Commit, push, PR or label updates, workflow dispatch, and publishing require
-  the user's explicit authorization for that action. Drafting text does not
-  grant that permission.
+- Before drafting, inspect working-tree status, the relevant staged and
+  unstaged diffs or base-to-head diff, recent CNCjs history, and relevant
+  `.changeset/` entries. Do not describe work from a user summary alone.
+- Use actual PR metadata to identify the intended base when available.
+  Otherwise report the target as unconfirmed; do not silently pick a branch.
+  Identify the change type, published-package impact, breaking changes, and
+  verification actually performed.
+- Drafting authorizes no source edits, commits, pushes, or GitHub writes.
+  PR or label updates, workflow dispatch, and publishing also require
+  explicit authorization for the exact action.
 - Do not hand-edit generated versions, changelogs, lockfiles, or release
   metadata, or delete changesets to alter a release.
 - Report observed checks only. Mocks, snapshots, and simulator runs are not

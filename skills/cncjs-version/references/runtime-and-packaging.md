@@ -77,7 +77,9 @@ own build job creates the production `dist/cncjs` artifact on a tag; the deploy
 job builds and pushes `linux/amd64` and `linux/arm64` images with both the
 derived tag and `latest`. A local `docker build` is verification only; do not
 push or dispatch without explicit authorization. See [Release](release.md)
-for token-trigger and dispatch caveats.
+for the explicit post-publication dispatch of both packaging workflows at
+the published tag, the token-trigger caveat, and dispatch recovery. A manual
+Docker dispatch at a release tag can replace the `latest` image.
 
 ## Verification
 

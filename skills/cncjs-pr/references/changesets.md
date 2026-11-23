@@ -10,23 +10,23 @@ Recommend a changeset for a user-visible feature, fix, dependency, support, or
 packaging change. Assess the delivered effect rather than only the paths changed:
 a CI-only change can alter desktop or container release artifacts even when it
 does not change the npm package. Docs, tests, CI, and internal changes with no
-effect on users or delivered artifacts generally need no release note.
+effect on users or delivered artifacts generally need no release note. Skill
+edits with no such effect need no changeset.
 
 This is guidance, not an enforced repository policy. Inspect the current
 `.changeset/` entries, relevant history, and release PR when deciding.
 
-## File
+## Recommendation, draft, or file
 
-For a new entry, use one file per logical change in `.changeset/`:
+- **Recommendation:** State whether the change needs a changeset and why.
+- **Draft:** Return the complete Markdown content without writing a file.
+- **File creation:** Write only when explicitly requested. Inspect existing
+  entries first; do not duplicate the same logical change.
 
-```
-.changeset/<slug>.md
-```
-
-Existing entries use both descriptive slugs and `cncjs-pr-<number>` names. Do
-not invent a PR number or duplicate an entry for the same change. Multiple
-independent changes in one PR need not be forced into a single entry.
-`@changesets/cli` is installed; `yarn changeset` can create the file.
+Use `.changeset/<descriptive-slug>.md` without a verified PR number. For a
+known PR, use `.changeset/cncjs-pr-<number>.md` if that path is free. If another
+independent logical change on the same PR already uses it, use a descriptive
+slug. Never invent a PR number or create a PR to get one.
 
 ## Format
 
