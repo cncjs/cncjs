@@ -64,6 +64,17 @@ const isValidController = (controller) => (
     caseInsensitiveEquals(TINYG, controller)
 );
 
+const mergePorts = (detectedPorts, configuredPorts) => {
+  // Configured entries override metadata while preserving first-seen path order.
+  const portsByPath = new Map();
+  detectedPorts.forEach(port => portsByPath.set(port.path, port));
+  configuredPorts.forEach(port => {
+    const existingPort = portsByPath.get(port.path);
+    portsByPath.set(port.path, existingPort ? Object.assign({}, existingPort, port) : port);
+  });
+  return Array.from(portsByPath.values());
+};
+
 class ServiceEngine {
   controllerClass = {};
 
@@ -263,7 +274,7 @@ class ServiceEngine {
             occupiedPorts.push({ path: path });
           });
 
-          const ports = [].concat(availablePorts).concat(userDefinedPorts)
+          const ports = mergePorts(availablePorts, userDefinedPorts)
             .filter(port => !!port.path)
             .map(port => {
               const { path, manufacturer } = { ...port };
