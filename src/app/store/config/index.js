@@ -24,11 +24,13 @@ const cnc = {
 
 const config = new EventEmitterStore(defaultState);
 
+// Embedded browsers may identify as Electron without exposing desktop IPC.
+const useElectronConfig = isElectron() && typeof window.require === 'function';
+
 config.toJSONString = async () => {
   let content = '';
 
-  // Check whether the code is running in Electron renderer process
-  if (isElectron()) {
+  if (useElectronConfig) {
     const electron = window.require('electron');
     content = await electron.ipcRenderer.invoke('read-user-config');
   } else {
@@ -54,8 +56,7 @@ config.persist = async (data) => {
   try {
     const value = JSON.stringify(data, null, 2);
 
-    // Check whether the code is running in Electron renderer process
-    if (isElectron()) {
+    if (useElectronConfig) {
       const electron = window.require('electron');
       await electron.ipcRenderer.invoke('write-user-config', value);
     } else {
