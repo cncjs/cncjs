@@ -1,13 +1,7 @@
 # CNCjs contributor skills
 
-These skills describe this checkout. Start with `skills/<name>/SKILL.md` and
-read only the references selected by its routing table. Source paths are
-repository-relative; `references/` links are relative to the skill directory.
-`AGENTS.md` is the shared instruction entry point; `CLAUDE.md` imports it.
-
-Codex and omp discover the relative links in `.agents/skills/`; Claude Code
-discovers the links in `.claude/skills/`. Both point to the same directories.
-Edit the physical skill directory, not the discovery links.
+These skills describe this checkout. `AGENTS.md` is the shared instruction
+entry point; `CLAUDE.md` imports it.
 
 | Skill | Use it for |
 | --- | --- |
@@ -21,6 +15,37 @@ Edit the physical skill directory, not the discovery links.
 Keep safety and authorization requirements visible in each entry. Controller
 skills own protocol and command/state contracts; workspace skills own widget
 layout and persistence. Load both when a change crosses those boundaries.
+
+## Layout
+
+```text
+skills/<name>/
+├── SKILL.md
+└── references/          # optional, for task-specific detail
+.agents/skills/<name>    # relative link to skills/<name>/
+.claude/skills/<name>    # relative link to skills/<name>/
+```
+
+Keep the entry point and its references together. Put triggers, safety rules,
+and task routing in `SKILL.md`. Keep procedures needed only for specific tasks
+in `references/` and link them directly from the entry. Source paths are
+repository-relative; reference links are skill-relative.
+
+## Use a local checkout without installation
+
+Start the client from the CNCjs checkout. Both discovery directories point to
+the same six contributor skills; edit the canonical files, not the adapters.
+
+- **Claude Code:** `.claude/skills/<name>` (for example, `/cncjs-pr`).
+- **Codex:** `.agents/skills/<name>` (for example, `$cncjs-pr`).
+- **omp:** native checkout discovery (for example, `skill://cncjs-pr`).
+
+## Maintain and verify
+
+Check that both adapters resolve to each canonical skill and that each
+reference is linked directly from its entry. Then read the changed entry and
+one routed reference in the target client. Link checks alone do not prove
+client discovery.
 
 ## Future marketplace
 

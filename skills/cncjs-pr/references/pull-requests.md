@@ -15,6 +15,19 @@ inspect its base-to-head diff; a working-tree diff does not replace it. Use the
 base from actual PR metadata when available, and report an unconfirmed target
 instead of choosing a branch without evidence.
 
+## Drafting workflow
+
+1. **Establish scope.** Identify the intended repository, head, and base from
+   the request or existing PR metadata. Separate the requested change from
+   unrelated work and note any target or scope you cannot verify.
+2. **Classify the change.** Identify affected user behavior, controller or
+   runtime boundaries, compatibility impact, and changed release artifacts.
+3. **Draft.** Write the title and body from the evidence. If a release note is
+   warranted, assess the bump and draft it using [Changesets](changesets.md).
+4. **Review.** Apply the checklist below. Return draft text unless delivery is
+   requested. For authorized delivery, confirm the repository, head and base
+   before submitting, and report the actual PR URL and target.
+
 ## Commit and PR title
 
 Use a conventional commit subject:
@@ -35,6 +48,8 @@ after the colon, no trailing period, and a subject short enough to scan.
   `visualizer`, `webcam`, and `widgets/Axes`.
 - Wrap identifiers, paths, and option names in backticks when it improves
   scanning; do not wrap the whole subject.
+- Name the changed behavior, not the fact that a change occurred. Prefer
+  `fix(webcam): retain the selected camera on reconnect` to `fix: fix webcam`.
 
 Controller scopes follow the change, not the file location alone:
 
@@ -68,8 +83,9 @@ docs: list the WHB04B-6 WebHID pendant (#1023)
 
 ## PR body
 
-Always include `Summary` and `Testing`. Add `Changes` for multiple areas and
-`Migration` for breaking changes.
+Always include `Summary` and `Testing`. Add `Changes` for multiple areas,
+`Motivation` when the reason is not apparent, and `Migration` for breaking
+changes.
 
 ```markdown
 ## Summary
@@ -87,13 +103,13 @@ One to three sentences describing the change and the user-visible effect.
 - Coverage added or updated.
 - What was not run, if that matters.
 
+## Motivation
+
+Why the change is needed, if the summary does not already explain it.
+
 ## Migration
 
-Before/after usage for a breaking change.
-
-## Breaking Changes
-
-What breaks and what callers must do.
+What breaks and what callers must do. Show before and after where useful.
 ```
 
 Rules:
@@ -101,10 +117,14 @@ Rules:
 - Describe behavior, not a file-by-file diff dump.
 - Link only confirmed issues. Use a closing reference such as `Closes #NNN`
   only when the change resolves the issue.
+- Link a confirmed related PR or prerequisite with `Related:` or `Depends on:`;
+  do not use a closing reference for a dependency or a partial fix.
 - State the reason for non-obvious changes, especially safety, compatibility,
   and controller-protocol behavior.
 - List only verification that was actually performed, such as `yarn lint`,
   `yarn test`, or `yarn build`; do not claim CI results you did not observe.
+  If no checks ran, say so. Separate local checks, CI, simulator results,
+  and physical-controller testing.
 - Include a migration section for renamed/removed APIs, changed defaults, or
   changed on-disk/runtime requirements.
 - Do not add generated checklists, invented demo links, or claims about CI.

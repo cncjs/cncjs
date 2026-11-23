@@ -24,6 +24,8 @@ Source paths are repository-relative; reference links are skill-relative.
 - Drafting authorizes no source edits, commits, pushes, or GitHub writes.
   PR or label updates, workflow dispatch, and publishing also require
   explicit authorization for the exact action.
+- Draft changeset content before a PR exists if useful, but create the file
+  only when requested and the existing PR number has been verified.
 - Do not hand-edit generated versions, changelogs, lockfiles, or release
   metadata, or delete changesets to alter a release.
 - Report observed checks only. Mocks, snapshots, and simulator runs are not
