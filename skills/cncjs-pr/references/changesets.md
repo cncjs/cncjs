@@ -37,10 +37,9 @@ Use `.changeset/cncjs-pr-<number>.md` for a single entry. For separate logical
 changes in the same PR, use `.changeset/cncjs-pr-<number>-<slug>.md` for
 additional entries; keep any existing valid entry as is.
 
-For example, `.changeset/cncjs-pr-1028-color-mode.md` and
-`.changeset/cncjs-pr-1028-browser-workspace-storage.md` are historical numbered
-entries for distinct changes. Random generator names and unnumbered slugs are
-not the convention for new files. Do not rename valid historical entries.
+For example, `.changeset/cncjs-pr-1000-camera-reconnect.md`. Do not use randomly
+generated names or unnumbered slugs for new files, and do not rename valid
+historical entries.
 
 ## Format
 
