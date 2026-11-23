@@ -1,4 +1,4 @@
-import { faCodeBranch, faCompress, faCopy, faEraser, faExpand } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faCompress, faCopy, faEraser, faExpand, faCog, faObjectGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
@@ -43,6 +43,15 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                 {i18n._('Console')}
               </Widget.Title>
               <Widget.Controls className={sortable.filterClassName}>
+                <Button
+                  className={widgetStyles.widgetButton}
+                  aria-label={i18n._('Console Settings')}
+                  title={i18n._('Console Settings')}
+                  onClick={() => emitter.emit('terminal:settings')}
+                  sx={{ border: 0, borderRadius: 0, minHeight: 0, color: 'inherit', backgroundColor: 'inherit' }}
+                >
+                  <FontAwesomeIcon icon={faCog} fixedWidth aria-hidden="true" />
+                </Button>
                 <Button
                   className={widgetStyles.widgetButton}
                   sx={{
@@ -135,13 +144,7 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                       value: 'selectAll',
                       label: (
                         <>
-                          <i
-                            aria-hidden="true"
-                            className={cx(
-                              styles.icon,
-                              styles.selectAll
-                            )}
-                          />
+                          <FontAwesomeIcon icon={faObjectGroup} fixedWidth aria-hidden="true" />
                           <Space width="2x" />
                           {i18n._('Select All')}
                         </>

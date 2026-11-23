@@ -24,14 +24,13 @@
     overflow-y: hidden;
 }
 
-.icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-    margin: 0 2px 2px 2px;
-
-    &.select-all {
-        background: url("./images/select-all.svg") no-repeat 0 0;
+.terminal-container {
+    :global {
+        .ps__rail-y {
+            background-color: var(--terminal-bg);
+        }
+        .ps__thumb-y {
+            background-color: var(--terminal-thumb);
+        }
     }
 }

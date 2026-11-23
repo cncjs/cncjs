@@ -13,6 +13,7 @@ import { parse as parseCookie } from '@app/lib/cookie-parser';
 import log from '@app/lib/log';
 import reduxStore from '@app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from '@app/containers/app/actions';
+import { normalizeConsoleColors } from '@app/widgets/Console/settings';
 import EventEmitterStore from './EventEmitterStore';
 import defaultState from './defaultState';
 import { hydrateConfig } from './hydration';
@@ -118,6 +119,12 @@ const normalizeState = (state) => {
       _set(state, 'widgets.axes.axes', defaultAxes);
     }
   }
+
+  Object.entries(state.widgets).forEach(([widgetId, widgetConfig]) => {
+    if ((widgetId === 'console' || widgetId.startsWith('console:')) && widgetConfig) {
+      normalizeConsoleColors(widgetConfig);
+    }
+  });
 
   return state;
 };
