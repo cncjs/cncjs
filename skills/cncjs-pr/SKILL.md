@@ -14,13 +14,18 @@ Source paths are repository-relative; reference links are skill-relative.
 
 ## Baseline and authorization
 
-- Inspect the actual diff, recent history, and relevant `.changeset/` entries.
-  Do not describe work from a user summary alone.
-- Identify the change type, intended PR target, published-package impact,
-  breaking changes, and verification actually performed. Read the current
-  checkout's configuration and workflows; do not infer or silently retarget it.
-- Commit, push, PR/label updates, and publishing require the user's explicit
-  authorization for that action. Drafting text does not grant that permission.
+- Before drafting, inspect working-tree status, the relevant staged and
+  unstaged diffs or base-to-head diff, recent CNCjs history, and relevant
+  `.changeset/` entries. Do not describe work from a user summary alone.
+- Use actual PR metadata to identify the intended base when available.
+  Otherwise report the target as unconfirmed; do not silently pick a branch.
+  Identify the change type, published-package impact, breaking changes, and
+  verification actually performed.
+- Drafting authorizes no source edits, commits, pushes, or GitHub writes.
+  PR or label updates, workflow dispatch, and publishing also require
+  explicit authorization for the exact action.
+- Draft changeset content before a PR exists if useful, but create the file
+  only when requested and the existing PR number has been verified.
 - Do not hand-edit generated versions, changelogs, lockfiles, or release
   metadata, or delete changesets to alter a release.
 - Report observed checks only. Mocks, snapshots, and simulator runs are not
@@ -37,13 +42,13 @@ describe an already-verified change.
 | Commit subject, PR title, PR references, or PR body | [Pull requests](references/pull-requests.md) |
 | Deciding whether a changeset is needed, naming, format, or bump type | [Changesets](references/changesets.md) |
 | Performing version or release maintenance, rather than drafting its description | `cncjs-version` |
-| Implementing or verifying controller, widget, or translated behavior | The corresponding specialized CNCjs skill |
+| Implementing or verifying controller, widget, or translated behavior | `cncjs-controller`, `cncjs-workspace`, or `cncjs-i18n` as applicable |
 
 ## Completion
 
 - Text matches the actual change, with no invented results, links, or CI claims.
 - Breaking changes include migration guidance.
-- Published-package changes carry the appropriate changeset; docs-only,
-  test-only, CI-only, and internal work do not.
+- Assess whether the change affects users or release artifacts and recommend an
+  appropriate changeset; a CI-only change can affect packaged releases.
 - State any unverified behavior. Do not perform unauthorized repository or
   external writes.

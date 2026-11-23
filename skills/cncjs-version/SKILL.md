@@ -15,21 +15,35 @@ Source paths are repository-relative; reference links are skill-relative.
 
 ## Baseline and authorization
 
-- Publish, tag, push, deploy, artifact upload, Docker push, and GitHub releases
-  require the user's explicit authorization for that exact action.
+- Before running commands, classify the task as dependency, runtime or
+  packaging, or release work. Explanation and audit are read-only; they do
+  not authorize execution.
+- For release work, read `.changeset/config.json`, `package.json` scripts,
+  and the relevant `.github/workflows/` files at the ref in question.
+  Distinguish Changesets `baseBranch`, the workflow trigger, the job's
+  repository guard, and the intended execution ref.
+- Publish, tag, push, deploy, artifact upload, Docker push, GitHub release, and
+  workflow dispatch require the user's explicit authorization for that exact
+  action.
 - Never run publish commands as a verification step.
-- Do not hand-edit generated package versions, `src/package.json`, changelog
-  release sections, `yarn.lock`, or release metadata. Do not change release
-  branch policy without an explicit release-process decision.
+- Builds can overwrite synchronized manifest fields and locale resources or
+  delete generated outputs. Inspect affected paths first; ask before deleting
+  existing generated or untracked data unless that exact deletion was
+  authorized. See [Runtime and packaging](references/runtime-and-packaging.md).
+- Do not hand-edit generated package versions, synchronized fields of
+  `src/package.json`, changelog release sections, `yarn.lock`, or release
+  metadata. Other desktop-manifest fields are maintained in `src/package.json`;
+  see [Dependencies](references/dependencies.md). Do not change release branch
+  policy without an explicit release-process decision.
 - Never restate Node.js version numbers in skills. Read `package.json`
   `engines.node` and the README supported-versions table as the sources of truth.
-- Use the pinned Yarn tooling and the owning generation or release workflow,
+- Use the pinned Yarn tooling and the workflow that owns versioning or release,
   not remembered versions or manual edits.
 
 ## Route by task
 
-Read the matching reference before changing files; combine routes only when the
-change spans responsibilities.
+Read the matching reference before acting; combine routes only when the task
+spans responsibilities.
 
 | When the task involves | Read |
 | --- | --- |
@@ -40,11 +54,15 @@ change spans responsibilities.
 
 ## Completion
 
-- Check affected sources agree: root package metadata, generated
-  `src/package.json`, simulator engines, Dockerfile, CI runtime matrices, and
-  README support tables as applicable. Release notes come from changesets.
-- User-visible support, packaging, or shipped-dependency changes have a
-  changeset explaining the reason.
+- Check affected sources agree: root package metadata, synchronized desktop
+  manifest fields, simulator engines, Dockerfile, CI runtime and architecture
+  settings, and README tables as applicable. Electron's bundled runtime is
+  separate from the root Node.js engine.
+- Assess a changeset for user-visible support, packaging, shipped-dependency,
+  or CI artifact changes; see `cncjs-pr` for observed practice.
+- For release work, separate configuration inspection, review of the generated
+  version PR, and proof of publication and artifacts. Each answers a different
+  question; one cannot substitute for another.
 - Run checks appropriate to the changed boundary and report their observed
   results. Do not imply CI, release, or artifact verification that did not run.
 - No external release action was performed without authorization.

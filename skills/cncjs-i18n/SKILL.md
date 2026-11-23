@@ -5,45 +5,33 @@ description: Run the CNCjs localization workflow, including string extraction, t
 
 # CNCjs localization
 
-## Scope
+Source paths are repository-relative; reference links are skill-relative.
 
-Check the requested languages and affected namespaces first. `build.config.js` is
-the language inventory. Frontend resources are in `src/app/i18n/<language>/`;
-server resources are in `src/server/i18n/<language>/`. Compare with English and
-nearby usages before changing keys. Keep interpolation tokens, punctuation, and
-meaning consistent; do not invent translations when uncertain. Report untranslated
-or unverified entries explicitly.
+## Baseline and authorization
 
-## Extract and translate
+- Read the English text and nearby usages first. Keep meaning, punctuation,
+  and `{{...}}` interpolation consistent. Do not invent translations.
+- Keep human-readable keys in locale files. Frontend `gcode` and `resource`
+  keys are hashed at runtime, not in the JSON files.
+- Check the working tree and preserve existing edits. Scanners rewrite locale
+  files and can delete keys; builds can overwrite manifests and delete
+  outputs. Never run scanners or builds simply to validate translations.
+- Do not start the user's normal server or use hardware for verification.
 
-1. Use the existing `i18n._` / `i18n.__` patterns at the call site. Check the
-   relevant scanner configuration for supported syntax and namespace behavior.
-2. When source strings have changed, run the applicable scanner from the project
-   root. These commands write locale files; inspect existing changes first.
+## Route by task
 
-   ```sh
-   yarn i18next-scanner --config i18next-scanner.app.config.js 'src/app/**/*.{html,js,jsx}' '!src/app/i18n/**' '!**/node_modules/**'
-   yarn i18next-scanner --config i18next-scanner.server.config.js 'src/server/**/*.{html,js,jsx}' '!src/server/i18n/**' '!**/node_modules/**'
-   ```
+Read only the references for the requested work, before editing or checking.
 
-3. Review generated changes. The frontend scanner uses the key as English and an
-   empty value for other languages; the server scanner inserts `__L10N__` for new
-   entries. Replace placeholders where translations are in scope. Do not overwrite
-   existing translations without checking their context.
-4. The scanners cover the namespaces listed in their configs, not every resource.
-   For other files, including frontend `controller.json`, maintain the corresponding
-   keys manually across the relevant locales. Scanners retain unused keys: check
-   usages before removing any key.
+| When the task involves | Read |
+| --- | --- |
+| Adding or changing a string in source | [Extraction](references/extraction.md) and [Validation](references/validation.md) |
+| Translation-only updates or completeness checks | [Validation](references/validation.md) |
+| Adding or removing a supported language | [Extraction](references/extraction.md) and [Validation](references/validation.md) |
 
-## Validate
+## Completion
 
-1. Run `yarn i18nlint` for JSON syntax. It does not check completeness, key parity,
-   placeholder consistency, or translation quality.
-2. Compare affected locale keys against English, including nested keys and plural or
-   context variants. Check that interpolation tokens match and find empty strings or
-   `__L10N__` in the changed scope. Distinguish pre-existing gaps from new ones.
-3. Review translations in context, and run the relevant frontend or server tests.
-   For visible UI changes, verify the affected languages in the running application
-   where practical; record any languages or checks not verified.
-4. Inspect the full scanner diff for unrelated changes and preserve pre-existing
-   edits. Report missing translations instead of treating valid JSON as completion.
+- Check affected locale keys and placeholders against English, and check that
+  changed call sites agree with their resources.
+- Report JSON syntax checks and applicable tests or actual UI evidence.
+- Report untranslated entries, pre-existing gaps, and any languages or
+  behaviors not verified. A completeness audit does not authorize edits.
