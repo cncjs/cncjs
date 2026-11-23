@@ -1,8 +1,32 @@
 # Pull request and commit text
 
-Covers commit subjects, PR references, and PR bodies. Assume the actual diff and
-verification have already been inspected; do not describe work from a summary
-alone.
+Covers commit subjects, PR titles, references, and bodies. Start with read-only
+working-tree and history evidence:
+
+```sh
+rtk git status --short
+rtk git diff HEAD
+rtk git log -10 --oneline
+```
+
+`git diff HEAD` shows tracked staged and unstaged changes, not untracked files.
+Inspect relevant untracked files separately. For an already-committed PR,
+inspect its base-to-head diff; a working-tree diff does not replace it. Use the
+base from actual PR metadata when available, and report an unconfirmed target
+instead of choosing a branch without evidence.
+
+## Drafting workflow
+
+1. **Establish scope.** Identify the intended repository, head, and base from
+   the request or existing PR metadata. Separate the requested change from
+   unrelated work and note any target or scope you cannot verify.
+2. **Classify the change.** Identify affected user behavior, controller or
+   runtime boundaries, compatibility impact, and changed release artifacts.
+3. **Draft.** Write the title and body from the evidence. If a release note is
+   warranted, assess the bump and draft it using [Changesets](changesets.md).
+4. **Review.** Apply the checklist below. Return draft text unless delivery is
+   requested. For authorized delivery, confirm the repository, head and base
+   before submitting, and report the actual PR URL and target.
 
 ## Commit and PR title
 
@@ -24,6 +48,8 @@ after the colon, no trailing period, and a subject short enough to scan.
   `visualizer`, `webcam`, and `widgets/Axes`.
 - Wrap identifiers, paths, and option names in backticks when it improves
   scanning; do not wrap the whole subject.
+- Name the changed behavior, not the fact that a change occurred. Prefer
+  `fix(webcam): retain the selected camera on reconnect` to `fix: fix webcam`.
 
 Controller scopes follow the change, not the file location alone:
 
@@ -40,9 +66,10 @@ Read `cncjs-controller` before changing a controller or its widget.
 ### PR references
 
 Put the PR number at the end of the subject as `(#123)`, with one space before
-it. Use it only when the commit is the merged PR commit; GitHub adds it on
-squash merge, so do not add it twice. Release PR merges carry it the same way,
-for example `chore(release): version packages (#1009)`. Backports keep their own
+it. Use it only for the merged squash commit, never for a PR title or an
+ordinary commit subject. GitHub adds it on squash merge, so do not add it twice.
+Release PR merges follow the same pattern, for example
+`chore(release): version packages (#1009)`. Backports keep their own
 number and name the original PR or commit in the body. Never guess a PR number:
 read it from the PR URL or the repository metadata.
 
@@ -56,13 +83,14 @@ docs: list the WHB04B-6 WebHID pendant (#1023)
 
 ## PR body
 
-Use only the sections that help the reviewer:
+Always include `Summary` and `Testing`. Add `Changes` for multiple areas,
+`Motivation` when the reason is not apparent, and `Migration` for breaking
+changes.
 
 ```markdown
 ## Summary
 
-Closes #NNN (if applicable). One to three sentences describing the change and
-the user-visible effect.
+One to three sentences describing the change and the user-visible effect.
 
 ## Changes
 
@@ -75,33 +103,39 @@ the user-visible effect.
 - Coverage added or updated.
 - What was not run, if that matters.
 
+## Motivation
+
+Why the change is needed, if the summary does not already explain it.
+
 ## Migration
 
-Before/after usage for a breaking change.
-
-## Breaking Changes
-
-What breaks and what callers must do.
+What breaks and what callers must do. Show before and after where useful.
 ```
 
 Rules:
 
 - Describe behavior, not a file-by-file diff dump.
+- Link only confirmed issues. Use a closing reference such as `Closes #NNN`
+  only when the change resolves the issue.
+- Link a confirmed related PR or prerequisite with `Related:` or `Depends on:`;
+  do not use a closing reference for a dependency or a partial fix.
 - State the reason for non-obvious changes, especially safety, compatibility,
   and controller-protocol behavior.
 - List only verification that was actually performed, such as `yarn lint`,
   `yarn test`, or `yarn build`; do not claim CI results you did not observe.
+  If no checks ran, say so. Separate local checks, CI, simulator results,
+  and physical-controller testing.
 - Include a migration section for renamed/removed APIs, changed defaults, or
   changed on-disk/runtime requirements.
 - Do not add generated checklists, invented demo links, or claims about CI.
-- If the change affects a widget, controller, or translation flow, follow the
-  corresponding specialized skill for the details rather than repeating them.
+- Use the relevant specialized skill to implement or verify a widget,
+  controller, or localization change, not just to draft its PR text.
 
 ## Completion checklist
 
 - [ ] Title follows `<type>(<scope>): <description>` and the observed style.
 - [ ] The description says what changed and why, not just where.
 - [ ] Controller scopes match the actual affected controller(s).
-- [ ] PR reference is present only when it is the merged PR commit.
+- [ ] Subject suffix `(#NNN)` is present only on the merged squash commit.
 - [ ] Body lists real verification; no fabricated results.
 - [ ] Breaking changes include migration guidance.

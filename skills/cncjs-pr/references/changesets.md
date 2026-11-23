@@ -10,23 +10,36 @@ Recommend a changeset for a user-visible feature, fix, dependency, support, or
 packaging change. Assess the delivered effect rather than only the paths changed:
 a CI-only change can alter desktop or container release artifacts even when it
 does not change the npm package. Docs, tests, CI, and internal changes with no
-effect on users or delivered artifacts generally need no release note.
+effect on users or delivered artifacts generally need no release note. Skill
+edits with no such effect need no changeset.
 
-This is guidance, not an enforced repository policy. Inspect the current
-`.changeset/` entries, relevant history, and release PR when deciding.
+The impact and bump guidance are not enforced by automation. Inspect the
+current `.changeset/` entries, relevant history, and release PR when deciding.
+`CONTRIBUTING.md` describes the PR-first submission sequence; the
+`cncjs-version` skill owns release automation and generated files.
 
-## File
+## Recommendation, draft, or file
 
-For a new entry, use one file per logical change in `.changeset/`:
+- **Recommendation:** State whether the change needs a changeset and why.
+- **Draft:** Return the complete Markdown content without writing a file.
+- **File creation:** Write only when explicitly requested and the PR already
+  exists with a verified number. Inspect existing entries first; do not
+  duplicate the same logical change.
 
-```
-.changeset/<slug>.md
-```
+If there is no verified number, provide the content draft and state why no
+file was created. Do not create a placeholder or open a PR just to get a
+number. For an independently authorized PR that needs a changeset, open
+the PR without it, then add the numbered file on the same branch if requested.
+This follows the PR-first timing used by Tonic UI and Tonic One; their file
+naming and one-file limit do not apply to CNCjs.
 
-Existing entries use both descriptive slugs and `cncjs-pr-<number>` names. Do
-not invent a PR number or duplicate an entry for the same change. Multiple
-independent changes in one PR need not be forced into a single entry.
-`@changesets/cli` is installed; `yarn changeset` can create the file.
+Use `.changeset/cncjs-pr-<number>.md` for a single entry. For separate logical
+changes in the same PR, use `.changeset/cncjs-pr-<number>-<slug>.md` for
+additional entries; keep any existing valid entry as is.
+
+For example, `.changeset/cncjs-pr-1000-camera-reconnect.md`. Do not use randomly
+generated names or unnumbered slugs for new files, and do not rename valid
+historical entries.
 
 ## Format
 
@@ -43,6 +56,8 @@ and no file is written.
 ```
 
 - Use the published package name and intended bump type in the frontmatter.
+- Write for users of the release: state what changes for them. Do not copy
+  the PR's test log or internal implementation checklist into the changelog.
 - Write a clear release-note summary and, where helpful, explain the reason and
   any compatibility or migration consequence.
 - Several existing entries start with a conventional-commit summary, but
@@ -70,6 +85,6 @@ sections, or delete changesets in a feature PR; see `cncjs-version`.
 
 - [ ] Changeset impact and bump were assessed against the actual change and
       release plan, including any affected release artifacts.
-- [ ] Any entry uses the right package, a clear summary, and no invented PR
-      number or duplicate entry.
+- [ ] Any file was requested, uses a verified existing PR number and the
+      published package, and does not duplicate an existing entry.
 - [ ] No version, changelog, lockfile, or release metadata was hand-edited.

@@ -6,10 +6,11 @@ release action.
 
 ## Workflow sources
 
-- Read `.changeset/config.json` (`baseBranch`, `changelog`, `access`) and the
-  current release workflows to determine the base branch, triggers, and
-  versioning flow for this checkout. Do not hard-code branch roles, PR targets,
-  or merge directions in shared skills.
+- Read `.changeset/config.json` (`baseBranch`, `changelog`, `access`),
+  `package.json` scripts, and the relevant `.github/workflows/` files at the
+  ref being assessed. Changesets `baseBranch` does not define the push
+  trigger; the repository guard is separate from both the trigger and the
+  intended ref. Do not hard-code branch roles, PR targets, or merge directions.
 - Follow the workflow that owns versioning, not old manual
   `chore(release): publish` history or a policy copied from another branch.
 - Root `package.json` owns the published version. `yarn package-sync` updates
@@ -39,16 +40,18 @@ release action.
    release behavior pushes it and creates a GitHub release. Check the action
    configuration and run logs, and verify publication, remote tag, and release
    separately. Do not assume every step succeeded.
-5. `ci.yml` is configured for tag pushes; `ci-docker-hub.yml` is configured for
-   `v*` tag pushes. Their jobs build desktop assets and a multi-architecture
-   container respectively, but a matching ref alone does not prove a run
-   occurred or an artifact was published.
+5. When `steps.changesets.outputs.published == 'true'`, `Determine published
+   tag` reads the `published-packages` output, finds `cncjs`, and derives
+   `v${pkg.version}`. `Dispatch desktop release` and `Dispatch Docker release`
+   explicitly dispatch `ci.yml` and `ci-docker-hub.yml` at that tag. Those
+   workflows also listen for tag pushes, but a matching ref alone does not
+   prove either ran or published its artifacts.
 
 **Token-trigger caveat:** `ci-release` uses the repository `GITHUB_TOKEN`.
 GitHub normally suppresses workflow runs from its push events, including a tag
-the action pushes, so do not assume that tag will launch either packaging
-workflow. An action-created or updated PR's `pull_request` checks may require
-approval. See GitHub's
+the action pushes. That is why the explicit dispatches matter. An
+action-created or updated PR's `pull_request` checks may require approval.
+See GitHub's
 [workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow).
 Inspect the actual runs and tag before diagnosing or deciding how to proceed.
 
@@ -82,10 +85,13 @@ make it match.
 
 ## Verification
 
-- Inspect the release PR diff and confirm the expected files changed.
-- Check the actual publish, tag, release, desktop workflow, and Docker workflow
-  runs and assets as relevant; distinguish configured behavior from observed
-  outcomes.
+- To verify intended behavior, inspect configuration and scripts at the
+  relevant ref. To verify versioning, inspect the generated release PR diff.
+- For release outcome, verify the exact `cncjs` version in npm, the remote
+  tag, and the GitHub release independently. Inspect each dispatch step in
+  `ci-release` and its corresponding run for that tag. Check desktop release
+  assets and the published Docker image independently; successful dispatch or
+  a green build is not proof that those artifacts are available.
 - Report exactly which checks ran; do not claim CI, release, or artifact results
   you did not observe.
 
@@ -93,13 +99,18 @@ make it match.
 
 - **Release PR not opened:** check pending changesets, the `ci-release` run,
   trigger, repository guard, and action permissions; fork jobs are skipped.
-- **Tag or assets missing:** inspect the publish action's logs, remote tag, and
-  matching packaging workflow runs, including the `GITHUB_TOKEN` event caveat.
-  Do not create a replacement tag or dispatch a workflow without authorization.
-- **npm published but no tag:** inspect Changesets' tag creation and the
-  action's tag push in the release run; do not tag manually.
-- **Docker image missing:** check the matching `ci-docker-hub` run and the
-  production artifact it consumes; do not push a replacement image.
+- **npm version or remote tag missing:** inspect the publish action logs,
+  registry result, and tag creation and push. A missing result is diagnostic,
+  not permission to publish or create a replacement tag.
+- **npm published but assets or image missing:** check the tag derivation,
+  both dispatch steps, and their matching runs at the published tag. If a
+  dispatch succeeded, inspect its run for build or upload failures; for Docker,
+  check the production artifact it consumes. Do not push replacement artifacts.
+- **Dispatch failed after publication:** `.changeset/README.md` directs you
+  to dispatch only the failed workflow with the existing release tag, and
+  only with explicit authorization for that exact dispatch. Docker also
+  updates `latest`. Do not rerun publication as recovery; an already published
+  version may not trigger another dispatch.
 - **Version PR shows an unexpected bump:** check the changeset bump types and
   the current version on the release branch; fix the changesets before merging,
   not the generated version.
