@@ -139,10 +139,15 @@ class ConsoleWidget extends PureComponent {
         this.setState({ ...initialState });
       },
       'serialport:write': (data, context) => {
-        const { source, __sender__ } = { ...context };
+        const { source, __sender__, echo } = { ...context };
 
         if (__sender__ === this.senderId) {
           // Do not write to the terminal console if the sender is the widget itself
+          return;
+        }
+
+        if (echo === false) {
+          // The sender asked not to be echoed (e.g. a pendant bridge sending many small jogs, or other client performing noisy operation)
           return;
         }
 
