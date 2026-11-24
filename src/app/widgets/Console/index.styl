@@ -9,7 +9,39 @@
         .terminal-container {
             height: 100%;
         }
+
+        // With the command input shown, the terminal takes the height that is left
+        .console {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            .terminal-container {
+                flex: 1 1 auto;
+                height: auto;
+                min-height: 0;
+            }
+        }
     }
+}
+
+.command-input {
+    display: flex;
+    padding: 5px;
+
+    input {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    button {
+        margin-left: 5px;
+    }
+}
+
+// Toolbar button state while the command input is shown
+.toggle-active {
+    color: var(--color-primary, #0275d8);
 }
 
 .no-serial-connection {

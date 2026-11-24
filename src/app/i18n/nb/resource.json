@@ -679,5 +679,9 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Denne historikkoppføringen passer ikke i terminalbredden. Skriv kommandoen på nytt eller øk antall kolonner i konsollinnstillingene for å hente den frem.",
   "Finish or clear the command you are typing before changing the number of columns.": "Fullfør eller slett kommandoen du skriver før du endrer antall kolonner.",
   "Appearance": "Utseende",
-  "Color mode:": "Fargemodus:"
+  "Color mode:": "Fargemodus:",
+  "Enter a command": "Skriv inn en kommando",
+  "Send": "Send",
+  "Hide command input": "Skjul kommandofeltet",
+  "Show command input": "Vis kommandofeltet"
 }

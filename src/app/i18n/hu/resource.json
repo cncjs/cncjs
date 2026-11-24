@@ -679,5 +679,9 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Ez az előzményelem nem fér el a terminál szélességében. Írja át a parancsot, vagy növelje az Oszlopok értékét a konzol beállításaiban, hogy előhívhassa.",
   "Finish or clear the command you are typing before changing the number of columns.": "Fejezze be vagy törölje a most beírt parancsot, mielőtt módosítja az oszlopok számát.",
   "Appearance": "Megjelenés",
-  "Color mode:": "Színmód:"
+  "Color mode:": "Színmód:",
+  "Enter a command": "Adjon meg egy parancsot",
+  "Send": "Küldés",
+  "Hide command input": "Parancsbevitel elrejtése",
+  "Show command input": "Parancsbevitel megjelenítése"
 }

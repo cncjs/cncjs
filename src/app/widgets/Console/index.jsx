@@ -68,6 +68,23 @@ class ConsoleWidget extends PureComponent {
       clearAll: () => {
         this.terminal && this.terminal.clear();
       },
+      toggleCommandInput: () => {
+        const commandInput = !this.state.commandInput;
+        // Saved locally per device, like the other Console settings
+        this.config.set('commandInput', commandInput);
+        this.setState({ commandInput }, () => {
+          // The field changes the space left for the terminal
+          this.resizeTerminal();
+        });
+      },
+      // Commands from the command input field. Echo them first: commands from this widget are not written to the
+      // terminal by the 'serialport:write' handler.
+      sendCommand: (command) => {
+        if (this.terminal) {
+          this.terminal.writeln(chalk.white(this.terminal.prompt + command));
+        }
+        this.actions.onTerminalData(command + '\n');
+      },
       onTerminalData: (data) => {
         const context = {
           __sender__: this.senderId
@@ -193,6 +210,7 @@ class ConsoleWidget extends PureComponent {
         minimized: this.config.get('minimized', false),
         isFullscreen: false,
         port: controller.port,
+        commandInput: !!this.config.get('commandInput', false),
 
         // Terminal
         terminal: {
@@ -252,7 +270,7 @@ class ConsoleWidget extends PureComponent {
 
     render() {
       const { widgetId } = this.props;
-      const { minimized, isFullscreen } = this.state;
+      const { minimized, isFullscreen, commandInput } = this.state;
       const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
       const state = {
         ...this.state
@@ -274,6 +292,15 @@ class ConsoleWidget extends PureComponent {
               {i18n._('Console')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
+              <Widget.Button
+                aria-label={commandInput ? i18n._('Hide command input') : i18n._('Show command input')}
+                aria-pressed={commandInput}
+                title={commandInput ? i18n._('Hide command input') : i18n._('Show command input')}
+                className={cx({ [styles.toggleActive]: commandInput })}
+                onClick={actions.toggleCommandInput}
+              >
+                <i aria-hidden="true" className="fa fa-keyboard-o" />
+              </Widget.Button>
               <Widget.Button
                 aria-label={i18n._('Console Settings')}
                 title={i18n._('Edit')}

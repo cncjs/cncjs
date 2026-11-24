@@ -27,6 +27,7 @@ class TerminalWrapper extends PureComponent {
       tabStopWidth: PropTypes.number,
       background: PropTypes.string,
       textColor: PropTypes.string,
+      readOnly: PropTypes.bool,
       onData: PropTypes.func
     };
 
@@ -39,6 +40,7 @@ class TerminalWrapper extends PureComponent {
       tabStopWidth: 4,
       background: DEFAULT_BACKGROUND,
       textColor: DEFAULT_TEXT_COLOR,
+      readOnly: false,
       onData: () => {}
     };
 
@@ -60,6 +62,7 @@ class TerminalWrapper extends PureComponent {
     deferredResize = false;
     keyBacklog = [];
     drainTimer = null;
+    useCursorRowForOutput = false; // when input goes through text field, the last row holds output, otherwise it is empty and shows the cursor
 
     eventHandler = {
       onResize: () => {
@@ -263,12 +266,19 @@ class TerminalWrapper extends PureComponent {
       // processed sees a stale cursor and row: the last column can be overrun, and Enter could read an incomplete
       // command. Queue the keys and handle them one at a time, each after xterm has caught up.
       onKey: (key, event) => {
+        if (this.props.readOnly) {
+          // Commands are entered in the command input field
+          return;
+        }
         this.keyBacklog.push([key, event]);
         if (!this.drainTimer) {
           this.drainKeys();
         }
       },
       onPaste: (data, event) => {
+        if (this.props.readOnly) {
+          return;
+        }
         const { onData } = this.props;
         const lines = String(data).replace(/(\r\n|\r|\n)/g, '\n').split('\n');
         for (let i = 0; i < lines.length; ++i) {
@@ -444,7 +454,11 @@ class TerminalWrapper extends PureComponent {
       const el = ReactDOM.findDOMNode(this.terminalContainer);
       this.term.open(el);
       this.term.fit();
-      this.term.focus(false);
+      if (this.props.readOnly) {
+        this.applyReadOnly(true);
+      } else {
+        this.term.focus(false);
+      }
 
       this.term.setOption('lineHeight', 1.2);
       this.term.setOption('letterSpacing', 1);
@@ -541,6 +555,9 @@ class TerminalWrapper extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
+      if (this.props.readOnly !== prevProps.readOnly) {
+        this.applyReadOnly(this.props.readOnly);
+      }
       if (this.props.cols !== prevProps.cols || this.props.rows !== prevProps.rows) {
         const { cols, rows } = this.props;
         this.resize(cols, rows);
@@ -624,6 +641,14 @@ class TerminalWrapper extends PureComponent {
     }
 
     writeln(data) {
+      if (this.props.readOnly) {
+        // No prompt row while commands come from the command input field, and no empty row below the output:
+        // start each line on a new row instead of ending it with one
+        this.term.write(`${this.useCursorRowForOutput ? '\r\n' : '\x1b[2K\r'}${data}`);
+        this.useCursorRowForOutput = true;
+        return;
+      }
+
       const line = this.term.buffer.lines.get(this.term.buffer.ybase + this.term.buffer.y);
       const cursorX = this.term.buffer.x;
       let input = '';
@@ -640,6 +665,64 @@ class TerminalWrapper extends PureComponent {
       const restoreCursor = cursorLeft > 0 ? `\x1b[${cursorLeft}D` : '';
 
       this.term.write(`\x1b[2K\r${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`);
+    }
+
+    // While read-only, commands are entered in the command input field instead of the terminal: the terminal
+    // shows output only, without a prompt row or cursor. Keys and pastes are ignored (see onKey and onPaste), and
+    // inputmode="none" plus readOnly keep on-screen keyboards from opening when the terminal gets focus.
+    applyReadOnly(readOnly) {
+      if (!this.term) {
+        return;
+      }
+      const textarea = this.term.textarea;
+      if (readOnly) {
+        this.keyBacklog = [];
+        // Remove the prompt row (and any half-typed command) and hide the cursor
+        this.term.setOption('cursorBlink', false);
+        this.removePromptRow();
+        this.term.write('\x1b[?25l');
+        if (textarea) {
+          // Neither attribute alone is guaranteed to keep every on-screen keyboard closed
+          textarea.setAttribute('inputmode', 'none');
+          textarea.readOnly = true;
+          if (document.activeElement === textarea) {
+            textarea.blur();
+          }
+        }
+      } else {
+        // Bring back the cursor and a prompt row below the last output line
+        this.term.setOption('cursorBlink', this.props.cursorBlink);
+        const newRow = this.useCursorRowForOutput ? '\r\n' : '\x1b[2K\r';
+        this.term.write(`\x1b[?25h${newRow}${chalk.white(this.prompt)}`);
+        this.useCursorRowForOutput = false;
+        if (textarea) {
+          textarea.removeAttribute('inputmode');
+          textarea.readOnly = false;
+        }
+      }
+    }
+
+    // Read-only: drop the prompt row (and any half-typed command) and put the cursor at the end of the last output
+    // line above it, so the next output line and a later prompt row both go where the prompt row was
+    removePromptRow() {
+      const { term } = this;
+      const { buffer } = term;
+      const previous = buffer.y > 0 ? buffer.lines.get(buffer.ybase + buffer.y - 1) : null;
+      if (!previous) {
+        term.write('\x1b[2K\r');
+        this.useCursorRowForOutput = false;
+        return;
+      }
+      let end = 0;
+      for (let x = previous.length - 1; x >= 0; --x) {
+        if ((previous[x][1] || '').trim()) {
+          end = x + 1;
+          break;
+        }
+      }
+      // Erase the prompt row, move up one row, then to the column after the last character
+      term.write(`\x1b[2K\x1b[A\x1b[${end + 1}G`);
+      this.useCursorRowForOutput = true;
     }
 
     // Replace the input row by a notice and start a new prompt; nothing is sent

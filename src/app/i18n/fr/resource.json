@@ -680,5 +680,9 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Cette entrée de l’historique ne tient pas dans la largeur du terminal. Réécrivez la commande ou augmentez le nombre de colonnes dans les paramètres de la console pour la rappeler.",
   "Finish or clear the command you are typing before changing the number of columns.": "Terminez ou effacez la commande en cours de saisie avant de modifier le nombre de colonnes.",
   "Appearance": "Apparence",
-  "Color mode:": "Mode de couleur :"
+  "Color mode:": "Mode de couleur :",
+  "Enter a command": "Saisir une commande",
+  "Send": "Envoyer",
+  "Hide command input": "Masquer la saisie de commande",
+  "Show command input": "Afficher la saisie de commande"
 }
