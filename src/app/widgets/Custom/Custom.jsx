@@ -17,6 +17,7 @@ class Custom extends PureComponent {
     static propTypes = {
       config: PropTypes.object,
       disabled: PropTypes.bool,
+      fullscreen: PropTypes.bool,
       url: PropTypes.string,
       port: PropTypes.string
     };
@@ -39,6 +40,12 @@ class Custom extends PureComponent {
       if (nextProps.url !== this.props.url) {
         this.reload();
       }
+      if (nextProps.fullscreen !== this.props.fullscreen) {
+        // Let the iframe know, so that it can show more detail while the widget is full screen
+        this.postMessage('fullscreen', {
+          fullscreen: !!nextProps.fullscreen
+        });
+      }
       if (nextProps.port !== this.props.port) {
         // Post a message to the iframe window
         this.postMessage('change', {
@@ -55,6 +62,9 @@ class Custom extends PureComponent {
           this.postMessage('change', {
             port: controller.port,
             controller: controller.type
+          });
+          this.postMessage('fullscreen', {
+            fullscreen: !!this.props.fullscreen
           });
         }),
         pubsub.subscribe('message:resize', (type, payload) => {

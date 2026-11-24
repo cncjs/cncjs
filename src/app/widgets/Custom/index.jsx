@@ -37,8 +37,17 @@ class CustomWidget extends PureComponent {
 
     action = {
       toggleDisabled: () => {
-        const { disabled } = this.state;
-        this.setState({ disabled: !disabled });
+        // Enabling also expands the widget, and disabling collapses it and leaves full screen,
+        // since there is nothing to show anymore.
+        // Collapsing on its own (toggleMinimized) leaves the widget enabled.
+        this.setState(state => {
+          const disabled = !state.disabled;
+          return {
+            disabled: disabled,
+            minimized: disabled,
+            isFullscreen: disabled ? false : state.isFullscreen
+          };
+        });
       },
       toggleFullscreen: () => {
         const { minimized, isFullscreen } = this.state;
@@ -301,6 +310,7 @@ class CustomWidget extends PureComponent {
               }}
               config={config}
               disabled={state.disabled}
+              fullscreen={isFullscreen}
               url={state.url}
               port={state.port}
             />
