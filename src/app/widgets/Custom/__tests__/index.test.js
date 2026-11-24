@@ -38,7 +38,6 @@ jest.mock('../../WidgetConfig', () => {
   };
 });
 
-const React = require('react');
 const WidgetConfig = require('../../WidgetConfig');
 const CustomWidget = require('../index').default;
 
@@ -65,7 +64,7 @@ const mount = (initialConfig = {}) => {
   return widget;
 };
 
-const pick = ({ disabled, minimized }) => ({ disabled, minimized });
+const state = ({ state: { disabled, minimized, isFullscreen } }) => ({ disabled: !!disabled, minimized, isFullscreen });
 
 // Walk the element tree returned by render() and return the first element of the given type
 const findElement = (element, type) => {
@@ -87,37 +86,57 @@ const findElement = (element, type) => {
   return findElement(element.props && element.props.children, type);
 };
 
-describe('enable / disable', () => {
-  test('enabling a collapsed, disabled widget also expands it', () => {
+describe('enable switch', () => {
+  test('enabling a collapsed widget only switches it on, it stays collapsed', () => {
     const widget = mount({ disabled: true, minimized: true });
 
     widget.action.toggleDisabled();
 
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: true, isFullscreen: false });
   });
 
-  test('enabling a disabled widget that is already expanded keeps it expanded', () => {
+  test('enabling an expanded, disabled widget (after Expand All) keeps it expanded', () => {
     const widget = mount({ disabled: true, minimized: false });
 
     widget.action.toggleDisabled();
 
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: false });
   });
 
-  test('disabling an open widget also collapses it', () => {
+  test('disabling an open widget collapses it', () => {
     const widget = mount({ disabled: false, minimized: false });
 
     widget.action.toggleDisabled();
 
-    expect(pick(widget.state)).toEqual({ disabled: true, minimized: true });
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
   });
 
-  test('disabling a collapsed, enabled widget keeps it collapsed', () => {
+  test('disabling a collapsed widget keeps it collapsed', () => {
     const widget = mount({ disabled: false, minimized: true });
 
     widget.action.toggleDisabled();
 
-    expect(pick(widget.state)).toEqual({ disabled: true, minimized: true });
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
+  });
+
+  test('disabling a full screen widget leaves full screen and collapses it', () => {
+    const widget = mount({ disabled: false, minimized: false });
+    widget.action.toggleFullscreen();
+
+    widget.action.toggleDisabled();
+
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
+    expect(findElement(widget.render(), 'CustomContent').props).toMatchObject({ disabled: true, fullscreen: false });
+  });
+
+  test('enabling again after that does not bring back full screen or expand', () => {
+    const widget = mount({ disabled: false, minimized: false });
+    widget.action.toggleFullscreen();
+    widget.action.toggleDisabled();
+
+    widget.action.toggleDisabled();
+
+    expect(state(widget)).toEqual({ disabled: false, minimized: true, isFullscreen: false });
   });
 
   test('treats a widget with no saved disabled value as enabled', () => {
@@ -125,37 +144,33 @@ describe('enable / disable', () => {
 
     widget.action.toggleDisabled();
 
-    expect(pick(widget.state)).toEqual({ disabled: true, minimized: true });
-  });
-
-  test('a disable followed by an enable returns to an open, enabled widget', () => {
-    const widget = mount({ disabled: false, minimized: false });
-
-    widget.action.toggleDisabled();
-    widget.action.toggleDisabled();
-
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: false });
-  });
-
-  test('saves both values so the pairing survives a reload', () => {
-    const widget = mount({ disabled: true, minimized: true });
-
-    widget.action.toggleDisabled();
-    expect(WidgetConfig.values).toMatchObject({ disabled: false, minimized: false });
-
-    widget.action.toggleDisabled();
-    expect(WidgetConfig.values).toMatchObject({ disabled: true, minimized: true });
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
   });
 });
 
-describe('collapse / expand', () => {
+describe('collapse / expand button', () => {
+  test('expanding a disabled widget also enables it', () => {
+    const widget = mount({ disabled: true, minimized: true });
+
+    widget.action.toggleMinimized();
+
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: false });
+  });
+
+  test('expanding a disabled widget with no URL only expands it', () => {
+    const widget = mount({ disabled: true, minimized: true, url: '' });
+
+    widget.action.toggleMinimized();
+
+    expect(state(widget)).toEqual({ disabled: true, minimized: false, isFullscreen: false });
+  });
+
   test('collapsing an enabled widget does not disable it', () => {
     const widget = mount({ disabled: false, minimized: false });
 
     widget.action.toggleMinimized();
 
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: true });
-    expect(WidgetConfig.values.disabled).toBe(false);
+    expect(state(widget)).toEqual({ disabled: false, minimized: true, isFullscreen: false });
   });
 
   test('expanding a collapsed, enabled widget leaves it enabled', () => {
@@ -163,25 +178,44 @@ describe('collapse / expand', () => {
 
     widget.action.toggleMinimized();
 
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: false });
   });
 
-  test('expanding a disabled widget does not enable it', () => {
-    const widget = mount({ disabled: true, minimized: true });
+  test('collapsing a disabled widget that was opened by Expand All keeps it disabled', () => {
+    const widget = mount({ disabled: true, minimized: false });
 
     widget.action.toggleMinimized();
 
-    expect(pick(widget.state)).toEqual({ disabled: true, minimized: false });
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
+  });
+});
+
+describe('Expand All / Collapse All (public expand() and collapse())', () => {
+  test('expand() opens a disabled widget without enabling it', () => {
+    const widget = mount({ disabled: true, minimized: true });
+
+    widget.expand();
+
+    expect(state(widget)).toEqual({ disabled: true, minimized: false, isFullscreen: false });
+    expect(findElement(widget.render(), 'CustomContent').props.disabled).toBe(true);
   });
 
-  test('the public collapse() and expand() methods leave disabled alone', () => {
+  test('expand() and collapse() leave an enabled widget enabled', () => {
     const widget = mount({ disabled: false, minimized: false });
 
     widget.collapse();
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: true });
+    expect(state(widget)).toEqual({ disabled: false, minimized: true, isFullscreen: false });
 
     widget.expand();
-    expect(pick(widget.state)).toEqual({ disabled: false, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: false });
+  });
+
+  test('collapse() keeps a disabled widget disabled', () => {
+    const widget = mount({ disabled: true, minimized: false });
+
+    widget.collapse();
+
+    expect(state(widget)).toEqual({ disabled: true, minimized: true, isFullscreen: false });
   });
 });
 
@@ -199,41 +233,64 @@ describe('fullscreen', () => {
   });
 
   test('entering full screen expands a collapsed widget, leaving keeps it expanded', () => {
-    const widget = mount({ minimized: true });
+    const widget = mount({ disabled: false, minimized: true });
 
     widget.action.toggleFullscreen();
-    expect(widget.state).toMatchObject({ isFullscreen: true, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: true });
 
     widget.action.toggleFullscreen();
-    expect(widget.state).toMatchObject({ isFullscreen: false, minimized: false });
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: false });
   });
 
-  test('disabling a full screen widget leaves full screen and collapses it', () => {
+  test('entering full screen on a disabled widget also enables it', () => {
+    const widget = mount({ disabled: true, minimized: true });
+
+    widget.action.toggleFullscreen();
+
+    expect(state(widget)).toEqual({ disabled: false, minimized: false, isFullscreen: true });
+    expect(findElement(widget.render(), 'CustomContent').props).toMatchObject({ disabled: false, fullscreen: true });
+  });
+
+  test('entering full screen on a disabled widget with no URL does not enable it', () => {
+    const widget = mount({ disabled: true, minimized: true, url: '' });
+
+    widget.action.toggleFullscreen();
+
+    expect(state(widget)).toEqual({ disabled: true, minimized: false, isFullscreen: true });
+  });
+});
+
+describe('saved settings', () => {
+  test('saves disabled and minimized after each change', () => {
     const widget = mount({ disabled: false, minimized: false });
-    widget.action.toggleFullscreen();
 
     widget.action.toggleDisabled();
+    expect(WidgetConfig.values).toMatchObject({ disabled: true, minimized: true });
 
-    expect(widget.state).toMatchObject({ disabled: true, minimized: true, isFullscreen: false });
-    expect(findElement(widget.render(), 'CustomContent').props).toMatchObject({ disabled: true, fullscreen: false });
+    widget.action.toggleMinimized();
+    expect(WidgetConfig.values).toMatchObject({ disabled: false, minimized: false });
+
+    widget.action.toggleMinimized();
+    expect(WidgetConfig.values).toMatchObject({ disabled: false, minimized: true });
   });
 
-  test('enabling the widget again does not bring back full screen', () => {
-    const widget = mount({ disabled: false, minimized: false });
-    widget.action.toggleFullscreen();
-    widget.action.toggleDisabled();
+  test('a disabled widget opened by Expand All is still open after a reload', () => {
+    const before = mount({ disabled: true, minimized: true });
+    before.expand();
+    const saved = { ...WidgetConfig.values };
 
-    widget.action.toggleDisabled();
+    const after = mount(saved);
 
-    expect(widget.state).toMatchObject({ disabled: false, minimized: false, isFullscreen: false });
+    expect(state(after)).toEqual({ disabled: true, minimized: false, isFullscreen: false });
   });
 
-  test('passes disabled through alongside fullscreen', () => {
-    const widget = mount({ disabled: true });
+  test('full screen is not saved, a reload starts out of full screen', () => {
+    const before = mount({ disabled: false, minimized: false });
+    before.action.toggleFullscreen();
+    const saved = { ...WidgetConfig.values };
 
-    const content = findElement(widget.render(), 'CustomContent');
+    const after = mount(saved);
 
-    expect(content.props).toMatchObject({ disabled: true, fullscreen: false });
-    expect(React.isValidElement(content)).toBe(true);
+    expect(state(after).isFullscreen).toBe(false);
   });
 });
