@@ -681,5 +681,9 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Эта запись истории не помещается в ширину терминала. Перепишите команду или увеличьте число столбцов в настройках консоли, чтобы вызвать её.",
   "Finish or clear the command you are typing before changing the number of columns.": "Завершите или удалите вводимую команду, прежде чем менять число столбцов.",
   "Appearance": "Внешний вид",
-  "Color mode:": "Цветовой режим:"
+  "Color mode:": "Цветовой режим:",
+  "Enter a command": "Введите команду",
+  "Send": "Отправить",
+  "Hide command input": "Скрыть поле ввода команд",
+  "Show command input": "Показать поле ввода команд"
 }

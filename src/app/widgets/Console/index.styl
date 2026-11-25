@@ -9,6 +9,33 @@
         .terminal-container {
             height: 100%;
         }
+
+        // With the command input shown, the terminal takes the height that is left
+        .console {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            .terminal-container {
+                flex: 1 1 auto;
+                height: auto;
+                min-height: 0;
+            }
+        }
+    }
+}
+
+.command-input {
+    display: flex;
+    padding: 8px;
+
+    input {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    button {
+        margin-left: 8px;
     }
 }
 

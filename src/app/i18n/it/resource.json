@@ -680,5 +680,9 @@
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "Questa voce della cronologia non entra nella larghezza del terminale. Riscrivi il comando o aumenta le colonne nelle impostazioni della console per richiamarla.",
   "Finish or clear the command you are typing before changing the number of columns.": "Completa o cancella il comando che stai digitando prima di modificare il numero di colonne.",
   "Appearance": "Aspetto",
-  "Color mode:": "Modalità colore:"
+  "Color mode:": "Modalità colore:",
+  "Enter a command": "Inserisci un comando",
+  "Send": "Invia",
+  "Hide command input": "Nascondi l'inserimento comandi",
+  "Show command input": "Mostra l'inserimento comandi"
 }
