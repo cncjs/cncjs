@@ -296,10 +296,17 @@ class ConsoleWidget extends PureComponent {
                 aria-label={commandInput ? i18n._('Hide command input') : i18n._('Show command input')}
                 aria-pressed={commandInput}
                 title={commandInput ? i18n._('Hide command input') : i18n._('Show command input')}
-                className={cx({ [styles.toggleActive]: commandInput })}
+                inverted={commandInput}
                 onClick={actions.toggleCommandInput}
               >
                 <i aria-hidden="true" className="fa fa-keyboard-o" />
+              </Widget.Button>
+              <Widget.Button
+                aria-label="Clear console"
+                title={i18n._('Clear all')}
+                onClick={actions.clearAll}
+              >
+                <i aria-hidden="true" className="fa fa-eraser" />
               </Widget.Button>
               <Widget.Button
                 aria-label={i18n._('Console Settings')}
@@ -307,13 +314,6 @@ class ConsoleWidget extends PureComponent {
                 onClick={actions.openSettings}
               >
                 <i aria-hidden="true" className="fa fa-cog" />
-              </Widget.Button>
-              <Widget.Button
-                aria-label="Clear console"
-                title={i18n._('Clear all')}
-                onClick={actions.clearAll}
-              >
-                <i aria-hidden="true" className="fa fa-trash" />
               </Widget.Button>
               <Widget.Button
                 aria-label={minimized ? 'Expand' : 'Collapse'}
