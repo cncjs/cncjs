@@ -11,12 +11,14 @@ jest.mock('app/lib/log', () => ({ error: jest.fn() }));
 jest.mock('../index.styl', () => ({ inactiveContent: 'inactive-content' }));
 
 const pubsub = require('pubsub-js');
+const controller = require('app/lib/controller');
 const Custom = require('../Custom').default;
 
 const defaultProps = {
   config: {},
   disabled: false,
   fullscreen: false,
+  colorMode: 'light',
   url: 'http://localhost:8000/widget/',
   port: '/dev/ttyUSB0'
 };
@@ -41,16 +43,17 @@ const updateProps = (instance, changes) => {
   instance.props = nextProps;
 };
 
-const messagesOfType = (postMessage, type) => postMessage.mock.calls
-  .map(([message]) => message)
-  .filter(message => message.action.type === type);
+const sent = postMessage => postMessage.mock.calls.map(([message]) => message);
+const sentProps = postMessage => sent(postMessage).map(message => message.action.payload.props);
 
 afterEach(() => {
   mounted.splice(0).forEach(instance => instance.componentWillUnmount());
+  controller.port = '/dev/ttyUSB0';
+  controller.type = 'Grbl';
 });
 
-describe('fullscreen message', () => {
-  test('tells the iframe when the widget enters full screen', () => {
+describe('change message', () => {
+  test('sends the full message when the widget enters full screen', () => {
     const { instance, postMessage } = mount();
 
     updateProps(instance, { fullscreen: true });
@@ -60,49 +63,79 @@ describe('fullscreen message', () => {
       token: 'test-token',
       version: '1.2.3',
       action: {
-        type: 'fullscreen',
-        payload: { fullscreen: true }
+        type: 'change',
+        payload: {
+          port: '/dev/ttyUSB0',
+          controller: 'Grbl',
+          props: { disabled: false, fullscreen: true, colorMode: 'light' }
+        }
       }
     }, '*');
   });
 
-  test('tells the iframe when the widget leaves full screen', () => {
-    const { instance, postMessage } = mount({ fullscreen: true });
-
-    updateProps(instance, { fullscreen: false });
-
-    expect(messagesOfType(postMessage, 'fullscreen')).toEqual([
-      expect.objectContaining({ action: { type: 'fullscreen', payload: { fullscreen: false } } })
-    ]);
-  });
-
-  test('sends one message per change across several toggles', () => {
+  test('sends one message per full screen change', () => {
     const { instance, postMessage } = mount();
 
     updateProps(instance, { fullscreen: true });
     updateProps(instance, { fullscreen: false });
     updateProps(instance, { fullscreen: true });
 
-    expect(messagesOfType(postMessage, 'fullscreen').map(m => m.action.payload.fullscreen))
-      .toEqual([true, false, true]);
+    expect(sentProps(postMessage).map(props => props.fullscreen)).toEqual([true, false, true]);
   });
 
-  test('does not send a fullscreen message when other props change', () => {
+  test('sends the new color mode when it changes', () => {
     const { instance, postMessage } = mount();
+
+    updateProps(instance, { colorMode: 'dark' });
+
+    expect(sentProps(postMessage)).toEqual([{ disabled: false, fullscreen: false, colorMode: 'dark' }]);
+  });
+
+  test('still notifies the iframe when the port changes', () => {
+    const { instance, postMessage } = mount({ port: '' });
+    controller.port = '/dev/ttyACM0';
 
     updateProps(instance, { port: '/dev/ttyACM0' });
-    updateProps(instance, { disabled: true });
 
-    expect(messagesOfType(postMessage, 'fullscreen')).toHaveLength(0);
-    expect(messagesOfType(postMessage, 'change')).toHaveLength(1);
+    expect(sent(postMessage)).toHaveLength(1);
+    expect(sent(postMessage)[0].action.payload).toMatchObject({
+      port: '/dev/ttyACM0',
+      controller: 'Grbl',
+      props: { disabled: false, fullscreen: false, colorMode: 'light' }
+    });
   });
 
-  test('sends a boolean even if the prop is not a strict boolean', () => {
+  test('sends a single message when the port and a prop change together', () => {
+    const { instance, postMessage } = mount({ port: '' });
+
+    updateProps(instance, { port: '/dev/ttyUSB0', fullscreen: true });
+
+    expect(sent(postMessage)).toHaveLength(1);
+  });
+
+  test('sends nothing when no relevant prop changes', () => {
+    const { instance, postMessage } = mount();
+
+    updateProps(instance, { config: { other: true } });
+    updateProps(instance, { fullscreen: false, colorMode: 'light' });
+
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  test('sends nothing when a prop only changes between equivalent values', () => {
+    const { instance, postMessage } = mount({ fullscreen: undefined, disabled: undefined });
+
+    updateProps(instance, { fullscreen: false, disabled: false });
+
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  test('sends booleans even if the props are not strict booleans', () => {
     const { instance, postMessage } = mount({ fullscreen: undefined });
 
     updateProps(instance, { fullscreen: 1 });
 
-    expect(messagesOfType(postMessage, 'fullscreen')[0].action.payload).toEqual({ fullscreen: true });
+    expect(sentProps(postMessage)[0]).toEqual({ disabled: false, fullscreen: true, colorMode: 'light' });
   });
 
   test('tells the iframe it left full screen when the widget is disabled while full screen', () => {
@@ -112,45 +145,41 @@ describe('fullscreen message', () => {
 
     updateProps(instance, { disabled: true, fullscreen: false });
 
-    expect(messagesOfType(postMessage, 'fullscreen').map(m => m.action.payload))
-      .toEqual([{ fullscreen: false }]);
+    expect(sentProps(postMessage)).toEqual([{ disabled: true, fullscreen: false, colorMode: 'light' }]);
   });
 
   test('does nothing when there is no iframe (widget disabled or no URL)', () => {
     const { instance } = mount({ disabled: true }, { withIframe: false });
 
-    expect(() => updateProps(instance, { fullscreen: true })).not.toThrow();
+    expect(() => updateProps(instance, { fullscreen: true, colorMode: 'dark' })).not.toThrow();
   });
 });
 
 describe('message:connect handshake', () => {
-  test('sends the current fullscreen state after the change message', () => {
-    const { postMessage } = mount({ fullscreen: true });
+  test('sends a single change message with the current props', () => {
+    const { postMessage } = mount({ fullscreen: true, colorMode: 'dark' });
 
     pubsub.publishSync('message:connect');
 
-    const types = postMessage.mock.calls.map(([message]) => message.action.type);
-    expect(types).toEqual(['change', 'fullscreen']);
-    expect(postMessage.mock.calls[0][0].action.payload).toEqual({ port: '/dev/ttyUSB0', controller: 'Grbl' });
-    expect(postMessage.mock.calls[1][0].action.payload).toEqual({ fullscreen: true });
+    expect(sent(postMessage)).toHaveLength(1);
+    expect(sent(postMessage)[0].action).toEqual({
+      type: 'change',
+      payload: {
+        port: '/dev/ttyUSB0',
+        controller: 'Grbl',
+        props: { disabled: false, fullscreen: true, colorMode: 'dark' }
+      }
+    });
   });
 
-  test('reports fullscreen: false when the widget is not full screen', () => {
-    const { postMessage } = mount({ fullscreen: false });
-
-    pubsub.publishSync('message:connect');
-
-    expect(messagesOfType(postMessage, 'fullscreen')[0].action.payload).toEqual({ fullscreen: false });
-  });
-
-  test('reports the state as of the handshake, not as of mount', () => {
-    const { instance, postMessage } = mount({ fullscreen: false });
-    updateProps(instance, { fullscreen: true });
+  test('reports the props as of the handshake, not as of mount', () => {
+    const { instance, postMessage } = mount();
+    updateProps(instance, { fullscreen: true, colorMode: 'dark' });
     postMessage.mockClear();
 
     pubsub.publishSync('message:connect');
 
-    expect(messagesOfType(postMessage, 'fullscreen')[0].action.payload).toEqual({ fullscreen: true });
+    expect(sentProps(postMessage)).toEqual([{ disabled: false, fullscreen: true, colorMode: 'dark' }]);
   });
 
   test('stops sending after unmount', () => {

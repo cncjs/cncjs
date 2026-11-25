@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 import Uri from 'jsuri';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
@@ -18,6 +19,7 @@ class Custom extends PureComponent {
       config: PropTypes.object,
       disabled: PropTypes.bool,
       fullscreen: PropTypes.bool,
+      colorMode: PropTypes.string,
       url: PropTypes.string,
       port: PropTypes.string
     };
@@ -40,32 +42,36 @@ class Custom extends PureComponent {
       if (nextProps.url !== this.props.url) {
         this.reload();
       }
-      if (nextProps.fullscreen !== this.props.fullscreen) {
-        // Let the iframe know, so that it can show more detail while the widget is full screen
-        this.postMessage('fullscreen', {
-          fullscreen: !!nextProps.fullscreen
-        });
+
+      const portChanged = nextProps.port !== this.props.port;
+      const propsChanged = !isEqual(this.getWidgetChangeProps(nextProps), this.getWidgetChangeProps());
+      if (portChanged || propsChanged) {
+        this.notifyChange(nextProps);
       }
-      if (nextProps.port !== this.props.port) {
-        // Post a message to the iframe window
-        this.postMessage('change', {
-          port: controller.port,
-          controller: controller.type
-        });
-      }
+    }
+
+    // Widget state shared with the iframe in the `props` of every `change` message
+    getWidgetChangeProps(props = this.props) {
+      return {
+        disabled: !!props.disabled,
+        fullscreen: !!props.fullscreen,
+        colorMode: props.colorMode
+      };
+    }
+
+    notifyChange(props = this.props) {
+      // Post a message to the iframe window
+      this.postMessage('change', {
+        port: controller.port,
+        controller: controller.type,
+        props: this.getWidgetChangeProps(props)
+      });
     }
 
     subscribe() {
       const tokens = [
         pubsub.subscribe('message:connect', () => {
-          // Post a message to the iframe window
-          this.postMessage('change', {
-            port: controller.port,
-            controller: controller.type
-          });
-          this.postMessage('fullscreen', {
-            fullscreen: !!this.props.fullscreen
-          });
+          this.notifyChange();
         }),
         pubsub.subscribe('message:resize', (type, payload) => {
           const { scrollHeight } = { ...payload };
