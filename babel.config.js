@@ -1,7 +1,6 @@
 module.exports = (api) => {
   const { env } = { ...api };
   const plugins = [
-    'lodash',
     ['prismjs', {
       'languages': ['javascript', 'css', 'markup', 'gcode'],
       'plugins': [],
