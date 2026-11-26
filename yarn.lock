@@ -7759,6 +7759,7 @@ __metadata:
     pre-push: "npm:~0.1.2"
     prettier: "npm:~2.8.8"
     prismjs: "npm:~1.22.0"
+    process: "npm:^0.11.10"
     progress: "npm:~2.0.3"
     prop-types: "npm:~15.8.1"
     pubsub-js: "npm:~1.9.4"

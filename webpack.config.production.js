@@ -142,6 +142,9 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser.js',
+    }),
     new webpack.DefinePlugin({
       'process.env.SUPPRESS_WEBGL_WARNING': JSON.stringify('0'),
     }),

@@ -142,6 +142,9 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser.js',
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true,

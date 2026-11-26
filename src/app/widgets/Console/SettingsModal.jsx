@@ -22,6 +22,7 @@ function SettingChoice({ name, label, items }) {
         name={name}
         render={({ field }) => (
           <Dropdown
+            portalled
             items={items}
             value={items.find(item => item.value === field.value)}
             renderItem={item => item.label}
@@ -59,9 +60,14 @@ function SettingsModal({ values, onSave, onClose }) {
 
   return (
     <Modal
-      autoFocus closeOnEsc closeOnInteractOutside={false}
-      ensureFocus isClosable isOpen
-      size="sm" onClose={onClose}
+      autoFocus
+      closeOnEsc
+      closeOnInteractOutside={false}
+      ensureFocus
+      isClosable
+      isOpen
+      size="md"
+      onClose={onClose}
     >
       <ModalOverlay />
       <FormProvider {...form}>
