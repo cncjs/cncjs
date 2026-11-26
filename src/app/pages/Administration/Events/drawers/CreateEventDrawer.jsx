@@ -82,11 +82,7 @@ const CreateEventDrawer = ({
     >
       <DrawerOverlay />
       <FormProvider {...methods}>
-        <DrawerContent
-          as="form"
-          noValidate
-          onSubmit={methods.handleSubmit(handleFormSubmit)}
-        >
+        <DrawerContent>
           <DrawerHeader>
             <Text>
               {i18n._('New Event')}
@@ -153,7 +149,7 @@ const CreateEventDrawer = ({
                 {i18n._('Cancel')}
               </Button>
               <Button
-                type="submit"
+                onClick={methods.handleSubmit(handleFormSubmit)}
                 variant="primary"
                 disabled={isFormDisabled}
                 sx={{

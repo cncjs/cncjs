@@ -55,13 +55,61 @@ describe('Command drawer validation timing', () => {
       expect(action.validity.valid).toBe(true);
 
       // Submit with empty values: the required rules fire and no mutation is sent.
-      fireEvent.submit(document.querySelector('form'));
+      fireEvent.click(screen.getByRole('button', { name: 'Add' }));
 
       await waitFor(() => {
         expect(name).toHaveAttribute('aria-invalid', 'true');
         expect(action).toHaveAttribute('aria-invalid', 'true');
       });
       expect(mockCreateMutate).not.toHaveBeenCalled();
+    } finally {
+      view.dispose();
+    }
+  });
+
+  test('create: clicking Add submits valid values once', async () => {
+    const view = renderAppUI(<CreateCommandDrawer onClose={jest.fn()} />);
+
+    try {
+      fireEvent.change(screen.getByPlaceholderText('e.g., Activate Air Purifier'), {
+        target: { value: 'Start purifier' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('/home/cncjs/bin/activate-air-purifier'), {
+        target: { value: '/usr/bin/start-purifier' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+      await waitFor(() => expect(mockCreateMutate).toHaveBeenCalledTimes(1));
+      expect(mockCreateMutate).toHaveBeenCalledWith({
+        data: {
+          enabled: true,
+          name: 'Start purifier',
+          action: '/usr/bin/start-purifier',
+        },
+      });
+    } finally {
+      view.dispose();
+    }
+  });
+
+  test('edit: clicking Save submits updated values once', async () => {
+    const view = renderAppUI(<UpdateCommandDrawer id="1" onClose={jest.fn()} />);
+
+    try {
+      const name = screen.getByPlaceholderText('e.g., Activate Air Purifier');
+      await waitFor(() => expect(name).toHaveValue('Saved command'));
+      fireEvent.change(name, { target: { value: 'Updated command' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+      await waitFor(() => expect(mockUpdateMutate).toHaveBeenCalledTimes(1));
+      expect(mockUpdateMutate).toHaveBeenCalledWith({
+        meta: { id: '1' },
+        data: {
+          enabled: true,
+          name: 'Updated command',
+          action: 'M3 S1000',
+        },
+      });
     } finally {
       view.dispose();
     }

@@ -37,7 +37,7 @@ function UpdateRecord({ initialValues, onSave, onCancel }) {
           {i18n._('Update')}
         </ModalHeader>
         <FormProvider {...form}>
-          <Box as="form" noValidate onSubmit={form.handleSubmit(submit)}>
+          <Box>
             <ModalBody>
               <FormControl error={Boolean(errors.name)} mb="4x">
                 <FormLabel>{i18n._('Name')}</FormLabel>
@@ -68,7 +68,7 @@ function UpdateRecord({ initialValues, onSave, onCancel }) {
             </ModalBody>
             <ModalFooter gap="2x">
               <Button type="button" onClick={onCancel}>{i18n._('Cancel')}</Button>
-              <Button type="submit" variant="primary">{i18n._('OK')}</Button>
+              <Button onClick={form.handleSubmit(submit)} variant="primary">{i18n._('OK')}</Button>
             </ModalFooter>
           </Box>
         </FormProvider>

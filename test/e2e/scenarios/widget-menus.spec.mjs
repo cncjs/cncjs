@@ -855,7 +855,10 @@ test.describe('console settings', () => {
     await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
     let dialog = page.getByRole('dialog', { name: 'Console Settings', exact: true });
     await expect(dialog.getByRole('button', { name: 'Font size', exact: true })).toHaveText('14');
-    await chooseSetting(page, dialog, 'Font size', '24');
+    await dialog.getByRole('button', { name: 'Font size', exact: true }).click();
+    await waitForMenuReady(page);
+    await capture(page, testInfo, 'console-font-size-menu');
+    await clickMenuItem(page, '24');
     await chooseSetting(page, dialog, 'Background color', 'White');
     await chooseSetting(page, dialog, 'Text color', 'Amber');
     await expect(dialog.getByLabel('Terminal preview')).toHaveCSS('background-color', 'rgb(255, 255, 255)');

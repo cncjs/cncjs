@@ -75,7 +75,7 @@ function SettingsModal({ onClose }) {
     >
       <ModalOverlay />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Webcam Settings')}</ModalHeader>
           <ModalBody>
             <FormControl mb="4x">
@@ -149,7 +149,7 @@ function SettingsModal({ onClose }) {
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>{i18n._('Cancel')}</Button>
-            <Button variant="primary" type="submit">{i18n._('Save Changes')}</Button>
+            <Button variant="primary" onClick={methods.handleSubmit(submit)}>{i18n._('Save Changes')}</Button>
           </ModalFooter>
         </ModalContent>
       </FormProvider>

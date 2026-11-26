@@ -154,7 +154,7 @@ function EditMacro({
     >
       <FormProvider {...methods}>
         <ModalOverlay />
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>
             {i18n._('Edit Macro')}
           </ModalHeader>
@@ -228,7 +228,7 @@ function EditMacro({
               <Button
                 variant="primary"
                 disabled={isSubmitting || updateMacroMutation.isLoading}
-                type="submit"
+                onClick={methods.handleSubmit(submit)}
                 minWidth="20x"
               >
                 {i18n._('Save Changes')}

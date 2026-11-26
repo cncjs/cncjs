@@ -107,11 +107,7 @@ const UpdateEventDrawer = ({
     >
       <DrawerOverlay />
       <FormProvider {...methods}>
-        <DrawerContent
-          as="form"
-          noValidate
-          onSubmit={handleSubmit(handleFormSubmit)}
-        >
+        <DrawerContent>
           <DrawerHeader>
             <Text>
               {i18n._('Event Details')}
@@ -185,7 +181,7 @@ const UpdateEventDrawer = ({
                 {i18n._('Cancel')}
               </Button>
               <Button
-                type="submit"
+                onClick={handleSubmit(handleFormSubmit)}
                 variant="primary"
                 disabled={isFormDisabled}
                 sx={{

@@ -71,10 +71,7 @@ function SettingsModal({ values, onSave, onClose }) {
     >
       <ModalOverlay />
       <FormProvider {...form}>
-        <ModalContent
-          aria-label={i18n._('Console Settings')} as="form" noValidate
-          onSubmit={form.handleSubmit(submit)}
-        >
+        <ModalContent aria-label={i18n._('Console Settings')}>
           <ModalHeader>{i18n._('Console Settings')}</ModalHeader>
           <ModalBody>
             <Box
@@ -143,7 +140,7 @@ function SettingsModal({ values, onSave, onClose }) {
           </ModalBody>
           <ModalFooter columnGap="2x">
             <Button onClick={onClose}>{i18n._('Cancel')}</Button>
-            <Button type="submit" variant="primary">{i18n._('Save Changes')}</Button>
+            <Button onClick={form.handleSubmit(submit)} variant="primary">{i18n._('Save Changes')}</Button>
           </ModalFooter>
         </ModalContent>
       </FormProvider>

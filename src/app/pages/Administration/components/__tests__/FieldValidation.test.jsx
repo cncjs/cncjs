@@ -15,10 +15,8 @@ function ValidationForm({ Field, onSubmit }) {
   const form = useForm({ mode: 'onSubmit', defaultValues: { value: '' } });
   return (
     <FormProvider {...form}>
-      <form noValidate onSubmit={form.handleSubmit(onSubmit)}>
-        <Field name="value" label="Value" validate={value => value === 'ok'} />
-        <button type="submit">Save</button>
-      </form>
+      <Field name="value" label="Value" validate={value => value === 'ok'} />
+      <button type="button" onClick={form.handleSubmit(onSubmit)}>Save</button>
     </FormProvider>
   );
 }

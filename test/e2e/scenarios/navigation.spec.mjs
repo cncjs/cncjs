@@ -6,6 +6,7 @@ import {
   openWorkspace,
   widget,
 } from '../support/fixtures.mjs';
+import { capture } from '../support/screenshots.mjs';
 
 const getState = page => page.evaluate(() => {
   const { settings, workspace, widgets } = JSON.parse(localStorage.getItem('cnc')).state;
@@ -610,4 +611,33 @@ test.describe('administration routes', () => {
 
     await expectNoApiWrites(page, writes);
   });
+});
+
+test('login validates and submits credentials through a mocked endpoint', async ({ page }, testInfo) => {
+  const requests = [];
+  await page.route('**/api/signin', route => {
+    requests.push(route.request().postDataJSON());
+    return route.fulfill({ status: 401, contentType: 'application/json', body: '{}' });
+  });
+
+  await page.goto('/#/login');
+  const username = page.getByPlaceholder('Username');
+  const password = page.getByPlaceholder('Password');
+  const submit = page.getByRole('button', { name: 'Sign In', exact: true });
+  await expect(username).toBeVisible();
+  await username.focus();
+  await password.focus();
+  await submit.click();
+  await expect(username).toHaveAttribute('aria-invalid', 'true');
+  await expect(password).toHaveAttribute('aria-invalid', 'true');
+  expect(requests.filter(request => request.name)).toEqual([]);
+  await capture(page, testInfo, 'login-validation');
+
+  await username.fill('e2e-user');
+  await password.fill('e2e-password');
+  await submit.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'Authentication failed.' })).toBeVisible();
+  expect(requests.filter(request => request.name)).toEqual([
+    { name: 'e2e-user', password: 'e2e-password' },
+  ]);
 });

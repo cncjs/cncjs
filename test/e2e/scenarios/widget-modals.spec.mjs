@@ -389,7 +389,7 @@ test.describe('custom and webcam settings', () => {
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
-  test('webcam settings exercises its device dropdown and saves an IP camera stream', async ({ page, mockController }) => {
+  test('webcam settings exercises its device dropdown and saves an IP camera stream', async ({ page, mockController }, testInfo) => {
     await openWorkspace(page);
     await mockController.ready();
 
@@ -409,6 +409,7 @@ test.describe('custom and webcam settings', () => {
     await device.click();
     await waitForMenuReady(page);
     await expect(page.getByRole('menuitem', { name: 'Automatic detection', exact: true })).toBeVisible();
+    await capture(page, testInfo, 'webcam-device-menu');
     await page.keyboard.press('ArrowDown');
     await expect.poll(() => page.evaluate(() => {
       const menu = document.querySelector('[role="menu"]');

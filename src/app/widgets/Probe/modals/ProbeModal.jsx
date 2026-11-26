@@ -67,7 +67,7 @@ function ProbeModal({
     >
       <ModalOverlay />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Probe')}</ModalHeader>
           <ModalBody>
             <Controller
@@ -147,7 +147,7 @@ function ProbeModal({
             </Button>
             <Button
               variant="primary"
-              type="submit"
+              onClick={methods.handleSubmit(submit)}
             >
               {i18n._('Run Probe')}
             </Button>

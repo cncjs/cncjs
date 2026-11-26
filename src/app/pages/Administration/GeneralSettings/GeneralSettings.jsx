@@ -83,12 +83,9 @@ const GeneralSettings = () => {
     >
       <FormProvider {...methods}>
         <Flex
-          as="form"
           flex="auto"
           flexDirection="column"
           minHeight={0}
-          noValidate
-          onSubmit={handleSubmit(handleFormSubmit)}
         >
           {query.isFetching && (
             <Overlay
@@ -166,7 +163,7 @@ const GeneralSettings = () => {
             py="4x"
           >
             <Button
-              type="submit"
+              onClick={handleSubmit(handleFormSubmit)}
               variant="primary"
               disabled={isFormDisabled}
               sx={{

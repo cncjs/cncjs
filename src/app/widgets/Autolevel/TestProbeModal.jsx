@@ -47,7 +47,7 @@ function TestProbeModal({
     >
       <ModalOverlay />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Test Probe')}</ModalHeader>
           <ModalBody>
             <Text color="error.text" mb="4x">
@@ -78,7 +78,7 @@ function TestProbeModal({
           </ModalBody>
           <ModalFooter>
             <Button onClick={onCancel} variant="secondary">{i18n._('Cancel')}</Button>
-            <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} type="submit" variant="primary">
+            <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} onClick={methods.handleSubmit(submit)} variant="primary">
               {i18n._('Start Test Probe')}
             </Button>
           </ModalFooter>

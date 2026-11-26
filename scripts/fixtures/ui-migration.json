@@ -877,5 +877,102 @@
     "rules": [
       "legacy-ui"
     ]
+  },
+  {
+    "name": "native form JSX is forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "export const View = () => <form noValidate><input name=\"name\" /></form>;"
+    },
+    "rules": [
+      "native-form"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "polymorphic form with a string attribute is forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "export const View = () => <Box as=\"form\"><input name=\"name\" /></Box>;"
+    },
+    "rules": [
+      "native-form"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "polymorphic form with a string expression is forbidden",
+    "files": {
+      "src/app/widgets/View.jsx": "export const View = () => <Layout.Content as={'form'} />;"
+    },
+    "rules": [
+      "native-form"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "react-final-form import is forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "import { Form } from 'react-final-form'; export const View = () => <Form />;"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "final-form import is forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "import { createForm } from 'final-form'; export const state = createForm({});"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "legacy form package subpath imports are forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "import 'react-final-form/dist/index.js'; import 'final-form/dist/index.js';"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "legacy form direct and development dependencies are forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "export const View = () => null;",
+      "package.json": "{\"dependencies\": {\"react-final-form\": \"1.0.0\"}, \"devDependencies\": {\"final-form\": \"1.0.0\"}}"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "React Hook Form button submission without a native form is allowed",
+    "files": {
+      "src/app/pages/View.jsx": "import { useForm } from 'react-hook-form'; export const View = () => { const methods = useForm(); return <Box as=\"section\"><input {...methods.register('name')} /><button type=\"button\" onClick={methods.handleSubmit(() => {})}>Save</button></Box>; };"
+    },
+    "rules": [],
+    "policy": {}
+  },
+  {
+    "name": "form component name and non-form as attributes are allowed",
+    "files": {
+      "src/app/pages/View.jsx": "export const View = () => <Form><Box as={'section'} /><Container as={component} /><span title=\"form\">form</span></Form>;"
+    },
+    "rules": [],
+    "policy": {}
+  },
+  {
+    "name": "form JSX in test source and outside src app is ignored",
+    "files": {
+      "src/app/pages/View.jsx": "export const View = () => <Box />;",
+      "src/app/pages/__tests__/View.test.jsx": "export const Fixture = () => <form />;",
+      "src/server/View.jsx": "export const View = () => <form />;"
+    },
+    "rules": [],
+    "policy": {}
   }
 ]

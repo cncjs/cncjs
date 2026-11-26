@@ -53,7 +53,7 @@ function SettingsModal({
     >
       <ModalOverlay data-testid="settings-modal-overlay" />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Settings')}</ModalHeader>
           <ModalBody>
             <Box mb="4x">
@@ -87,7 +87,7 @@ function SettingsModal({
             <Button
               variant="primary"
               disabled={isSubmitting}
-              type="submit"
+              onClick={methods.handleSubmit(submit)}
             >
               {i18n._('Save Changes')}
             </Button>
