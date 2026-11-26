@@ -97,7 +97,7 @@ function StartProbeModal({
               )}
             />
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             <Button onClick={onCancel} variant="secondary">{i18n._('Cancel')}</Button>
             <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} onClick={methods.handleSubmit(submit)} variant="primary">
               {i18n._('Start Probing')}

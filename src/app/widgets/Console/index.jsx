@@ -231,7 +231,7 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                       aria-label="More options"
                       title={i18n._('More')}
                     >
-                      <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                      <MoreIcon aria-hidden="true" size="4x" />
                     </DropdownToggle>
                   )}
                 />

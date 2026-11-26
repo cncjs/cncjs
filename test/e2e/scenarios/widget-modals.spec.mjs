@@ -392,6 +392,7 @@ test.describe('custom and webcam settings', () => {
   test('webcam settings exercises its device dropdown and saves an IP camera stream', async ({ page, mockController }, testInfo) => {
     await openWorkspace(page);
     await mockController.ready();
+    await installSyntheticWebcam(page);
 
     const root = widget(page, 'webcam');
     await openMore(page, 'webcam');
@@ -405,10 +406,24 @@ test.describe('custom and webcam settings', () => {
     const url = dialog.getByLabel('Stream URL');
     await expect(local).toBeChecked();
     await expect(url).toBeDisabled();
+    await expect(device).toHaveText('Automatic detection');
+    const save = dialog.getByRole('button', { name: 'Save Changes', exact: true });
+    const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true });
+    const saveBox = await save.boundingBox();
+    const cancelBox = await cancel.boundingBox();
+    expect(cancelBox.x - (saveBox.x + saveBox.width)).toBeCloseTo(8, 0);
 
     await device.click();
     await waitForMenuReady(page);
-    await expect(page.getByRole('menuitem', { name: 'Automatic detection', exact: true })).toBeVisible();
+    const automatic = page.getByRole('menuitem', { name: 'Automatic detection', exact: true });
+    await expect(automatic).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Camera A', exact: true })).toBeVisible();
+    const deviceBox = await device.boundingBox();
+    const urlBox = await url.boundingBox();
+    const menuBox = await page.getByRole('menu').boundingBox();
+    expect(deviceBox.width).toBeGreaterThan(urlBox.width * 0.9);
+    expect(menuBox.width).toBeGreaterThan(deviceBox.width * 0.9);
+    expect(await automatic.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
     await capture(page, testInfo, 'webcam-device-menu');
     await page.keyboard.press('ArrowDown');
     await expect.poll(() => page.evaluate(() => {
@@ -559,7 +574,7 @@ test.describe('macro modals', () => {
     },
   ];
 
-  test('macro new, edit, delete, load and run surfaces use mocked records', async ({ page, mockController }) => {
+  test('macro new, edit, delete, load and run surfaces use mocked records', async ({ page, mockController }, testInfo) => {
     const writes = [];
     let failCreate = true;
     await page.route('**/api/macros**', async route => {
@@ -587,6 +602,10 @@ test.describe('macro modals', () => {
 
     const root = widget(page, 'macro');
     await expect(root.getByText('Fixture Macro', { exact: true })).toBeVisible();
+    const newButton = await root.getByRole('button', { name: 'New macro', exact: true }).boundingBox();
+    const exportButton = await root.getByRole('button', { name: 'Export', exact: true }).boundingBox();
+    expect(exportButton.x - (newButton.x + newButton.width)).toBeCloseTo(8, 0);
+    await capture(root, testInfo, 'macro-toolbar');
 
     await root.getByRole('button', { name: 'New macro', exact: true }).click();
     let dialog = page.getByRole('dialog');

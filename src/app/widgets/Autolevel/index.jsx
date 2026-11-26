@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Dropdown,
-  DropdownButton,
+  DropdownToggle,
   Space,
 } from '@tonic-ui/react';
 import {
@@ -18,6 +18,8 @@ import get from 'lodash/get';
 import includes from 'lodash/includes';
 import pubsub from 'pubsub-js';
 import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import Widget from '@app/components/Widget';
+import widgetStyles from '@app/components/Widget/index.styl';
 import { useLoadGCodeMutation } from '@app/queries/gcode';
 import WidgetConfig from '@app/widgets/shared/WidgetConfig';
 import controller from '@app/lib/controller';
@@ -781,6 +783,7 @@ function AutolevelWidget({
 
   return (
     <Box
+      className={widgetStyles.widget}
       data-fullscreen={String(isFullscreen)}
       aria-label={i18n._('Autolevel Widget')}
       role="region"
@@ -801,43 +804,18 @@ function AutolevelWidget({
         }),
       }}
     >
-      <Box
-        alignItems="center" display="flex"
-        justifyContent="space-between"
-        p="2x"
-        sx={{
-          backgroundColor: 'background.high',
-          border: '1px solid',
-          borderColor: 'border.secondary',
-          color: 'text.primary',
-          position: 'relative',
-          flex: 'none',
-        }}
-      >
-        <Box
-          alignItems="center" display="flex"
-          gap="2x"
-          sx={{ fontWeight: 400, lineHeight: 1.5 }}
-        >
-          <Box className={sortable.handleClassName} data-sortable-handle sx={{ cursor: 'move', display: 'inline-block' }}>
-            <Button aria-label={i18n._('Move Autolevel widget')} size="sm" variant="ghost">
-              <MenuIcon />
-            </Button>
-          </Box>
-          {isForkedWidget && <FontAwesomeIcon icon={faCodeBranch} fixedWidth />}
-          <Box fontWeight="bold">{i18n._('Autolevel')}</Box>
-        </Box>
-        <Box
-          alignItems="center" aria-label={i18n._('Widget controls')}
-          display="flex"
-          gap="1x" role="toolbar"
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-          }}
-        >
+      <Widget.Header sx={{ flex: 'none' }}>
+        <Widget.Title>
+          <Widget.Sortable className={sortable.handleClassName} data-sortable-handle>
+            <MenuIcon aria-hidden="true" size="4x" />
+            <Space width="1x" />
+          </Widget.Sortable>
+          {isForkedWidget && <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />}
+          {i18n._('Autolevel')}
+        </Widget.Title>
+        <Widget.Controls className={sortable.filterClassName}>
           <Button
+            className={widgetStyles.widgetButton}
             aria-expanded={!isCollapsed}
             aria-label={isCollapsed ? i18n._('Expand') : i18n._('Collapse')}
             disabled={isFullscreen}
@@ -848,50 +826,56 @@ function AutolevelWidget({
             {isCollapsed ? <ChevronDownIcon /> : <ChevronUpIcon />}
           </Button>
           <Dropdown
+            style={{ display: 'flex', alignSelf: 'stretch' }}
             items={[
               {
                 value: 'fullscreen',
-                content: (
+                label: (
                   <>
-                    <FontAwesomeIcon fixedWidth icon={isFullscreen ? faCompress : faExpand} />
-                    <Space width="1x" />
+                    <FontAwesomeIcon fixedWidth icon={isFullscreen ? faCompress : faExpand} aria-hidden="true" />
+                    <Space width="2x" />
                     {i18n._(isFullscreen ? 'Exit Full Screen' : 'Enter Full Screen')}
                   </>
                 ),
-                props: { onClick: toggleFullscreen },
               },
               {
                 value: 'fork',
-                content: (
+                label: (
                   <>
-                    <FontAwesomeIcon fixedWidth icon={faCodeBranch} />
-                    <Space width="1x" />
+                    <FontAwesomeIcon fixedWidth icon={faCodeBranch} aria-hidden="true" />
+                    <Space width="2x" />
                     {i18n._('Fork Widget')}
                   </>
                 ),
-                props: { onClick: onFork },
               },
               {
                 value: 'remove',
-                content: (
+                label: (
                   <>
-                    <CloseIcon />
-                    <Space width="1x" />
+                    <CloseIcon aria-hidden="true" />
+                    <Space width="2x" />
                     {i18n._('Remove Widget')}
                   </>
                 ),
-                props: { onClick: onRemove },
               },
             ]}
-            renderItem={item => item?.content}
+            onChange={({ value: eventKey }) => {
+              if (eventKey === 'fullscreen') {
+                toggleFullscreen();
+              } else if (eventKey === 'fork') {
+                onFork();
+              } else if (eventKey === 'remove') {
+                onRemove();
+              }
+            }}
             renderToggle={() => (
-              <DropdownButton aria-label={i18n._('More')} title={i18n._('More')} variant="ghost">
-                <MoreIcon />
-              </DropdownButton>
+              <DropdownToggle className={widgetStyles.widgetButton} aria-label="More options" title={i18n._('More')}>
+                <MoreIcon aria-hidden="true" size="4x" />
+              </DropdownToggle>
             )}
           />
-        </Box>
-      </Box>
+        </Widget.Controls>
+      </Widget.Header>
       <Box
         aria-hidden={isCollapsed}
         data-widget-content

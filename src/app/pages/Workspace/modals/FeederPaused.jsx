@@ -49,7 +49,7 @@ function FeederPaused({ title = '', message = '', onClose = () => {} }) {
             <Box>{i18n._('Click the Continue button to resume execution.')}</Box>
           </Alert>
         </ModalBody>
-        <ModalFooter justify="space-between">
+        <ModalFooter justify="space-between" columnGap="2x">
           <Button onClick={stop} variant="danger">
             {i18n._('Stop')}
           </Button>

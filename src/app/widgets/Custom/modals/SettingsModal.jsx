@@ -75,7 +75,7 @@ function SettingsModal({
               />
             </Box>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             {errors.root && (
               <Text fontSize="sm" lineHeight="sm" color="error.text">
                 {errors.root.message}

@@ -232,6 +232,7 @@ function Tool({
                 <FormLabel>{i18n._('Tool Change Policy')}</FormLabel>
                 <Dropdown
                   matchWidth
+                  width="100%"
                   items={policyOptions.map(([option, label]) => ({ value: option, label: i18n._(label) }))}
                   value={field.value === null || field.value === undefined
                     ? null

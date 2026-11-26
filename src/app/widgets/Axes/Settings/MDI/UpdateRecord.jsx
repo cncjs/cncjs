@@ -66,7 +66,7 @@ function UpdateRecord({ initialValues, onSave, onCancel }) {
                 </Box>
               </FormControl>
             </ModalBody>
-            <ModalFooter gap="2x">
+            <ModalFooter columnGap="2x">
               <Button type="button" onClick={onCancel}>{i18n._('Cancel')}</Button>
               <Button onClick={form.handleSubmit(submit)} variant="primary">{i18n._('OK')}</Button>
             </ModalFooter>

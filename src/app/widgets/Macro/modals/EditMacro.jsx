@@ -200,7 +200,7 @@ function EditMacro({
               <FormErrorMessage errors={errors.content ? [errors.content.message] : []} />
             </FormControl>
           </ModalBody>
-          <ModalFooter justify="space-between">
+          <ModalFooter justify="space-between" columnGap="2x">
             {errors.root && (
               <Text color="error.text" mr="auto">
                 {errors.root.message}
@@ -216,7 +216,7 @@ function EditMacro({
                 {i18n._('Delete')}
               </Button>
             </Box>
-            <Box>
+            <Box display="flex" columnGap="2x">
               <Button
                 variant="default"
                 disabled={isSubmitting || updateMacroMutation.isLoading || deleteMacroMutation.isLoading}

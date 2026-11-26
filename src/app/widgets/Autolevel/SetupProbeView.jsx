@@ -104,6 +104,7 @@ function ScanField({ label, help, items, value, disabled = false, onChange = noo
         disabled={disabled}
         items={options}
         matchWidth
+        width="100%"
         value={options.find(item => item.value === value) || null}
         renderItem={item => item?.label ?? ''}
         renderToggle={({ renderItem, value: selected }) => (

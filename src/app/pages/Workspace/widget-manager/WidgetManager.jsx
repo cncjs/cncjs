@@ -231,7 +231,7 @@ function WidgetManager({ onClose = () => {}, onSave = () => {} }) {
             onChange={handleChangeWidgetVisibility}
           />
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter columnGap="2x">
           <Button onClick={handleClose}>
             {i18n._('Cancel')}
           </Button>

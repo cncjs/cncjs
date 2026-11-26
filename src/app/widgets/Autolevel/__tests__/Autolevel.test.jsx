@@ -912,7 +912,9 @@ describe('Autolevel workflow owner', () => {
       expect(view.container.querySelector('[data-icon="ChevronUpIcon"]')).toBeInTheDocument();
       expect(view.container.querySelector('[data-icon="MoreIcon"]')).toBeInTheDocument();
 
-      fireEvent.click(screen.getByRole('button', { name: 'More' }));
+      const more = screen.getByRole('button', { name: 'More options' });
+      expect(more.querySelectorAll('svg')).toHaveLength(1);
+      fireEvent.click(more);
 
       await waitFor(() => expect(screen.getByText('Enter Full Screen')).toBeInTheDocument());
 

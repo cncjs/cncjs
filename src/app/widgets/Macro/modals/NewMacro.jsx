@@ -153,7 +153,7 @@ function NewMacro({
               <FormErrorMessage errors={errors.content ? [errors.content.message] : []} />
             </FormControl>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             {errors.root && (
               <Text color="error.text" mr="auto">
                 {errors.root.message}

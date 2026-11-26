@@ -824,6 +824,34 @@ test.describe('controller commands menus', () => {
 });
 
 test.describe('widget more menu dismissal', () => {
+  test('autolevel more toggle has no arrow and opens the widget menu', async ({ page }, testInfo) => {
+    await openWorkspace(page);
+    const root = widget(page, 'autolevel');
+    const title = root.getByText('Autolevel', { exact: true });
+    const macroTitle = widget(page, 'macro').getByText('Macro', { exact: true });
+    for (const property of ['font-family', 'font-size', 'font-weight', 'line-height', 'padding']) {
+      await expect(title).toHaveCSS(property, await macroTitle.evaluate((element, name) => getComputedStyle(element).getPropertyValue(name), property));
+    }
+    const toggle = root.getByRole('button', { name: 'More options', exact: true });
+    await expect(toggle.locator('svg')).toHaveCount(1);
+    await expect(toggle.locator('svg')).toHaveCSS('width', '16px');
+    const collapse = root.getByRole('button', { name: 'Collapse', exact: true });
+    const toggleBox = await toggle.boundingBox();
+    const collapseBox = await collapse.boundingBox();
+    expect(toggleBox.y + toggleBox.height / 2).toBeCloseTo(collapseBox.y + collapseBox.height / 2, 0);
+    const headerBox = await toggle.locator('xpath=../..').boundingBox();
+    const widgetBox = await root.boundingBox();
+    expect(widgetBox.x + widgetBox.width - (headerBox.x + headerBox.width)).toBeCloseTo(1, 0);
+    await capture(root, testInfo, 'autolevel-toolbar');
+    await toggle.click();
+    await waitForMenuReady(page);
+    await expect(page.getByRole('menuitem', { name: 'Enter Full Screen' })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Fork Widget' })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Remove Widget' })).toBeVisible();
+    await capture(page, testInfo, 'autolevel-more-menu');
+    await closeMenu(page);
+  });
+
   test('every widget more menu closes on an outside canvas click without changing the layout', async ({ page }) => {
     await openWorkspace(page);
 

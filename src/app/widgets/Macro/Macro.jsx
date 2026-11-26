@@ -110,7 +110,7 @@ function Macro({
         px="3x"
         py="2x"
       >
-        <Box>
+        <Box display="flex" columnGap="2x">
           <Button
             aria-label="New macro"
             variant="secondary"
@@ -120,8 +120,6 @@ function Macro({
             <Space width="2x" />
             {i18n._('New')}
           </Button>
-        </Box>
-        <Box>
           <Button
             variant="secondary"
             onClick={handleExportMacros}
@@ -130,6 +128,8 @@ function Macro({
             <Space width="2x" />
             {i18n._('Export')}
           </Button>
+        </Box>
+        <Box>
           <Button
             variant="secondary"
             onClick={handleRefreshMacros}

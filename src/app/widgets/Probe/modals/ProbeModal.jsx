@@ -139,7 +139,7 @@ function ProbeModal({
               }}
             />
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             <Button
               onClick={onClose}
             >

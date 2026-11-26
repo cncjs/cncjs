@@ -69,7 +69,7 @@ function RunMacro({
             value={content}
           />
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter columnGap="2x">
           <Button
             variant="default"
             onClick={onClose}

@@ -69,6 +69,16 @@ for (const width of [1440, 1280, 1024, 800, 390]) {
   });
 }
 
+test('layout: adjacent widgets have 3x vertical spacing', async ({ page }, testInfo) => {
+  await openWorkspace(page);
+  for (const [first, second] of [['connection', 'console'], ['gcode', 'macro']]) {
+    const upper = await widget(page, first).boundingBox();
+    const lower = await widget(page, second).boundingBox();
+    expect(lower.y - (upper.y + upper.height)).toBeCloseTo(12, 0);
+  }
+  await capture(page, testInfo, 'workspace-widget-spacing');
+});
+
 test('layout: rendered WebGL canvas inherits the selected surface, not an opaque white clear color', async ({ page }, testInfo) => {
   await openWorkspace(page);
   const canvas = widget(page, 'visualizer').locator('[aria-label="3D Visualizer"] canvas');
