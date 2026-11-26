@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-color-mode="{{colorMode}}">
+<html data-color-mode="{{colorMode}}"{{#if offlineFailover}} data-offline-failover="true"{{#if offlineFailoverTimeout}} data-offline-failover-timeout="{{offlineFailoverTimeout}}"{{/if}}{{/if}}>
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="{{colorMode}}">

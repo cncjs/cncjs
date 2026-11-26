@@ -45,5 +45,9 @@
   ],
   "events": [],
   "macros": [],
-  "users": []
+  "users": [],
+  "offlineFailover": {
+    "enabled": false,
+    "timeout": 3600
+  }
 }
