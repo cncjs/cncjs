@@ -63,6 +63,13 @@
 
         > a {
             cursor: move;
+            display: inline-block;
+            padding-left: 8px; // mirrors the 8px <Space> after the icon
+            margin-left: -8px; // pulls it back so the icon doesn't move
+
+            &:focus-visible {
+                outline-offset: -2px;
+            }
         }
     }
 

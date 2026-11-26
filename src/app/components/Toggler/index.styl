@@ -1,4 +1,7 @@
 .toggler {
+    display: block; // contain the floats so the focus ring wraps the whole row
+    margin: -5px -10px; // cancel .panel-heading's 5px 10px padding
+    padding: 5px 10px; // restore it inside the anchor, so the layout doesn't move
     color: inherit;
 
     &:hover,
@@ -6,11 +9,11 @@
         color: inherit;
 
         .toggler-icon {
-            color: #505050;
+            color: var(--toggler-icon-hover);
         }
     }
 
     .toggler-icon {
-        color: #838383;
+        color: var(--toggler-icon);
     }
 }
