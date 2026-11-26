@@ -29,7 +29,8 @@ const fakeTerm = (textarea, rows = []) => ({
   buffer: { lines: { get: (i) => (rows[i] ? cells(rows[i]) : null) }, ybase: 0, y: Math.max(0, rows.length - 1), x: 0 },
   eraseLine: jest.fn(),
   write: jest.fn(),
-  setOption: jest.fn()
+  setOption: jest.fn(),
+  clear: jest.fn()
 });
 
 describe('Terminal read-only mode (command input shown)', () => {
@@ -130,5 +131,25 @@ describe('Terminal read-only mode (command input shown)', () => {
     wrapper.applyReadOnly(true);
     expect(wrapper.term.write).toHaveBeenCalledWith('\x1b[2K\r');
     expect(wrapper.useCursorRowForOutput).toBe(false);
+  });
+
+  test('clears the last output line too while read-only', () => {
+    const wrapper = make({ readOnly: true });
+    wrapper.term = fakeTerm(textarea);
+    wrapper.useCursorRowForOutput = true;
+
+    wrapper.clear();
+    expect(wrapper.term.clear).toHaveBeenCalled();
+    expect(wrapper.term.write).toHaveBeenCalledWith('\x1b[2K\r');
+    expect(wrapper.useCursorRowForOutput).toBe(false);
+  });
+
+  test('keeps the prompt row on clear when not read-only', () => {
+    const wrapper = make({ readOnly: false });
+    wrapper.term = fakeTerm(textarea);
+
+    wrapper.clear();
+    expect(wrapper.term.clear).toHaveBeenCalled();
+    expect(wrapper.term.write).not.toHaveBeenCalled();
   });
 });

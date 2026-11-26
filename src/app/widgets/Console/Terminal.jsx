@@ -626,6 +626,12 @@ class TerminalWrapper extends PureComponent {
 
     clear() {
       this.term.clear();
+      if (this.props.readOnly) {
+        // xterm keeps the cursor row, which in read-only mode holds the last output line instead of the prompt:
+        // erase it, so the next output line starts on the empty first row
+        this.term.write('\x1b[2K\r');
+        this.useCursorRowForOutput = false; // read-only: true while the cursor row holds an output line (the next line starts on a new row), false while it is empty (e.g. after Clear all)
+      }
     }
 
     selectAll() {
