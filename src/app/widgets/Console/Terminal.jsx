@@ -625,6 +625,12 @@ class TerminalWrapper extends PureComponent {
     }
 
     clear() {
+      if (this.props.readOnly) {
+        // Queue the clear behind pending output: erase the screen and scrollback, then home the cursor.
+        this.term.write('\x1b[2J\x1b[3J\x1b[H');
+        this.useCursorRowForOutput = false;
+        return;
+      }
       this.term.clear();
     }
 
