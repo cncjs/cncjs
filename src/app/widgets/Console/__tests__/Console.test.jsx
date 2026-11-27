@@ -236,11 +236,43 @@ test('Console shell Clear button reaches the terminal owner without a controller
   />);
   mockTerminalClear.mockClear();
   mockControllerWrite.mockClear();
-  fireEvent.click(screen.getByRole('button', { name: 'Clear console' }));
+  const clearButton = screen.getByRole('button', { name: 'Clear console' });
+  expect(clearButton).toHaveAttribute('title', 'Clear all');
+  expect(clearButton.querySelector('[data-icon="eraser"]')).toHaveAttribute('aria-hidden', 'true');
+  fireEvent.click(clearButton);
   expect(mockTerminalClear).toHaveBeenCalledTimes(1);
   expect(mockControllerWrite).not.toHaveBeenCalled();
   view.unmount();
   expect(mockEmitter.off).toHaveBeenCalledWith('terminal:clear', expect.any(Function));
+});
+
+test('Console More opens settings first and preserves the other menu actions', async () => {
+  const ConsoleWidget = require('../index').default;
+  mockConfigSet.mockClear();
+  const view = renderAppUI(<ConsoleWidget
+    widgetId="console" view="normal"
+    onViewChange={jest.fn()} onFork={jest.fn()} onRemove={jest.fn()}
+    sortable={{}}
+  />);
+  expect(screen.queryByRole('button', { name: 'Console Settings' })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'More options' }));
+  expect(screen.getAllByRole('menuitem').map(item => item.textContent.trim())).toEqual([
+    'Console Settings', 'Refresh', 'Select All', 'Copy Selection', 'Clear Selection',
+    'Enter Full Screen', 'Fork Widget', 'Remove Widget',
+  ]);
+  fireEvent.click(screen.getByRole('menuitem', { name: 'Console Settings' }));
+  expect(screen.getByRole('dialog', { name: 'Console Settings' })).toBeVisible();
+  fireEvent.change(screen.getByRole('textbox', { name: 'Rows' }), { target: { value: '12' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save Changes' }));
+  await waitFor(() => expect(mockConfigSet).toHaveBeenCalledWith('terminalRows', 12));
+  await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  fireEvent.click(screen.getByRole('button', { name: 'More options' }));
+  fireEvent.click(screen.getByRole('menuitem', { name: 'Select All' }));
+  expect(mockTerminalSelectAll).toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'More options' }));
+  fireEvent.click(screen.getByRole('menuitem', { name: 'Clear Selection' }));
+  expect(mockTerminalClearSelection).toHaveBeenCalled();
+  view.unmount();
 });
 
 test('blocks a column change while input is pending and saves only after it is cleared', async () => {

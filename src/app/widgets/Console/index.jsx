@@ -6,7 +6,7 @@ import {
   DropdownToggle,
   Space,
 } from '@tonic-ui/react';
-import { ChevronDownIcon, ChevronUpIcon, CloseIcon, DeleteIcon, MenuIcon, MoreIcon, RefreshIcon } from '@tonic-ui/react-icons';
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon, MenuIcon, MoreIcon, RefreshIcon } from '@tonic-ui/react-icons';
 import cx from 'classnames';
 import React from 'react';
 import Widget from '@app/components/Widget';
@@ -64,15 +64,6 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                 <CommandInputToggle emitter={emitter} />
                 <Button
                   className={widgetStyles.widgetButton}
-                  aria-label={i18n._('Console Settings')}
-                  title={i18n._('Console Settings')}
-                  onClick={() => emitter.emit('terminal:settings')}
-                  sx={{ border: 0, borderRadius: 0, minHeight: 0, color: 'inherit', backgroundColor: 'inherit' }}
-                >
-                  <FontAwesomeIcon icon={faCog} fixedWidth aria-hidden="true" />
-                </Button>
-                <Button
-                  className={widgetStyles.widgetButton}
                   sx={{
                     border: 0,
                     minHeight: 0,
@@ -87,7 +78,7 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                   title={i18n._('Clear all')}
                   onClick={() => emitter.emit('terminal:clear')}
                 >
-                  <DeleteIcon aria-hidden="true" size="1em" width="1.25em" />
+                  <FontAwesomeIcon icon={faEraser} fixedWidth aria-hidden="true" />
                 </Button>
                 <Button
                   className={widgetStyles.widgetButton}
@@ -149,6 +140,16 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                 <Dropdown
                   style={{ display: 'flex', alignSelf: 'stretch' }}
                   items={[
+                    {
+                      value: 'settings',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faCog} fixedWidth aria-hidden="true" />
+                          <Space width="2x" />
+                          {i18n._('Console Settings')}
+                        </>
+                      ),
+                    },
                     {
                       value: 'refresh',
                       label: (
@@ -226,7 +227,9 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                     },
                   ]}
                   onChange={({ value: eventKey }) => {
-                    if (eventKey === 'refresh') {
+                    if (eventKey === 'settings') {
+                      emitter.emit('terminal:settings');
+                    } else if (eventKey === 'refresh') {
                       emitter.emit('terminal:refresh');
                     } else if (eventKey === 'selectAll') {
                       emitter.emit('terminal:selectAll');
