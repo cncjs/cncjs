@@ -21,6 +21,8 @@ function Custom({
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
+  // The iframe can announce readiness before its native load event.
+  const pendingFullscreenSyncRef = useRef(false);
   const widgetId = useContext(WidgetConfigContext);
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
@@ -117,7 +119,6 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           // Post a message to the iframe window
           postMessage('change', {
-            widget: { fullscreen: isFullscreen },
             controller: {
               type: _get(controller, 'type'),
             },
@@ -127,6 +128,15 @@ function Custom({
               options: _get(controller, 'connection.options'),
             },
           });
+        }),
+        pubsub.subscribe('message:connect', () => {
+          if (!disabled) {
+            if (iframeRef.current?.isConnected) {
+              postMessage('widget:fullscreenchange', { fullscreen: isFullscreen });
+            } else {
+              pendingFullscreenSyncRef.current = true;
+            }
+          }
         }),
         pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
           if (!disabled && payload.widgetId === widgetId) {
@@ -194,6 +204,10 @@ function Custom({
         }
 
         iframeRef.current = iframe;
+        if (pendingFullscreenSyncRef.current) {
+          pendingFullscreenSyncRef.current = false;
+          pubsub.publish('widget:fullscreenchange', { widgetId, fullscreen: isFullscreen });
+        }
         /*
         const target = iframe.contentDocument.body;
         const nextHeight = target.offsetHeight;

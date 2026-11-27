@@ -271,14 +271,13 @@ describe('fullscreen iframe notifications', () => {
     expect(postMessage).not.toHaveBeenCalled();
     connect();
     connect();
-    expect(postMessage).toHaveBeenCalledTimes(2);
-    expect(postMessage).toHaveBeenLastCalledWith({
-      token: '',
-      version: settings.version,
-      action: {
+    expect(postMessage).toHaveBeenCalledTimes(4);
+    const changes = actions(postMessage).filter(action => action.type === 'change');
+    expect(changes[1]).toEqual(changes[0]);
+    expect(actions(postMessage).filter(action => action.type === 'change')).toEqual([
+      {
         type: 'change',
         payload: {
-          widget: { fullscreen },
           controller: { type: controller.type },
           connection: {
             type: controller.connection?.type,
@@ -287,7 +286,61 @@ describe('fullscreen iframe notifications', () => {
           },
         },
       },
-    }, '*');
+      expect.objectContaining({ type: 'change' }),
+    ]);
+    expect(actions(postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([
+      { type: 'widget:fullscreenchange', payload: { fullscreen } },
+      { type: 'widget:fullscreenchange', payload: { fullscreen } },
+    ]);
+    postMessage.mock.calls.forEach(([message, target]) => {
+      expect(message.token).toBe('');
+      expect(message.version).toBe(settings.version);
+      expect(target).toBe('*');
+    });
+  });
+
+  test('readiness subscribers handle fullscreen and controller changes independently', () => {
+    const subscribe = jest.spyOn(pubsub, 'subscribe');
+    const { postMessage } = mount({ isFullscreen: true });
+    const readyHandlers = subscribe.mock.calls.filter(([topic]) => topic === 'message:connect').map(([, handler]) => handler);
+    subscribe.mockRestore();
+    expect(readyHandlers).toHaveLength(2);
+    const handledTypes = readyHandlers.map(handler => {
+      postMessage.mockClear();
+      handler();
+      expect(postMessage).toHaveBeenCalledTimes(1);
+      return actions(postMessage)[0].type;
+    });
+    expect(handledTypes).toEqual(expect.arrayContaining(['change', 'widget:fullscreenchange']));
+  });
+
+  test('readiness before native load synchronizes the latest state without a change reply', async () => {
+    const view = renderAppUI(content({ isFullscreen: true }));
+    const iframe = view.container.querySelector('iframe');
+    const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
+    connect();
+    expect(postMessage).not.toHaveBeenCalled();
+    view.rerender(content({ isFullscreen: false }));
+    transition(false);
+    fireEvent.load(iframe);
+    fireEvent.load(iframe);
+    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(1));
+    expect(actions(postMessage)).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: false } }]);
+  });
+
+  test('queued load synchronization cannot overwrite a later async transition', async () => {
+    const view = renderAppUI(content({ isFullscreen: true }));
+    const iframe = view.container.querySelector('iframe');
+    const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
+    connect();
+    fireEvent.load(iframe);
+    view.rerender(content({ isFullscreen: false }));
+    act(() => pubsub.publish('widget:fullscreenchange', { widgetId: 'custom', fullscreen: false }));
+    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2));
+    expect(actions(postMessage)).toEqual([
+      { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
+      { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
+    ]);
   });
 
   test('sends only boolean transitions and reconnect reads the latest state', () => {
@@ -304,7 +357,7 @@ describe('fullscreen iframe notifications', () => {
       { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
     ]);
     connect();
-    expect(actions(view.postMessage)[2].payload.widget.fullscreen).toBe(false);
+    expect(actions(view.postMessage).filter(action => action.type === 'widget:fullscreenchange').map(action => action.payload.fullscreen)).toEqual([true, false, false]);
   });
 
   test('controller changes retain their connect-only behavior independently of fullscreen', () => {
@@ -318,9 +371,12 @@ describe('fullscreen iframe notifications', () => {
       view.rerender(content({ isFullscreen: true }));
       transition(true);
       connect();
-      expect(actions(view.postMessage)).toEqual([
+      expect(actions(view.postMessage).filter(action => action.type === 'change')).toEqual([
+        { type: 'change', payload: { controller: { type: 'Grbl' }, connection: controller.connection } },
+      ]);
+      expect(actions(view.postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([
         { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-        { type: 'change', payload: { widget: { fullscreen: true }, controller: { type: 'Grbl' }, connection: controller.connection } },
+        { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
       ]);
     } finally {
       Object.assign(controller, original);
@@ -337,7 +393,8 @@ describe('fullscreen iframe notifications', () => {
     fireEvent.load(iframe);
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
     connect();
-    expect(actions(postMessage).map(action => [action.type, (action.type === 'change' ? action.payload.widget.fullscreen : action.payload.fullscreen)])).toEqual([['change', true]]);
+    expect(actions(postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: true } }]);
+    expect(actions(postMessage).filter(action => action.type === 'change')).toHaveLength(1);
     view.unmount();
     postMessage.mockClear();
     connect();
@@ -371,8 +428,9 @@ describe('fullscreen iframe notifications', () => {
     // No widget click/event is involved in these host-driven transitions.
     expect(screen.getAllByRole('button', { name: 'Collapse' })).toHaveLength(2);
     connect();
-    expect(actions(first)[2].type).toBe('change');
-    expect(actions(second)[0].type).toBe('change');
+    expect(actions(first).filter(action => action.type === 'change')).toHaveLength(1);
+    expect(actions(second).filter(action => action.type === 'change')).toHaveLength(1);
+    expect(actions(second).filter(action => action.type === 'widget:fullscreenchange')).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: false } }]);
     view.unmount();
     config.unset(['widgets', 'custom:fullscreen-first']);
     config.unset(['widgets', 'custom:fullscreen-second']);
@@ -408,6 +466,34 @@ test('authoritative host events deduplicate local and external fullscreen transi
     const { getWidgetView, setWidgetView } = useWorkspaceLayout();
     return (
       <>
+        <output data-testid="authoritative-view">{getWidgetView('custom:authority')}</output>
+        {['before', 'during', 'after'].map(phase => (
+          <button
+            key={phase}
+            type="button"
+            onClick={() => {
+              const toggle = () => {
+                setWidgetView('custom:authority', 'fullscreen');
+                setWidgetView('custom:authority', 'normal');
+              };
+              if (phase === 'before') {
+                toggle();
+                pubsub.publish('message:connect');
+              } else if (phase === 'during') {
+                const token = pubsub.subscribe('message:connect', () => {
+                  pubsub.unsubscribe(token);
+                  toggle();
+                });
+                pubsub.publish('message:connect');
+              } else {
+                pubsub.publish('message:connect');
+                setTimeout(toggle, 0);
+              }
+            }}
+          >
+            Connect {phase}
+          </button>
+        ))}
         <button type="button" onClick={() => setWidgetView('custom:authority', 'fullscreen')}>External enter</button>
         <button type="button" onClick={() => setWidgetView('custom:authority', 'normal')}>External exit</button>
         <button
@@ -452,36 +538,46 @@ test('authoritative host events deduplicate local and external fullscreen transi
   view.rerender(tree());
   await waitFor(() => expect(first).toHaveBeenCalledTimes(1));
   act(() => pubsub.publish('message:connect'));
-  await waitFor(() => expect(first).toHaveBeenCalledTimes(2));
-  fireEvent.click(screen.getByRole('button', { name: 'Exit Full Screen' }));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
+  fireEvent.click(screen.getByRole('button', { name: 'Exit Full Screen' }));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(4));
   fireEvent.click(screen.getAllByRole('button', { name: 'More options' })[0]);
   fireEvent.click(await screen.findByRole('menuitem', { name: 'Enter Full Screen' }));
-  await waitFor(() => expect(first).toHaveBeenCalledTimes(4));
-  fireEvent.click(screen.getByText('External exit'));
-  fireEvent.click(screen.getByText('External exit'));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(5));
-  const actions = first.mock.calls.map(([message]) => message.action);
-  expect(actions.map(action => [action.type, (action.type === 'change' ? action.payload.widget.fullscreen : action.payload.fullscreen)])).toEqual([
-    ['widget:fullscreenchange', true], ['change', true],
-    ['widget:fullscreenchange', false], ['widget:fullscreenchange', true],
-    ['widget:fullscreenchange', false],
-  ]);
-  expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(['change']);
+  fireEvent.click(screen.getByText('External exit'));
+  fireEvent.click(screen.getByText('External exit'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(6));
+  const sent = () => first.mock.calls.map(([message]) => message.action);
+  const fullscreenValues = () => sent().filter(action => action.type === 'widget:fullscreenchange').map(action => action.payload.fullscreen);
+  expect(fullscreenValues()).toEqual([true, true, false, true, false]);
+  expect(sent().filter(action => action.type === 'change')).toHaveLength(1);
+  expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(expect.arrayContaining(['change', 'widget:fullscreenchange']));
+  expect(second).toHaveBeenCalledTimes(2);
   first.mockClear();
   fireEvent.click(screen.getByText('Fast enter exit'));
-  await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
-  expect(first.mock.calls.map(([message]) => [message.action.type, (message.action.type === 'change' ? message.action.payload.widget.fullscreen : message.action.payload.fullscreen)])).toEqual([
-    ['widget:fullscreenchange', true], ['widget:fullscreenchange', false], ['change', false],
-  ]);
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(4));
+  expect(fullscreenValues()).toEqual([true, false, false]);
+  expect(sent().filter(action => action.type === 'change')).toHaveLength(1);
   first.mockClear();
   fireEvent.click(screen.getByText('Immediate connect'));
-  await waitFor(() => expect(first).toHaveBeenCalledTimes(2));
-  expect(first.mock.calls.map(([message]) => [message.action.type, (message.action.type === 'change' ? message.action.payload.widget.fullscreen : message.action.payload.fullscreen)])).toEqual([
-    ['widget:fullscreenchange', true], ['change', true],
-  ]);
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
+  expect(fullscreenValues()).toEqual([true, true]);
+  expect(sent().filter(action => action.type === 'change')).toHaveLength(1);
   first.mockClear();
   fireEvent.click(screen.getByText('External exit'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(1));
+  first.mockClear();
+  for (const phase of ['before', 'during', 'after']) {
+    fireEvent.click(screen.getByText(`Connect ${phase}`));
+    // Each case has two actual transitions plus one independent ready sync.
+    // eslint-disable-next-line no-await-in-loop
+    await waitFor(() => expect(first).toHaveBeenCalledTimes(4));
+    expect(fullscreenValues()).toEqual(phase === 'before' ? [true, false, false] : [false, true, false]);
+    expect(sent().filter(action => action.type === 'change')).toHaveLength(1);
+    expect(screen.getByTestId('authoritative-view')).toHaveTextContent('normal');
+    first.mockClear();
+  }
+  fireEvent.click(screen.getByText('External enter'));
   view.unmount();
   await new Promise(resolve => {
     setTimeout(resolve, 0);
