@@ -1,5 +1,4 @@
 import { Box } from '@tonic-ui/react';
-import { useEventCallback } from '@tonic-ui/react-hooks';
 import { ensurePositiveNumber } from 'ensure-type';
 import Uri from 'jsuri';
 import _get from 'lodash/get';
@@ -24,23 +23,9 @@ function Custom({
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
   const widgetId = useContext(WidgetConfigContext);
-  const getFullscreen = useEventCallback(() => Boolean(fullscreen));
+  const isFullscreen = Boolean(fullscreen);
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
-
-  const notifyFullscreen = useEventCallback((nextFullscreen) => {
-    const target = _get(iframeRef.current, 'contentWindow');
-    if (!disabled && target) {
-      target.postMessage({
-        token: token,
-        version: settings.version,
-        action: {
-          type: 'widget:fullscreenchange',
-          payload: { fullscreen: nextFullscreen },
-        },
-      }, '*');
-    }
-  });
 
   useEffect(() => {
     const reload = (forceGet = false) => {
@@ -134,7 +119,7 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           // Post a message to the iframe window
           postMessage('change', {
-            fullscreen: getFullscreen(),
+            fullscreen: isFullscreen,
             controller: {
               type: _get(controller, 'type'),
             },
@@ -146,8 +131,8 @@ function Custom({
           });
         }),
         pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
-          if (payload.widgetId === widgetId) {
-            notifyFullscreen(payload.fullscreen);
+          if (!disabled && payload.widgetId === widgetId) {
+            postMessage('widget:fullscreenchange', { fullscreen: payload.fullscreen });
           }
         }),
         pubsub.subscribe('message:resize', (type, payload) => {
@@ -171,7 +156,7 @@ function Custom({
     return () => {
       messageListenersRef.current?.();
     };
-  }, [getFullscreen, notifyFullscreen, token, widgetId]);
+  }, [disabled, isFullscreen, token, widgetId]);
 
   if (disabled) {
     return (

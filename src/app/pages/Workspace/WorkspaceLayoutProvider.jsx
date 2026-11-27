@@ -157,7 +157,7 @@ export const WorkspaceLayoutProvider = ({ children, config = configSingleton }) 
         const nextFullscreen = { ...fullscreenRef.current, [id]: true };
         fullscreenRef.current = nextFullscreen;
         setFullscreenById(nextFullscreen);
-        pubsub.publishSync('widget:fullscreenchange', { widgetId: id, fullscreen: true });
+        pubsub.publish('widget:fullscreenchange', { widgetId: id, fullscreen: true });
       }
       return;
     }
@@ -167,7 +167,7 @@ export const WorkspaceLayoutProvider = ({ children, config = configSingleton }) 
       delete nextFullscreen[id];
       fullscreenRef.current = nextFullscreen;
       setFullscreenById(nextFullscreen);
-      pubsub.publishSync('widget:fullscreenchange', { widgetId: id, fullscreen: false });
+      pubsub.publish('widget:fullscreenchange', { widgetId: id, fullscreen: false });
     }
 
     setWidgetsCollapsed([id], view === 'collapsed');

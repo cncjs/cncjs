@@ -140,7 +140,6 @@ jest.mock('pubsub-js', () => ({
     }),
     unsubscribe: jest.fn(),
     publish: jest.fn(),
-    publishSync: jest.fn(),
   },
 }));
 

@@ -408,6 +408,27 @@ test('authoritative host events deduplicate local and external fullscreen transi
       <>
         <button type="button" onClick={() => setWidgetView('custom:authority', 'fullscreen')}>External enter</button>
         <button type="button" onClick={() => setWidgetView('custom:authority', 'normal')}>External exit</button>
+        <button
+          type="button"
+          onClick={() => {
+            setWidgetView('custom:authority', 'fullscreen');
+            setWidgetView('custom:authority', 'fullscreen');
+            pubsub.publish('message:connect');
+          }}
+        >
+          Immediate connect
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setWidgetView('custom:authority', 'fullscreen');
+            setWidgetView('custom:authority', 'normal');
+            setWidgetView('custom:authority', 'normal');
+            pubsub.publish('message:connect');
+          }}
+        >
+          Fast enter exit
+        </button>
         <CustomWidget
           {...widgetProps('custom:authority', {
             view: getWidgetView('custom:authority'),
@@ -427,12 +448,17 @@ test('authoritative host events deduplicate local and external fullscreen transi
   fireEvent.click(screen.getByText('External enter'));
   fireEvent.click(screen.getByText('External enter'));
   view.rerender(tree());
-  act(() => pubsub.publishSync('message:connect'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(1));
+  act(() => pubsub.publish('message:connect'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(2));
   fireEvent.click(screen.getByRole('button', { name: 'Exit Full Screen' }));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
   fireEvent.click(screen.getAllByRole('button', { name: 'More options' })[0]);
   fireEvent.click(await screen.findByRole('menuitem', { name: 'Enter Full Screen' }));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(4));
   fireEvent.click(screen.getByText('External exit'));
   fireEvent.click(screen.getByText('External exit'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(5));
   const actions = first.mock.calls.map(([message]) => message.action);
   expect(actions.map(action => [action.type, action.payload.fullscreen])).toEqual([
     ['widget:fullscreenchange', true], ['change', true],
@@ -440,8 +466,23 @@ test('authoritative host events deduplicate local and external fullscreen transi
     ['widget:fullscreenchange', false],
   ]);
   expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(['change']);
-  view.unmount();
   first.mockClear();
-  act(() => pubsub.publishSync('widget:fullscreenchange', { widgetId: 'custom:authority', fullscreen: true }));
+  fireEvent.click(screen.getByText('Fast enter exit'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
+  expect(first.mock.calls.map(([message]) => [message.action.type, message.action.payload.fullscreen])).toEqual([
+    ['widget:fullscreenchange', true], ['widget:fullscreenchange', false], ['change', false],
+  ]);
+  first.mockClear();
+  fireEvent.click(screen.getByText('Immediate connect'));
+  await waitFor(() => expect(first).toHaveBeenCalledTimes(2));
+  expect(first.mock.calls.map(([message]) => [message.action.type, message.action.payload.fullscreen])).toEqual([
+    ['widget:fullscreenchange', true], ['change', true],
+  ]);
+  first.mockClear();
+  fireEvent.click(screen.getByText('External exit'));
+  view.unmount();
+  await new Promise(resolve => {
+    setTimeout(resolve, 0);
+  });
   expect(first).not.toHaveBeenCalled();
 });
