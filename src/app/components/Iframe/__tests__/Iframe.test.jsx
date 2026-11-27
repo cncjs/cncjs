@@ -6,7 +6,7 @@ import Iframe from '..';
 test('exposes the mounted iframe before load and clears the ref on unmount', () => {
   const ref = React.createRef();
   const onLoad = jest.fn();
-  const view = renderAppUI(<Iframe ref={ref} onLoad={onLoad} />);
+  const view = renderAppUI(<Iframe iframeRef={ref} onLoad={onLoad} />);
   const iframe = view.container.querySelector('iframe');
   expect(ref.current).toBe(iframe);
   expect(ref.current.contentWindow).not.toBeNull();
@@ -19,10 +19,10 @@ test('callback refs follow mount, replacement and unmount without losing native 
   const first = jest.fn();
   const next = jest.fn();
   const onLoad = jest.fn();
-  const view = renderAppUI(<Iframe ref={first} onLoad={onLoad} />);
+  const view = renderAppUI(<Iframe iframeRef={first} onLoad={onLoad} />);
   const iframe = view.container.querySelector('iframe');
   expect(first).toHaveBeenLastCalledWith(iframe);
-  view.rerender(<Iframe ref={next} onLoad={onLoad} />);
+  view.rerender(<Iframe iframeRef={next} onLoad={onLoad} />);
   expect(first).toHaveBeenLastCalledWith(null);
   expect(next).toHaveBeenLastCalledWith(iframe);
   fireEvent.load(iframe);

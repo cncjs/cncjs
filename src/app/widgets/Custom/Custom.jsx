@@ -189,7 +189,7 @@ function Custom({
 
   return (
     <Iframe
-      ref={iframeRef}
+      iframeRef={iframeRef}
       src={iframeSrc}
       sx={{ verticalAlign: 'top' }}
     />

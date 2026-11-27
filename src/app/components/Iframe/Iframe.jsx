@@ -1,6 +1,6 @@
 import { Box } from '@tonic-ui/react';
 import { useMergeRefs } from '@tonic-ui/react-hooks';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import useIframeEvents from './useIframeEvents';
 
 const noop = () => {};
@@ -21,14 +21,14 @@ const mapSandbox = sandbox => Object.keys(sandbox)
 
 /**
  * @param {{ src?: string, width?: number|string, height?: number|string, title?: string,
- * sandbox?: boolean|string|object, style?: object,
+ * sandbox?: boolean|string|object, style?: object, iframeRef?: React.Ref<HTMLIFrameElement>,
  * onLoad?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
  * onBeforeUnload?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
  * onError?: (event: Event) => void,
  * onUnload?: (payload: {event: Event}) => void, [key: string]: unknown }} props
  */
 function Iframe({ width = '100%', height = '100%', title = 'Custom widget', sandbox = defaultSandbox,
-  style, onLoad = noop, onBeforeUnload = noop, onUnload = noop, onError, ...props }, forwardedRef) {
+  style, iframeRef: forwardedRef, onLoad = noop, onBeforeUnload = noop, onUnload = noop, onError, ...props }) {
   const iframeRef = useIframeEvents({ onLoad, onBeforeUnload, onUnload, onError });
   const ref = useMergeRefs(iframeRef, forwardedRef);
   let sandboxValue = sandbox;
@@ -46,4 +46,4 @@ function Iframe({ width = '100%', height = '100%', title = 'Custom widget', sand
   );
 }
 
-export default forwardRef(Iframe);
+export default Iframe;
