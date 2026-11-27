@@ -655,9 +655,12 @@ class TinyGController {
             //
             // Probe points carry the units the probe G-code was emitted in; probe
             // data is stored in mm.
+            // g2core runs each probe cycle in millimeters, so modal.units reads G21 here even when the
+            // grid was sent in G20: use the units recorded when probing started.
             const gridNode = this.probeState.probePoints[this.probeState.probedPositions.length];
-            probedPos.x = isImperial ? in2mm(gridNode.x) : gridNode.x;
-            probedPos.y = isImperial ? in2mm(gridNode.y) : gridNode.y;
+            const gridImperial = (this.probeState.gridUnits || modal.units) === 'G20';
+            probedPos.x = gridImperial ? in2mm(gridNode.x) : gridNode.x;
+            probedPos.y = gridImperial ? in2mm(gridNode.y) : gridNode.y;
 
             const newProbedPositions = [...this.probeState.probedPositions, probedPos];
             const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
@@ -688,6 +691,11 @@ class TinyGController {
               log.info('[autolevel] Probing completed');
             }
           }
+        }
+
+        // An unsolicited probe report is not the reply to a line: do not ack the sender or advance the feeder.
+        if (r && r.unsolicited) {
+          return;
         }
 
         const { hold, sent, received } = this.sender.state;
@@ -1843,6 +1851,7 @@ class TinyGController {
           this.probeState = {
             probedPositions: [],
             probePoints,
+            gridUnits: this.runner.getModalGroup().units, // the units the probe G-code is emitted in
             minZ: null,
             maxZ: null,
             config: {
