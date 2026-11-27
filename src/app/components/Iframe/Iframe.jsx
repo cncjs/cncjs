@@ -32,7 +32,6 @@ const Iframe = forwardRef((inProps, ref) => {
     width = '100%',
     height = '100%',
     sandbox = defaultSandbox,
-    sx,
     onLoad = noop,
     onBeforeUnload = noop,
     onUnload = noop,
@@ -49,9 +48,8 @@ const Iframe = forwardRef((inProps, ref) => {
   }
   return (
     <Box
-      as="iframe" {...props}
+      as="iframe" __sx={{ border: 0 }} {...props}
       ref={mergedRef}
-      sx={[{ border: 0 }, sx]}
       width={width} height={height}
       sandbox={sandboxValue}
     />

@@ -3,6 +3,14 @@ import { fireEvent } from '@testing-library/react';
 import { renderAppUI } from '@app/test/render';
 import Iframe from '..';
 
+test('caller style props override the base border and retain vertical alignment', () => {
+  const view = renderAppUI(<Iframe border="3px solid red" verticalAlign="top" />);
+  expect(view.container.querySelector('iframe')).toHaveStyle({
+    borderWidth: '3px',
+    verticalAlign: 'top',
+  });
+});
+
 test.each([
   ['object', { verticalAlign: 'top', border: '3px solid red' }],
   ['function', () => ({ verticalAlign: 'top', border: '3px solid red' })],
