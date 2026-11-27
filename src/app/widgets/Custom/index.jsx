@@ -5,7 +5,6 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import { normalizeColorMode } from 'app/lib/theme';
 import WidgetConfig from '../WidgetConfig';
 import Custom from './Custom';
 import Settings from './Settings';
@@ -28,8 +27,6 @@ class CustomWidget extends PureComponent {
       this.setState({ minimized: true });
     };
 
-    // Used by Expand All. This only changes the layout: a disabled widget opens and shows that it is
-    // disabled, but it is not enabled. Only the widget's own controls enable it.
     expand = () => {
       this.setState({ minimized: false });
     };
@@ -39,45 +36,20 @@ class CustomWidget extends PureComponent {
     state = this.getInitialState();
 
     action = {
-      // Disabling collapses the widget and leaves full screen, since there is nothing left to show.
-      // Enabling only switches it on: an enabled widget can keep running while collapsed.
       toggleDisabled: () => {
-        this.setState(state => {
-          if (state.disabled) {
-            return { disabled: false };
-          }
-          return {
-            disabled: true,
-            minimized: true,
-            isFullscreen: false
-          };
-        });
+        const { disabled } = this.state;
+        this.setState({ disabled: !disabled });
       },
-      // Going full screen on a disabled widget also enables it, so there is something to show
       toggleFullscreen: () => {
-        this.setState(state => {
-          if (state.isFullscreen) {
-            return { isFullscreen: false };
-          }
-          return {
-            minimized: false,
-            isFullscreen: true,
-            disabled: state.url ? false : state.disabled
-          };
+        const { minimized, isFullscreen } = this.state;
+        this.setState({
+          minimized: isFullscreen ? minimized : false,
+          isFullscreen: !isFullscreen
         });
       },
-      // Expanding a disabled widget also enables it, so there is something to show.
-      // Collapsing never disables it.
       toggleMinimized: () => {
-        this.setState(state => {
-          if (!state.minimized) {
-            return { minimized: true };
-          }
-          return {
-            minimized: false,
-            disabled: state.url ? false : state.disabled
-          };
-        });
+        const { minimized } = this.state;
+        this.setState({ minimized: !minimized });
       },
       openModal: (name = MODAL_NONE, params = {}) => {
         this.setState({
@@ -125,32 +97,13 @@ class CustomWidget extends PureComponent {
 
     component = null;
 
-    colorModeObserver = null;
-
     componentDidMount() {
       this.addControllerEvents();
-
-      // Follow the app's color mode so the iframe can match it
-      this.colorModeObserver = new MutationObserver(this.updateColorMode);
-      this.colorModeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
     }
 
     componentWillUnmount() {
       this.removeControllerEvents();
-
-      if (this.colorModeObserver) {
-        this.colorModeObserver.disconnect();
-        this.colorModeObserver = null;
-      }
     }
-
-    getColorMode() {
-      return normalizeColorMode(document.documentElement.getAttribute('data-color-mode'));
-    }
-
-    updateColorMode = () => {
-      this.setState({ colorMode: this.getColorMode() });
-    };
 
     componentDidUpdate(prevProps, prevState) {
       const {
@@ -171,7 +124,6 @@ class CustomWidget extends PureComponent {
         minimized: this.config.get('minimized', false),
         isFullscreen: false,
         disabled: this.config.get('disabled'),
-        colorMode: this.getColorMode(),
         title: this.config.get('title', ''),
         url: this.config.get('url', ''),
         port: controller.port,
@@ -350,7 +302,6 @@ class CustomWidget extends PureComponent {
               config={config}
               disabled={state.disabled}
               fullscreen={isFullscreen}
-              colorMode={state.colorMode}
               url={state.url}
               port={state.port}
             />

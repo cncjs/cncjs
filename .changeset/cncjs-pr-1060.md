@@ -2,4 +2,4 @@
 "cncjs": minor
 ---
 
-Custom widget: tell the embedded page when the widget enters or leaves full screen, and link the enable switch to collapsing.
+The Custom widget includes `payload.fullscreen` in the iframe's initial `change` message. When the widget enters or leaves full screen, it sends `widget:fullscreenchange` with the new boolean value in `payload.fullscreen`.
