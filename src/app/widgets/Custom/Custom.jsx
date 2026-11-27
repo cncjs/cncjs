@@ -12,18 +12,16 @@ import config from '@app/store/config';
 import { WidgetConfigContext } from '@app/widgets/shared/context';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
-import styles from './index.styl';
 
 function Custom({
   disabled,
-  fullscreen,
+  isFullscreen,
 }) {
   const widgetConfig = useWidgetConfig();
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
   const widgetId = useContext(WidgetConfigContext);
-  const isFullscreen = Boolean(fullscreen);
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
 
@@ -163,8 +161,7 @@ function Custom({
       <Box
         px="2x"
         py="3x"
-        color="text.primary"
-        opacity={0.65}
+        color="text.tertiary"
       >
         {i18n._('The widget is currently disabled')}
       </Box>
@@ -176,8 +173,7 @@ function Custom({
       <Box
         px="2x"
         py="3x"
-        color="text.primary"
-        opacity={0.65}
+        color="text.tertiary"
       >
         {i18n._('URL not configured')}
       </Box>
@@ -191,7 +187,7 @@ function Custom({
   return (
     <Iframe
       src={iframeSrc}
-      className={styles.iframe}
+      sx={{ verticalAlign: 'top' }}
       onLoad={({ iframe }) => {
         if (!iframe) {
           return;

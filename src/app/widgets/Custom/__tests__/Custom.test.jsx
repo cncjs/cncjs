@@ -205,13 +205,14 @@ test('cleans iframe message listeners on unmount', () => {
   const view = renderAppUI(
     <WidgetConfigProvider widgetId="custom">
       <WidgetEventProvider>
-        <Custom disabled={false} />
+        <Custom disabled={false} isFullscreen={false} />
       </WidgetEventProvider>
     </WidgetConfigProvider>
   );
   const iframe = view.container.querySelector('iframe');
 
   fireEvent.load(iframe);
+  expect(iframe).toHaveStyle({ verticalAlign: 'top', width: '100%', height: '100%' });
   pubsub.publishSync('message:resize', { scrollHeight: 123 });
   expect(iframe.style.height).toBe('123px');
 
@@ -242,7 +243,7 @@ test('uses the host view contract for collapse and expand', () => {
 describe('fullscreen iframe notifications', () => {
   const controller = require('@app/lib/controller').default;
   const settings = require('@app/config/settings').default;
-  const props = { disabled: false, fullscreen: false };
+  const props = { disabled: false, isFullscreen: false };
   const content = overrides => (
     <WidgetConfigProvider widgetId="custom">
       <WidgetEventProvider>
@@ -266,7 +267,7 @@ describe('fullscreen iframe notifications', () => {
   });
 
   test.each([false, true])('connect and reconnect report fullscreen=%s with the existing connection shape', fullscreen => {
-    const { postMessage } = mount({ fullscreen });
+    const { postMessage } = mount({ isFullscreen: fullscreen });
     expect(postMessage).not.toHaveBeenCalled();
     connect();
     connect();
@@ -290,13 +291,13 @@ describe('fullscreen iframe notifications', () => {
   });
 
   test('sends only boolean transitions and reconnect reads the latest state', () => {
-    const view = mount({ fullscreen: undefined });
-    view.rerender(content({ fullscreen: false }));
+    const view = mount({ isFullscreen: false });
+    view.rerender(content({ isFullscreen: false }));
     expect(view.postMessage).not.toHaveBeenCalled();
-    view.rerender(content({ fullscreen: 1 }));
+    view.rerender(content({ isFullscreen: true }));
     transition(true);
-    view.rerender(content({ fullscreen: true }));
-    view.rerender(content({ fullscreen: false }));
+    view.rerender(content({ isFullscreen: true }));
+    view.rerender(content({ isFullscreen: false }));
     transition(false);
     expect(actions(view.postMessage)).toEqual([
       { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
@@ -314,7 +315,7 @@ describe('fullscreen iframe notifications', () => {
       controller.connection = { type: 'serial', ident: 'test-only', options: { baudrate: 115200 } };
       view.rerender(content());
       expect(view.postMessage).not.toHaveBeenCalled();
-      view.rerender(content({ fullscreen: true }));
+      view.rerender(content({ isFullscreen: true }));
       transition(true);
       connect();
       expect(actions(view.postMessage)).toEqual([
@@ -328,10 +329,10 @@ describe('fullscreen iframe notifications', () => {
 
   test('disabling suppresses transitions and re-enabled iframe connects with current state', () => {
     const view = mount();
-    view.rerender(content({ disabled: true, fullscreen: true }));
+    view.rerender(content({ disabled: true, isFullscreen: true }));
     transition(true);
     expect(view.postMessage).not.toHaveBeenCalled();
-    view.rerender(content({ fullscreen: true }));
+    view.rerender(content({ isFullscreen: true }));
     const iframe = view.container.querySelector('iframe');
     fireEvent.load(iframe);
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
@@ -387,13 +388,14 @@ test.each([
   const view = renderAppUI(
     <WidgetConfigProvider widgetId={widgetId}>
       <WidgetEventProvider>
-        <Custom disabled={disabled} />
+        <Custom disabled={disabled} isFullscreen={false} />
       </WidgetEventProvider>
     </WidgetConfigProvider>
   );
   const content = screen.getByText(text);
   expect(content.tagName).toBe('DIV');
-  expect(content).toHaveStyle({ padding: '.75rem .5rem .75rem .5rem', opacity: '0.65' });
+  expect(content).toHaveStyle({ padding: '.75rem .5rem .75rem .5rem' });
+  expect(content).not.toHaveStyle({ opacity: '0.65' });
   expect(view.container.querySelector('iframe')).toBeNull();
   view.unmount();
   config.unset(['widgets', widgetId]);

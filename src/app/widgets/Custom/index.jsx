@@ -234,7 +234,7 @@ function CustomWidgetBody({
         aria-hidden={isCollapsed}
         sx={{ display: isCollapsed ? 'none' : 'block' }}
       >
-        <Custom disabled={disabled} fullscreen={isFullscreen} />
+        <Custom disabled={disabled} isFullscreen={isFullscreen} />
       </Widget.Content>
     </Widget>
   );
