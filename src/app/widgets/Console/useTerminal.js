@@ -22,6 +22,7 @@ const pendingExtent = term => {
 
 function useTerminal({
   enabled,
+  readOnly = false,
   cols,
   rows,
   cursorBlink,
@@ -35,6 +36,10 @@ function useTerminal({
   const [containerNode, setContainerNode] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const termRef = useRef(null);
+  const readOnlyRef = useRef(readOnly);
+  const desiredReadOnlyRef = useRef(readOnly);
+  desiredReadOnlyRef.current = readOnly;
+  const useCursorRowForOutput = useRef(false);
   const operationsRef = useRef([]);
   const appearanceRef = useRef({ fontSize, background, textColor });
   const remeasureRef = useRef(false);
@@ -135,7 +140,7 @@ function useTerminal({
   const handleKey = useCallback((event) => {
     const { key, domEvent } = event;
     const term = termRef.current;
-    if (!term) {
+    if (!term || readOnlyRef.current) {
       return;
     }
 
@@ -315,7 +320,13 @@ function useTerminal({
     }
 
     const pastedData = clipboardData.getData('text/plain');
+    if (readOnlyRef.current) {
+      return;
+    }
     enqueue(() => {
+      if (readOnlyRef.current) {
+        return;
+      }
       const lines = String(pastedData)
         .replace(/(\r\n|\r|\n)/g, '\n')
         .split('\n')
@@ -334,7 +345,15 @@ function useTerminal({
     });
   }, [enqueue, resize]);
 
-  const clear = useCallback(() => termRef.current?.clear(), []);
+  const clear = useCallback(() => enqueue(() => {
+    const term = termRef.current;
+    if (readOnlyRef.current) {
+      term.write('\x1b[2K\r', () => term.clear());
+      useCursorRowForOutput.current = false;
+    } else {
+      term.clear();
+    }
+  }), [enqueue]);
   const clearSelection = useCallback(() => termRef.current?.clearSelection(), []);
   const refresh = useCallback((...args) => {
     const term = termRef.current;
@@ -350,6 +369,11 @@ function useTerminal({
   const writeln = useCallback((data, callback) => enqueue(() => {
     const term = termRef.current;
     if (!term) {
+      return;
+    }
+    if (readOnlyRef.current) {
+      term.write(`${useCursorRowForOutput.current ? '\r\n' : '\x1b[2K\r'}${data}`, callback);
+      useCursorRowForOutput.current = true;
       return;
     }
     const buffer = term._core.buffer;
@@ -402,7 +426,9 @@ function useTerminal({
       term.textarea.onpaste = onPaste;
     }
     const resizeDisposable = term.onResize(onResize);
-    term.focus(false);
+    if (!desiredReadOnlyRef.current) {
+      term.focus(false);
+    }
     term.setOption('fontFamily', DEFAULT_FONT_STACK);
 
     const xtermElement = containerNode.querySelector('.xterm');
@@ -434,6 +460,7 @@ function useTerminal({
       cancelAnimationFrame(frame);
       containerNode.removeEventListener('scroll', syncScrollbar);
       operationsRef.current = [];
+      useCursorRowForOutput.current = false;
       keyDisposable?.dispose();
       resizeDisposable?.dispose();
       if (term.textarea) {
@@ -450,11 +477,37 @@ function useTerminal({
   }, [containerNode, enabled, onKey, onPaste, onResize, resize, syncScrollbar]);
 
   useEffect(() => {
+    enqueue(() => {
+      const term = termRef.current;
+      const wasReadOnly = readOnlyRef.current;
+      readOnlyRef.current = readOnly;
+      term.setOption('disableStdin', readOnly);
+      term.setOption('cursorBlink', !readOnly && cursorBlink);
+      if (term.textarea) {
+        term.textarea.readOnly = readOnly;
+        term.textarea.setAttribute?.('inputmode', readOnly ? 'none' : 'text');
+        if (readOnly) {
+          term.textarea.blur?.();
+        }
+      }
+      if (readOnly) {
+        if (!wasReadOnly || !useCursorRowForOutput.current) {
+          term.write('\x1b[2K\r\x1b[?25l');
+          useCursorRowForOutput.current = false;
+        }
+      } else if (wasReadOnly) {
+        term.write(`${useCursorRowForOutput.current ? '\r\n' : ''}${chalk.white(PROMPT)}\x1b[?25h`);
+        useCursorRowForOutput.current = false;
+      }
+    });
+  }, [readOnly, cursorBlink, isReady, enqueue]);
+
+  useEffect(() => {
     const term = termRef.current;
     if (!term || !isReady) {
       return;
     }
-    term.setOption('cursorBlink', cursorBlink);
+    term.setOption('cursorBlink', !readOnlyRef.current && cursorBlink);
     term.setOption('scrollback', scrollback);
     term.setOption('tabStopWidth', tabStopWidth);
     resize(cols, rows);

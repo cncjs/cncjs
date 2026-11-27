@@ -160,6 +160,7 @@ jest.mock('@tonic-ui/react', () => {
   };
 });
 
+jest.mock('@app/widgets/shared/useWidgetConfig', () => () => ({ get: (_path, defaultValue) => defaultValue }));
 jest.mock('@app/widgets/shared/WidgetConfigProvider', () => ({ children }) => children);
 jest.mock('@app/widgets/shared/WidgetConfigConsumer', () => ({ children }) => (
   children({ get: (_path, defaultValue) => defaultValue })

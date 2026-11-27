@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { renderAppUI } from '@app/test/render';
 
+const mockConfigGet = jest.fn();
 const mockConfigSet = jest.fn();
 const mockTerminalClear = jest.fn();
 const mockTerminalResize = jest.fn();
@@ -72,7 +73,7 @@ jest.mock('pubsub-js', () => ({
 
 jest.mock('@app/widgets/shared/useWidgetConfig', () => ({
   __esModule: true,
-  default: () => ({ get: () => undefined, set: mockConfigSet }),
+  default: () => ({ get: (...args) => mockConfigGet(...args), set: mockConfigSet }),
 }));
 
 jest.mock('@app/widgets/shared/useWidgetEvent', () => ({
@@ -257,4 +258,24 @@ test('blocks a column change while input is pending and saves only after it is c
   expect(mockConfigSet).toHaveBeenCalledWith('fontSize', 14);
   expect(mockConfigSet).toHaveBeenCalledWith('terminalBackground', 'black');
   view.unmount();
+});
+
+test('touch submit writes and echoes exactly once with owner echo suppressed', async () => {
+  mockConfigGet.mockImplementation((key, fallback) => (key === 'commandInput' ? true : fallback));
+  mockControllerWrite.mockClear();
+  mockTerminalWriteln.mockClear();
+  const view = renderAppUI(<Console isConnected isFullscreen={false} />);
+  const input = screen.getByRole('textbox', { name: 'Command' });
+  fireEvent.change(input, { target: { value: ' G0 X10 ' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+  await waitFor(() => expect(mockControllerWrite).toHaveBeenCalledTimes(1));
+  expect(mockControllerWrite).toHaveBeenCalledWith('G0 X10\n', { __sender__: expect.any(String) });
+  expect(mockTerminalWriteln).toHaveBeenCalledTimes(1);
+  expect(mockTerminalWriteln).toHaveBeenCalledWith(expect.stringContaining('> G0 X10'));
+  const context = mockControllerWrite.mock.calls[0][1];
+  mockListeners['connection:write'].at(-1)({}, 'G0 X10', context);
+  expect(mockTerminalWriteln).toHaveBeenCalledTimes(1);
+  expect(mockUseTerminalOptions.at(-1).readOnly).toBe(true);
+  view.unmount();
+  mockConfigGet.mockReset();
 });

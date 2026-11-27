@@ -1,4 +1,4 @@
-import { faCodeBranch, faCompress, faCopy, faEraser, faExpand, faCog, faObjectGroup } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faCompress, faCopy, faEraser, faExpand, faCog, faObjectGroup, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
@@ -14,8 +14,26 @@ import widgetStyles from '@app/components/Widget/index.styl';
 import i18n from '@app/lib/i18n';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import WidgetEventProvider from '@app/widgets/shared/WidgetEventProvider';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
+
+/** @param {{ emitter: object }} props */
+function CommandInputToggle({ emitter }) {
+  const config = useWidgetConfig();
+  const enabled = config.get('commandInput', false);
+  const label = enabled ? i18n._('Hide command input') : i18n._('Show command input');
+  return (
+    <Button
+      className={widgetStyles.widgetButton}
+      aria-label={label} title={label} aria-pressed={enabled}
+      onClick={() => emitter.emit('terminal:toggleInput')}
+      sx={{ border: 0, borderRadius: 0, minHeight: 0, color: 'inherit', backgroundColor: 'inherit' }}
+    >
+      <FontAwesomeIcon icon={faKeyboard} fixedWidth aria-hidden="true" />
+    </Button>
+  );
+}
 
 /**
  * @param {{ widgetId: string, onFork: () => void, onRemove: () => void,
@@ -43,6 +61,7 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                 {i18n._('Console')}
               </Widget.Title>
               <Widget.Controls className={sortable.filterClassName}>
+                <CommandInputToggle emitter={emitter} />
                 <Button
                   className={widgetStyles.widgetButton}
                   aria-label={i18n._('Console Settings')}

@@ -19,6 +19,7 @@ import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import SettingsModal from './SettingsModal';
 import { readConsoleSettings } from './settings';
+import CommandInput from './CommandInput';
 import Terminal from './Terminal';
 import useTerminal from './useTerminal';
 import styles from './index.styl';
@@ -30,6 +31,7 @@ function Console({
 }) {
   const emitter = useWidgetEvent();
   const config = useWidgetConfig();
+  const commandInput = config.get('commandInput', false);
   const terminalSettings = readConsoleSettings(config.get);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const prevIsFullscreen = usePrevious(isFullscreen);
@@ -41,6 +43,7 @@ function Console({
   }, []);
   const { containerRef, prompt, actions } = useTerminal({
     enabled: isConnected,
+    readOnly: commandInput,
     ...terminalSettings,
     cols: isFullscreen ? 'auto' : terminalSettings.cols,
     rows: isFullscreen ? 'auto' : terminalSettings.rows,
@@ -126,6 +129,8 @@ function Console({
     const onSettings = () => setSettingsOpen(true);
     emitter.on('terminal:settings', onSettings);
     const onClear = () => actions.clear();
+    const onToggleInput = () => config.set('commandInput', !commandInput);
+    emitter.on('terminal:toggleInput', onToggleInput);
 
     const onClearSelection = () => {
       actions.clearSelection();
@@ -145,13 +150,14 @@ function Console({
     emitter.on('terminal:selectAll', onSelectAll);
 
     return () => {
+      emitter.off('terminal:toggleInput', onToggleInput);
       emitter.off('terminal:settings', onSettings);
       emitter.off('terminal:clear', onClear);
       emitter.off('terminal:clearSelection', onClearSelection);
       emitter.off('terminal:refresh', onRefresh);
       emitter.off('terminal:selectAll', onSelectAll);
     };
-  }, [actions, emitter]);
+  }, [actions, emitter, config, commandInput]);
 
   // Run the effect after every render
   useEffect(() => {
@@ -174,7 +180,18 @@ function Console({
 
   return (
     <>
-      {isConnected ? <Terminal containerRef={containerRef} /> : (
+      {isConnected ? (
+        <div className={styles.console}>
+          <Terminal containerRef={containerRef} />
+          {commandInput && (
+            <CommandInput onSend={command => {
+              onData(command + '\n');
+              actions.writeln(chalk.white(prompt + command));
+            }}
+            />
+          )}
+        </div>
+      ) : (
         <Box className={styles.noSerialConnection}>{i18n._('No serial connection')}</Box>
       )}
       {settingsOpen && (
