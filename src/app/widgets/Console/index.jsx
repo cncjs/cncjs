@@ -64,15 +64,6 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                 <CommandInputToggle emitter={emitter} />
                 <Button
                   className={widgetStyles.widgetButton}
-                  aria-label={i18n._('Console Settings')}
-                  title={i18n._('Console Settings')}
-                  onClick={() => emitter.emit('terminal:settings')}
-                  sx={{ border: 0, borderRadius: 0, minHeight: 0, color: 'inherit', backgroundColor: 'inherit' }}
-                >
-                  <FontAwesomeIcon icon={faCog} fixedWidth aria-hidden="true" />
-                </Button>
-                <Button
-                  className={widgetStyles.widgetButton}
                   sx={{
                     border: 0,
                     minHeight: 0,
@@ -150,6 +141,16 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                   style={{ display: 'flex', alignSelf: 'stretch' }}
                   items={[
                     {
+                      value: 'settings',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faCog} fixedWidth aria-hidden="true" />
+                          <Space width="2x" />
+                          {i18n._('Console Settings')}
+                        </>
+                      ),
+                    },
+                    {
                       value: 'refresh',
                       label: (
                         <>
@@ -226,7 +227,9 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                     },
                   ]}
                   onChange={({ value: eventKey }) => {
-                    if (eventKey === 'refresh') {
+                    if (eventKey === 'settings') {
+                      emitter.emit('terminal:settings');
+                    } else if (eventKey === 'refresh') {
                       emitter.emit('terminal:refresh');
                     } else if (eventKey === 'selectAll') {
                       emitter.emit('terminal:selectAll');

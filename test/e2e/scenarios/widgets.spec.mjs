@@ -68,7 +68,7 @@ const REGION_LABELS = {
 
 const MORE_MENUS = {
   connection: ['Enter Full Screen'],
-  console: ['Refresh', 'Select All', 'Copy Selection', 'Clear Selection', 'Enter Full Screen', 'Fork Widget', 'Remove Widget'],
+  console: ['Console Settings', 'Refresh', 'Select All', 'Copy Selection', 'Clear Selection', 'Enter Full Screen', 'Fork Widget', 'Remove Widget'],
   custom: ['Settings', 'Enter Full Screen', 'Fork Widget', 'Remove Widget'],
   gcode: ['Enter Full Screen', 'Fork Widget', 'Remove Widget'],
   macro: ['Enter Full Screen', 'Fork Widget', 'Remove Widget'],
