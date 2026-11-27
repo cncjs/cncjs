@@ -3,6 +3,18 @@ import { fireEvent } from '@testing-library/react';
 import { renderAppUI } from '@app/test/render';
 import Iframe from '..';
 
+test.each([
+  ['object', { verticalAlign: 'top', border: '3px solid red' }],
+  ['function', () => ({ verticalAlign: 'top', border: '3px solid red' })],
+  ['array', [{ verticalAlign: 'top' }, () => ({ border: '3px solid red' })]],
+])('preserves %s sx and lets caller styles override the default border', (name, sx) => {
+  const view = renderAppUI(<Iframe sx={sx} />);
+  expect(view.container.querySelector('iframe')).toHaveStyle({
+    verticalAlign: 'top',
+    borderWidth: '3px',
+  });
+});
+
 test('exposes the mounted iframe before load and clears the ref on unmount', () => {
   const ref = React.createRef();
   const onLoad = jest.fn();
