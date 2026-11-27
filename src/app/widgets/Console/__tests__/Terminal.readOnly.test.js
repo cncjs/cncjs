@@ -1,4 +1,5 @@
 /* eslint-env jest */
+import { Terminal } from 'xterm';
 import TerminalWrapper from '../Terminal';
 
 // Runs in Jest's node environment: a stand-in textarea and document are used, no DOM
@@ -133,15 +134,28 @@ describe('Terminal read-only mode (command input shown)', () => {
     expect(wrapper.useCursorRowForOutput).toBe(false);
   });
 
-  test('clears the last output line too while read-only', () => {
+  test('clears scrollback and queued output before writing new output on the first row', async () => {
     const wrapper = make({ readOnly: true });
-    wrapper.term = fakeTerm(textarea);
-    wrapper.useCursorRowForOutput = true;
+    const term = new Terminal({ cols: 20, rows: 2 });
+    wrapper.term = term;
+    const drainWrites = () => new Promise(resolve => {
+      setTimeout(resolve, 0);
+    });
 
+    wrapper.writeln('history');
+    wrapper.writeln('old 1');
+    wrapper.writeln('old 2');
+    await drainWrites();
+
+    wrapper.writeln('queued 1');
+    wrapper.writeln('queued 2');
     wrapper.clear();
-    expect(wrapper.term.clear).toHaveBeenCalled();
-    expect(wrapper.term.write).toHaveBeenCalledWith('\x1b[2K\r');
-    expect(wrapper.useCursorRowForOutput).toBe(false);
+    wrapper.writeln('new output');
+    await drainWrites();
+
+    const { buffer } = term;
+    const lines = Array.from({ length: buffer.lines.length }, (_, index) => buffer.translateBufferLineToString(index, true));
+    expect(lines).toEqual(['new output', '']);
   });
 
   test('keeps the prompt row on clear when not read-only', () => {
