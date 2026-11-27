@@ -11,6 +11,9 @@ describe('SocketConnection', () => {
   describe('open', () => {
     test('should invoke the callback without error when the connection is established', async () => {
       const server = net.createServer(() => {});
+      const accepted = new Promise((resolve) => {
+        server.once('connection', resolve);
+      });
       const port = await listenEphemeral(server);
 
       try {
@@ -26,9 +29,18 @@ describe('SocketConnection', () => {
 
         expect(err).toBe(null);
 
+        // Finish accepting before stopping the listener; macOS can otherwise
+        // reset the client after close() has removed its error listener.
+        await accepted;
+        const closed = new Promise((resolve) => {
+          connection.socket.once('close', resolve);
+        });
         connection.close();
+        await closed;
       } finally {
-        server.close();
+        await new Promise((resolve) => {
+          server.close(resolve);
+        });
       }
     });
 
@@ -42,6 +54,9 @@ describe('SocketConnection', () => {
 
       const connection = new SocketConnection({ host: '127.0.0.1', port });
       connection.on('error', () => {});
+      const closed = new Promise((resolve) => {
+        connection.once('close', resolve);
+      });
       const err = await new Promise((resolve, reject) => {
         try {
           connection.open(resolve);
@@ -51,6 +66,8 @@ describe('SocketConnection', () => {
       });
 
       expect(err).toBeTruthy();
+      expect(err.code).toBe('ECONNREFUSED');
+      await closed;
     });
   });
 });

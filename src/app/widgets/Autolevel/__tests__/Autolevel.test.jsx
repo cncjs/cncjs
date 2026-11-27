@@ -183,7 +183,7 @@ describe('Autolevel workflow owner', () => {
     mockPubSubSubscriptions.clear();
   });
 
-  test('selects patterns and direction with focused menus, previews, and a full-mode command', async () => {
+  test('selects a scan pattern with the keyboard and restores focus and preview', async () => {
     const user = userEvent.setup();
     const view = renderAppUI(<AutolevelWidget {...widgetProps} />);
     try {
@@ -205,7 +205,16 @@ describe('Autolevel workflow owner', () => {
       expect(screen.getByRole('button', { name: 'Scan Pattern' })).toHaveTextContent('Zigzag');
       expect(within(preview).getByRole('img', { name: 'Zigzag' })).toHaveAttribute('data-selected', '');
       expect(within(preview).getByRole('img', { name: 'Raster' })).not.toHaveAttribute('data-selected');
+    } finally {
+      view.dispose();
+    }
+  });
 
+  test('updates the selected preview when switching through scan patterns', async () => {
+    const view = renderAppUI(<AutolevelWidget {...widgetProps} />);
+    try {
+      fireEvent.click(screen.getByRole('button', { name: 'Start New Probe' }));
+      const preview = screen.getByRole('group', { name: 'Scan pattern preview' });
       const selectPattern = async name => {
         await selectScanOption('Scan Pattern', name);
         expect(within(preview).getByRole('img', { name })).toHaveAttribute('data-selected', '');
@@ -213,7 +222,20 @@ describe('Autolevel workflow owner', () => {
       };
       await selectPattern('Spiral In');
       await selectPattern('Raster');
-      await selectPattern('Spiral Out');
+    } finally {
+      view.dispose();
+    }
+  });
+
+  test('selects patterns and direction with focused menus, previews, and a full-mode command', async () => {
+    mockSavedScanSettings.scanPattern = 'zigzag';
+    const view = renderAppUI(<AutolevelWidget {...widgetProps} />);
+    try {
+      fireEvent.click(screen.getByRole('button', { name: 'Start New Probe' }));
+      const preview = screen.getByRole('group', { name: 'Scan pattern preview' });
+      await selectScanOption('Scan Pattern', 'Spiral Out');
+      expect(within(preview).getByRole('img', { name: 'Spiral Out' })).toHaveAttribute('data-selected', '');
+      expect(screen.getByRole('button', { name: 'Scan Pattern' })).toHaveTextContent('Spiral Out');
       fireEvent.click(screen.getByRole('button', { name: 'Scan Pattern' }));
       const selectedPattern = await screen.findByRole('menuitem', { name: 'Spiral Out' });
       await waitFor(() => expect(document.activeElement.closest('[role="menu"]')).not.toBeNull());
@@ -271,6 +293,17 @@ describe('Autolevel workflow owner', () => {
       });
       expect(screen.getByRole('button', { name: 'Scan Pattern' })).toBeDisabled();
       expect(screen.getByRole('button', { name: 'Scan Direction' })).toBeDisabled();
+    } finally {
+      view.dispose();
+    }
+  });
+
+  test('preserves scan options in probe updates, completion, and unit changes', async () => {
+    mockSavedScanSettings.scanPattern = 'spiral-out';
+    mockSavedScanSettings.scanDirection = 'y';
+    const view = renderAppUI(<AutolevelWidget {...widgetProps} />);
+    try {
+      await startFullProbe();
       emitProbePoint(1);
       expect(mockPublish).toHaveBeenLastCalledWith('autolevel:showProbeVisualization', {
         probeData: [{ x: 0, y: 0, z: -0.2 }],
