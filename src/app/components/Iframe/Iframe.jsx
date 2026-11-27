@@ -1,6 +1,6 @@
 import { Box } from '@tonic-ui/react';
 import { useMergeRefs } from '@tonic-ui/react-hooks';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import useIframeEvents from './useIframeEvents';
 
 const noop = () => {};
@@ -21,16 +21,27 @@ const mapSandbox = sandbox => Object.keys(sandbox)
 
 /**
  * @param {{ src?: string, width?: number|string, height?: number|string, title?: string,
- * sandbox?: boolean|string|object, style?: object, iframeRef?: React.Ref<HTMLIFrameElement>,
+ * sandbox?: boolean|string|object, style?: object,
  * onLoad?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
  * onBeforeUnload?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
  * onError?: (event: Event) => void,
- * onUnload?: (payload: {event: Event}) => void, [key: string]: unknown }} props
+ * onUnload?: (payload: {event: Event}) => void, [key: string]: unknown }} inProps
  */
-function Iframe({ width = '100%', height = '100%', title = 'Custom widget', sandbox = defaultSandbox,
-  style, iframeRef: forwardedRef, onLoad = noop, onBeforeUnload = noop, onUnload = noop, onError, ...props }) {
+const Iframe = forwardRef((inProps, ref) => {
+  const {
+    width = '100%',
+    height = '100%',
+    title = 'Custom widget',
+    sandbox = defaultSandbox,
+    style,
+    onLoad = noop,
+    onBeforeUnload = noop,
+    onUnload = noop,
+    onError,
+    ...props
+  } = inProps;
   const iframeRef = useIframeEvents({ onLoad, onBeforeUnload, onUnload, onError });
-  const ref = useMergeRefs(iframeRef, forwardedRef);
+  const mergedRef = useMergeRefs(iframeRef, ref);
   let sandboxValue = sandbox;
   if (sandbox === false) {
     sandboxValue = undefined;
@@ -39,11 +50,11 @@ function Iframe({ width = '100%', height = '100%', title = 'Custom widget', sand
   }
   return (
     <Box
-      as="iframe" {...props} ref={ref}
+      as="iframe" {...props} ref={mergedRef}
       width={width} height={height} title={title}
       sandbox={sandboxValue} style={{ borderWidth: 0, ...style }}
     />
   );
-}
+});
 
 export default Iframe;
