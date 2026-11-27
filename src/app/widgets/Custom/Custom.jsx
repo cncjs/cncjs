@@ -48,7 +48,7 @@ class Custom extends PureComponent {
         });
       }
       if (!nextProps.disabled && !!nextProps.fullscreen !== !!this.props.fullscreen) {
-        this.postMessage('widget:fullscreenchange', { fullscreen: !!nextProps.fullscreen });
+        this.postMessage('widget:state', { fullscreen: !!nextProps.fullscreen });
       }
     }
 
@@ -57,9 +57,11 @@ class Custom extends PureComponent {
         pubsub.subscribe('message:connect', () => {
           this.postMessage('change', {
             port: controller.port,
-            controller: controller.type,
-            fullscreen: !!this.props.fullscreen
+            controller: controller.type
           });
+        }),
+        pubsub.subscribe('message:connect', () => {
+          this.postMessage('widget:state', { fullscreen: !!this.props.fullscreen });
         }),
         pubsub.subscribe('message:resize', (type, payload) => {
           const { scrollHeight } = { ...payload };

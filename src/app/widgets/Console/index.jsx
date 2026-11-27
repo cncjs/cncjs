@@ -309,13 +309,6 @@ class ConsoleWidget extends PureComponent {
                 <i aria-hidden="true" className="fa fa-eraser" />
               </Widget.Button>
               <Widget.Button
-                aria-label={i18n._('Console Settings')}
-                title={i18n._('Edit')}
-                onClick={actions.openSettings}
-              >
-                <i aria-hidden="true" className="fa fa-cog" />
-              </Widget.Button>
-              <Widget.Button
                 aria-label={minimized ? 'Expand' : 'Collapse'}
                 aria-expanded={!minimized}
                 disabled={isFullscreen}
@@ -350,7 +343,9 @@ class ConsoleWidget extends PureComponent {
                 title={i18n._('More')}
                 toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
                 onSelect={(eventKey) => {
-                  if (eventKey === 'selectAll') {
+                  if (eventKey === 'settings') {
+                    actions.openSettings();
+                  } else if (eventKey === 'selectAll') {
                     this.terminal.selectAll();
                   } else if (eventKey === 'clearSelection') {
                     this.terminal.clearSelection();
@@ -361,6 +356,11 @@ class ConsoleWidget extends PureComponent {
                   }
                 }}
               >
+                <Widget.DropdownMenuItem eventKey="settings">
+                  <i aria-hidden="true" className="fa fa-fw fa-cog" />
+                  <Space width="4" />
+                  {i18n._('Console Settings')}
+                </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="selectAll">
                   <i
                     aria-hidden="true"

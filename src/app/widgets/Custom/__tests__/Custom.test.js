@@ -42,7 +42,10 @@ const updateProps = (instance, changes) => {
 };
 
 const sent = postMessage => postMessage.mock.calls.map(([message]) => message);
-const fullscreenValues = postMessage => sent(postMessage).map(message => message.action.payload.fullscreen);
+const actions = postMessage => sent(postMessage).map(message => message.action);
+const fullscreenValues = postMessage => actions(postMessage)
+  .filter(action => action.type === 'widget:state')
+  .map(action => action.payload.fullscreen);
 
 afterEach(() => {
   mounted.splice(0).forEach(instance => instance.componentWillUnmount());
@@ -51,7 +54,7 @@ afterEach(() => {
 });
 
 describe('widget notifications', () => {
-  test('entering full screen sends a fullscreenchange event without a port change', () => {
+  test('entering full screen sends a widget:state event without a port change', () => {
     const { instance, postMessage } = mount();
 
     updateProps(instance, { fullscreen: true });
@@ -61,7 +64,7 @@ describe('widget notifications', () => {
       token: 'test-token',
       version: '1.2.3',
       action: {
-        type: 'widget:fullscreenchange',
+        type: 'widget:state',
         payload: { fullscreen: true }
       }
     }, '*');
@@ -95,10 +98,11 @@ describe('widget notifications', () => {
 
     updateProps(instance, { port: '/dev/ttyUSB0', fullscreen: true });
 
-    expect(sent(postMessage).map(message => message.action)).toEqual([
+    expect(actions(postMessage)).toEqual(expect.arrayContaining([
       { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } },
-      { type: 'widget:fullscreenchange', payload: { fullscreen: true } }
-    ]);
+      { type: 'widget:state', payload: { fullscreen: true } }
+    ]));
+    expect(postMessage).toHaveBeenCalledTimes(2);
   });
 
   test('sends nothing when no relevant prop changes', () => {
@@ -141,9 +145,11 @@ describe('message:connect handshake', () => {
 
     pubsub.publishSync('message:connect');
 
-    expect(sent(postMessage).map(message => message.action)).toEqual([
-      { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl', fullscreen } }
-    ]);
+    expect(actions(postMessage)).toEqual(expect.arrayContaining([
+      { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } },
+      { type: 'widget:state', payload: { fullscreen } }
+    ]));
+    expect(postMessage).toHaveBeenCalledTimes(2);
   });
 
   test('reports the full screen state as of the handshake, not as of mount', () => {
@@ -163,6 +169,86 @@ describe('message:connect handshake', () => {
 
     pubsub.publishSync('message:connect');
 
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  test.each([false, true])('reconnect repeats independent snapshots with fullscreen=%s', fullscreen => {
+    const { postMessage } = mount({ fullscreen });
+
+    pubsub.publishSync('message:connect');
+    pubsub.publishSync('message:connect');
+
+    expect(actions(postMessage).filter(action => action.type === 'change')).toEqual([
+      { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } },
+      { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } }
+    ]);
+    expect(fullscreenValues(postMessage)).toEqual([fullscreen, fullscreen]);
+    expect(postMessage).toHaveBeenCalledTimes(4);
+  });
+
+  test('connect subscribers deliver independently in either order', () => {
+    const subscribe = jest.spyOn(pubsub, 'subscribe');
+    const { postMessage } = mount({ fullscreen: true });
+    const callbacks = subscribe.mock.calls
+      .filter(([topic]) => topic === 'message:connect')
+      .map(([, callback]) => callback);
+    subscribe.mockRestore();
+
+    callbacks.reverse().forEach(callback => callback());
+
+    expect(actions(postMessage)).toEqual([
+      { type: 'widget:state', payload: { fullscreen: true } },
+      { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } }
+    ]);
+  });
+
+  test.each(['before', 'after'])('queued connect uses current state when transitions happen %s publication', timing => {
+    jest.useFakeTimers();
+    try {
+      const { instance, postMessage } = mount();
+      if (timing === 'before') {
+        updateProps(instance, { fullscreen: true });
+      }
+      pubsub.publish('message:connect');
+      if (timing === 'after') {
+        updateProps(instance, { fullscreen: true });
+      }
+      updateProps(instance, { fullscreen: false });
+      jest.runAllTimers();
+
+      expect(fullscreenValues(postMessage)).toEqual([true, false, false]);
+      expect(actions(postMessage).filter(action => action.type === 'change')).toEqual([
+        { type: 'change', payload: { port: '/dev/ttyUSB0', controller: 'Grbl' } }
+      ]);
+      expect(postMessage).toHaveBeenCalledTimes(4);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  test('keeps each widget state separate across transitions and broadcast reconnect', () => {
+    const first = mount();
+    const second = mount({ fullscreen: true });
+
+    updateProps(first.instance, { fullscreen: true });
+    expect(fullscreenValues(first.postMessage)).toEqual([true]);
+    expect(second.postMessage).not.toHaveBeenCalled();
+    pubsub.publishSync('message:connect');
+    updateProps(second.instance, { fullscreen: false });
+
+    expect(fullscreenValues(first.postMessage)).toEqual([true, true]);
+    expect(fullscreenValues(second.postMessage)).toEqual([true, false]);
+    expect(actions(first.postMessage).concat(actions(second.postMessage))
+      .some(action => action.type === 'widget:fullscreenchange')).toBe(false);
+  });
+
+  test('retains the resize subscription alongside the two connect subscribers', () => {
+    const { instance, postMessage } = mount();
+    instance.iframe.style = {};
+
+    pubsub.publishSync('message:resize', { scrollHeight: 200 });
+
+    expect(instance.iframe.style.height).toBe('200px');
     expect(postMessage).not.toHaveBeenCalled();
   });
 });
