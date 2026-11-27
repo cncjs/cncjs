@@ -543,4 +543,83 @@ describe('useTerminal', () => {
     expect(onData).toHaveBeenCalledTimes(1);
     view.unmount();
   });
+  test.each([true, false])('serializes Clear all behind pending output (readOnly=%s)', readOnly => {
+    const onData = jest.fn();
+    const view = render(<Harness
+      enabled cols={80} rows={15}
+      readOnly={readOnly} onData={onData}
+    />);
+    const [term] = mockXtermInstances;
+    const callbacks = [];
+    term.write.mockImplementation((_data, callback) => {
+      if (callback) {
+        callbacks.push(callback);
+      }
+    });
+    latestApi.actions.writeln('pending output');
+    latestApi.actions.clear();
+    expect(term.clear).not.toHaveBeenCalled();
+    while (callbacks.length) {
+      callbacks.shift()();
+    }
+    expect(term.clear).toHaveBeenCalledTimes(1);
+    term.write.mockClear();
+    latestApi.actions.writeln('fresh output');
+    while (callbacks.length) {
+      callbacks.shift()();
+    }
+    expect(term.write).toHaveBeenCalledWith(expect.stringContaining(readOnly ? '\x1b[2K\rfresh output' : 'fresh output\r\n'), undefined);
+    expect(onData).not.toHaveBeenCalled();
+    view.unmount();
+  });
+
+  test('touch mode suppresses terminal keys and paste, preserves history across mode switches', () => {
+    const onData = jest.fn();
+    const view = render(<Harness
+      enabled cols={80} rows={15}
+      onData={onData}
+    />);
+    const [term] = mockXtermInstances;
+    term.line.translateToString.mockReturnValue('> G0');
+    term.keyHandler({ key: '\r', domEvent: { key: 'Enter' } });
+    onData.mockClear();
+    view.rerender(<Harness
+      enabled cols={80} rows={15}
+      readOnly onData={onData}
+    />);
+    expect(mockXtermInstances).toHaveLength(1);
+    expect(term.textarea.readOnly).toBe(true);
+    term.keyHandler({ key: '\r', domEvent: { key: 'Enter' } });
+    term.keyHandler({ key: '\x03', domEvent: { key: 'c', ctrlKey: true } });
+    term.textarea.onpaste({ preventDefault: jest.fn(), stopPropagation: jest.fn(), clipboardData: { getData: () => 'G1\n' } });
+    expect(onData).not.toHaveBeenCalled();
+    latestApi.actions.writeln('last line');
+    latestApi.actions.clear();
+    term.write.mockClear();
+    view.rerender(<Harness
+      enabled cols={80} rows={15}
+      readOnly={false} onData={onData}
+    />);
+    expect(term.write).toHaveBeenCalledWith(expect.stringContaining('> '));
+    expect(term.write.mock.calls.some(([text]) => text.startsWith('\r\n'))).toBe(false);
+    expect(term.textarea.readOnly).toBe(false);
+    term.line.translateToString.mockReturnValue('> ');
+    term.keyHandler({ key: 'ArrowUp', domEvent: { key: 'ArrowUp' } });
+    expect(term.write).toHaveBeenCalledWith('G0');
+    view.unmount();
+  });
+
+  test('does not treat echoed touch commands as pending keyboard input when resizing', () => {
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      readOnly onData={jest.fn()}
+    />);
+    const [term] = mockXtermInstances;
+    term.cols = 256;
+    term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(150));
+    expect(latestApi.actions.hasPendingInput()).toBe(false);
+    latestApi.actions.resize(80, 15);
+    expect(term.resize).toHaveBeenLastCalledWith(80, 15);
+    view.unmount();
+  });
 });

@@ -6,8 +6,13 @@
     }
 
     &.fullscreen {
-        .terminal-container {
+        .console {
             height: 100%;
+        }
+
+        .terminal-container {
+            flex: 1;
+            min-height: 0;
         }
     }
 }
@@ -33,4 +38,9 @@
             background-color: var(--terminal-thumb);
         }
     }
+}
+
+.console {
+    display: flex;
+    flex-direction: column;
 }

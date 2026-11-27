@@ -870,5 +870,9 @@
   "Rows": "",
   "Enter a number between {{min}} and {{max}}": "",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "",
-  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": ""
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "",
+  "Enter a command": "コマンドを入力",
+  "Send": "送信",
+  "Hide command input": "コマンド入力を隠す",
+  "Show command input": "コマンド入力を表示"
 }

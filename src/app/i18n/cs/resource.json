@@ -879,5 +879,9 @@
   "Rows": "",
   "Enter a number between {{min}} and {{max}}": "",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "",
-  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": ""
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "",
+  "Enter a command": "Zadejte příkaz",
+  "Send": "Odeslat",
+  "Hide command input": "Skrýt pole pro příkazy",
+  "Show command input": "Zobrazit pole pro příkazy"
 }

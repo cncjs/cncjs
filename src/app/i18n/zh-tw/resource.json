@@ -870,5 +870,9 @@
   "Rows": "",
   "Enter a number between {{min}} and {{max}}": "",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "",
-  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": ""
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "",
+  "Enter a command": "輸入命令",
+  "Send": "傳送",
+  "Hide command input": "隱藏命令輸入",
+  "Show command input": "顯示命令輸入"
 }

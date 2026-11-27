@@ -873,5 +873,9 @@
   "Rows": "",
   "Enter a number between {{min}} and {{max}}": "",
   "This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.": "",
-  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": ""
+  "Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.": "",
+  "Enter a command": "Skriv inn en kommando",
+  "Send": "Send",
+  "Hide command input": "Skjul kommandofeltet",
+  "Show command input": "Vis kommandofeltet"
 }
