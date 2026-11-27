@@ -1,13 +1,12 @@
 /* eslint-env jest */
+import ServerWatcher from '../../containers/Workspace/modals/ServerWatcher';
 import {
-  DEFAULT_FAILOVER_TIMEOUT,
   IDLE_DELAY,
-  MAX_FAILOVER_TIMEOUT,
-  MIN_FAILOVER_TIMEOUT,
+  RECOVERY_DELAY,
   PROBE_TIMEOUT,
   RETRY_DELAY,
   probeServer,
-  readFailoverConfig,
+  readConnectionRecoveryConfig,
   watchServer,
 } from '../server-watch';
 
@@ -28,13 +27,13 @@ describe('watchServer', () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
-  it('reports unreachable once the server has been down for the timeout, then stops', async () => {
+  it('reports unreachable once the server has been down for 30 seconds, then stops', async () => {
     const probe = jest.fn(() => Promise.resolve(false));
     const onUnreachable = jest.fn();
-    watchServer({ probe, onUnreachable, timeout: 10 });
+    watchServer({ probe, onUnreachable });
 
-    // The first failure is seen at 3s, so the 10s limit is reached by the probe at 15s
-    await advance(12000);
+    // The first failure is seen at 3s, so the fixed limit is reached at 33s
+    await advance(RECOVERY_DELAY * 1000);
     expect(onUnreachable).not.toHaveBeenCalled();
 
     await advance(3000);
@@ -45,10 +44,29 @@ describe('watchServer', () => {
     expect(probe).toHaveBeenCalledTimes(calls);
   });
 
+  it('starts the failure window when the first failed probe settles', async () => {
+    let resolveProbe;
+    const probe = jest.fn()
+      .mockImplementationOnce(() => new Promise((resolve) => {
+        resolveProbe = resolve;
+      }))
+      .mockResolvedValue(false);
+    const onUnreachable = jest.fn();
+    watchServer({ probe, onUnreachable });
+    await advance(12000);
+    expect(probe).toHaveBeenCalledTimes(1);
+    resolveProbe(false);
+    await tick();
+    await advance(27000);
+    expect(onUnreachable).not.toHaveBeenCalled();
+    await advance(RETRY_DELAY);
+    expect(onUnreachable).toHaveBeenCalledTimes(1);
+  });
+
   it('never reports while HTTP stays reachable (socket-only outage)', async () => {
     const probe = jest.fn(() => Promise.resolve(true));
     const onUnreachable = jest.fn();
-    watchServer({ probe, onUnreachable, timeout: 10 });
+    watchServer({ probe, onUnreachable });
 
     jest.advanceTimersByTime(RETRY_DELAY);
     await tick();
@@ -67,9 +85,9 @@ describe('watchServer', () => {
       .mockResolvedValueOnce(false) // 6s: still down
       .mockResolvedValueOnce(true) // 9s: back, the clock resets
       .mockResolvedValueOnce(false) // 19s: down again, a new clock starts
-      .mockResolvedValueOnce(false); // 22s: down for 3s only
+      .mockResolvedValue(false); // continuous failures after the reset
     const onUnreachable = jest.fn();
-    watchServer({ probe, onUnreachable, timeout: 10 });
+    watchServer({ probe, onUnreachable });
 
     await advance(9000);
     jest.advanceTimersByTime(IDLE_DELAY);
@@ -79,17 +97,9 @@ describe('watchServer', () => {
 
     expect(probe).toHaveBeenCalledTimes(5);
     expect(onUnreachable).not.toHaveBeenCalled();
-  });
-
-  it('uses the default timeout when none is given', async () => {
-    const onUnreachable = jest.fn();
-    watchServer({ probe: () => Promise.resolve(false), onUnreachable });
-
-    // The first failure is seen at 3s, so the default limit is reached by the probe at 33s
-    await advance(DEFAULT_FAILOVER_TIMEOUT * 1000);
+    await advance(24000); // 46s: the second failure window is still under 30 seconds
     expect(onUnreachable).not.toHaveBeenCalled();
-
-    await advance(RETRY_DELAY);
+    await advance(RETRY_DELAY); // 49s: 30 seconds after the new first failure
     expect(onUnreachable).toHaveBeenCalledTimes(1);
   });
 
@@ -109,7 +119,7 @@ describe('watchServer', () => {
       resolveProbe = resolve;
     }));
     const onUnreachable = jest.fn();
-    const stop = watchServer({ probe, onUnreachable, timeout: MIN_FAILOVER_TIMEOUT });
+    const stop = watchServer({ probe, onUnreachable });
 
     jest.advanceTimersByTime(RETRY_DELAY); // probe in flight
     stop();
@@ -122,41 +132,59 @@ describe('watchServer', () => {
   });
 });
 
-describe('readFailoverConfig', () => {
-  const ENABLED = { 'data-offline-failover': 'true' };
-  const page = (attributes = {}) => ({
-    getAttribute: (name) => (name in attributes ? attributes[name] : null),
-  });
-  const timeoutOf = (value) => readFailoverConfig(page({
-    ...ENABLED,
-    'data-offline-failover-timeout': value,
-  })).timeout;
+describe('readConnectionRecoveryConfig', () => {
+  const page = (action) => ({ getAttribute: () => action });
 
-  it('is off when the server did not enable it', () => {
-    expect(readFailoverConfig(page()).enabled).toBe(false);
-  });
+  it.each([undefined, null, '', 'reconnect', 'invalid', 'OFFLINE', 'true'])(
+    'defaults to reconnect for %s',
+    (action) => expect(readConnectionRecoveryConfig(page(action))).toEqual({ action: 'reconnect' })
+  );
 
-  it('is off unless the attribute is exactly "true"', () => {
-    expect(readFailoverConfig(page({ 'data-offline-failover': 'false' })).enabled).toBe(false);
-    expect(readFailoverConfig(page({ 'data-offline-failover': '1' })).enabled).toBe(false);
+  it('opts into offline only for the explicit offline action', () => {
+    expect(readConnectionRecoveryConfig(page('offline'))).toEqual({ action: 'offline' });
   });
+});
 
-  it('reads the timeout in seconds', () => {
-    expect(readFailoverConfig(page({
-      ...ENABLED,
-      'data-offline-failover-timeout': '45',
-    }))).toEqual({ enabled: true, timeout: 45 });
-  });
+describe('ServerWatcher bootstrap', () => {
+  const originalNavigator = global.navigator;
+  const originalDocument = global.document;
+  const originalWindow = global.window;
+  const originalFetch = global.fetch;
 
-  it('falls back to the default when the timeout is missing or invalid', () => {
-    expect(readFailoverConfig(page(ENABLED)).timeout).toBe(DEFAULT_FAILOVER_TIMEOUT);
-    expect(timeoutOf('soon')).toBe(DEFAULT_FAILOVER_TIMEOUT);
-    expect(timeoutOf('-3')).toBe(DEFAULT_FAILOVER_TIMEOUT);
+  afterEach(() => {
+    jest.useRealTimers();
+    Object.defineProperty(global, 'navigator', { value: originalNavigator, configurable: true });
+    global.document = originalDocument;
+    global.window = originalWindow;
+    global.fetch = originalFetch;
   });
 
-  it('clamps the timeout to a safe range', () => {
-    expect(timeoutOf('1')).toBe(MIN_FAILOVER_TIMEOUT);
-    expect(timeoutOf('999999')).toBe(MAX_FAILOVER_TIMEOUT);
+  it.each([
+    ['offline', true, true],
+    ['offline', false, false],
+    ['reconnect', true, false],
+    [null, true, false],
+    ['invalid', true, false],
+  ])('action=%s, controlled=%s switches=%s', async (action, controlled, switches) => {
+    jest.useFakeTimers();
+    Object.defineProperty(global, 'navigator', {
+      value: { serviceWorker: { controller: controlled ? {} : null } }, configurable: true,
+    });
+    global.document = { documentElement: { getAttribute: () => action } };
+    global.window = { location: { pathname: '/', search: '', reload: jest.fn() } };
+    global.fetch = jest.fn().mockResolvedValue({ status: 503 });
+    const watcher = new ServerWatcher();
+    watcher.componentDidMount();
+    await advance(RECOVERY_DELAY * 1000);
+    expect(window.location.reload).not.toHaveBeenCalled();
+    await advance(RETRY_DELAY);
+    expect(window.location.reload).toHaveBeenCalledTimes(switches ? 1 : 0);
+    if (switches) {
+      expect(window.location.reload).toHaveBeenCalledWith(false);
+    } else {
+      expect(fetch).not.toHaveBeenCalled();
+    }
+    watcher.componentWillUnmount();
   });
 });
 

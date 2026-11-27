@@ -51,14 +51,13 @@ When the server stops answering, CNCjs shows the "Server has stopped working" di
 
 ```json
 {
-    "offlineFailover": {
-        "enabled": true,
-        "timeout": 30
+    "connectionRecovery": {
+        "action": "offline"
     }
 }
 ```
 
-It is off by default. `timeout` is the number of seconds the server must stay unreachable before the page switches (default `30`, kept between `5` and `3600`). A dropped connection that the server still answers over HTTP does not trigger it, and it only applies once the app's service worker controls the page, so it has no effect over plain HTTP. The setting is read when the page loads.
+`connectionRecovery.action` accepts `"reconnect"` (the default) or `"offline"`. Missing or invalid values use `"reconnect"`, keeping the workspace open while the socket retries. With `"offline"`, the page switches after a fixed 30 seconds of continuous HTTP failure, measured from the first failed probe; a successful probe resets the timer. The switch happens when a probe completes, so it can take a few seconds longer. There is no configurable duration. A socket-only outage with working HTTP does not trigger it. Switching requires a service worker controlling the page (HTTPS or localhost), and the setting is read when the page loads. Normal offline navigation to the app root still uses the service worker offline page independently of this setting.
 
 ## Custom Widgets
 

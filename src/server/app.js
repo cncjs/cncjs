@@ -333,18 +333,13 @@ const appMain = () => {
     const webroot = _get(settings, 'assets.app.routes[0]', ''); // with trailing slash
     const lng = req.language;
     const t = req.t;
-    const offlineFailover = config.get('offlineFailover.enabled') === true;
-    const offlineFailoverTimeout = Number(config.get('offlineFailover.timeout'));
+    const connectionRecoveryAction = config.get('connectionRecovery.action') === 'offline' ? 'offline' : 'reconnect';
 
     return {
       webroot: webroot,
       lang: lng,
       colorMode: config.get('state.colorMode') === 'dark' ? 'dark' : 'light',
-      offlineFailover: offlineFailover,
-      // Seconds; the client falls back to its default and clamps the value
-      offlineFailoverTimeout: Number.isFinite(offlineFailoverTimeout) && offlineFailoverTimeout > 0
-        ? offlineFailoverTimeout
-        : undefined,
+      connectionRecoveryAction: connectionRecoveryAction,
       title: `${t('title')} ${settings.version}`,
       loading: t('loading')
     };

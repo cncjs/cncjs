@@ -46,8 +46,7 @@
   "events": [],
   "macros": [],
   "users": [],
-  "offlineFailover": {
-    "enabled": false,
-    "timeout": 3600
+  "connectionRecovery": {
+    "action": "reconnect"
   }
 }
