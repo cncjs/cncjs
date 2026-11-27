@@ -314,21 +314,21 @@ describe('fullscreen iframe notifications', () => {
     expect(handledTypes).toEqual(expect.arrayContaining(['change', 'widget:state']));
   });
 
-  test('readiness before native load synchronizes the latest state without a change reply', async () => {
-    const view = renderAppUI(content({ isFullscreen: true }));
+  test.each([false, true])('readiness before native load sends fullscreen=%s once without a load fallback', fullscreen => {
+    const view = renderAppUI(content({ isFullscreen: fullscreen }));
     const iframe = view.container.querySelector('iframe');
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
     connect();
-    expect(postMessage).not.toHaveBeenCalled();
-    view.rerender(content({ isFullscreen: false }));
-    transition(false);
+    expect(actions(postMessage).filter(action => action.type === 'change')).toHaveLength(1);
+    expect(actions(postMessage).filter(action => action.type === 'widget:state')).toEqual([
+      { type: 'widget:state', payload: { fullscreen } },
+    ]);
     fireEvent.load(iframe);
     fireEvent.load(iframe);
-    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(1));
-    expect(actions(postMessage)).toEqual([{ type: 'widget:state', payload: { fullscreen: false } }]);
+    expect(postMessage).toHaveBeenCalledTimes(2);
   });
 
-  test('queued load synchronization cannot overwrite a later async transition', async () => {
+  test('native load cannot overwrite a later async transition', async () => {
     const view = renderAppUI(content({ isFullscreen: true }));
     const iframe = view.container.querySelector('iframe');
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
@@ -336,11 +336,29 @@ describe('fullscreen iframe notifications', () => {
     fireEvent.load(iframe);
     view.rerender(content({ isFullscreen: false }));
     act(() => pubsub.publish('widget:fullscreenchange', { widgetId: 'custom', fullscreen: false }));
-    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2));
-    expect(actions(postMessage)).toEqual([
+    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(3));
+    expect(actions(postMessage).filter(action => action.type === 'widget:state')).toEqual([
       { type: 'widget:state', payload: { fullscreen: true } },
       { type: 'widget:state', payload: { fullscreen: false } },
     ]);
+  });
+
+  test('document lifecycle events retain the mounted target for reconnect and resize', () => {
+    const view = mount({ isFullscreen: true });
+    const iframe = view.container.querySelector('iframe');
+    fireEvent(iframe, new Event('beforeunload'));
+    fireEvent(iframe, new Event('unload'));
+    fireEvent.error(iframe);
+    connect();
+    fireEvent.load(iframe);
+    connect();
+    expect(actions(view.postMessage).filter(action => action.type === 'widget:state')).toEqual([
+      { type: 'widget:state', payload: { fullscreen: true } },
+      { type: 'widget:state', payload: { fullscreen: true } },
+    ]);
+    expect(actions(view.postMessage).filter(action => action.type === 'change')).toHaveLength(2);
+    act(() => pubsub.publishSync('message:resize', { scrollHeight: 234 }));
+    expect(iframe.style.height).toBe('234px');
   });
 
   test('sends only boolean transitions and reconnect reads the latest state', () => {

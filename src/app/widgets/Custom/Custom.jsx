@@ -21,8 +21,6 @@ function Custom({
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
-  // The iframe can announce readiness before its native load event.
-  const pendingFullscreenSyncRef = useRef(false);
   const widgetId = useContext(WidgetConfigContext);
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
@@ -51,7 +49,6 @@ function Custom({
 
     return () => {
       widgetEmitter.off('refresh', reload);
-      iframeRef.current = null;
     };
   }, [widgetEmitter, token, url]);
 
@@ -131,11 +128,7 @@ function Custom({
         }),
         pubsub.subscribe('message:connect', () => {
           if (!disabled) {
-            if (iframeRef.current?.isConnected) {
-              postMessage('widget:state', { fullscreen: isFullscreen });
-            } else {
-              pendingFullscreenSyncRef.current = true;
-            }
+            postMessage('widget:state', { fullscreen: isFullscreen });
           }
         }),
         pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
@@ -196,43 +189,9 @@ function Custom({
 
   return (
     <Iframe
+      ref={iframeRef}
       src={iframeSrc}
       sx={{ verticalAlign: 'top' }}
-      onLoad={({ iframe }) => {
-        if (!iframe) {
-          return;
-        }
-
-        iframeRef.current = iframe;
-        if (pendingFullscreenSyncRef.current) {
-          pendingFullscreenSyncRef.current = false;
-          pubsub.publish('widget:fullscreenchange', { widgetId, fullscreen: isFullscreen });
-        }
-        /*
-        const target = iframe.contentDocument.body;
-        const nextHeight = target.offsetHeight;
-        iframe.style.height = `${nextHeight}px`;
-
-        const observer = new ResizeObserver(entries => {
-          const target = iframe.contentDocument.body;
-          const nextHeight = target.offsetHeight;
-          iframe.style.height = `${nextHeight}px`;
-        });
-        observer.observe(target);
-        */
-      }}
-      onBeforeUnload={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
-      onUnload={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
-      onError={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
     />
   );
 }
