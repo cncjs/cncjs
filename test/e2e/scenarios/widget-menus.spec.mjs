@@ -881,6 +881,7 @@ test.describe('console settings', () => {
     await openWorkspace(page);
     const root = widget(page, 'console');
     await expect(root.getByRole('button', { name: 'Console Settings', exact: true })).toHaveCount(0);
+    await expect(root.getByRole('button', { name: 'Clear console', exact: true }).locator('[data-icon="eraser"]')).toBeVisible();
     await openMore(page, 'console');
     expect(await menuItemTexts(page)).toEqual([
       'Console Settings', 'Refresh', 'Select All', 'Copy Selection',

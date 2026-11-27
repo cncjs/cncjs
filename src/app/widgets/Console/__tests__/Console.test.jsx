@@ -236,7 +236,10 @@ test('Console shell Clear button reaches the terminal owner without a controller
   />);
   mockTerminalClear.mockClear();
   mockControllerWrite.mockClear();
-  fireEvent.click(screen.getByRole('button', { name: 'Clear console' }));
+  const clearButton = screen.getByRole('button', { name: 'Clear console' });
+  expect(clearButton).toHaveAttribute('title', 'Clear all');
+  expect(clearButton.querySelector('[data-icon="eraser"]')).toHaveAttribute('aria-hidden', 'true');
+  fireEvent.click(clearButton);
   expect(mockTerminalClear).toHaveBeenCalledTimes(1);
   expect(mockControllerWrite).not.toHaveBeenCalled();
   view.unmount();

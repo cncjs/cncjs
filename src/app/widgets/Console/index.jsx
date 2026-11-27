@@ -6,7 +6,7 @@ import {
   DropdownToggle,
   Space,
 } from '@tonic-ui/react';
-import { ChevronDownIcon, ChevronUpIcon, CloseIcon, DeleteIcon, MenuIcon, MoreIcon, RefreshIcon } from '@tonic-ui/react-icons';
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon, MenuIcon, MoreIcon, RefreshIcon } from '@tonic-ui/react-icons';
 import cx from 'classnames';
 import React from 'react';
 import Widget from '@app/components/Widget';
@@ -78,7 +78,7 @@ function ConsoleWidget({ widgetId, view, onViewChange, onFork, onRemove, sortabl
                   title={i18n._('Clear all')}
                   onClick={() => emitter.emit('terminal:clear')}
                 >
-                  <DeleteIcon aria-hidden="true" size="1em" width="1.25em" />
+                  <FontAwesomeIcon icon={faEraser} fixedWidth aria-hidden="true" />
                 </Button>
                 <Button
                   className={widgetStyles.widgetButton}
