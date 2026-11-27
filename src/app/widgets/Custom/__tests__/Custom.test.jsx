@@ -278,7 +278,7 @@ describe('fullscreen iframe notifications', () => {
       action: {
         type: 'change',
         payload: {
-          fullscreen,
+          widget: { fullscreen },
           controller: { type: controller.type },
           connection: {
             type: controller.connection?.type,
@@ -304,7 +304,7 @@ describe('fullscreen iframe notifications', () => {
       { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
     ]);
     connect();
-    expect(actions(view.postMessage)[2].payload.fullscreen).toBe(false);
+    expect(actions(view.postMessage)[2].payload.widget.fullscreen).toBe(false);
   });
 
   test('controller changes retain their connect-only behavior independently of fullscreen', () => {
@@ -320,7 +320,7 @@ describe('fullscreen iframe notifications', () => {
       connect();
       expect(actions(view.postMessage)).toEqual([
         { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-        { type: 'change', payload: { fullscreen: true, controller: { type: 'Grbl' }, connection: controller.connection } },
+        { type: 'change', payload: { widget: { fullscreen: true }, controller: { type: 'Grbl' }, connection: controller.connection } },
       ]);
     } finally {
       Object.assign(controller, original);
@@ -337,7 +337,7 @@ describe('fullscreen iframe notifications', () => {
     fireEvent.load(iframe);
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
     connect();
-    expect(actions(postMessage).map(action => [action.type, action.payload.fullscreen])).toEqual([['change', true]]);
+    expect(actions(postMessage).map(action => [action.type, (action.type === 'change' ? action.payload.widget.fullscreen : action.payload.fullscreen)])).toEqual([['change', true]]);
     view.unmount();
     postMessage.mockClear();
     connect();
@@ -462,7 +462,7 @@ test('authoritative host events deduplicate local and external fullscreen transi
   fireEvent.click(screen.getByText('External exit'));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(5));
   const actions = first.mock.calls.map(([message]) => message.action);
-  expect(actions.map(action => [action.type, action.payload.fullscreen])).toEqual([
+  expect(actions.map(action => [action.type, (action.type === 'change' ? action.payload.widget.fullscreen : action.payload.fullscreen)])).toEqual([
     ['widget:fullscreenchange', true], ['change', true],
     ['widget:fullscreenchange', false], ['widget:fullscreenchange', true],
     ['widget:fullscreenchange', false],
@@ -471,13 +471,13 @@ test('authoritative host events deduplicate local and external fullscreen transi
   first.mockClear();
   fireEvent.click(screen.getByText('Fast enter exit'));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(3));
-  expect(first.mock.calls.map(([message]) => [message.action.type, message.action.payload.fullscreen])).toEqual([
+  expect(first.mock.calls.map(([message]) => [message.action.type, (message.action.type === 'change' ? message.action.payload.widget.fullscreen : message.action.payload.fullscreen)])).toEqual([
     ['widget:fullscreenchange', true], ['widget:fullscreenchange', false], ['change', false],
   ]);
   first.mockClear();
   fireEvent.click(screen.getByText('Immediate connect'));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(2));
-  expect(first.mock.calls.map(([message]) => [message.action.type, message.action.payload.fullscreen])).toEqual([
+  expect(first.mock.calls.map(([message]) => [message.action.type, (message.action.type === 'change' ? message.action.payload.widget.fullscreen : message.action.payload.fullscreen)])).toEqual([
     ['widget:fullscreenchange', true], ['change', true],
   ]);
   first.mockClear();

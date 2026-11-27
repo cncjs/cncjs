@@ -117,7 +117,7 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           // Post a message to the iframe window
           postMessage('change', {
-            fullscreen: isFullscreen,
+            widget: { fullscreen: isFullscreen },
             controller: {
               type: _get(controller, 'type'),
             },
