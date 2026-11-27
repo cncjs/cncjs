@@ -40,15 +40,21 @@ test('URL and callbacks update without stale handlers; error keeps its native ev
   const view = renderAppUI(<Iframe src="/first" onLoad={first} />);
   const iframe = view.container.querySelector('iframe');
   expect(iframe.getAttribute('sandbox')).toBe('allow-forms allow-modals allow-popups allow-same-origin allow-scripts');
-  expect(iframe.title).toBe('Custom widget');
+  expect(iframe).not.toHaveAttribute('title');
+  expect(iframe).toHaveStyle({ borderWidth: '0px' });
   fireEvent.load(iframe);
   expect(first).toHaveBeenCalledTimes(1);
   view.rerender(<Iframe
     src="/second" sandbox={false} onLoad={latest}
+    title="Machine preview" data-testid="preview"
+    style={{ height: '240px', borderWidth: 3 }}
     onError={onError}
   />);
   expect(iframe.getAttribute('src')).toBe('/second');
   expect(iframe.hasAttribute('sandbox')).toBe(false);
+  expect(iframe).toHaveAccessibleName('Machine preview');
+  expect(iframe).toHaveAttribute('data-testid', 'preview');
+  expect(iframe).toHaveStyle({ height: '240px', borderWidth: '3px' });
   fireEvent.load(iframe);
   fireEvent.error(iframe);
   expect(first).toHaveBeenCalledTimes(1);

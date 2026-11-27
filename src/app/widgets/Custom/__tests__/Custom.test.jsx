@@ -266,6 +266,11 @@ describe('fullscreen iframe notifications', () => {
     setCustomConfig('custom', { disabled: false, url: '/widget/' });
   });
 
+  test('Custom leaves the optional iframe title omitted', () => {
+    const view = mount();
+    expect(view.container.querySelector('iframe')).not.toHaveAttribute('title');
+  });
+
   test.each([false, true])('connect and reconnect report fullscreen=%s with the existing connection shape', fullscreen => {
     const { postMessage } = mount({ isFullscreen: fullscreen });
     expect(postMessage).not.toHaveBeenCalled();

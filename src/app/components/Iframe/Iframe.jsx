@@ -20,7 +20,7 @@ const mapSandbox = sandbox => Object.keys(sandbox)
   .join(' ');
 
 /**
- * @param {{ src?: string, width?: number|string, height?: number|string, title?: string,
+ * @param {{ src?: string, width?: number|string, height?: number|string,
  * sandbox?: boolean|string|object, style?: object,
  * onLoad?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
  * onBeforeUnload?: (payload: {event: Event, iframe: HTMLIFrameElement}) => void,
@@ -31,9 +31,7 @@ const Iframe = forwardRef((inProps, ref) => {
   const {
     width = '100%',
     height = '100%',
-    title = 'Custom widget',
     sandbox = defaultSandbox,
-    style,
     onLoad = noop,
     onBeforeUnload = noop,
     onUnload = noop,
@@ -50,9 +48,10 @@ const Iframe = forwardRef((inProps, ref) => {
   }
   return (
     <Box
-      as="iframe" {...props} ref={mergedRef}
-      width={width} height={height} title={title}
-      sandbox={sandboxValue} style={{ borderWidth: 0, ...style }}
+      as="iframe" border={0} {...props}
+      ref={mergedRef}
+      width={width} height={height}
+      sandbox={sandboxValue}
     />
   );
 });
