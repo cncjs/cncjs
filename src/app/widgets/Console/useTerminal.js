@@ -127,7 +127,8 @@ function useTerminal({
       const requestedCols = (!nextCols || nextCols === 'auto')
         ? limit(geometry.cols, TERMINAL_COLS_MIN, TERMINAL_COLS_MAX) : nextCols;
       const resolvedRows = (!nextRows || nextRows === 'auto') ? Math.max(1, geometry.rows) : nextRows;
-      term.resize(colsKeepingPendingInput(requestedCols, pendingExtent(term), term.cols), resolvedRows);
+      const inputExtent = readOnlyRef.current ? PROMPT.length : pendingExtent(term);
+      term.resize(colsKeepingPendingInput(requestedCols, inputExtent, term.cols), resolvedRows);
       term.refresh(0, term.rows - 1);
       syncScrollbar();
     });
@@ -389,7 +390,7 @@ function useTerminal({
   }), [enqueue]);
 
   const hasPendingInput = useCallback(() => (
-    operationsRef.current.length > 0 || !!(termRef.current && pendingExtent(termRef.current) > PROMPT.length)
+    operationsRef.current.length > 0 || !!(!readOnlyRef.current && termRef.current && pendingExtent(termRef.current) > PROMPT.length)
   ), []);
 
   useEffect(() => {

@@ -608,4 +608,15 @@ describe('useTerminal', () => {
     expect(term.write).toHaveBeenCalledWith('G0');
     view.unmount();
   });
+
+  test('does not treat echoed touch commands as pending keyboard input when resizing', () => {
+    const view = render(<Harness enabled cols={256} rows={15} readOnly onData={jest.fn()} />);
+    const [term] = mockXtermInstances;
+    term.cols = 256;
+    term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(150));
+    expect(latestApi.actions.hasPendingInput()).toBe(false);
+    latestApi.actions.resize(80, 15);
+    expect(term.resize).toHaveBeenLastCalledWith(80, 15);
+    view.unmount();
+  });
 });
