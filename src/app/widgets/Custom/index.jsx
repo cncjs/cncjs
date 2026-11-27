@@ -170,7 +170,6 @@ function CustomWidgetBody({
             </Button>
           )}
           <Dropdown
-            style={{ display: 'flex', alignSelf: 'stretch' }}
             items={[
               {
                 value: 'settings',
