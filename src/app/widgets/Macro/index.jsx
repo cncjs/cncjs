@@ -150,7 +150,7 @@ function MacroWidget({
                   aria-label="More options"
                   title={i18n._('More')}
                 >
-                  <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                  <MoreIcon aria-hidden="true" size="4x" />
                 </DropdownToggle>
               )}
             />

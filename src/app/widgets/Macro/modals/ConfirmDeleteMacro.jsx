@@ -71,7 +71,7 @@ function ConfirmDeleteMacro({
             </Text>
           )}
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter columnGap="2x">
           <Button
             variant="default"
             disabled={isSubmitting}

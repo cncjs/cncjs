@@ -7,10 +7,18 @@ import { FitAddon } from 'xterm-addon-fit';
 import chalk from '@app/chalk';
 import { limit } from '@app/lib/normalize-range';
 import log from '@app/lib/log';
+import i18n from '@app/lib/i18n';
+import { DEFAULT_FONT_SIZE, DEFAULT_BACKGROUND, DEFAULT_TEXT_COLOR, DEFAULT_FONT_STACK, TERMINAL_COLS_MIN, TERMINAL_COLS_MAX } from './constants';
+import { buildTerminalTheme } from './terminal-theme';
+import { fitsOnRow, getInputCapacity, readInputLine, colsKeepingPendingInput } from './input';
 import History from './History';
 
 const PROMPT = '> ';
-const FONT_FAMILY = 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif';
+const pendingExtent = term => {
+  const buffer = term._core.buffer;
+  const text = _trimEnd(buffer.lines.get(buffer.ybase + buffer.y)?.translateToString() || '');
+  return text.startsWith(PROMPT) ? text.length : PROMPT.length;
+};
 
 function useTerminal({
   enabled,
@@ -20,10 +28,17 @@ function useTerminal({
   scrollback,
   tabStopWidth,
   onData,
+  fontSize = DEFAULT_FONT_SIZE,
+  background = DEFAULT_BACKGROUND,
+  textColor = DEFAULT_TEXT_COLOR,
 }) {
   const [containerNode, setContainerNode] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const termRef = useRef(null);
+  const operationsRef = useRef([]);
+  const appearanceRef = useRef({ fontSize, background, textColor });
+  const remeasureRef = useRef(false);
+  appearanceRef.current = { fontSize, background, textColor };
   const fitAddonRef = useRef(null);
   const scrollbarRef = useRef(null);
   const historyRef = useRef(new History(1000));
@@ -46,11 +61,78 @@ function useTerminal({
     setContainerNode(node);
   }, []);
 
-  const onResize = useCallback(() => {
+  // xterm parses write() asynchronously. Serialize keys, output and resizing against
+  // write callbacks so command submission always reads the complete visible row.
+  const enqueue = useCallback((operation) => {
+    const term = termRef.current;
+    if (!term) {
+      return;
+    }
+    const queue = operationsRef.current;
+    queue.push(operation);
+    if (queue.length !== 1) {
+      return;
+    }
+    const drain = () => {
+      if (termRef.current !== term || !queue.length) {
+        return;
+      }
+      term.write('', () => {
+        if (termRef.current !== term) {
+          return;
+        }
+        queue[0]();
+        term.write('', () => {
+          queue.shift();
+          drain();
+        });
+      });
+    };
+    drain();
+  }, []);
+
+  const syncScrollbar = useCallback(() => {
+    const container = termRef.current?.element?.parentElement;
+    const viewport = container?.querySelector('.xterm-viewport');
+    const rail = viewport?.querySelector('.ps__rail-y');
+    const screen = container?.querySelector('.xterm-screen');
+    if (container && viewport && rail && screen) {
+      const width = Math.max(screen.offsetWidth + 3, container.clientWidth);
+      viewport.style.width = `${width}px`;
+      rail.style.transform = `translateX(${Math.min(0, container.scrollLeft - (width - container.clientWidth))}px)`;
+    }
     scrollbarRef.current?.update();
   }, []);
 
-  const onKey = useCallback((event) => {
+  const resize = useCallback((nextCols = colsRef.current, nextRows = rowsRef.current) => {
+    enqueue(() => {
+      const term = termRef.current;
+      if (!(term && term.element)) {
+        return;
+      }
+      const container = term.element.parentElement;
+      if (container && (!container.offsetWidth || !container.offsetHeight)) {
+        remeasureRef.current = true;
+        return;
+      }
+      const geometry = fitAddonRef.current?.proposeDimensions();
+      if (!geometry || !Number.isFinite(geometry.cols) || !Number.isFinite(geometry.rows)) {
+        return;
+      }
+      const requestedCols = (!nextCols || nextCols === 'auto')
+        ? limit(geometry.cols, TERMINAL_COLS_MIN, TERMINAL_COLS_MAX) : nextCols;
+      const resolvedRows = (!nextRows || nextRows === 'auto') ? Math.max(1, geometry.rows) : nextRows;
+      term.resize(colsKeepingPendingInput(requestedCols, pendingExtent(term), term.cols), resolvedRows);
+      term.refresh(0, term.rows - 1);
+      syncScrollbar();
+    });
+  }, [enqueue, syncScrollbar]);
+
+  const onResize = useCallback(() => {
+    syncScrollbar();
+  }, [syncScrollbar]);
+
+  const handleKey = useCallback((event) => {
     const { key, domEvent } = event;
     const term = termRef.current;
     if (!term) {
@@ -68,10 +150,19 @@ function useTerminal({
     if (!line) {
       return;
     }
+    const notify = message => {
+      term.write(`\x1b[2K\r${chalk.yellow(message)}`);
+      term.prompt();
+      resize();
+    };
 
     if (domEvent.key === 'ArrowDown' || domEvent.key === 'PageDown') {
       const historyCommand = historyRef.current.forward() || '';
       historyCommandRef.current = historyCommand;
+      if (!fitsOnRow(historyCommand, term.cols, PROMPT.length)) {
+        notify(i18n._('This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.'));
+        return;
+      }
       for (let index = PROMPT.length; index < currentBufferLine.length; ++index) {
         currentBufferLine.setCell(index, nullCell);
       }
@@ -89,6 +180,10 @@ function useTerminal({
         historyCommand = historyRef.current.back() || '';
       }
       historyCommandRef.current = historyCommand;
+      if (!fitsOnRow(historyCommand, term.cols, PROMPT.length)) {
+        notify(i18n._('This history entry does not fit the terminal width. Rewrite the command or increase Columns in Console Settings to recall it.'));
+        return;
+      }
       for (let index = PROMPT.length; index < currentBufferLine.length; ++index) {
         currentBufferLine.setCell(index, nullCell);
       }
@@ -98,14 +193,14 @@ function useTerminal({
       return;
     }
 
-    if (domEvent.key === 'ArrowLeft') {
+    if (domEvent.key === 'ArrowLeft' && !domEvent.metaKey) {
       if (bufferX > PROMPT.length) {
         term.write(key);
       }
       return;
     }
 
-    if (domEvent.key === 'ArrowRight') {
+    if (domEvent.key === 'ArrowRight' && !domEvent.metaKey) {
       const x = line.length - 1;
       if (bufferX <= x) {
         term.write(key);
@@ -150,7 +245,12 @@ function useTerminal({
     }
 
     if (domEvent.key === 'Enter') {
-      let command = line.slice(PROMPT.length);
+      const input = readInputLine({ line: currentBufferLine, cols: term.cols, prompt: PROMPT });
+      if (!input.ok) {
+        notify(i18n._('Command not sent: it does not fit the terminal width. Rewrite the command or increase Columns in Console Settings.'));
+        return;
+      }
+      let command = input.command;
       if (command.length > 0) {
         historyCommandRef.current = '';
         historyRef.current.resetIndex();
@@ -160,6 +260,7 @@ function useTerminal({
       log.debug('xterm>', command);
       onDataRef.current?.(command);
       term.prompt();
+      resize();
       return;
     }
 
@@ -169,6 +270,7 @@ function useTerminal({
       }
       term.write('\r');
       term.write(PROMPT);
+      resize();
       return;
     }
 
@@ -183,10 +285,20 @@ function useTerminal({
       return;
     }
 
+    if (Math.max(line.length - PROMPT.length, bufferX - PROMPT.length) + key.length > getInputCapacity(term.cols, PROMPT.length)) {
+      return;
+    }
     if (bufferX < (term.cols - 1)) {
+      for (let index = currentBufferLine.length - 1; index > bufferX; --index) {
+        const cell = {};
+        currentBufferLine.loadCell(index - 1, cell);
+        currentBufferLine.setCell(index, cell);
+      }
       term.write(key);
     }
-  }, []);
+  }, [resize]);
+
+  const onKey = useCallback(event => enqueue(() => handleKey(event)), [enqueue, handleKey]);
 
   const onPaste = useCallback((event) => {
     event.stopPropagation();
@@ -203,38 +315,24 @@ function useTerminal({
     }
 
     const pastedData = clipboardData.getData('text/plain');
-    const lines = String(pastedData)
-      .replace(/(\r\n|\r|\n)/g, '\n')
-      .split('\n')
-      .slice(0, 10000);
+    enqueue(() => {
+      const lines = String(pastedData)
+        .replace(/(\r\n|\r|\n)/g, '\n')
+        .split('\n')
+        .slice(0, 10000);
 
-    for (let index = 0; index < lines.length; ++index) {
-      const line = lines[index].trim();
-      if (!line.length) {
-        continue;
+      for (let index = 0; index < lines.length; ++index) {
+        const line = lines[index].trim();
+        if (!line.length) {
+          continue;
+        }
+        onDataRef.current?.(line + '\n');
+        term.write(chalk.white(line));
+        term.prompt();
       }
-      onDataRef.current?.(line + '\n');
-      term.write(chalk.white(line));
-      term.prompt();
-    }
-  }, []);
-
-  const resize = useCallback((nextCols = colsRef.current, nextRows = rowsRef.current) => {
-    const term = termRef.current;
-    if (!(term && term.element)) {
-      return;
-    }
-
-    term.refresh(0, term.rows - 1);
-    const geometry = fitAddonRef.current?.proposeDimensions();
-    if (!geometry) {
-      return;
-    }
-
-    const resolvedCols = (!nextCols || nextCols === 'auto') ? geometry.cols : nextCols;
-    const resolvedRows = (!nextRows || nextRows === 'auto') ? geometry.rows : nextRows;
-    term.resize(resolvedCols, resolvedRows);
-  }, []);
+      resize();
+    });
+  }, [enqueue, resize]);
 
   const clear = useCallback(() => termRef.current?.clear(), []);
   const clearSelection = useCallback(() => termRef.current?.clearSelection(), []);
@@ -249,7 +347,7 @@ function useTerminal({
     term.refresh(start, end);
   }, []);
   const selectAll = useCallback(() => termRef.current?.selectAll(), []);
-  const writeln = useCallback((data, callback) => {
+  const writeln = useCallback((data, callback) => enqueue(() => {
     const term = termRef.current;
     if (!term) {
       return;
@@ -259,12 +357,16 @@ function useTerminal({
     const currentBufferLine = buffer.lines.get(currentLineIndex);
     const cursorX = buffer.x;
     const line = _trimEnd(currentBufferLine.translateToString());
-    const input = (line.length > PROMPT.length) ? line.slice(PROMPT.length) : '';
+    const input = line.startsWith(PROMPT) ? line.slice(PROMPT.length) : '';
     const cursorOffset = limit(cursorX - PROMPT.length, 0, input.length);
     const cursorLeft = input.length - cursorOffset;
     const restoreCursor = (cursorLeft > 0) ? `\x1b[${cursorLeft}D` : '';
     term.write(`\x1b[2K\r${data}\r\n${chalk.white(PROMPT + input)}${restoreCursor}`, callback);
-  }, []);
+  }), [enqueue]);
+
+  const hasPendingInput = useCallback(() => (
+    operationsRef.current.length > 0 || !!(termRef.current && pendingExtent(termRef.current) > PROMPT.length)
+  ), []);
 
   useEffect(() => {
     if (!enabled || !containerNode) {
@@ -273,9 +375,16 @@ function useTerminal({
     }
 
     const term = new XTerm({
+      cols: typeof colsRef.current === 'number' ? colsRef.current : 80,
+      rows: typeof rowsRef.current === 'number' ? rowsRef.current : 24,
       cursorBlink: cursorBlinkRef.current,
       scrollback: scrollbackRef.current,
       tabStopWidth: tabStopWidthRef.current,
+      fontSize: appearanceRef.current.fontSize,
+      fontFamily: DEFAULT_FONT_STACK,
+      lineHeight: 1.2,
+      letterSpacing: 1,
+      theme: buildTerminalTheme(appearanceRef.current.background, appearanceRef.current.textColor),
     });
     const fitAddon = new FitAddon();
     historyRef.current = new History(1000);
@@ -294,17 +403,37 @@ function useTerminal({
     }
     const resizeDisposable = term.onResize(onResize);
     term.focus(false);
-    term.setOption('fontFamily', FONT_FAMILY);
+    term.setOption('fontFamily', DEFAULT_FONT_STACK);
 
     const xtermElement = containerNode.querySelector('.xterm');
     if (xtermElement) {
       xtermElement.style.paddingLeft = '3px';
     }
     const viewportElement = containerNode.querySelector('.xterm-viewport');
-    scrollbarRef.current = viewportElement ? new PerfectScrollbar(viewportElement) : null;
+    scrollbarRef.current = viewportElement ? new PerfectScrollbar(viewportElement, { suppressScrollX: true }) : null;
+    containerNode.addEventListener('scroll', syncScrollbar, { passive: true });
+    let frame;
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (containerNode.offsetWidth && containerNode.offsetHeight) {
+          if (remeasureRef.current) {
+            term.setOption('fontSize', appearanceRef.current.fontSize + 1);
+            term.setOption('fontSize', appearanceRef.current.fontSize);
+            remeasureRef.current = false;
+          }
+          resize();
+        }
+      });
+    }) : null;
+    observer?.observe(containerNode);
     setIsReady(true);
 
     return () => {
+      observer?.disconnect();
+      cancelAnimationFrame(frame);
+      containerNode.removeEventListener('scroll', syncScrollbar);
+      operationsRef.current = [];
       keyDisposable?.dispose();
       resizeDisposable?.dispose();
       if (term.textarea) {
@@ -318,7 +447,7 @@ function useTerminal({
       fitAddonRef.current = null;
       setIsReady(false);
     };
-  }, [containerNode, enabled, onKey, onPaste, onResize]);
+  }, [containerNode, enabled, onKey, onPaste, onResize, resize, syncScrollbar]);
 
   useEffect(() => {
     const term = termRef.current;
@@ -331,6 +460,28 @@ function useTerminal({
     resize(cols, rows);
   }, [cols, rows, cursorBlink, scrollback, tabStopWidth, isReady, resize]);
 
+  useEffect(() => {
+    const term = termRef.current;
+    if (!term || !isReady) {
+      return;
+    }
+    const theme = buildTerminalTheme(background, textColor);
+    term.setOption('fontSize', fontSize);
+    term.setOption('theme', theme);
+    const container = term.element?.parentElement;
+    if (container) {
+      container.style.backgroundColor = theme.background;
+      container.style.setProperty('--terminal-bg', theme.background);
+      container.style.setProperty('--terminal-thumb', background === 'white' ? '#808080' : '#999999');
+      container.querySelectorAll('.xterm, .xterm-viewport').forEach(node => {
+        node.style.backgroundColor = theme.background;
+      });
+      remeasureRef.current = !container.offsetWidth || !container.offsetHeight;
+    }
+    term.refresh(0, term.rows - 1);
+    resize();
+  }, [fontSize, background, textColor, isReady, resize]);
+
   const actions = useMemo(() => ({
     clear,
     clearSelection,
@@ -338,7 +489,8 @@ function useTerminal({
     resize,
     selectAll,
     writeln,
-  }), [clear, clearSelection, refresh, resize, selectAll, writeln]);
+    hasPendingInput,
+  }), [clear, clearSelection, refresh, resize, selectAll, writeln, hasPendingInput]);
 
   return {
     containerRef,

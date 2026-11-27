@@ -68,7 +68,7 @@ function LoadMacro({
             </Text>
           </Box>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter columnGap="2x">
           <Button
             onClick={onClose}
           >

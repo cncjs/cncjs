@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { renderAppUI } from '@app/test/render';
 
+const mockConfigSet = jest.fn();
 const mockTerminalClear = jest.fn();
 const mockTerminalResize = jest.fn();
 const mockTerminalClearSelection = jest.fn();
@@ -14,6 +15,7 @@ const mockEmitterListeners = {};
 const mockPubsubListeners = {};
 const mockControllerWrite = jest.fn();
 const mockTerminalActions = {
+  hasPendingInput: jest.fn(() => false),
   clear: mockTerminalClear,
   clearSelection: mockTerminalClearSelection,
   refresh: mockTerminalRefresh,
@@ -37,6 +39,8 @@ const mockEmitter = {
   off: jest.fn(),
   emit: jest.fn(event => mockEmitterListeners[event]?.()),
 };
+
+jest.mock('@app/lib/i18n', () => ({ __esModule: true, default: { _: text => text } }));
 
 jest.mock('react-redux', () => ({
   connect: () => Component => Component,
@@ -64,6 +68,11 @@ jest.mock('pubsub-js', () => ({
     }),
     unsubscribe: jest.fn(),
   },
+}));
+
+jest.mock('@app/widgets/shared/useWidgetConfig', () => ({
+  __esModule: true,
+  default: () => ({ get: () => undefined, set: mockConfigSet }),
 }));
 
 jest.mock('@app/widgets/shared/useWidgetEvent', () => ({
@@ -231,4 +240,21 @@ test('Console shell Clear button reaches the terminal owner without a controller
   expect(mockControllerWrite).not.toHaveBeenCalled();
   view.unmount();
   expect(mockEmitter.off).toHaveBeenCalledWith('terminal:clear', expect.any(Function));
+});
+
+test('blocks a column change while input is pending and saves only after it is cleared', async () => {
+  mockConfigSet.mockClear();
+  mockTerminalActions.hasPendingInput.mockReturnValue(true);
+  const view = renderAppUI(<Console isConnected={true} isFullscreen={false} />);
+  act(() => mockEmitter.emit('terminal:settings'));
+  fireEvent.change(screen.getByRole('textbox', { name: 'Columns' }), { target: { value: '100' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save Changes' }));
+  await waitFor(() => expect(screen.getByRole('alert')).toBeVisible());
+  expect(mockConfigSet).not.toHaveBeenCalled();
+  mockTerminalActions.hasPendingInput.mockReturnValue(false);
+  fireEvent.click(screen.getByRole('button', { name: 'Save Changes' }));
+  await waitFor(() => expect(mockConfigSet).toHaveBeenCalledWith('terminalCols', 100));
+  expect(mockConfigSet).toHaveBeenCalledWith('fontSize', 14);
+  expect(mockConfigSet).toHaveBeenCalledWith('terminalBackground', 'black');
+  view.unmount();
 });

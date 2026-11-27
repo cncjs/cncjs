@@ -107,7 +107,7 @@ function NewMacro({
     >
       <FormProvider {...methods}>
         <ModalOverlay />
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>
             {i18n._('New Macro')}
           </ModalHeader>
@@ -153,7 +153,7 @@ function NewMacro({
               <FormErrorMessage errors={errors.content ? [errors.content.message] : []} />
             </FormControl>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             {errors.root && (
               <Text color="error.text" mr="auto">
                 {errors.root.message}
@@ -170,7 +170,7 @@ function NewMacro({
             <Button
               variant="primary"
               disabled={isSubmitting || createMacroMutation.isLoading}
-              type="submit"
+              onClick={methods.handleSubmit(submit)}
               minWidth="20x"
             >
               {i18n._('OK')}

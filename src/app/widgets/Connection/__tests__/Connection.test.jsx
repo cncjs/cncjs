@@ -207,6 +207,7 @@ describe('Connection form', () => {
 
     serialPort.focus();
     fireEvent.keyDown(serialPort, { key: 'ArrowDown' });
+    expect(serialPort).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     fireEvent.keyDown(serialPort, { key: 'ArrowDown' });
     await waitFor(() => expect(screen.getByRole('option', { name: /\/dev\/ttyUSB1/ })).toHaveAttribute('aria-selected', 'true'));
@@ -214,15 +215,15 @@ describe('Connection form', () => {
 
     expect(mockConfigSet).toHaveBeenCalledWith('connection.serial.path', '/dev/ttyUSB1');
     expect(serialPort).toHaveFocus();
-    await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
+    // Tonic keeps the listbox mounted until its exit animation completes.
+    expect(serialPort).toHaveAttribute('aria-expanded', 'false');
 
     fireEvent.keyDown(serialPort, { key: 'ArrowDown' });
+    expect(serialPort).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByRole('listbox')).toBeInTheDocument();
     fireEvent.keyDown(serialPort, { key: 'Escape' });
-    await waitFor(() => {
-      expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
-      expect(serialPort).toHaveFocus();
-    });
+    expect(serialPort).toHaveAttribute('aria-expanded', 'false');
+    expect(serialPort).toHaveFocus();
   });
 
   test('sends the complete serial connection payload through useConnection', async () => {

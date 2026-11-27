@@ -1,3 +1,4 @@
+import { Box } from '@tonic-ui/react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -21,9 +22,9 @@ const DefaultWidgets = ({ className }) => {
   ));
 
   return (
-    <div className={classNames(className, styles.widgets)}>
+    <Box className={classNames(className, styles.widgets)} rowGap="3x">
       {widgets}
-    </div>
+    </Box>
   );
 };
 

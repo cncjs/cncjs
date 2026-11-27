@@ -403,12 +403,16 @@ test.describe('connection selectors', () => {
 });
 
 test.describe('console menu actions', () => {
-  test('select all, copy selection, clear selection and refresh act on terminal content', async ({ page, serialEndpoints }) => {
+  test('select all, copy selection, clear selection and refresh act on terminal content', async ({ page, serialEndpoints }, testInfo) => {
     const root = await prepareConsole(page, serialEndpoints);
     const selectionText = () => selectedConsoleText(root);
     const writesBefore = serialEndpoints.writes.length;
 
     await openMore(page, 'console');
+    const selectItem = page.getByRole('menuitem', { name: 'Select All', exact: true });
+    expect(await selectItem.locator('svg').evaluate(element => getComputedStyle(element).color))
+      .toBe(await selectItem.evaluate(element => getComputedStyle(element).color));
+    await capture(page.getByRole('menu'), testInfo, 'english-console-semantic-select-all-menu');
     await clickMenuItem(page, 'Select All');
     await expect.poll(selectionText).toContain('g0 x0');
 
@@ -820,6 +824,34 @@ test.describe('controller commands menus', () => {
 });
 
 test.describe('widget more menu dismissal', () => {
+  test('autolevel more toggle has no arrow and opens the widget menu', async ({ page }, testInfo) => {
+    await openWorkspace(page);
+    const root = widget(page, 'autolevel');
+    const title = root.getByText('Autolevel', { exact: true });
+    const macroTitle = widget(page, 'macro').getByText('Macro', { exact: true });
+    for (const property of ['font-family', 'font-size', 'font-weight', 'line-height', 'padding']) {
+      await expect(title).toHaveCSS(property, await macroTitle.evaluate((element, name) => getComputedStyle(element).getPropertyValue(name), property));
+    }
+    const toggle = root.getByRole('button', { name: 'More options', exact: true });
+    await expect(toggle.locator('svg')).toHaveCount(1);
+    await expect(toggle.locator('svg')).toHaveCSS('width', '16px');
+    const collapse = root.getByRole('button', { name: 'Collapse', exact: true });
+    const toggleBox = await toggle.boundingBox();
+    const collapseBox = await collapse.boundingBox();
+    expect(toggleBox.y + toggleBox.height / 2).toBeCloseTo(collapseBox.y + collapseBox.height / 2, 0);
+    const headerBox = await toggle.locator('xpath=../..').boundingBox();
+    const widgetBox = await root.boundingBox();
+    expect(widgetBox.x + widgetBox.width - (headerBox.x + headerBox.width)).toBeCloseTo(1, 0);
+    await capture(root, testInfo, 'autolevel-toolbar');
+    await toggle.click();
+    await waitForMenuReady(page);
+    await expect(page.getByRole('menuitem', { name: 'Enter Full Screen' })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Fork Widget' })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Remove Widget' })).toBeVisible();
+    await capture(page, testInfo, 'autolevel-more-menu');
+    await closeMenu(page);
+  });
+
   test('every widget more menu closes on an outside canvas click without changing the layout', async ({ page }) => {
     await openWorkspace(page);
 
@@ -833,5 +865,165 @@ test.describe('widget more menu dismissal', () => {
         await expect(widget(page, id)).toBeVisible();
       });
     }
+  });
+});
+
+test.describe('console settings', () => {
+  const chooseSetting = async (page, dialog, label, option) => {
+    await dialog.getByRole('button', { name: label, exact: true }).click();
+    await waitForMenuReady(page);
+    await clickMenuItem(page, option);
+  };
+
+  test('previews, validates, saves and reloads isolated settings with a visible scrollbar', async ({ page, serialEndpoints }, testInfo) => {
+    const root = await prepareConsole(page, serialEndpoints);
+    const input = root.locator('.xterm-helper-textarea');
+    await input.press('Escape');
+    const writesBefore = serialEndpoints.writes.length;
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    let dialog = page.getByRole('dialog', { name: 'Console Settings', exact: true });
+    await expect(dialog.getByRole('button', { name: 'Font size', exact: true })).toHaveText('14');
+    await dialog.getByRole('button', { name: 'Font size', exact: true }).click();
+    await waitForMenuReady(page);
+    await capture(page, testInfo, 'console-font-size-menu');
+    await clickMenuItem(page, '24');
+    await chooseSetting(page, dialog, 'Background color', 'White');
+    await chooseSetting(page, dialog, 'Text color', 'Amber');
+    await expect(dialog.getByLabel('Terminal preview')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await capture(dialog, testInfo, 'english-console-settings-preview');
+    await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+    expect((await readState(page)).widgets.console.fontSize).toBeUndefined();
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    await expect(dialog.getByRole('button', { name: 'Font size', exact: true })).toHaveText('14');
+    await chooseSetting(page, dialog, 'Font size', '18');
+    await chooseSetting(page, dialog, 'Background color', 'White');
+    await chooseSetting(page, dialog, 'Text color', 'Amber');
+    await dialog.getByRole('textbox', { name: 'Columns', exact: true }).fill('79');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect(dialog.getByText('Enter a number between 80 and 500')).toBeVisible();
+    await dialog.getByRole('textbox', { name: 'Columns', exact: true }).fill('120');
+    await dialog.getByRole('textbox', { name: 'Rows', exact: true }).fill('10');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    await expect.poll(async () => (await readState(page)).widgets.console).toMatchObject({ fontSize: 18, terminalCols: 120, terminalRows: 10, terminalBackground: 'white', terminalTextColor: 'amber' });
+    serialEndpoints.output(Array.from({ length: 60 }, (_entry, index) => `English terminal output ${index}`).join('\r\n'));
+    const container = root.getByRole('log', { name: 'Console output' });
+    await expect(container).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect.poll(() => container.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+    await container.evaluate(element => {
+      element.scrollLeft = 200;
+    });
+    const rail = container.locator('.ps__rail-y');
+    await expect.poll(async () => {
+      const box = await container.boundingBox();
+      const scrollbar = await rail.boundingBox();
+      return Math.abs(scrollbar.x + scrollbar.width - (box.x + box.width));
+    }).toBeLessThanOrEqual(20);
+    await capture(root, testInfo, 'english-console-white-amber-horizontal-scroll');
+    expect(serialEndpoints.writes.length).toBe(writesBefore);
+
+    await openMore(page, 'console');
+    await clickMenuItem(page, 'Fork Widget');
+    await page.getByRole('dialog').getByRole('button', { name: 'OK', exact: true }).click();
+    const fork = page.locator('[data-widget-id^="console:"]');
+    await expect(fork).toHaveCount(1);
+    const forkId = await fork.getAttribute('data-widget-id');
+    await fork.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    await chooseSetting(page, dialog, 'Background color', 'Black');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect.poll(async () => (await readState(page)).widgets[forkId].terminalBackground).toBe('black');
+    expect((await readState(page)).widgets.console.terminalBackground).toBe('white');
+    await page.reload();
+    await expect(root.getByRole('button', { name: 'Console Settings', exact: true })).toBeVisible();
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    dialog = page.getByRole('dialog', { name: 'Console Settings', exact: true });
+    await expect(dialog.getByRole('button', { name: 'Font size', exact: true })).toHaveText('18');
+    await expect(dialog.getByRole('button', { name: 'Background color', exact: true })).toHaveText('White');
+    await expect(dialog.getByRole('textbox', { name: 'Columns', exact: true })).toHaveValue('120');
+    await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+    expect((await readState(page)).widgets[forkId].terminalBackground).toBe('black');
+  });
+
+  test('protects pending commands and sends the complete visible row exactly once', async ({ page, serialEndpoints }, testInfo) => {
+    const root = await prepareConsole(page, serialEndpoints);
+    const input = root.locator('.xterm-helper-textarea');
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: 'Console Settings', exact: true });
+    await dialog.getByRole('textbox', { name: 'Columns', exact: true }).fill('80');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect(dialog.getByRole('alert')).toContainText('Finish or clear the command');
+    await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await input.press('Escape');
+    const longCommand = 'G1 X' + '1'.repeat(100);
+    await input.pressSequentially(longCommand);
+    const before = serialEndpoints.writes.length;
+    await input.press('Enter');
+    await expect.poll(() => serialEndpoints.writes.length).toBe(before + 1);
+    expect(serialEndpoints.writes.at(-1).data).toBe(`${longCommand}\r`);
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    await dialog.getByRole('textbox', { name: 'Columns', exact: true }).fill('80');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    await input.press('ArrowUp');
+    await openMore(page, 'console');
+    await clickMenuItem(page, 'Select All');
+    await expect.poll(() => selectedConsoleText(root)).toContain('This history entry does not fit');
+    await capture(root, testInfo, 'english-console-history-width-safety');
+    expect(serialEndpoints.writes.length).toBe(before + 1);
+    await openMore(page, 'console');
+    await clickMenuItem(page, 'Clear Selection');
+    await input.press('Escape');
+    const boundary = 'G1 X' + '2'.repeat(73);
+    await input.pressSequentially(boundary);
+    await input.press('Enter');
+    await expect.poll(() => serialEndpoints.writes.length).toBe(before + 2);
+    expect(serialEndpoints.writes.at(-1).data).toBe(`${boundary}\r`);
+    await input.pressSequentially('G1 X10');
+    serialEndpoints.output('asynchronous status while typing');
+    await openMore(page, 'console');
+    await clickMenuItem(page, 'Select All');
+    await expect.poll(() => selectedConsoleText(root)).toContain('asynchronous status while typing');
+    await openMore(page, 'console');
+    await clickMenuItem(page, 'Clear Selection');
+    await input.press('ArrowLeft');
+    await input.pressSequentially('2');
+    await input.press('Enter');
+    await expect.poll(() => serialEndpoints.writes.length).toBe(before + 3);
+    expect(serialEndpoints.writes.at(-1).data).toBe('G1 X120\r');
+  });
+
+  test('refits fullscreen and remeasures fonts changed while collapsed', async ({ page, serialEndpoints }, testInfo) => {
+    const root = await prepareConsole(page, serialEndpoints);
+    const input = root.locator('.xterm-helper-textarea');
+    await input.press('Escape');
+    await root.getByRole('button', { name: 'Collapse', exact: true }).click();
+    await root.getByRole('button', { name: 'Console Settings', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: 'Console Settings', exact: true });
+    await chooseSetting(page, dialog, 'Font size', '24');
+    await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    await root.getByRole('button', { name: 'Expand', exact: true }).click();
+    await expect(root.locator('.xterm-screen canvas').first()).toBeVisible();
+    await root.getByRole('button', { name: 'Enter full screen', exact: true }).click();
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await expect.poll(async () => {
+      const frame = await root.getByRole('log', { name: 'Console output' }).boundingBox();
+      const canvas = await root.locator('.xterm-screen canvas').first().boundingBox();
+      return canvas.x >= frame.x - 1 && canvas.y >= frame.y - 1 &&
+        canvas.x + canvas.width <= frame.x + frame.width + 1 && canvas.y + canvas.height <= frame.y + frame.height + 1;
+    }).toBe(true);
+    await testInfo.attach('console-fullscreen-geometry', {
+      body: JSON.stringify(await root.getByRole('log').evaluate(element => ({
+        frame: element.getBoundingClientRect().toJSON(),
+        scrollLeft: element.scrollLeft,
+        parentScrollLeft: element.parentElement.scrollLeft,
+        canvas: element.querySelector('canvas').getBoundingClientRect().toJSON(),
+      }))),
+      contentType: 'application/json',
+    });
+    await capture(root.getByRole('region', { name: 'Console widget', exact: true }), testInfo, 'english-console-fullscreen-font-24');
+    await root.getByRole('button', { name: 'Exit full screen', exact: true }).click();
+    await expect.poll(async () => (await readState(page)).widgets.console.fontSize).toBe(24);
+    expect((await readState(page)).widgets.console.terminalCols).toBe(256);
   });
 });

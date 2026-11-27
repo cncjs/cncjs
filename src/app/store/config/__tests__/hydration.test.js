@@ -95,3 +95,30 @@ test.each(['light', 'dark'])('preserves explicit %s appearance and language for 
   expect(config.get('settings.appearance')).toBe(appearance);
   expect(config.get('settings.language')).toBe('de');
 });
+
+test('normalizes imported Console colors for the main widget and forks only', async () => {
+  localStorage.setItem('cnc', JSON.stringify({
+    version: '2.0.0-dev',
+    state: {
+      settings: { appearance: 'auto' },
+      widgets: {
+        console: { terminalBackground: 'dark', terminalCursorColor: 'red' },
+        'console:fork-1': { terminalBackground: 'light', terminalCursorColor: 'cyan' },
+        custom: { terminalBackground: 'light', terminalCursorColor: 'red' },
+      },
+    },
+  }));
+  let config;
+  jest.isolateModules(() => {
+    config = require('../index').default;
+  });
+  await new Promise(resolve => {
+    config.once('change', resolve);
+  });
+  expect(config.get('widgets.console.terminalBackground')).toBe('black');
+  expect(config.get(['widgets', 'console:fork-1', 'terminalBackground'])).toBe('white');
+  expect(config.get('widgets.console')).not.toHaveProperty('terminalCursorColor');
+  expect(config.get(['widgets', 'console:fork-1'])).not.toHaveProperty('terminalCursorColor');
+  expect(config.get('widgets.custom.terminalCursorColor')).toBe('red');
+  expect(config.get('settings.appearance')).toBe('auto');
+});

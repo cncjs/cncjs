@@ -279,7 +279,7 @@ function ToolWidget({
               }}
               renderToggle={() => (
                 <DropdownToggle aria-label={i18n._('More options')} title={i18n._('More')} className={widgetStyles.widgetButton}>
-                  <MoreIcon aria-hidden="true" size="1em" />
+                  <MoreIcon aria-hidden="true" size="4x" />
                 </DropdownToggle>
               )}
             />

@@ -616,7 +616,7 @@ function VisualizerWidget({ widgetId }) {
             <ModalContent>
               <ModalHeader>{i18n._('Tool Change')}</ModalHeader>
               <ModalBody>{i18n._('Are you sure you want to resume program execution?')}</ModalBody>
-              <ModalFooter>
+              <ModalFooter columnGap="2x">
                 <Button onClick={onClose}>{i18n._('No')}</Button>
                 <Button
                   variant="primary"

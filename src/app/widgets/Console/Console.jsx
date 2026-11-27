@@ -1,6 +1,7 @@
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box } from '@tonic-ui/react';
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import chalk from '@app/chalk';
@@ -15,15 +16,22 @@ import usePrevious from '@app/hooks/usePrevious';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
+import SettingsModal from './SettingsModal';
+import { readConsoleSettings } from './settings';
 import Terminal from './Terminal';
 import useTerminal from './useTerminal';
 import styles from './index.styl';
 
+/** @param {{ isFullscreen: boolean, isConnected: boolean }} props */
 function Console({
   isFullscreen,
   isConnected,
 }) {
   const emitter = useWidgetEvent();
+  const config = useWidgetConfig();
+  const terminalSettings = readConsoleSettings(config.get);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const prevIsFullscreen = usePrevious(isFullscreen);
   const sender = useRef(uuidv4());
   const onData = useCallback((data) => {
@@ -33,8 +41,9 @@ function Console({
   }, []);
   const { containerRef, prompt, actions } = useTerminal({
     enabled: isConnected,
-    cols: 254,
-    rows: isFullscreen ? 'auto' : 15,
+    ...terminalSettings,
+    cols: isFullscreen ? 'auto' : terminalSettings.cols,
+    rows: isFullscreen ? 'auto' : terminalSettings.rows,
     cursorBlink: true,
     scrollback: 1000,
     tabStopWidth: 2,
@@ -114,6 +123,8 @@ function Console({
   });
 
   useEffect(() => {
+    const onSettings = () => setSettingsOpen(true);
+    emitter.on('terminal:settings', onSettings);
     const onClear = () => actions.clear();
 
     const onClearSelection = () => {
@@ -134,6 +145,7 @@ function Console({
     emitter.on('terminal:selectAll', onSelectAll);
 
     return () => {
+      emitter.off('terminal:settings', onSettings);
       emitter.off('terminal:clear', onClear);
       emitter.off('terminal:clearSelection', onClearSelection);
       emitter.off('terminal:refresh', onRefresh);
@@ -148,16 +160,27 @@ function Console({
     }
   });
 
-  if (!isConnected) {
-    return (
-      <div className={styles.noSerialConnection}>
-        {i18n._('No serial connection')}
-      </div>
-    );
-  }
+  const saveSettings = (values) => {
+    if (!isFullscreen && values.cols !== terminalSettings.cols && actions.hasPendingInput()) {
+      return i18n._('Finish or clear the command you are typing before changing the number of columns.');
+    }
+    config.set('fontSize', values.fontSize);
+    config.set('terminalCols', values.cols);
+    config.set('terminalRows', values.rows);
+    config.set('terminalBackground', values.background);
+    config.set('terminalTextColor', values.textColor);
+    return null;
+  };
 
   return (
-    <Terminal containerRef={containerRef} />
+    <>
+      {isConnected ? <Terminal containerRef={containerRef} /> : (
+        <Box className={styles.noSerialConnection}>{i18n._('No serial connection')}</Box>
+      )}
+      {settingsOpen && (
+        <SettingsModal values={terminalSettings} onSave={saveSettings} onClose={() => setSettingsOpen(false)} />
+      )}
+    </>
   );
 }
 

@@ -8,7 +8,7 @@ const posix = filename => filename.split(path.sep).join('/');
 const propertyName = node => node?.name || node?.value;
 const bannedPackages = ['styled-components', 'react-repeatable', 'react-foreach', 'react-infinite-tree',
   'rc-trigger', 'react-bootstrap-buttons', 'react-select', 'create-react-class',
-  'react-animate-height', 'react-datepicker', 'react-facebook-loading', 'uncontrollable'];
+  'react-animate-height', 'react-datepicker', 'react-facebook-loading', 'uncontrollable', 'react-final-form', 'final-form'];
 const httpPackages = ['axios', 'superagent', 'superagent-use'];
 const dangerousMembers = ['findDOMNode', 'getWrappedInstance', 'useImperativeHandle', 'widgetMap', 'primaryWidgets', 'secondaryWidgets'];
 const readSources = directory => (fs.existsSync(directory) ? fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -428,6 +428,21 @@ function checkProject({ root = path.resolve(__dirname, '..'), policy = require('
         if (['createFetchMachine', 'fetchMacrosService'].includes(p.node.name)) {
           report(file, 'legacy-fetch', p.node, 'Obsolete fetch abstraction');
         }
+      },
+      JSXOpeningElement(p) {
+        if (p.get('name').isJSXIdentifier({ name: 'form' })) {
+          report(file, 'native-form', p.node, 'Native form elements are forbidden');
+        }
+        p.get('attributes').forEach(attribute => {
+          if (!attribute.isJSXAttribute() || !attribute.get('name').isJSXIdentifier({ name: 'as' })) {
+            return;
+          }
+          const value = attribute.get('value');
+          if (value.isStringLiteral({ value: 'form' }) ||
+            (value.isJSXExpressionContainer() && value.get('expression').isStringLiteral({ value: 'form' }))) {
+            report(file, 'native-form', attribute.node, 'Polymorphic form elements are forbidden');
+          }
+        });
       },
       NewExpression(p) {
         inspectOrigin(file, expressionOrigin(file, p.get('callee')), p.node);

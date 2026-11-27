@@ -55,7 +55,7 @@ function SettingsModal({ onClose }) {
   const devices = useVideoDevices();
   const initialValues = {
     mediaSource: config.get('mediaSource', MEDIA_SOURCE_LOCAL),
-    deviceId: config.get('deviceId', '__default__'),
+    deviceId: config.get('deviceId') || '__default__',
     url: config.get('url', ''),
   };
   const methods = useForm({ defaultValues: initialValues, mode: 'onSubmit' });
@@ -75,7 +75,7 @@ function SettingsModal({ onClose }) {
     >
       <ModalOverlay />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Webcam Settings')}</ModalHeader>
           <ModalBody>
             <FormControl mb="4x">
@@ -103,6 +103,8 @@ function SettingsModal({ onClose }) {
                     return (
                       <Dropdown
                         matchWidth
+                        portalled
+                        width="100%"
                         items={deviceOptions}
                         value={deviceOptions.find(option => option.value === input.value) || null}
                         renderItem={option => option?.label ?? ''}
@@ -147,9 +149,9 @@ function SettingsModal({ onClose }) {
               </Box>
             </FormControl>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
+            <Button variant="primary" onClick={methods.handleSubmit(submit)}>{i18n._('Save Changes')}</Button>
             <Button onClick={onClose}>{i18n._('Cancel')}</Button>
-            <Button variant="primary" type="submit">{i18n._('Save Changes')}</Button>
           </ModalFooter>
         </ModalContent>
       </FormProvider>

@@ -154,7 +154,7 @@ function Settings({ config, onSave = () => {}, onCancel = () => {} }) {
             </TabPanels>
           </Tabs>
         </ModalBody>
-        <ModalFooter gap="2x">
+        <ModalFooter columnGap="2x">
           <Button disabled={saving} onClick={close}>
             {i18n._('Cancel')}
           </Button>

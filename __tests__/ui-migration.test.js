@@ -23,6 +23,33 @@ test.each(fixtures)('$name', fixture => {
   expect(rules).toEqual([...fixture.rules].sort());
 });
 
+test('reports each forbidden form at the relevant file and line', () => {
+  writeFiles({
+    'src/app/pages/View.jsx': 'export const View = () => (\n  <>\n    <form />\n    <Box as="form" />\n    <Layout.Content as={\'form\'} />\n  </>\n);',
+  });
+  const { violations } = checkProject({ root, policy: {} });
+  expect(violations.map(({ file, line, rule }) => ({ file, line, rule }))).toEqual([
+    { file: 'src/app/pages/View.jsx', line: 3, rule: 'native-form' },
+    { file: 'src/app/pages/View.jsx', line: 4, rule: 'native-form' },
+    { file: 'src/app/pages/View.jsx', line: 5, rule: 'native-form' },
+  ]);
+});
+
+test('reports both legacy form imports and both dependency declarations', () => {
+  writeFiles({
+    'src/app/pages/View.jsx': 'import { Form } from \'react-final-form\';\nimport { createForm } from \'final-form\';',
+    'package.json': '{"dependencies":{"react-final-form":"1.0.0"},"devDependencies":{"final-form":"1.0.0"}}',
+  });
+  const { violations } = checkProject({ root, policy: {} });
+  expect(violations.map(({ file, line, rule, message }) => ({ file, line, rule, message }))).toEqual(expect.arrayContaining([
+    { file: 'package.json', line: 1, rule: 'legacy-ui', message: 'Legacy UI dependency react-final-form' },
+    { file: 'package.json', line: 1, rule: 'legacy-ui', message: 'Legacy UI dependency final-form' },
+    { file: 'src/app/pages/View.jsx', line: 1, rule: 'legacy-ui', message: 'Legacy UI module react-final-form' },
+    { file: 'src/app/pages/View.jsx', line: 2, rule: 'legacy-ui', message: 'Legacy UI module final-form' },
+  ]));
+  expect(violations).toHaveLength(4);
+});
+
 test('CLI reports file/line/rule and fails on component mutation', () => {
   writeFiles({ 'src/app/pages/View.jsx': 'import api from \'@app/api\'; api.loadGCode({});' });
   const result = spawnSync(process.execPath, [path.resolve(__dirname, '../scripts/check-ui-migration.js'), '--root', root], { encoding: 'utf8' });

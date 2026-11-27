@@ -2,9 +2,13 @@ import React from 'react';
 import { act, render } from '@testing-library/react';
 import useTerminal from '../useTerminal';
 
+jest.mock('@app/lib/i18n', () => ({ __esModule: true, default: { _: text => text } }));
+
 const mockXtermInstances = [];
 const mockFitAddons = [];
 const mockScrollbars = [];
+const mockResizeObservers = [];
+const originalResizeObserver = global.ResizeObserver;
 
 jest.mock('xterm', () => ({
   Terminal: jest.fn(options => {
@@ -27,7 +31,7 @@ jest.mock('xterm', () => ({
       rows: 24,
       setOption: jest.fn(),
       textarea: {},
-      write: jest.fn(),
+      write: jest.fn((_data, callback) => callback?.()),
       clear: jest.fn(),
       clearSelection: jest.fn(),
       selectAll: jest.fn(),
@@ -117,7 +121,22 @@ describe('useTerminal', () => {
     mockXtermInstances.length = 0;
     mockFitAddons.length = 0;
     mockScrollbars.length = 0;
+    mockResizeObservers.length = 0;
+    global.ResizeObserver = jest.fn(function ResizeObserver(callback) {
+      this.observe = jest.fn();
+      this.disconnect = jest.fn();
+      this.callback = callback;
+      mockResizeObservers.push(this);
+    });
     latestApi = undefined;
+  });
+
+  afterEach(() => {
+    if (originalResizeObserver) {
+      global.ResizeObserver = originalResizeObserver;
+    } else {
+      delete global.ResizeObserver;
+    }
   });
 
   test('creates no resource while disabled and disposes every owned resource', () => {
@@ -356,6 +375,7 @@ describe('useTerminal', () => {
     expect(term.refresh).toHaveBeenCalled();
     expect(term.selectAll).toHaveBeenCalledTimes(1);
     expect(term.write).toHaveBeenCalledWith(expect.stringContaining('response'), undefined);
+    mockScrollbars[0].update.mockClear();
     term.resizeHandler(254, 15);
     expect(mockScrollbars[0].update).toHaveBeenCalledTimes(1);
 
@@ -407,6 +427,11 @@ describe('useTerminal', () => {
     expect(mockXtermInstances).toHaveLength(20);
     expect(mockFitAddons).toHaveLength(20);
     expect(mockScrollbars).toHaveLength(20);
+    expect(mockResizeObservers).toHaveLength(20);
+    mockResizeObservers.forEach(observer => {
+      expect(observer.observe).toHaveBeenCalledTimes(1);
+      expect(observer.disconnect).toHaveBeenCalledTimes(1);
+    });
     expect(mockXtermInstances.filter(term => term.dispose.mock.calls.length === 0)).toHaveLength(0);
     expect(mockFitAddons.filter(addon => addon.dispose.mock.calls.length === 0)).toHaveLength(0);
     expect(mockScrollbars.filter(scrollbar => scrollbar.destroy.mock.calls.length === 0)).toHaveLength(0);
@@ -419,5 +444,103 @@ describe('useTerminal', () => {
     mockScrollbars.forEach(scrollbar => {
       expect(scrollbar.destroy).toHaveBeenCalledTimes(1);
     });
+  });
+  test('does not submit hidden, wrapped or promptless rows', () => {
+    const onData = jest.fn();
+    const view = render(<Harness
+      enabled cols={80} rows={15}
+      onData={onData}
+    />);
+    const [term] = mockXtermInstances;
+    for (const [text, isWrapped] of [['> ' + 'X'.repeat(78), false], ['> G1 X10', true], ['response', false]]) {
+      term.line.translateToString.mockReturnValue(text);
+      term.line.isWrapped = isWrapped;
+      term.keyHandler({ key: '\r', domEvent: { key: 'Enter' } });
+    }
+    expect(onData).not.toHaveBeenCalled();
+    expect(term.write).toHaveBeenCalledWith(expect.stringContaining('Command not sent'));
+    view.unmount();
+  });
+
+  test('waits for pending xterm writes before reading and sending Enter', () => {
+    const onData = jest.fn();
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      onData={onData}
+    />);
+    const [term] = mockXtermInstances;
+    const callbacks = [];
+    term.write.mockImplementation((_data, callback) => {
+      if (callback) {
+        callbacks.push(callback);
+      }
+    });
+    term.keyHandler({ key: '\r', domEvent: { key: 'Enter' } });
+    expect(onData).not.toHaveBeenCalled();
+    term.line.translateToString.mockReturnValue('> G1 X123');
+    while (callbacks.length) {
+      callbacks.shift()();
+    }
+    expect(onData).toHaveBeenCalledTimes(1);
+    expect(onData).toHaveBeenCalledWith('G1 X123\r');
+    view.unmount();
+  });
+
+  test('keeps input visible during a shrink and preserves cursor across output', () => {
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      onData={jest.fn()}
+    />);
+    const [term] = mockXtermInstances;
+    term.cols = 256;
+    term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(150));
+    term._core.buffer.x = 102;
+    latestApi.actions.resize(80, 15);
+    expect(term.resize).toHaveBeenLastCalledWith(153, 15);
+    expect(latestApi.actions.hasPendingInput()).toBe(true);
+    latestApi.actions.writeln('machine output');
+    expect(term.write).toHaveBeenCalledWith(expect.stringContaining('\x1b[50D'), undefined);
+    view.unmount();
+  });
+
+  test('applies font and palette changes without replacing the terminal', () => {
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      fontSize={14} onData={jest.fn()}
+    />);
+    view.rerender(<Harness
+      enabled cols={256} rows={15}
+      fontSize={24} background="white" textColor="amber"
+      onData={jest.fn()}
+    />);
+    const [term] = mockXtermInstances;
+    expect(mockXtermInstances).toHaveLength(1);
+    expect(term.setOption).toHaveBeenCalledWith('fontSize', 24);
+    expect(term.setOption).toHaveBeenCalledWith('theme', expect.objectContaining({ background: '#ffffff', white: '#9a6700', cursor: '#9a6700' }));
+    expect(term.refresh).toHaveBeenCalled();
+    view.unmount();
+  });
+  test('rejects excess typing and a history entry wider than the current row', () => {
+    const onData = jest.fn();
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      onData={onData}
+    />);
+    const [term] = mockXtermInstances;
+    term.cols = 256;
+    term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(100));
+    term.keyHandler({ key: '\r', domEvent: { key: 'Enter' } });
+    expect(onData).toHaveBeenCalledTimes(1);
+    term.cols = 80;
+    term.line.translateToString.mockReturnValue('> ');
+    term.keyHandler({ key: 'ArrowUp', domEvent: { key: 'ArrowUp' } });
+    expect(term.write).toHaveBeenCalledWith(expect.stringContaining('This history entry does not fit'));
+    term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(77));
+    term._core.buffer.x = 79;
+    term.write.mockClear();
+    term.keyHandler({ key: 'Y', domEvent: { key: 'Y' } });
+    expect(term.write).not.toHaveBeenCalledWith('Y');
+    expect(onData).toHaveBeenCalledTimes(1);
+    view.unmount();
   });
 });

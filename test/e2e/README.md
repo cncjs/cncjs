@@ -47,6 +47,11 @@ Administration includes Commands, Events, Macros, Machine Profiles, General Sett
 
 Read-only record fixtures make edit/delete-cancel entry checks deterministic even on an empty server. Those scenarios still exercise the real UI, validation, and cancellation; they do not simulate successful persistence.
 
+The login scenario mocks sign-in failures, checks required-field validation and
+captures the validation state in both themes. Administration and Console
+scenarios also capture open drawers and dropdowns. Form state uses React Hook
+Form with explicit button submission; Enter in a text input does not submit.
+
 Bootstrap scenarios block application bundles to inspect the real initial HTML before React can mask a wrong background. They cover saved appearance overriding the OS, automatic/missing settings, malformed or unavailable storage, refresh, and application handoff.
 
 Table-loading scenarios use isolated, stateful HTTP responses for Commands, Events, User Accounts, and Macros. They hold real query fetches pending to verify retained rows and distinguish background mutation refreshes from explicit Refresh. Expected writes are fulfilled locally; no live records are changed.

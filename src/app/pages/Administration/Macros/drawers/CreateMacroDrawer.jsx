@@ -82,11 +82,7 @@ const CreateMacroDrawer = ({
     >
       <DrawerOverlay />
       <FormProvider {...methods}>
-        <DrawerContent
-          as="form"
-          noValidate
-          onSubmit={methods.handleSubmit(handleFormSubmit)}
-        >
+        <DrawerContent>
           <DrawerHeader>
             <Text>
               {i18n._('New Macro')}
@@ -172,7 +168,7 @@ const CreateMacroDrawer = ({
                 {i18n._('Cancel')}
               </Button>
               <Button
-                type="submit"
+                onClick={methods.handleSubmit(handleFormSubmit)}
                 variant="primary"
                 disabled={isFormDisabled}
                 sx={{

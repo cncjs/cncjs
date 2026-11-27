@@ -142,6 +142,9 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser.js',
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true,
@@ -196,6 +199,8 @@ module.exports = {
       stream: require.resolve('stream-browserify'),
       timers: require.resolve('timers-browserify'),
       tls: false,
+      // asn1.js falls back to an unnamed constructor when vm is unavailable.
+      vm: false,
     },
     modules: [
       path.resolve(__dirname, 'src'),

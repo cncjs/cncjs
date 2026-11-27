@@ -44,7 +44,7 @@ function StopProbeModal({ onCancel = () => {}, onConfirm = () => {} }) {
             <Text>{i18n._('This will reset the controller and cancel the probe cycle.')}</Text>
           </Box>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter columnGap="2x">
           <Button onClick={onCancel} variant="secondary">{i18n._('Continue Probing')}</Button>
           <Button disabled={isSubmitting} onClick={submit} variant="primary">
             <StopIcon aria-hidden="true" size="1em" />

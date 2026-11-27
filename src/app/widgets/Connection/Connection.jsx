@@ -1023,7 +1023,7 @@ function Connection() {
                         {i18n._('Are you sure you want to close the connection?')}
                       </Alert>
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter columnGap="2x">
                       <Button onClick={onClose}>
                         {i18n._('Cancel')}
                       </Button>
@@ -1173,7 +1173,7 @@ function SerialBaudSelector({ id, label, options, value, disabled, placeholder, 
       items={options}
       value={value}
       matchWidth
-      slotProps={{ root: { width: '100%' } }}
+      width="100%"
       renderItem={item => item?.label ?? placeholder}
       renderToggle={({ renderItem, value: selected }) => (
         <DropdownButton

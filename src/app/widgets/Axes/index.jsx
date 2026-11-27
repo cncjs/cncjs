@@ -504,7 +504,7 @@ export function AxesWidgetContent({
               onChange={(item) => onMoreOptionsSelect(item.value)}
               renderToggle={() => (
                 <DropdownToggle aria-label="More options" title={i18n._('More')} className={widgetStyles.widgetButton}>
-                  <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                  <MoreIcon aria-hidden="true" size="4x" />
                 </DropdownToggle>
               )}
             />

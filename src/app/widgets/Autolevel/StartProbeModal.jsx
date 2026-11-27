@@ -53,7 +53,7 @@ function StartProbeModal({
     >
       <ModalOverlay />
       <FormProvider {...methods}>
-        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+        <ModalContent>
           <ModalHeader>{i18n._('Start Probing')}</ModalHeader>
           <ModalBody>
             <Box mb="4x">
@@ -97,9 +97,9 @@ function StartProbeModal({
               )}
             />
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             <Button onClick={onCancel} variant="secondary">{i18n._('Cancel')}</Button>
-            <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} type="submit" variant="primary">
+            <Button disabled={!canConfirm || !safetyConfirmed || isSubmitting} onClick={methods.handleSubmit(submit)} variant="primary">
               {i18n._('Start Probing')}
             </Button>
           </ModalFooter>

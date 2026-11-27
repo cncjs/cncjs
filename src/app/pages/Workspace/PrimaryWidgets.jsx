@@ -73,7 +73,7 @@ const PrimaryWidgets = ({
           <ModalBody>
             {i18n._('Are you sure you want to fork this widget?')}
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             <Button
               onClick={onClose}
             >
@@ -126,7 +126,7 @@ const PrimaryWidgets = ({
           <ModalBody>
             {i18n._('Are you sure you want to remove this widget?')}
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter columnGap="2x">
             <Button
               onClick={onClose}
             >
@@ -174,6 +174,8 @@ const PrimaryWidgets = ({
 
   return (
     <Sortable
+      tag={Box}
+      rowGap="3x"
       className={classNames(className, styles.widgets)}
       options={{
         animation: 150,

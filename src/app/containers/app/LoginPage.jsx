@@ -195,7 +195,7 @@ const LoginPage = () => {
           </Text>
         </Stack>
         <FormProvider {...methods}>
-          <Box as="form" noValidate onSubmit={methods.handleSubmit(handleFormSubmit)}>
+          <Box>
             <FormControl mb="4x" error={Boolean(errors.name && touchedFields.name)}>
               <FormLabel>{i18n._('Username')}</FormLabel>
               <FormInput
@@ -228,7 +228,7 @@ const LoginPage = () => {
                   <Button
                     disabled={state.authenticating || signinMutation.isLoading}
                     variant="primary"
-                    type="submit"
+                    onClick={methods.handleSubmit(handleFormSubmit)}
                   >
                     <Flex alignItems="center" columnGap="2x">
                       {state.authenticating && (

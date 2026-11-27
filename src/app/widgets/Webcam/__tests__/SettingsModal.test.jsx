@@ -79,6 +79,13 @@ describe('Webcam settings draft', () => {
     expect(screen.getByRole('button', { name: 'Choose a video device' })).toBeInTheDocument();
   });
 
+  test.each(['', undefined, '__default__'])('shows automatic detection for default device %p', deviceId => {
+    mockValues.deviceId = deviceId;
+    renderAppUI(<SettingsModal onClose={jest.fn()} />);
+
+    expect(screen.getByRole('button', { name: 'Choose a video device' })).toHaveTextContent('Automatic detection');
+  });
+
   test('completes the draft by keyboard alone', async () => {
     const user = userEvent.setup();
     const onClose = jest.fn();

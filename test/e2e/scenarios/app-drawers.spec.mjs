@@ -4,6 +4,7 @@ import {
   openWorkspace,
   widget,
 } from '../support/fixtures.mjs';
+import { capture } from '../support/screenshots.mjs';
 
 const getState = page => page.evaluate(() => {
   const { state } = JSON.parse(localStorage.getItem('cnc'));
@@ -175,7 +176,7 @@ const trackApiWrites = (page) => {
 };
 
 test.describe('administration modal and drawer persistence', () => {
-  test('administration modal: Commands create, update, and bulk delete use stateful mocked writes', async ({ page }) => {
+  test('administration modal: Commands create, update, and bulk delete use stateful mocked writes', async ({ page }, testInfo) => {
     const mock = await installResourceMock(page, { resource: 'commands', records: [] });
 
     await page.goto('/#/administration/commands');
@@ -194,6 +195,7 @@ test.describe('administration modal and drawer persistence', () => {
     await page.getByRole('button', { name: 'Add', exact: true }).click();
     drawer = page.getByRole('dialog');
     await drawer.locator('input[name="name"]').fill('E2E Created Command');
+    await capture(drawer, testInfo, 'commands-create-drawer');
     await drawer.locator('textarea[name="action"]').fill('echo created');
     await drawer.getByRole('button', { name: 'Add', exact: true }).click();
     await expect(drawer).toHaveCount(0);
@@ -206,6 +208,7 @@ test.describe('administration modal and drawer persistence', () => {
     drawer = page.getByRole('dialog');
     await expect(drawer.getByText('Command Details')).toBeVisible();
     await expect(drawer.locator('input[name="name"]')).toHaveValue('E2E Created Command');
+    await capture(drawer, testInfo, 'commands-update-drawer');
     await drawer.locator('input[role="switch"]').locator('xpath=ancestor::label[1]').click();
     await drawer.locator('input[name="name"]').fill('E2E Updated Command');
     await drawer.getByRole('button', { name: 'Save', exact: true }).click();
@@ -414,7 +417,7 @@ test.describe('administration modal and drawer persistence', () => {
     ]);
   });
 
-  test('administration modal: Macros create/update menus insert variables, and failed delete keeps records', async ({ page }) => {
+  test('administration modal: Macros create/update menus insert variables, and failed delete keeps records', async ({ page }, testInfo) => {
     const mock = await installResourceMock(page, { resource: 'macros', records: [] });
 
     await page.goto('/#/administration/macros');
@@ -430,6 +433,7 @@ test.describe('administration modal and drawer persistence', () => {
     // Interacting outside the open variable menu closes it without inserting.
     await drawer.getByRole('button', { name: 'Select variables', exact: true }).click();
     await waitForMenuReady(page);
+    await capture(page, testInfo, 'macro-drawer-variable-menu');
     await drawer.locator('input[name="name"]').click();
     await expect(page.getByRole('menu')).toHaveCount(0);
     await expect(textarea).toHaveValue('');

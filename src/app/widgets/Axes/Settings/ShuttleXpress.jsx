@@ -70,6 +70,7 @@ function ShuttleXpress({ value, onChange }) {
         </TextLabel>
         <Dropdown
           matchWidth
+          width="100%"
           items={hertzOptions}
           value={hertzOptions.find(option => option.value === value.hertz) || null}
           renderItem={option => option?.label ?? ''}
