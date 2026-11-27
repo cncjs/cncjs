@@ -170,7 +170,6 @@ function CustomWidgetBody({
             </Button>
           )}
           <Dropdown
-            style={{ display: 'flex', alignSelf: 'stretch' }}
             items={[
               {
                 value: 'settings',
@@ -234,7 +233,7 @@ function CustomWidgetBody({
         aria-hidden={isCollapsed}
         sx={{ display: isCollapsed ? 'none' : 'block' }}
       >
-        <Custom disabled={disabled} />
+        <Custom disabled={disabled} isFullscreen={isFullscreen} />
       </Widget.Content>
     </Widget>
   );

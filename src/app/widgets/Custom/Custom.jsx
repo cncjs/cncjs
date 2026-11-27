@@ -1,24 +1,27 @@
+import { Box } from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import Uri from 'jsuri';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import settings from '@app/config/settings';
 import Iframe from '@app/components/Iframe';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
+import { WidgetConfigContext } from '@app/widgets/shared/context';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
-import styles from './index.styl';
 
 function Custom({
   disabled,
+  isFullscreen,
 }) {
   const widgetConfig = useWidgetConfig();
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
+  const widgetId = useContext(WidgetConfigContext);
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
 
@@ -46,7 +49,6 @@ function Custom({
 
     return () => {
       widgetEmitter.off('refresh', reload);
-      iframeRef.current = null;
     };
   }, [widgetEmitter, token, url]);
 
@@ -124,6 +126,14 @@ function Custom({
             },
           });
         }),
+        pubsub.subscribe('message:connect', () => {
+          postMessage('widget:state', { fullscreen: isFullscreen });
+        }),
+        pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
+          if (payload.widgetId === widgetId) {
+            postMessage('widget:state', { fullscreen: payload.fullscreen });
+          }
+        }),
         pubsub.subscribe('message:resize', (type, payload) => {
           const { scrollHeight } = { ...payload };
           resize({
@@ -145,25 +155,29 @@ function Custom({
     return () => {
       messageListenersRef.current?.();
     };
-  }, [token]);
-
-  useEffect(() => () => {
-    iframeRef.current = null;
-  }, []);
+  }, [isFullscreen, token, widgetId]);
 
   if (disabled) {
     return (
-      <div className={styles.inactiveContent}>
+      <Box
+        px="2x"
+        py="3x"
+        color="text.tertiary"
+      >
         {i18n._('The widget is currently disabled')}
-      </div>
+      </Box>
     );
   }
 
   if (!url) {
     return (
-      <div className={styles.inactiveContent}>
+      <Box
+        px="2x"
+        py="3x"
+        color="text.tertiary"
+      >
         {i18n._('URL not configured')}
-      </div>
+      </Box>
     );
   }
 
@@ -173,39 +187,9 @@ function Custom({
 
   return (
     <Iframe
+      ref={iframeRef}
       src={iframeSrc}
-      className={styles.iframe}
-      onLoad={({ iframe }) => {
-        if (!iframe) {
-          return;
-        }
-
-        iframeRef.current = iframe;
-        /*
-        const target = iframe.contentDocument.body;
-        const nextHeight = target.offsetHeight;
-        iframe.style.height = `${nextHeight}px`;
-
-        const observer = new ResizeObserver(entries => {
-          const target = iframe.contentDocument.body;
-          const nextHeight = target.offsetHeight;
-          iframe.style.height = `${nextHeight}px`;
-        });
-        observer.observe(target);
-        */
-      }}
-      onBeforeUnload={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
-      onUnload={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
-      onError={() => {
-        iframeRef.current = null;
-        messageListenersRef.current?.();
-      }}
+      sx={{ verticalAlign: 'top' }}
     />
   );
 }

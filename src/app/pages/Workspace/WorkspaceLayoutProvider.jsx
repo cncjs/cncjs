@@ -1,3 +1,4 @@
+import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, {
   createContext,
@@ -156,6 +157,7 @@ export const WorkspaceLayoutProvider = ({ children, config = configSingleton }) 
         const nextFullscreen = { ...fullscreenRef.current, [id]: true };
         fullscreenRef.current = nextFullscreen;
         setFullscreenById(nextFullscreen);
+        pubsub.publish('widget:fullscreenchange', { widgetId: id, fullscreen: true });
       }
       return;
     }
@@ -165,6 +167,7 @@ export const WorkspaceLayoutProvider = ({ children, config = configSingleton }) 
       delete nextFullscreen[id];
       fullscreenRef.current = nextFullscreen;
       setFullscreenById(nextFullscreen);
+      pubsub.publish('widget:fullscreenchange', { widgetId: id, fullscreen: false });
     }
 
     setWidgetsCollapsed([id], view === 'collapsed');
