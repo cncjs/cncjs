@@ -127,12 +127,10 @@ function Custom({
           });
         }),
         pubsub.subscribe('message:connect', () => {
-          if (!disabled) {
-            postMessage('widget:state', { fullscreen: isFullscreen });
-          }
+          postMessage('widget:state', { fullscreen: isFullscreen });
         }),
         pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
-          if (!disabled && payload.widgetId === widgetId) {
+          if (payload.widgetId === widgetId) {
             postMessage('widget:state', { fullscreen: payload.fullscreen });
           }
         }),
@@ -157,7 +155,7 @@ function Custom({
     return () => {
       messageListenersRef.current?.();
     };
-  }, [disabled, isFullscreen, token, widgetId]);
+  }, [isFullscreen, token, widgetId]);
 
   if (disabled) {
     return (

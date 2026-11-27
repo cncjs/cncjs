@@ -419,6 +419,52 @@ describe('fullscreen iframe notifications', () => {
     expect(postMessage).not.toHaveBeenCalled();
   });
 
+  test.each([false, true])('async messages use only the mounted iframe after disable/re-enable with fullscreen=%s', async fullscreen => {
+    const view = mount({ isFullscreen: !fullscreen });
+    const oldIframe = view.container.querySelector('iframe');
+    act(() => {
+      pubsub.publish('widget:fullscreenchange', { widgetId: 'custom', fullscreen });
+      view.rerender(content({ disabled: true, isFullscreen: fullscreen }));
+      pubsub.publish('message:connect');
+    });
+    await act(() => new Promise(resolve => {
+      setTimeout(resolve, 0);
+    }));
+    expect(oldIframe.isConnected).toBe(false);
+    expect(view.container.querySelector('iframe')).toBeNull();
+    expect(view.postMessage).not.toHaveBeenCalled();
+
+    act(() => {
+      pubsub.publish('message:connect');
+      pubsub.publish('widget:fullscreenchange', { widgetId: 'custom', fullscreen: !fullscreen });
+    });
+    await act(() => new Promise(resolve => {
+      setTimeout(resolve, 0);
+    }));
+    expect(view.postMessage).not.toHaveBeenCalled();
+
+    view.rerender(content({ isFullscreen: fullscreen }));
+    const iframe = view.container.querySelector('iframe');
+    expect(iframe).not.toBe(oldIframe);
+    const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
+    // Reattach is sufficient: readiness must not depend on a native load event.
+    act(() => pubsub.publish('message:connect'));
+    await act(() => new Promise(resolve => {
+      setTimeout(resolve, 0);
+    }));
+    expect(actions(postMessage).filter(action => action.type === 'widget:state')).toEqual([
+      { type: 'widget:state', payload: { fullscreen } },
+    ]);
+    expect(actions(postMessage).filter(action => action.type === 'change')).toHaveLength(1);
+    expect(view.postMessage).not.toHaveBeenCalled();
+    view.unmount();
+    act(() => pubsub.publish('message:connect'));
+    await act(() => new Promise(resolve => {
+      setTimeout(resolve, 0);
+    }));
+    expect(postMessage).toHaveBeenCalledTimes(2);
+  });
+
   test('external host view changes notify only the corresponding widget and preserve connect broadcast routing', () => {
     setCustomConfig('custom:fullscreen-first', { disabled: false, url: '/widget/' });
     setCustomConfig('custom:fullscreen-second', { disabled: false, url: '/widget-two/' });
