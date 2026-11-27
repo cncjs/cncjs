@@ -1,14 +1,16 @@
 import { Box } from '@tonic-ui/react';
+import { useEventCallback } from '@tonic-ui/react-hooks';
 import { ensurePositiveNumber } from 'ensure-type';
 import Uri from 'jsuri';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import settings from '@app/config/settings';
 import Iframe from '@app/components/Iframe';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
+import { WidgetConfigContext } from '@app/widgets/shared/context';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
 import styles from './index.styl';
@@ -21,9 +23,24 @@ function Custom({
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
-  const fullscreenRef = useRef(Boolean(fullscreen));
+  const widgetId = useContext(WidgetConfigContext);
+  const getFullscreen = useEventCallback(() => Boolean(fullscreen));
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
+
+  const notifyFullscreen = useEventCallback((nextFullscreen) => {
+    const target = _get(iframeRef.current, 'contentWindow');
+    if (!disabled && target) {
+      target.postMessage({
+        token: token,
+        version: settings.version,
+        action: {
+          type: 'widget:fullscreenchange',
+          payload: { fullscreen: nextFullscreen },
+        },
+      }, '*');
+    }
+  });
 
   useEffect(() => {
     const reload = (forceGet = false) => {
@@ -117,7 +134,7 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           // Post a message to the iframe window
           postMessage('change', {
-            fullscreen: fullscreenRef.current,
+            fullscreen: getFullscreen(),
             controller: {
               type: _get(controller, 'type'),
             },
@@ -127,6 +144,11 @@ function Custom({
               options: _get(controller, 'connection.options'),
             },
           });
+        }),
+        pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
+          if (payload.widgetId === widgetId) {
+            notifyFullscreen(payload.fullscreen);
+          }
         }),
         pubsub.subscribe('message:resize', (type, payload) => {
           const { scrollHeight } = { ...payload };
@@ -149,33 +171,16 @@ function Custom({
     return () => {
       messageListenersRef.current?.();
     };
-  }, [token]);
-
-  // The host can change view without a Custom widget event. Synchronize the
-  // external iframe after commit so those transitions are also reported.
-  useEffect(() => {
-    const nextFullscreen = Boolean(fullscreen);
-    if (fullscreenRef.current === nextFullscreen) {
-      return;
-    }
-    fullscreenRef.current = nextFullscreen;
-
-    const target = _get(iframeRef.current, 'contentWindow');
-    if (!disabled && target) {
-      target.postMessage({
-        token: token,
-        version: settings.version,
-        action: {
-          type: 'widget:fullscreenchange',
-          payload: { fullscreen: nextFullscreen },
-        },
-      }, '*');
-    }
-  }, [disabled, fullscreen, token]);
+  }, [getFullscreen, notifyFullscreen, token, widgetId]);
 
   if (disabled) {
     return (
-      <Box padding="8px 12px" color="text.primary" opacity={0.65}>
+      <Box
+        px="2x"
+        py="3x"
+        color="text.primary"
+        opacity={0.65}
+      >
         {i18n._('The widget is currently disabled')}
       </Box>
     );
@@ -183,7 +188,12 @@ function Custom({
 
   if (!url) {
     return (
-      <Box padding="8px 12px" color="text.primary" opacity={0.65}>
+      <Box
+        px="2x"
+        py="3x"
+        color="text.primary"
+        opacity={0.65}
+      >
         {i18n._('URL not configured')}
       </Box>
     );

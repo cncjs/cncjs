@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import pubsub from 'pubsub-js';
 import { renderAppUI } from '@app/test/render';
+import { WorkspaceLayoutProvider, useWorkspaceLayout } from '@app/pages/Workspace/WorkspaceLayoutProvider';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import WidgetEventProvider from '@app/widgets/shared/WidgetEventProvider';
 
@@ -9,6 +10,7 @@ const mockConfigState = {
   session: {
     token: '',
   },
+  workspace: { container: { primary: { widgets: ['custom:authority', 'custom:other'] } } },
   widgets: {
     custom: {
       disabled: true,
@@ -53,8 +55,13 @@ jest.mock('@app/store/config', () => ({
     },
     set: (path, value) => mockSetPath(path, value),
     unset: path => mockUnsetPath(path),
+    update: (path, updater) => mockSetPath(path, updater(mockGetPath(path))),
+    on: jest.fn(),
+    off: jest.fn(),
   },
 }));
+
+jest.mock('@app/pages/Workspace/widgetRegistry', () => ({ WIDGET_REGISTRY: { custom: { hasFrame: true } } }));
 
 jest.mock('@app/lib/i18n', () => ({
   __esModule: true,
@@ -250,6 +257,7 @@ describe('fullscreen iframe notifications', () => {
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
     return { ...view, postMessage };
   };
+  const transition = (fullscreen, widgetId = 'custom') => act(() => pubsub.publishSync('widget:fullscreenchange', { widgetId, fullscreen }));
   const connect = () => act(() => pubsub.publishSync('message:connect'));
   const actions = postMessage => postMessage.mock.calls.map(([message]) => message.action);
 
@@ -286,8 +294,10 @@ describe('fullscreen iframe notifications', () => {
     view.rerender(content({ fullscreen: false }));
     expect(view.postMessage).not.toHaveBeenCalled();
     view.rerender(content({ fullscreen: 1 }));
+    transition(true);
     view.rerender(content({ fullscreen: true }));
     view.rerender(content({ fullscreen: false }));
+    transition(false);
     expect(actions(view.postMessage)).toEqual([
       { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
       { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
@@ -305,6 +315,7 @@ describe('fullscreen iframe notifications', () => {
       view.rerender(content());
       expect(view.postMessage).not.toHaveBeenCalled();
       view.rerender(content({ fullscreen: true }));
+      transition(true);
       connect();
       expect(actions(view.postMessage)).toEqual([
         { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
@@ -318,6 +329,7 @@ describe('fullscreen iframe notifications', () => {
   test('disabling suppresses transitions and re-enabled iframe connects with current state', () => {
     const view = mount();
     view.rerender(content({ disabled: true, fullscreen: true }));
+    transition(true);
     expect(view.postMessage).not.toHaveBeenCalled();
     view.rerender(content({ fullscreen: true }));
     const iframe = view.container.querySelector('iframe');
@@ -346,7 +358,9 @@ describe('fullscreen iframe notifications', () => {
     const first = jest.spyOn(iframes[0].contentWindow, 'postMessage');
     const second = jest.spyOn(iframes[1].contentWindow, 'postMessage');
     view.rerender(pair('fullscreen'));
+    transition(true, 'custom:fullscreen-first');
     view.rerender(pair('collapsed'));
+    transition(false, 'custom:fullscreen-first');
     view.rerender(pair('normal'));
     expect(actions(first)).toEqual([
       { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
@@ -379,8 +393,55 @@ test.each([
   );
   const content = screen.getByText(text);
   expect(content.tagName).toBe('DIV');
-  expect(content).toHaveStyle({ padding: '8px 12px', opacity: '0.65' });
+  expect(content).toHaveStyle({ padding: '.75rem .5rem .75rem .5rem', opacity: '0.65' });
   expect(view.container.querySelector('iframe')).toBeNull();
   view.unmount();
   config.unset(['widgets', widgetId]);
+});
+
+test('authoritative host events deduplicate local and external fullscreen transitions in StrictMode', async () => {
+  setCustomConfig('custom:authority', { disabled: false, url: '/authority/' });
+  setCustomConfig('custom:other', { disabled: false, url: '/other/' });
+  const Harness = () => {
+    const { getWidgetView, setWidgetView } = useWorkspaceLayout();
+    return (
+      <>
+        <button type="button" onClick={() => setWidgetView('custom:authority', 'fullscreen')}>External enter</button>
+        <button type="button" onClick={() => setWidgetView('custom:authority', 'normal')}>External exit</button>
+        <CustomWidget
+          {...widgetProps('custom:authority', {
+            view: getWidgetView('custom:authority'),
+            onViewChange: next => setWidgetView('custom:authority', next),
+          })}
+        />
+        <CustomWidget {...widgetProps('custom:other', { view: getWidgetView('custom:other') })} />
+      </>
+    );
+  };
+  const tree = () => <React.StrictMode><WorkspaceLayoutProvider><Harness /></WorkspaceLayoutProvider></React.StrictMode>;
+  const view = renderAppUI(tree());
+  const frames = view.container.querySelectorAll('iframe');
+  frames.forEach(frame => fireEvent.load(frame));
+  const first = jest.spyOn(frames[0].contentWindow, 'postMessage');
+  const second = jest.spyOn(frames[1].contentWindow, 'postMessage');
+  fireEvent.click(screen.getByText('External enter'));
+  fireEvent.click(screen.getByText('External enter'));
+  view.rerender(tree());
+  act(() => pubsub.publishSync('message:connect'));
+  fireEvent.click(screen.getByRole('button', { name: 'Exit Full Screen' }));
+  fireEvent.click(screen.getAllByRole('button', { name: 'More options' })[0]);
+  fireEvent.click(await screen.findByRole('menuitem', { name: 'Enter Full Screen' }));
+  fireEvent.click(screen.getByText('External exit'));
+  fireEvent.click(screen.getByText('External exit'));
+  const actions = first.mock.calls.map(([message]) => message.action);
+  expect(actions.map(action => [action.type, action.payload.fullscreen])).toEqual([
+    ['widget:fullscreenchange', true], ['change', true],
+    ['widget:fullscreenchange', false], ['widget:fullscreenchange', true],
+    ['widget:fullscreenchange', false],
+  ]);
+  expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(['change']);
+  view.unmount();
+  first.mockClear();
+  act(() => pubsub.publishSync('widget:fullscreenchange', { widgetId: 'custom:authority', fullscreen: true }));
+  expect(first).not.toHaveBeenCalled();
 });
