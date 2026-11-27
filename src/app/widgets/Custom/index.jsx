@@ -301,6 +301,7 @@ class CustomWidget extends PureComponent {
               }}
               config={config}
               disabled={state.disabled}
+              fullscreen={isFullscreen}
               url={state.url}
               port={state.port}
             />

@@ -17,6 +17,7 @@ class Custom extends PureComponent {
     static propTypes = {
       config: PropTypes.object,
       disabled: PropTypes.bool,
+      fullscreen: PropTypes.bool,
       url: PropTypes.string,
       port: PropTypes.string
     };
@@ -39,22 +40,25 @@ class Custom extends PureComponent {
       if (nextProps.url !== this.props.url) {
         this.reload();
       }
+
       if (nextProps.port !== this.props.port) {
-        // Post a message to the iframe window
         this.postMessage('change', {
           port: controller.port,
           controller: controller.type
         });
+      }
+      if (!nextProps.disabled && !!nextProps.fullscreen !== !!this.props.fullscreen) {
+        this.postMessage('widget:fullscreenchange', { fullscreen: !!nextProps.fullscreen });
       }
     }
 
     subscribe() {
       const tokens = [
         pubsub.subscribe('message:connect', () => {
-          // Post a message to the iframe window
           this.postMessage('change', {
             port: controller.port,
-            controller: controller.type
+            controller: controller.type,
+            fullscreen: !!this.props.fullscreen
           });
         }),
         pubsub.subscribe('message:resize', (type, payload) => {
