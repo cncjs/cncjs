@@ -1,3 +1,4 @@
+import { Box } from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import Uri from 'jsuri';
 import _get from 'lodash/get';
@@ -150,6 +151,8 @@ function Custom({
     };
   }, [token]);
 
+  // The host can change view without a Custom widget event. Synchronize the
+  // external iframe after commit so those transitions are also reported.
   useEffect(() => {
     const nextFullscreen = Boolean(fullscreen);
     if (fullscreenRef.current === nextFullscreen) {
@@ -170,23 +173,19 @@ function Custom({
     }
   }, [disabled, fullscreen, token]);
 
-  useEffect(() => () => {
-    iframeRef.current = null;
-  }, []);
-
   if (disabled) {
     return (
-      <div className={styles.inactiveContent}>
+      <Box padding="8px 12px" color="text.primary" opacity={0.65}>
         {i18n._('The widget is currently disabled')}
-      </div>
+      </Box>
     );
   }
 
   if (!url) {
     return (
-      <div className={styles.inactiveContent}>
+      <Box padding="8px 12px" color="text.primary" opacity={0.65}>
         {i18n._('URL not configured')}
-      </div>
+      </Box>
     );
   }
 

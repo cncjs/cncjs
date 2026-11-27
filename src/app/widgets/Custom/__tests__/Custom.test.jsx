@@ -331,7 +331,7 @@ describe('fullscreen iframe notifications', () => {
     expect(postMessage).not.toHaveBeenCalled();
   });
 
-  test('host view changes notify only the corresponding widget and preserve connect broadcast routing', () => {
+  test('external host view changes notify only the corresponding widget and preserve connect broadcast routing', () => {
     setCustomConfig('custom:fullscreen-first', { disabled: false, url: '/widget/' });
     setCustomConfig('custom:fullscreen-second', { disabled: false, url: '/widget-two/' });
     const pair = view => (
@@ -353,6 +353,8 @@ describe('fullscreen iframe notifications', () => {
       { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
     ]);
     expect(second).not.toHaveBeenCalled();
+    // No widget click/event is involved in these host-driven transitions.
+    expect(screen.getAllByRole('button', { name: 'Collapse' })).toHaveLength(2);
     connect();
     expect(actions(first)[2].type).toBe('change');
     expect(actions(second)[0].type).toBe('change');
@@ -360,4 +362,25 @@ describe('fullscreen iframe notifications', () => {
     config.unset(['widgets', 'custom:fullscreen-first']);
     config.unset(['widgets', 'custom:fullscreen-second']);
   });
+});
+
+test.each([
+  ['disabled', true, '/widget/', 'The widget is currently disabled'],
+  ['unconfigured', false, '', 'URL not configured'],
+])('%s content retains div semantics and inactive spacing with Tonic Box', (id, disabled, url, text) => {
+  const widgetId = `custom:inactive-${id}`;
+  setCustomConfig(widgetId, { disabled, url });
+  const view = renderAppUI(
+    <WidgetConfigProvider widgetId={widgetId}>
+      <WidgetEventProvider>
+        <Custom disabled={disabled} />
+      </WidgetEventProvider>
+    </WidgetConfigProvider>
+  );
+  const content = screen.getByText(text);
+  expect(content.tagName).toBe('DIV');
+  expect(content).toHaveStyle({ padding: '8px 12px', opacity: '0.65' });
+  expect(view.container.querySelector('iframe')).toBeNull();
+  view.unmount();
+  config.unset(['widgets', widgetId]);
 });
