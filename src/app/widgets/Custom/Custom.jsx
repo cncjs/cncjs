@@ -14,11 +14,13 @@ import styles from './index.styl';
 
 function Custom({
   disabled,
+  fullscreen,
 }) {
   const widgetConfig = useWidgetConfig();
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
+  const fullscreenRef = useRef(Boolean(fullscreen));
   const messageListenersRef = useRef(null);
   const token = config.get('session.token');
 
@@ -114,6 +116,7 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           // Post a message to the iframe window
           postMessage('change', {
+            fullscreen: fullscreenRef.current,
             controller: {
               type: _get(controller, 'type'),
             },
@@ -146,6 +149,26 @@ function Custom({
       messageListenersRef.current?.();
     };
   }, [token]);
+
+  useEffect(() => {
+    const nextFullscreen = Boolean(fullscreen);
+    if (fullscreenRef.current === nextFullscreen) {
+      return;
+    }
+    fullscreenRef.current = nextFullscreen;
+
+    const target = _get(iframeRef.current, 'contentWindow');
+    if (!disabled && target) {
+      target.postMessage({
+        token: token,
+        version: settings.version,
+        action: {
+          type: 'widget:fullscreenchange',
+          payload: { fullscreen: nextFullscreen },
+        },
+      }, '*');
+    }
+  }, [disabled, fullscreen, token]);
 
   useEffect(() => () => {
     iframeRef.current = null;
