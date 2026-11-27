@@ -283,7 +283,7 @@ test('Autolevel shell forwards layout actions without local layout state', () =>
   fireEvent.click(screen.getByRole('button', { name: 'Collapse' }));
   expect(layout.onViewChange).toHaveBeenCalledWith('collapsed');
 
-  fireEvent.click(screen.getByRole('button', { name: 'More' }));
+  fireEvent.click(screen.getByRole('button', { name: 'More options' }));
   fireEvent.click(screen.getByRole('button', { name: 'Enter Full Screen' }));
   expect(layout.onViewChange).toHaveBeenCalledWith('fullscreen');
 });
