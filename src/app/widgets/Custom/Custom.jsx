@@ -132,7 +132,7 @@ function Custom({
         pubsub.subscribe('message:connect', () => {
           if (!disabled) {
             if (iframeRef.current?.isConnected) {
-              postMessage('widget:fullscreenchange', { fullscreen: isFullscreen });
+              postMessage('widget:state', { fullscreen: isFullscreen });
             } else {
               pendingFullscreenSyncRef.current = true;
             }
@@ -140,7 +140,7 @@ function Custom({
         }),
         pubsub.subscribe('widget:fullscreenchange', (type, payload) => {
           if (!disabled && payload.widgetId === widgetId) {
-            postMessage('widget:fullscreenchange', { fullscreen: payload.fullscreen });
+            postMessage('widget:state', { fullscreen: payload.fullscreen });
           }
         }),
         pubsub.subscribe('message:resize', (type, payload) => {

@@ -288,9 +288,9 @@ describe('fullscreen iframe notifications', () => {
       },
       expect.objectContaining({ type: 'change' }),
     ]);
-    expect(actions(postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([
-      { type: 'widget:fullscreenchange', payload: { fullscreen } },
-      { type: 'widget:fullscreenchange', payload: { fullscreen } },
+    expect(actions(postMessage).filter(action => action.type === 'widget:state')).toEqual([
+      { type: 'widget:state', payload: { fullscreen } },
+      { type: 'widget:state', payload: { fullscreen } },
     ]);
     postMessage.mock.calls.forEach(([message, target]) => {
       expect(message.token).toBe('');
@@ -311,7 +311,7 @@ describe('fullscreen iframe notifications', () => {
       expect(postMessage).toHaveBeenCalledTimes(1);
       return actions(postMessage)[0].type;
     });
-    expect(handledTypes).toEqual(expect.arrayContaining(['change', 'widget:fullscreenchange']));
+    expect(handledTypes).toEqual(expect.arrayContaining(['change', 'widget:state']));
   });
 
   test('readiness before native load synchronizes the latest state without a change reply', async () => {
@@ -325,7 +325,7 @@ describe('fullscreen iframe notifications', () => {
     fireEvent.load(iframe);
     fireEvent.load(iframe);
     await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(1));
-    expect(actions(postMessage)).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: false } }]);
+    expect(actions(postMessage)).toEqual([{ type: 'widget:state', payload: { fullscreen: false } }]);
   });
 
   test('queued load synchronization cannot overwrite a later async transition', async () => {
@@ -338,8 +338,8 @@ describe('fullscreen iframe notifications', () => {
     act(() => pubsub.publish('widget:fullscreenchange', { widgetId: 'custom', fullscreen: false }));
     await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2));
     expect(actions(postMessage)).toEqual([
-      { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-      { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
+      { type: 'widget:state', payload: { fullscreen: true } },
+      { type: 'widget:state', payload: { fullscreen: false } },
     ]);
   });
 
@@ -353,11 +353,11 @@ describe('fullscreen iframe notifications', () => {
     view.rerender(content({ isFullscreen: false }));
     transition(false);
     expect(actions(view.postMessage)).toEqual([
-      { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-      { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
+      { type: 'widget:state', payload: { fullscreen: true } },
+      { type: 'widget:state', payload: { fullscreen: false } },
     ]);
     connect();
-    expect(actions(view.postMessage).filter(action => action.type === 'widget:fullscreenchange').map(action => action.payload.fullscreen)).toEqual([true, false, false]);
+    expect(actions(view.postMessage).filter(action => action.type === 'widget:state').map(action => action.payload.fullscreen)).toEqual([true, false, false]);
   });
 
   test('controller changes retain their connect-only behavior independently of fullscreen', () => {
@@ -374,9 +374,9 @@ describe('fullscreen iframe notifications', () => {
       expect(actions(view.postMessage).filter(action => action.type === 'change')).toEqual([
         { type: 'change', payload: { controller: { type: 'Grbl' }, connection: controller.connection } },
       ]);
-      expect(actions(view.postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([
-        { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-        { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
+      expect(actions(view.postMessage).filter(action => action.type === 'widget:state')).toEqual([
+        { type: 'widget:state', payload: { fullscreen: true } },
+        { type: 'widget:state', payload: { fullscreen: true } },
       ]);
     } finally {
       Object.assign(controller, original);
@@ -393,7 +393,7 @@ describe('fullscreen iframe notifications', () => {
     fireEvent.load(iframe);
     const postMessage = jest.spyOn(iframe.contentWindow, 'postMessage');
     connect();
-    expect(actions(postMessage).filter(action => action.type === 'widget:fullscreenchange')).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: true } }]);
+    expect(actions(postMessage).filter(action => action.type === 'widget:state')).toEqual([{ type: 'widget:state', payload: { fullscreen: true } }]);
     expect(actions(postMessage).filter(action => action.type === 'change')).toHaveLength(1);
     view.unmount();
     postMessage.mockClear();
@@ -421,8 +421,8 @@ describe('fullscreen iframe notifications', () => {
     transition(false, 'custom:fullscreen-first');
     view.rerender(pair('normal'));
     expect(actions(first)).toEqual([
-      { type: 'widget:fullscreenchange', payload: { fullscreen: true } },
-      { type: 'widget:fullscreenchange', payload: { fullscreen: false } },
+      { type: 'widget:state', payload: { fullscreen: true } },
+      { type: 'widget:state', payload: { fullscreen: false } },
     ]);
     expect(second).not.toHaveBeenCalled();
     // No widget click/event is involved in these host-driven transitions.
@@ -430,7 +430,7 @@ describe('fullscreen iframe notifications', () => {
     connect();
     expect(actions(first).filter(action => action.type === 'change')).toHaveLength(1);
     expect(actions(second).filter(action => action.type === 'change')).toHaveLength(1);
-    expect(actions(second).filter(action => action.type === 'widget:fullscreenchange')).toEqual([{ type: 'widget:fullscreenchange', payload: { fullscreen: false } }]);
+    expect(actions(second).filter(action => action.type === 'widget:state')).toEqual([{ type: 'widget:state', payload: { fullscreen: false } }]);
     view.unmount();
     config.unset(['widgets', 'custom:fullscreen-first']);
     config.unset(['widgets', 'custom:fullscreen-second']);
@@ -548,10 +548,10 @@ test('authoritative host events deduplicate local and external fullscreen transi
   fireEvent.click(screen.getByText('External exit'));
   await waitFor(() => expect(first).toHaveBeenCalledTimes(6));
   const sent = () => first.mock.calls.map(([message]) => message.action);
-  const fullscreenValues = () => sent().filter(action => action.type === 'widget:fullscreenchange').map(action => action.payload.fullscreen);
+  const fullscreenValues = () => sent().filter(action => action.type === 'widget:state').map(action => action.payload.fullscreen);
   expect(fullscreenValues()).toEqual([true, true, false, true, false]);
   expect(sent().filter(action => action.type === 'change')).toHaveLength(1);
-  expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(expect.arrayContaining(['change', 'widget:fullscreenchange']));
+  expect(second.mock.calls.map(([message]) => message.action.type)).toEqual(expect.arrayContaining(['change', 'widget:state']));
   expect(second).toHaveBeenCalledTimes(2);
   first.mockClear();
   fireEvent.click(screen.getByText('Fast enter exit'));
