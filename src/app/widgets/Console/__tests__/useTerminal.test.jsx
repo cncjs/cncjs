@@ -610,7 +610,10 @@ describe('useTerminal', () => {
   });
 
   test('does not treat echoed touch commands as pending keyboard input when resizing', () => {
-    const view = render(<Harness enabled cols={256} rows={15} readOnly onData={jest.fn()} />);
+    const view = render(<Harness
+      enabled cols={256} rows={15}
+      readOnly onData={jest.fn()}
+    />);
     const [term] = mockXtermInstances;
     term.cols = 256;
     term.line.translateToString.mockReturnValue('> ' + 'X'.repeat(150));
