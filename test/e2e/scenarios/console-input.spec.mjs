@@ -1,6 +1,25 @@
 import { test, expect, widget } from '../support/simulator.mjs';
 import { capture } from '../support/screenshots.mjs';
 
+async function selectMenuItem(page, root, name) {
+  await root.getByRole('button', { name: 'More options' }).click();
+  const menu = page.getByRole('menu');
+  await expect(menu).toBeFocused();
+  await expect(menu.locator('[data-tonic="Collapse"]').first()).toHaveCSS('overflow', 'visible');
+  await page.getByRole('menuitem', { name, exact: true }).click();
+}
+
+async function readConsole(page, root) {
+  await selectMenuItem(page, root, 'Select All');
+  const text = await root.locator('.xterm-helper-textarea').evaluate(element => {
+    const clipboardData = new DataTransfer();
+    element.dispatchEvent(new ClipboardEvent('copy', { bubbles: true, cancelable: true, clipboardData }));
+    return clipboardData.getData('text/plain');
+  });
+  await selectMenuItem(page, root, 'Clear Selection');
+  return text.trim();
+}
+
 test('console touch input: persists mode and sends each submission once', async ({ page, simulator }, testInfo) => {
   const consoleWidget = widget(page, 'console');
   await consoleWidget.getByRole('button', { name: 'Show command input', exact: true }).click();
@@ -15,8 +34,10 @@ test('console touch input: persists mode and sends each submission once', async 
   await input.fill('G4 P0.012');
   await consoleWidget.getByRole('button', { name: 'Send', exact: true }).click();
   await expect.poll(() => simulator.commands.filter(line => line.includes('CMD: G4 P0.012 ->')).length).toBe(1);
+  await expect.poll(() => readConsole(page, consoleWidget)).toBe('> G4 P0.011\nok\n> G4 P0.012\nok');
   await capture(consoleWidget, testInfo, 'console-touch-output');
   await consoleWidget.getByRole('button', { name: 'Clear console' }).click();
+  expect(await readConsole(page, consoleWidget)).toBe('');
   await capture(consoleWidget, testInfo, 'console-touch-cleared');
   await consoleWidget.getByRole('button', { name: 'Hide command input' }).click();
   const terminal = consoleWidget.locator('.xterm-helper-textarea');
@@ -26,6 +47,7 @@ test('console touch input: persists mode and sends each submission once', async 
   await page.keyboard.press('Enter');
   await expect.poll(() => simulator.commands.filter(line => line.includes('CMD: G4 P0.013 ->')).length).toBe(1);
   await consoleWidget.getByRole('button', { name: 'Clear console' }).click();
+  expect(await readConsole(page, consoleWidget)).toBe('>');
   await capture(consoleWidget, testInfo, 'console-keyboard-cleared');
   await consoleWidget.getByRole('button', { name: 'Show command input' }).click();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('cnc')).state.widgets.console.commandInput)).toBe(true);
