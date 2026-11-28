@@ -26,8 +26,7 @@ import styles from './index.styl';
 import {
   MODAL_NONE,
   MODAL_FEEDER_PAUSED,
-  MODAL_FEEDER_WAIT,
-  MODAL_SERVER_DISCONNECTED
+  MODAL_FEEDER_WAIT
 } from './constants';
 
 const WAIT = '%wait';
@@ -117,8 +116,9 @@ class Workspace extends PureComponent {
       const serverDisconnected = !controller.connected;
       this.setState({
         serverDisconnected,
+        // Clear feeder prompts on both disconnect and reconnect.
         modal: {
-          name: serverDisconnected ? MODAL_SERVER_DISCONNECTED : MODAL_NONE,
+          name: MODAL_NONE,
           params: {}
         }
       });
@@ -429,14 +429,14 @@ class Workspace extends PureComponent {
 
       return (
         <div style={style} className={classNames(className, styles.workspace)}>
-          {modal.name === MODAL_FEEDER_PAUSED && (
+          {!serverDisconnected && modal.name === MODAL_FEEDER_PAUSED && (
             <FeederPaused
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {modal.name === MODAL_FEEDER_WAIT && (
+          {!serverDisconnected && modal.name === MODAL_FEEDER_WAIT && (
             <FeederWait
               title={modal.params.title}
               message={modal.params.message}
@@ -444,8 +444,7 @@ class Workspace extends PureComponent {
             />
           )}
           {serverDisconnected && <ServerConnectionWatcher />}
-          {modal.name === MODAL_SERVER_DISCONNECTED &&
-            <ServerDisconnected />}
+          {serverDisconnected && <ServerDisconnected />}
           <div
             className={classNames(
               styles.dropzoneOverlay,
