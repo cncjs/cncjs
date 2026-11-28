@@ -1,5 +1,27 @@
 # cncjs
 
+## 1.14.0
+
+### Minor Changes
+
+- 0a3e76a: The Custom widget includes `payload.fullscreen` in the iframe's initial `change` message. When the widget enters or leaves full screen, it sends `widget:fullscreenchange` with the new boolean value in `payload.fullscreen`.
+
+### Patch Changes
+
+- 7558bfb: feat(console): add optional command input for touch devices
+  
+  Use the keyboard button in the Console toolbar to show a command input field. Enter a command and send it with Enter or the Send button. While the field is shown, the terminal displays output without accepting input.
+  
+  The field is hidden by default, and the setting is saved per device. When it is hidden, commands can be entered directly in the terminal as before.
+- 2d53fa8: feat(pwa): optionally switch to the offline page after continuous HTTP failure
+  
+  Set `connectionRecovery.offlineFallback` to `true` in `.cncrc` to switch to the offline page after 30 seconds of continuous HTTP failure, starting at the first failed probe. Successful probes reset the timer, and switching requires a controlling service worker. By default, CNCjs keeps the workspace open while the socket retries. Reloading or opening the app root while offline can still show the offline page with this setting disabled.
+- b1b66d2: fix(theme): keyboard focus rings on widget handles and panel headers - The focus ring on the widget drag handle and on collapsible panel headers (such as Grbl "Status Reports") is now drawn around the whole control instead of a squashed box around the text or icon. The chevron on those headers also stays visible when hovered or focused in dark color mode.
+- f3c956b: Console: Clear all now also removes the last output line while the command input field is shown.
+- 96b7374: Open Console Settings from the first item in the More menu instead of the separate toolbar gear. The dialog and remaining Console actions are unchanged.
+- 48e14c9: fix(custom-widget): fix hardcoded color in disabled text style. It now uses theme color.
+- 23a19a3: fix(g2core): record automatic probe reports without advancing the command queue and keep inch-mode autolevel grids in millimeters
+
 ## 1.13.0
 
 ### Minor Changes
