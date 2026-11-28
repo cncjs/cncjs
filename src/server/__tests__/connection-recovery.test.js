@@ -25,30 +25,35 @@ jest.mock('i18next-http-middleware', () => ({
 
 const template = Hogan.compile(fs.readFileSync(path.resolve(__dirname, '../../../index.hbs'), 'utf8'));
 
-test.each([undefined, null, {}, { action: 'invalid' }, { action: 'reconnect' }, { action: 'offline' }])(
-  'serializes connectionRecovery=%j through the page into the client',
-  (recovery) => {
-    config.get.mockImplementation((key) => {
-      if (key === 'secret') {
-        return 'test-secret';
-      }
-      if (key === 'connectionRecovery.action') {
-        return recovery && recovery.action;
-      }
-      return undefined;
-    });
-    const app = appMain();
-    const route = app._router.stack.find((layer) => layer.route && layer.route.path === '/').route;
-    let html;
-    route.stack[0].handle({ language: 'en', t: (key) => key }, {
-      set: jest.fn(),
-      render: (view, locals) => {
-        html = template.render(locals);
-      },
-    });
-    const root = { getAttribute: () => html.match(/data-connection-recovery-action="([^"]*)"/)[1] };
-    expect(readConnectionRecoveryConfig(root)).toEqual({
-      action: recovery && recovery.action === 'offline' ? 'offline' : 'reconnect',
-    });
-  }
-);
+test.each([
+  [undefined, false],
+  [null, false],
+  [{}, false],
+  [{ offlineFallback: false }, false],
+  [{ offlineFallback: 'true' }, false],
+  [{ offlineFallback: 1 }, false],
+  [{ offlineFallback: true }, true],
+])('serializes connectionRecovery=%j through the page into the client', (recovery, offlineFallback) => {
+  config.get.mockImplementation((key) => {
+    if (key === 'secret') {
+      return 'test-secret';
+    }
+    if (key === 'connectionRecovery.offlineFallback') {
+      return recovery && recovery.offlineFallback;
+    }
+    return undefined;
+  });
+  const app = appMain();
+  const route = app._router.stack.find((layer) => layer.route && layer.route.path === '/').route;
+  let html;
+  route.stack[0].handle({ language: 'en', t: (key) => key }, {
+    set: jest.fn(),
+    render: (view, locals) => {
+      html = template.render(locals);
+    },
+  });
+  const textContent = html.match(/<script id="cncjs-config" type="application\/json">([\s\S]*?)<\/script>/)?.[1];
+  expect(JSON.parse(textContent)).toEqual({ connectionRecovery: { offlineFallback } });
+  const page = { getElementById: (id) => (id === 'cncjs-config' ? { textContent } : null) };
+  expect(readConnectionRecoveryConfig(page)).toEqual({ offlineFallback });
+});

@@ -23,10 +23,14 @@ export const probeServer = (url = `${window.location.pathname}${window.location.
   );
 };
 
-// Only the explicit offline action opts into switching away from the workspace.
-export const readConnectionRecoveryConfig = (root = document.documentElement) => ({
-  action: root.getAttribute('data-connection-recovery-action') === 'offline' ? 'offline' : 'reconnect',
-});
+export const readConnectionRecoveryConfig = (doc = document) => {
+  try {
+    const config = JSON.parse(doc.getElementById('cncjs-config')?.textContent || '{}');
+    return { offlineFallback: config?.connectionRecovery?.offlineFallback === true };
+  } catch {
+    return { offlineFallback: false };
+  }
+};
 
 // Probes one request at a time. Calls onUnreachable once, after the server has been
 // unreachable for 30 seconds without a single successful probe in between, then stops.

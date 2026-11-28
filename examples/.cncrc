@@ -17,7 +17,7 @@
   "allowRemoteAccess": false,
   "controller": "",
   "connectionRecovery": {
-    "action": "reconnect"
+    "offlineFallback": false
   },
   "state": {
     "allowAnonymousUsageDataCollection": false,

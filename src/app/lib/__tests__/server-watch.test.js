@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import ServerWatcher from '../../containers/Workspace/modals/ServerWatcher';
+import ServerConnectionWatcher from '../../containers/Workspace/ServerConnectionWatcher';
 import {
   IDLE_DELAY,
   RECOVERY_DELAY,
@@ -132,20 +132,32 @@ describe('watchServer', () => {
   });
 });
 
+const documentWithConfig = (config) => ({
+  getElementById: jest.fn(() => (config === null ? null : { textContent: config })),
+});
+
 describe('readConnectionRecoveryConfig', () => {
-  const page = (action) => ({ getAttribute: () => action });
+  it.each([
+    null,
+    '',
+    'invalid JSON',
+    'null',
+    '{}',
+    '{"connectionRecovery":{"offlineFallback":false}}',
+    '{"connectionRecovery":{"offlineFallback":"true"}}',
+    '{"connectionRecovery":{"offlineFallback":1}}',
+  ])('leaves offline fallback disabled for %s', (config) => {
+    expect(readConnectionRecoveryConfig(documentWithConfig(config))).toEqual({ offlineFallback: false });
+  });
 
-  it.each([undefined, null, '', 'reconnect', 'invalid', 'OFFLINE', 'true'])(
-    'defaults to reconnect for %s',
-    (action) => expect(readConnectionRecoveryConfig(page(action))).toEqual({ action: 'reconnect' })
-  );
-
-  it('opts into offline only for the explicit offline action', () => {
-    expect(readConnectionRecoveryConfig(page('offline'))).toEqual({ action: 'offline' });
+  it('enables offline fallback only for a boolean true in the boot config', () => {
+    const doc = documentWithConfig('{"connectionRecovery":{"offlineFallback":true}}');
+    expect(readConnectionRecoveryConfig(doc)).toEqual({ offlineFallback: true });
+    expect(doc.getElementById).toHaveBeenCalledWith('cncjs-config');
   });
 });
 
-describe('ServerWatcher bootstrap', () => {
+describe('ServerConnectionWatcher', () => {
   const originalNavigator = global.navigator;
   const originalDocument = global.document;
   const originalWindow = global.window;
@@ -160,20 +172,20 @@ describe('ServerWatcher bootstrap', () => {
   });
 
   it.each([
-    ['offline', true, true],
-    ['offline', false, false],
-    ['reconnect', true, false],
+    ['{"connectionRecovery":{"offlineFallback":true}}', true, true],
+    ['{"connectionRecovery":{"offlineFallback":true}}', false, false],
+    ['{"connectionRecovery":{"offlineFallback":false}}', true, false],
     [null, true, false],
     ['invalid', true, false],
-  ])('action=%s, controlled=%s switches=%s', async (action, controlled, switches) => {
+  ])('config=%s, controlled=%s switches=%s', async (config, controlled, switches) => {
     jest.useFakeTimers();
     Object.defineProperty(global, 'navigator', {
       value: { serviceWorker: { controller: controlled ? {} : null } }, configurable: true,
     });
-    global.document = { documentElement: { getAttribute: () => action } };
+    global.document = documentWithConfig(config);
     global.window = { location: { pathname: '/', search: '', reload: jest.fn() } };
     global.fetch = jest.fn().mockResolvedValue({ status: 503 });
-    const watcher = new ServerWatcher();
+    const watcher = new ServerConnectionWatcher();
     watcher.componentDidMount();
     await advance(RECOVERY_DELAY * 1000);
     expect(window.location.reload).not.toHaveBeenCalled();
@@ -185,6 +197,32 @@ describe('ServerWatcher bootstrap', () => {
       expect(fetch).not.toHaveBeenCalled();
     }
     watcher.componentWillUnmount();
+  });
+
+  it('does not reload when unmounted during the final failed probe', async () => {
+    jest.useFakeTimers();
+    Object.defineProperty(global, 'navigator', {
+      value: { serviceWorker: { controller: {} } }, configurable: true,
+    });
+    global.document = documentWithConfig('{"connectionRecovery":{"offlineFallback":true}}');
+    global.window = { location: { pathname: '/', search: '', reload: jest.fn() } };
+    global.fetch = jest.fn().mockResolvedValue({ status: 503 });
+
+    const watcher = new ServerConnectionWatcher();
+    watcher.componentDidMount();
+    await advance(RECOVERY_DELAY * 1000);
+
+    let completeProbe;
+    global.fetch.mockImplementationOnce(() => new Promise((resolve) => {
+      completeProbe = resolve;
+    }));
+    await advance(RETRY_DELAY);
+
+    watcher.componentWillUnmount();
+    completeProbe({ status: 503 });
+    await tick();
+
+    expect(window.location.reload).not.toHaveBeenCalled();
   });
 });
 

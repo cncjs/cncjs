@@ -18,6 +18,7 @@ import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import ServerConnectionWatcher from './ServerConnectionWatcher';
 import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
 import ServerDisconnected from './modals/ServerDisconnected';
@@ -50,6 +51,7 @@ class Workspace extends PureComponent {
     state = {
       mounted: false,
       port: '',
+      serverDisconnected: false,
       modal: {
         name: MODAL_NONE,
         params: {}
@@ -111,28 +113,21 @@ class Workspace extends PureComponent {
 
     defaultContainer = null;
 
+    updateServerConnection = () => {
+      const serverDisconnected = !controller.connected;
+      this.setState({
+        serverDisconnected,
+        modal: {
+          name: serverDisconnected ? MODAL_SERVER_DISCONNECTED : MODAL_NONE,
+          params: {}
+        }
+      });
+    };
+
     controllerEvents = {
-      'connect': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
-      'connect_error': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
-      'disconnect': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
+      'connect': this.updateServerConnection,
+      'connect_error': this.updateServerConnection,
+      'disconnect': this.updateServerConnection,
       'serialport:open': (options) => {
         const { port } = options;
         this.setState({ port: port });
@@ -421,6 +416,7 @@ class Workspace extends PureComponent {
       const { style, className } = this.props;
       const {
         port,
+        serverDisconnected,
         modal,
         isDraggingFile,
         isDraggingWidget,
@@ -447,6 +443,7 @@ class Workspace extends PureComponent {
               onClose={this.action.closeModal}
             />
           )}
+          {serverDisconnected && <ServerConnectionWatcher />}
           {modal.name === MODAL_SERVER_DISCONNECTED &&
             <ServerDisconnected />}
           <div
