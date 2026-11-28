@@ -167,5 +167,18 @@ describe('TinyGRunner', () => {
         runner.parse('{"r":{},"f":[1,0,4]}');
       });
     });
+
+    test('should parse a bare g2core probe report as an unsolicited receive report', () => {
+      // g2core sends automatic probe reports ({prbr:1}) as their own line, without an "r" wrapper.
+      const runner = new TinyGRunner();
+      const reports = [];
+      runner.on('r', (r) => reports.push(r));
+
+      runner.parse('{"prb":{"e":1,"x":15.000,"y":15.000,"z":-1.234}}');
+
+      expect(reports).toEqual([
+        { prb: { e: 1, x: 15, y: 15, z: -1.234 }, unsolicited: true },
+      ]);
+    });
   });
 });
