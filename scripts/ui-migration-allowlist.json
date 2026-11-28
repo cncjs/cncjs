@@ -1,5 +1,10 @@
 {
   "httpBoundaries": {
+    "src/app/sw.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Scoped PWA worker owns app-root navigation fallback and its offline logo; does not intercept API, Socket.IO or form requests."
+    },
     "src/app/queries/macros.js": {
       "role": "query",
       "reason": "Named resource query key/functions and TanStack Query hooks; React consumers use hook exports."

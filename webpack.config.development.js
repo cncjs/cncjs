@@ -2,6 +2,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const webpack = require('webpack');
@@ -185,6 +186,13 @@ module.exports = {
       );
     })(),
     new ReactRefreshWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'sw.js', to: 'sw.js' },
+        { from: 'manifest.webmanifest', to: 'manifest.webmanifest' },
+        { from: 'offline.html', to: 'offline.html' },
+      ],
+    }),
   ].filter(Boolean),
   resolve: {
     alias: {

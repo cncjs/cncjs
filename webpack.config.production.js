@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
@@ -161,6 +162,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       templateContent: () => appTemplate(path.resolve(__dirname, 'src/app/index.tmpl.html')),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'sw.js', to: 'sw.js' },
+        { from: 'manifest.webmanifest', to: 'manifest.webmanifest' },
+        { from: 'offline.html', to: 'offline.html' },
+      ],
     }),
   ].filter(Boolean),
   resolve: {
