@@ -59,6 +59,19 @@ describe('Workspace connection rendering with React 15', () => {
     controller.emit(event);
   };
 
+  it('hides the dialog and watcher before the first event even when the controller is disconnected', () => {
+    workspace.removeControllerEvents();
+    renderer.unmount();
+    controller.connected = false;
+    renderer = ReactShallowRenderer.createRenderer();
+    renderer.render(<Workspace />);
+    workspace = renderer.getMountedInstance();
+    workspace.addControllerEvents();
+
+    expect(workspace.state.isServerConnected).toBe(true);
+    expect(connectionChildren(renderer)).toEqual([]);
+  });
+
   it('renders watcher and dialog as siblings only while disconnected', () => {
     expect(connectionChildren(renderer)).toEqual([]);
     connectionEvent(false, 'disconnect');
@@ -95,13 +108,13 @@ describe('Workspace connection rendering with React 15', () => {
       controller.emit('feeder:status', { hold: true, holdReason: { data: 'M0' } });
       connectionEvent(false, 'disconnect');
     });
-    expect(updates).toHaveBeenLastCalledWith({ serverDisconnected: true });
+    expect(updates).toHaveBeenLastCalledWith({ isServerConnected: false });
     expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnected]);
     renderer.unstable_batchedUpdates(() => {
       controller.emit('feeder:status', { hold: true, holdReason: { err: true, msg: 'offline error' } });
       connectionEvent(true, 'connect');
     });
-    expect(updates).toHaveBeenLastCalledWith({ serverDisconnected: false });
+    expect(updates).toHaveBeenLastCalledWith({ isServerConnected: true });
     expect(connectionChildren(renderer)).toEqual([FeederPaused]);
     expect(workspace.state.modal.params.message).toBe('offline error');
   });

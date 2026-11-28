@@ -50,7 +50,7 @@ class Workspace extends PureComponent {
     state = {
       mounted: false,
       port: '',
-      serverDisconnected: false,
+      isServerConnected: true,
       modal: {
         name: MODAL_NONE,
         params: {}
@@ -113,8 +113,8 @@ class Workspace extends PureComponent {
     defaultContainer = null;
 
     updateServerConnection = () => {
-      const serverDisconnected = !controller.connected;
-      this.setState({ serverDisconnected });
+      const isServerConnected = !!controller.connected;
+      this.setState({ isServerConnected });
     };
 
     controllerEvents = {
@@ -409,7 +409,7 @@ class Workspace extends PureComponent {
       const { style, className } = this.props;
       const {
         port,
-        serverDisconnected,
+        isServerConnected,
         modal,
         isDraggingFile,
         isDraggingWidget,
@@ -422,22 +422,22 @@ class Workspace extends PureComponent {
 
       return (
         <div style={style} className={classNames(className, styles.workspace)}>
-          {!serverDisconnected && modal.name === MODAL_FEEDER_PAUSED && (
+          {isServerConnected && modal.name === MODAL_FEEDER_PAUSED && (
             <FeederPaused
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {!serverDisconnected && modal.name === MODAL_FEEDER_WAIT && (
+          {isServerConnected && modal.name === MODAL_FEEDER_WAIT && (
             <FeederWait
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {serverDisconnected && <ServerConnectionWatcher />}
-          {serverDisconnected && <ServerDisconnected />}
+          {!isServerConnected && <ServerConnectionWatcher />}
+          {!isServerConnected && <ServerDisconnected />}
           <div
             className={classNames(
               styles.dropzoneOverlay,
