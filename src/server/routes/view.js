@@ -1,6 +1,9 @@
 import express from 'express';
 import _get from 'lodash/get';
 import settings from '../config/settings';
+import serviceContainer from '../service-container';
+
+const userStore = serviceContainer.resolve('userStore');
 
 const createPublicViewRouter = () => {
   const router = express.Router();
@@ -13,7 +16,15 @@ const createPublicViewRouter = () => {
 
     const webroot = _get(settings, 'assets.app.routes[0]', ''); // with trailing slash
     const { language, t } = req;
+    const clientConfig = {
+      connectionRecovery: {
+        offlineFallback: userStore.get('connectionRecovery.offlineFallback') === true
+      }
+    };
+    // Keep the JSON inside its script data block.
+    const clientConfigJson = JSON.stringify(clientConfig).replace(/</g, '\\u003c');
     const locals = {
+      clientConfigJson,
       webroot,
       dir: 'ltr',
       lang: language,

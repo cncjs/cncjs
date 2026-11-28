@@ -170,6 +170,7 @@ module.exports = {
           filename,
           templateContent: () => (
             appTemplate(template)
+              .replace(/{{{clientConfigJson}}}/g, JSON.stringify({ connectionRecovery: { offlineFallback: false } }))
               .replace(/{{dir}}/g, 'ltr')
               .replace(/{{title}}/g, `CNCjs ${buildVersion}`)
               .replace(/{{webroot}}/g, '/')

@@ -1,5 +1,10 @@
 {
   "httpBoundaries": {
+    "src/app/lib/server-watch.js": {
+      "role": "transport",
+      "nonReact": true,
+      "reason": "Opt-in connection recovery owns uncached HEAD reachability probes; pure transport with no application resource state or React rendering."
+    },
     "src/app/sw.js": {
       "role": "transport",
       "nonReact": true,

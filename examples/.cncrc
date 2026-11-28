@@ -16,6 +16,9 @@
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
   "controller": "",
+  "connectionRecovery": {
+    "offlineFallback": false
+  },
   "state": {
     "allowAnonymousUsageDataCollection": false,
     "checkForUpdates": true,

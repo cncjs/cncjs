@@ -15,7 +15,7 @@ import { reloadPage } from '@app/lib/reload-page';
 /**
  * @returns {JSX.Element}
  */
-function ServerDisconnected() {
+function ServerDisconnectedModal() {
   return (
     <Modal
       autoFocus
@@ -45,4 +45,4 @@ function ServerDisconnected() {
   );
 }
 
-export default ServerDisconnected;
+export default ServerDisconnectedModal;
