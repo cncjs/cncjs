@@ -4,11 +4,9 @@ import constants from 'namespace-constants';
 export const {
   MODAL_NONE,
   MODAL_FEEDER_PAUSED,
-  MODAL_FEEDER_WAIT,
-  MODAL_SERVER_DISCONNECTED
+  MODAL_FEEDER_WAIT
 } = constants('containers/Workspace', [
   'MODAL_NONE',
   'MODAL_FEEDER_PAUSED',
-  'MODAL_FEEDER_WAIT',
-  'MODAL_SERVER_DISCONNECTED'
+  'MODAL_FEEDER_WAIT'
 ]);

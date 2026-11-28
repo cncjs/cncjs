@@ -1,0 +1,130 @@
+/* eslint-env jest */
+import React from 'react';
+import ReactShallowRenderer from 'react-dom/lib/ReactShallowRenderer';
+import controller from 'app/lib/controller';
+import Workspace from '../Workspace';
+import ServerConnectionWatcher from '../ServerConnectionWatcher';
+import FeederPaused from '../modals/FeederPaused';
+import FeederWait from '../modals/FeederWait';
+import ServerDisconnectedModal from '../modals/ServerDisconnectedModal';
+import { MODAL_NONE } from '../constants';
+
+jest.mock('react-router-dom', () => ({ withRouter: (Component) => Component }));
+jest.mock('app/lib/controller', () => {
+  const EventEmitter = require('events');
+  return Object.assign(new EventEmitter(), { connected: true, workflow: {} });
+});
+jest.mock('app/store', () => ({ get: jest.fn(), set: jest.fn() }));
+jest.mock('app/api', () => ({}));
+jest.mock('app/lib/i18n', () => ({ _: (text) => text }));
+jest.mock('app/lib/log', () => ({}));
+jest.mock('app/components/Buttons', () => ({ Button: 'button', ButtonGroup: 'div', ButtonToolbar: 'div' }));
+jest.mock('../WidgetManager', () => ({ getInactiveWidgets: () => [] }));
+jest.mock('../DefaultWidgets', () => 'default-widgets');
+jest.mock('../PrimaryWidgets', () => 'primary-widgets');
+jest.mock('../SecondaryWidgets', () => 'secondary-widgets');
+jest.mock('../modals/FeederPaused', () => 'feeder-paused');
+jest.mock('../modals/FeederWait', () => 'feeder-wait');
+jest.mock('../modals/ServerDisconnectedModal', () => 'server-disconnected');
+jest.mock('../index.styl', () => ({}));
+
+const connectionChildren = (renderer) => React.Children.toArray(renderer.getRenderOutput().props.children)
+  .filter((child) => [FeederPaused, FeederWait, ServerConnectionWatcher, ServerDisconnectedModal].includes(child.type))
+  .map((child) => child.type);
+
+describe('Workspace connection rendering with React 15', () => {
+  let renderer;
+  let workspace;
+
+  beforeEach(() => {
+    // Keep the test on connection state/rendering, without DOM resize or widget setup.
+    jest.spyOn(Workspace.prototype, 'componentDidMount').mockImplementation(() => {});
+    jest.spyOn(Workspace.prototype, 'componentDidUpdate').mockImplementation(() => {});
+    jest.spyOn(Workspace.prototype, 'componentWillUnmount').mockImplementation(() => {});
+    controller.connected = true;
+    renderer = ReactShallowRenderer.createRenderer();
+    renderer.render(<Workspace />);
+    workspace = renderer.getMountedInstance();
+    workspace.addControllerEvents();
+  });
+
+  afterEach(() => {
+    workspace.removeControllerEvents();
+    renderer.unmount();
+    jest.restoreAllMocks();
+  });
+
+  const connectionEvent = (connected, event) => {
+    controller.connected = connected;
+    controller.emit(event);
+  };
+
+  it('hides the dialog and watcher before the first event even when the controller is disconnected', () => {
+    workspace.removeControllerEvents();
+    renderer.unmount();
+    controller.connected = false;
+    renderer = ReactShallowRenderer.createRenderer();
+    renderer.render(<Workspace />);
+    workspace = renderer.getMountedInstance();
+    workspace.addControllerEvents();
+
+    expect(workspace.state.serverConnectionStatus).toBeNull();
+    expect(connectionChildren(renderer)).toEqual([]);
+  });
+
+  it('renders watcher and dialog only after an observed disconnect or failed connect', () => {
+    expect(workspace.state.serverConnectionStatus).toBeNull();
+    expect(connectionChildren(renderer)).toEqual([]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
+    expect(connectionChildren(renderer)).toEqual([]);
+    connectionEvent(false, 'disconnect');
+    expect(workspace.state.serverConnectionStatus).toBe('disconnected');
+    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnectedModal]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
+    expect(connectionChildren(renderer)).toEqual([]);
+    connectionEvent(false, 'connect_error');
+    expect(workspace.state.serverConnectionStatus).toBe('disconnected');
+    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnectedModal]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
+    expect(connectionChildren(renderer)).toEqual([]);
+  });
+
+  it.each(['M0', '%wait'])('retains the %s prompt across disconnect and reconnect', (data) => {
+    expect(workspace.state.serverConnectionStatus).toBeNull();
+    const hold = { hold: true, holdReason: { data, msg: 'old prompt' } };
+    controller.emit('feeder:status', hold);
+    expect(connectionChildren(renderer)).toEqual([data === '%wait' ? FeederWait : FeederPaused]);
+    connectionEvent(false, 'disconnect');
+    expect(workspace.state.modal.name).not.toBe(MODAL_NONE);
+    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnectedModal]);
+    controller.emit('feeder:status', hold);
+    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnectedModal]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.modal.name).not.toBe(MODAL_NONE);
+    expect(connectionChildren(renderer)).toEqual([data === '%wait' ? FeederWait : FeederPaused]);
+    controller.emit('feeder:status', { hold: true, holdReason: { data, msg: 'new prompt' } });
+    expect(connectionChildren(renderer)).toEqual([data === '%wait' ? FeederWait : FeederPaused]);
+    controller.emit('feeder:status', { hold: false });
+    expect(connectionChildren(renderer)).toEqual([]);
+  });
+
+  it('updates only disconnect state alongside queued feeder prompts under React 15 batching', () => {
+    const updates = jest.spyOn(workspace, 'setState');
+    renderer.unstable_batchedUpdates(() => {
+      controller.emit('feeder:status', { hold: true, holdReason: { data: 'M0' } });
+      connectionEvent(false, 'disconnect');
+    });
+    expect(updates).toHaveBeenLastCalledWith({ serverConnectionStatus: 'disconnected' });
+    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnectedModal]);
+    renderer.unstable_batchedUpdates(() => {
+      controller.emit('feeder:status', { hold: true, holdReason: { err: true, msg: 'offline error' } });
+      connectionEvent(true, 'connect');
+    });
+    expect(updates).toHaveBeenLastCalledWith({ serverConnectionStatus: 'connected' });
+    expect(connectionChildren(renderer)).toEqual([FeederPaused]);
+    expect(workspace.state.modal.params.message).toBe('offline error');
+  });
+});

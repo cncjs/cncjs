@@ -18,15 +18,15 @@ import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import ServerConnectionWatcher from './ServerConnectionWatcher';
 import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
-import ServerDisconnected from './modals/ServerDisconnected';
+import ServerDisconnectedModal from './modals/ServerDisconnectedModal';
 import styles from './index.styl';
 import {
   MODAL_NONE,
   MODAL_FEEDER_PAUSED,
-  MODAL_FEEDER_WAIT,
-  MODAL_SERVER_DISCONNECTED
+  MODAL_FEEDER_WAIT
 } from './constants';
 
 const WAIT = '%wait';
@@ -50,6 +50,7 @@ class Workspace extends PureComponent {
     state = {
       mounted: false,
       port: '',
+      serverConnectionStatus: null,
       modal: {
         name: MODAL_NONE,
         params: {}
@@ -111,28 +112,15 @@ class Workspace extends PureComponent {
 
     defaultContainer = null;
 
+    updateServerConnectionStatus = () => {
+      const serverConnectionStatus = controller.connected ? 'connected' : 'disconnected';
+      this.setState({ serverConnectionStatus });
+    };
+
     controllerEvents = {
-      'connect': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
-      'connect_error': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
-      'disconnect': () => {
-        if (controller.connected) {
-          this.action.closeModal();
-        } else {
-          this.action.openModal(MODAL_SERVER_DISCONNECTED);
-        }
-      },
+      'connect': this.updateServerConnectionStatus,
+      'connect_error': this.updateServerConnectionStatus,
+      'disconnect': this.updateServerConnectionStatus,
       'serialport:open': (options) => {
         const { port } = options;
         this.setState({ port: port });
@@ -421,6 +409,7 @@ class Workspace extends PureComponent {
       const { style, className } = this.props;
       const {
         port,
+        serverConnectionStatus,
         modal,
         isDraggingFile,
         isDraggingWidget,
@@ -433,22 +422,22 @@ class Workspace extends PureComponent {
 
       return (
         <div style={style} className={classNames(className, styles.workspace)}>
-          {modal.name === MODAL_FEEDER_PAUSED && (
+          {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_PAUSED && (
             <FeederPaused
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {modal.name === MODAL_FEEDER_WAIT && (
+          {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_WAIT && (
             <FeederWait
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {modal.name === MODAL_SERVER_DISCONNECTED &&
-            <ServerDisconnected />}
+          {serverConnectionStatus === 'disconnected' && <ServerConnectionWatcher />}
+          {serverConnectionStatus === 'disconnected' && <ServerDisconnectedModal />}
           <div
             className={classNames(
               styles.dropzoneOverlay,

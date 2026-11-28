@@ -5,7 +5,7 @@ import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import { reloadPage } from 'app/lib/reload-page';
 
-const ServerDisconnected = (props) => (
+const ServerDisconnectedModal = (props) => (
   <Modal
     size="xs"
     disableOverlay={true}
@@ -28,4 +28,4 @@ const ServerDisconnected = (props) => (
   </Modal>
 );
 
-export default ServerDisconnected;
+export default ServerDisconnectedModal;
