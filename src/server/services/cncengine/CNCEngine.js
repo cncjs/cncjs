@@ -10,7 +10,6 @@ import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import monitor from '../monitor';
-import createControllerSocket from './controller-socket';
 import {
   GrblController,
   MarlinController,
@@ -273,7 +272,7 @@ class CNCEngine {
             });
           }
 
-          controller.addConnection(createControllerSocket(socket, controller));
+          controller.addConnection(socket);
 
           if (controller.isOpen()) {
             // Join the room

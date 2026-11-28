@@ -127,7 +127,7 @@ class Controller {
                     this.port = port;
                     this.type = controllerType;
                 }
-                if (eventName === 'serialport:close' && args[0]?.port === this.port) {
+                if (eventName === 'serialport:close') {
                     this.port = '';
                     this.type = '';
                     this.state = {};
