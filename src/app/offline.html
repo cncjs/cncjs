@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CNCjs is offline</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { display: flex; align-items: center; justify-content: center;
+           background: #222; color: #eee; font-family: sans-serif; text-align: center; }
+    h1 { font-size: 1.8em; margin: 0 0 .5em; }
+    p { margin: 0; opacity: .8; }
+    img { display: block; margin: 0 auto 1em; }
+  </style>
+</head>
+<body>
+  <div>
+    <img src="images/logo-badge-256x256.png" alt="">
+    <h1>CNCjs is offline</h1>
+    <p>Make sure the server is running. This page will reload automatically when it is back.</p>
+  </div>
+  <script>
+    (function () {
+      var RETRY_DELAY = 3000;
+      var PROBE_TIMEOUT = 5000;
+      var done = false;
+
+      function schedule() {
+        if (!done) {
+          setTimeout(probe, RETRY_DELAY);
+        }
+      }
+
+      function probe() {
+        var controller = new AbortController();
+        var timer = setTimeout(function () { controller.abort(); }, PROBE_TIMEOUT);
+
+        fetch(location.pathname + location.search, {
+          method: 'HEAD',
+          cache: 'no-store',
+          signal: controller.signal
+        }).then(function (res) {
+          clearTimeout(timer);
+          // Same rule as sw.js: only 502-504 mean the server is still down.
+          // Anything else (200, 403, ...) gets one normal reload so the real response is shown.
+          if (res.status >= 502 && res.status <= 504) {
+            schedule();
+            return;
+          }
+          done = true; // stop probing; reload exactly once
+          location.reload();
+        }, function () {
+          clearTimeout(timer);
+          schedule(); // network failure or aborted probe
+        });
+      }
+
+      schedule();
+    })();
+  </script>
+</body>
+</html>

@@ -273,7 +273,7 @@ jest.mock('../widget-manager', () => ({
 
 jest.mock('../modals/FeederPaused', () => () => null);
 jest.mock('../modals/FeederWait', () => () => null);
-jest.mock('../modals/ServerDisconnected', () => () => null);
+jest.mock('../modals/ServerDisconnectedModal', () => () => null);
 
 const PrimaryWidgets = require('../PrimaryWidgets').default;
 const SecondaryWidgets = require('../SecondaryWidgets').default;

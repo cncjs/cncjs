@@ -35,3 +35,12 @@ root.render(
     <App />
   </GlobalProvider>
 );
+
+// Register immediately: registration is independent of React's mount lifecycle.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {
+    console.warn('non-fatal: failed loading PWA service worker.');
+  });
+} else {
+  console.warn('non-fatal: service worker not supported.');
+}

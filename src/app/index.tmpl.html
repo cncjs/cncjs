@@ -2,6 +2,7 @@
 <html dir={{dir}} lang="{{lang}}">
 <head>
 <meta charset="utf-8">
+<script id="cncjs-config" type="application/json">{{{clientConfigJson}}}</script>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <title>{{title}}</title>
 <meta name="description" content="">
@@ -35,6 +36,9 @@ html[data-color-scheme="dark"] {
 html[data-color-scheme="dark"] #loading { color: {{darkText}}; }
 </style>
 <link rel="shortcut icon" href="{{webroot}}favicon.ico">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#222222">
+<link rel="apple-touch-icon" href="images/icon-192.png">
 </head>
 <body>
 <script>

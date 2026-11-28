@@ -39,19 +39,19 @@ import * as widgetManager from './widget-manager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import ServerConnectionWatcher from './ServerConnectionWatcher';
 import { useWidgetGroup } from './useWidgetGroup';
 import { useWorkspaceLayout } from './useWorkspaceLayout';
 import { WIDGET_REGISTRY } from './widgetRegistry';
 import { selectVisibleWidgetIds } from './widgetLayoutState';
 import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
-import ServerDisconnected from './modals/ServerDisconnected';
+import ServerDisconnectedModal from './modals/ServerDisconnectedModal';
 import styles from './index.styl';
 import {
   MODAL_NONE,
   MODAL_FEEDER_PAUSED,
-  MODAL_FEEDER_WAIT,
-  MODAL_SERVER_DISCONNECTED
+  MODAL_FEEDER_WAIT
 } from './constants';
 
 const WAIT = '%wait';
@@ -82,6 +82,7 @@ const Workspace = ({
   location,
   ...props
 }) => {
+  const [serverConnectionStatus, setServerConnectionStatus] = useState(null);
   const [modal, setModal] = useState({
     name: MODAL_NONE,
     params: {}
@@ -110,10 +111,6 @@ const Workspace = ({
     showSecondaryContainer,
   };
   locationRef.current = location;
-
-  const openModal = useCallback((name = MODAL_NONE, params = {}) => {
-    setModal({ name, params });
-  }, []);
 
   const closeModal = useCallback(() => {
     setModal({
@@ -178,30 +175,16 @@ const Workspace = ({
     });
   }, []);
 
+  const updateServerConnectionStatus = useCallback(() => {
+    setServerConnectionStatus(controller.connected ? 'connected' : 'disconnected');
+  }, []);
+
   const controllerEvents = useMemo(() => ({
-    connect: () => {
-      if (controller.connected) {
-        closeModal();
-      } else {
-        openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
-    connect_error: () => {
-      if (controller.connected) {
-        closeModal();
-      } else {
-        openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
-    disconnect: () => {
-      if (controller.connected) {
-        closeModal();
-      } else {
-        openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
+    connect: updateServerConnectionStatus,
+    connect_error: updateServerConnectionStatus,
+    disconnect: updateServerConnectionStatus,
     'feeder:status': handleFeederStatus,
-  }), [closeModal, handleFeederStatus, openModal]);
+  }), [handleFeederStatus, updateServerConnectionStatus]);
 
   useEffect(() => {
     Object.keys(controllerEvents).forEach(eventName => {
@@ -432,22 +415,22 @@ const Workspace = ({
 
   return (
     <Box className={`${className || ''} ${styles.workspace}`.trim()} {...props}>
-      {modal.name === MODAL_FEEDER_PAUSED && (
+      {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_PAUSED && (
         <FeederPaused
           title={modal.params.title}
           message={modal.params.message}
           onClose={closeModal}
         />
       )}
-      {modal.name === MODAL_FEEDER_WAIT && (
+      {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_WAIT && (
         <FeederWait
           title={modal.params.title}
           message={modal.params.message}
           onClose={closeModal}
         />
       )}
-      {modal.name === MODAL_SERVER_DISCONNECTED &&
-      <ServerDisconnected />}
+      {serverConnectionStatus === 'disconnected' && <ServerConnectionWatcher />}
+      {serverConnectionStatus === 'disconnected' && <ServerDisconnectedModal />}
       <Dropzone
         disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
         noClick={true}

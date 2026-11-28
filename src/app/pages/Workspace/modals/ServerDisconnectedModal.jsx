@@ -10,15 +10,12 @@ import {
 } from '@tonic-ui/react';
 import React from 'react';
 import i18n from '@app/lib/i18n';
-
-const reloadPage = (forcedReload = true) => {
-  window.location.reload(forcedReload);
-};
+import { reloadPage } from '@app/lib/reload-page';
 
 /**
  * @returns {JSX.Element}
  */
-function ServerDisconnected() {
+function ServerDisconnectedModal() {
   return (
     <Modal
       autoFocus
@@ -39,7 +36,7 @@ function ServerDisconnected() {
           </Alert>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={reloadPage} variant="primary">
+          <Button onClick={() => reloadPage()} variant="primary">
             {i18n._('Reload')}
           </Button>
         </ModalFooter>
@@ -48,4 +45,4 @@ function ServerDisconnected() {
   );
 }
 
-export default ServerDisconnected;
+export default ServerDisconnectedModal;

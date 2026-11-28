@@ -37,6 +37,14 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 * [Tool Change](https://github.com/cncjs/cncjs/wiki/Tool-Change) (since 1.9.11)
 * Z-Probe
 
+## Install as an App (Progressive Web App)
+
+CNCjs can be installed as a standalone app, without the browser's address bar, on browsers that support Progressive Web Apps, on both desktop and mobile. This is handy for a dedicated tablet or touch display, and it maximizes the available screen space.
+
+Browsers only offer to install a site, and only allow its service worker, over **HTTPS** (or on `localhost`). CNCjs does not provide HTTPS natively, so to use this feature from another device you need a reverse proxy in front of it. Over plain `http://<host>:8000` the browser only offers "Add shortcut", and the address bar and tabs remain visible.
+
+Two simple options are [Caddy](https://caddyserver.com/docs/quick-starts/reverse-proxy), which can issue certificates from its own certificate authority (each device then needs to [trust Caddy's root certificate](https://caddyserver.com/docs/automatic-https#local-https)), and a service such as [Tailscale](https://tailscale.com/kb/1153/enabling-https), which provides trusted certificates but requires installing its app on each device.
+
 ## Custom Widgets
 
 * [cncjs-widget-boilerplate](https://github.com/cncjs/cncjs-widget-boilerplate) - Creating custom widgets for CNCjs.
