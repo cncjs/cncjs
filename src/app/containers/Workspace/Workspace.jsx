@@ -112,15 +112,15 @@ class Workspace extends PureComponent {
 
     defaultContainer = null;
 
-    updateServerConnection = () => {
+    updateServerConnectionStatus = () => {
       const serverConnectionStatus = controller.connected ? 'connected' : 'disconnected';
       this.setState({ serverConnectionStatus });
     };
 
     controllerEvents = {
-      'connect': this.updateServerConnection,
-      'connect_error': this.updateServerConnection,
-      'disconnect': this.updateServerConnection,
+      'connect': this.updateServerConnectionStatus,
+      'connect_error': this.updateServerConnectionStatus,
+      'disconnect': this.updateServerConnectionStatus,
       'serialport:open': (options) => {
         const { port } = options;
         this.setState({ port: port });
