@@ -50,7 +50,7 @@ class Workspace extends PureComponent {
     state = {
       mounted: false,
       port: '',
-      isServerConnected: true,
+      serverConnectionStatus: null,
       modal: {
         name: MODAL_NONE,
         params: {}
@@ -113,8 +113,8 @@ class Workspace extends PureComponent {
     defaultContainer = null;
 
     updateServerConnection = () => {
-      const isServerConnected = !!controller.connected;
-      this.setState({ isServerConnected });
+      const serverConnectionStatus = controller.connected ? 'connected' : 'disconnected';
+      this.setState({ serverConnectionStatus });
     };
 
     controllerEvents = {
@@ -409,7 +409,7 @@ class Workspace extends PureComponent {
       const { style, className } = this.props;
       const {
         port,
-        isServerConnected,
+        serverConnectionStatus,
         modal,
         isDraggingFile,
         isDraggingWidget,
@@ -422,22 +422,22 @@ class Workspace extends PureComponent {
 
       return (
         <div style={style} className={classNames(className, styles.workspace)}>
-          {isServerConnected && modal.name === MODAL_FEEDER_PAUSED && (
+          {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_PAUSED && (
             <FeederPaused
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {isServerConnected && modal.name === MODAL_FEEDER_WAIT && (
+          {serverConnectionStatus !== 'disconnected' && modal.name === MODAL_FEEDER_WAIT && (
             <FeederWait
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {!isServerConnected && <ServerConnectionWatcher />}
-          {!isServerConnected && <ServerDisconnected />}
+          {serverConnectionStatus === 'disconnected' && <ServerConnectionWatcher />}
+          {serverConnectionStatus === 'disconnected' && <ServerDisconnected />}
           <div
             className={classNames(
               styles.dropzoneOverlay,

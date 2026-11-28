@@ -68,23 +68,32 @@ describe('Workspace connection rendering with React 15', () => {
     workspace = renderer.getMountedInstance();
     workspace.addControllerEvents();
 
-    expect(workspace.state.isServerConnected).toBe(true);
+    expect(workspace.state.serverConnectionStatus).toBeNull();
     expect(connectionChildren(renderer)).toEqual([]);
   });
 
-  it('renders watcher and dialog as siblings only while disconnected', () => {
+  it('renders watcher and dialog only after an observed disconnect or failed connect', () => {
+    expect(workspace.state.serverConnectionStatus).toBeNull();
+    expect(connectionChildren(renderer)).toEqual([]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
     expect(connectionChildren(renderer)).toEqual([]);
     connectionEvent(false, 'disconnect');
-    expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnected]);
-    connectionEvent(false, 'connect_error');
+    expect(workspace.state.serverConnectionStatus).toBe('disconnected');
     expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnected]);
     connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
     expect(connectionChildren(renderer)).toEqual([]);
-    connectionEvent(false, 'disconnect');
+    connectionEvent(false, 'connect_error');
+    expect(workspace.state.serverConnectionStatus).toBe('disconnected');
     expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnected]);
+    connectionEvent(true, 'connect');
+    expect(workspace.state.serverConnectionStatus).toBe('connected');
+    expect(connectionChildren(renderer)).toEqual([]);
   });
 
   it.each(['M0', '%wait'])('retains the %s prompt across disconnect and reconnect', (data) => {
+    expect(workspace.state.serverConnectionStatus).toBeNull();
     const hold = { hold: true, holdReason: { data, msg: 'old prompt' } };
     controller.emit('feeder:status', hold);
     expect(connectionChildren(renderer)).toEqual([data === '%wait' ? FeederWait : FeederPaused]);
@@ -108,13 +117,13 @@ describe('Workspace connection rendering with React 15', () => {
       controller.emit('feeder:status', { hold: true, holdReason: { data: 'M0' } });
       connectionEvent(false, 'disconnect');
     });
-    expect(updates).toHaveBeenLastCalledWith({ isServerConnected: false });
+    expect(updates).toHaveBeenLastCalledWith({ serverConnectionStatus: 'disconnected' });
     expect(connectionChildren(renderer)).toEqual([ServerConnectionWatcher, ServerDisconnected]);
     renderer.unstable_batchedUpdates(() => {
       controller.emit('feeder:status', { hold: true, holdReason: { err: true, msg: 'offline error' } });
       connectionEvent(true, 'connect');
     });
-    expect(updates).toHaveBeenLastCalledWith({ isServerConnected: true });
+    expect(updates).toHaveBeenLastCalledWith({ serverConnectionStatus: 'connected' });
     expect(connectionChildren(renderer)).toEqual([FeederPaused]);
     expect(workspace.state.modal.params.message).toBe('offline error');
   });
