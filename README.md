@@ -45,20 +45,6 @@ Browsers only offer to install a site, and only allow its service worker, over *
 
 Two simple options are [Caddy](https://caddyserver.com/docs/quick-starts/reverse-proxy), which can issue certificates from its own certificate authority (each device then needs to [trust Caddy's root certificate](https://caddyserver.com/docs/automatic-https#local-https)), and a service such as [Tailscale](https://tailscale.com/kb/1153/enabling-https), which provides trusted certificates but requires installing its app on each device.
 
-### Offline page when the server is switched off
-
-When the server stops answering, CNCjs keeps the workspace open and tries to reconnect. If the server is routinely switched off, for example by a master switch that also powers the computer running CNCjs, you can have the page switch to an offline page. The offline page reloads CNCjs once the server is back. Add this to your `.cncrc` (see [Configuration File](#configuration-file)):
-
-```json
-{
-    "connectionRecovery": {
-        "offlineFallback": true
-    }
-}
-```
-
-`connectionRecovery.offlineFallback` defaults to `false`. Only the boolean `true` enables automatic switching. CNCjs switches after 30 seconds of continuous HTTP failure, measured from the first failed probe. A successful probe resets the timer. The switch happens when a probe completes, so it can take a few seconds longer. If only the socket is disconnected and HTTP still works, CNCjs keeps the workspace open. Automatic switching requires a service worker controlling the page (HTTPS or localhost). CNCjs reads the setting when the page loads. Reloading or opening the app root while offline can still show the offline page with this setting disabled.
-
 ## Custom Widgets
 
 * [cncjs-widget-boilerplate](https://github.com/cncjs/cncjs-widget-boilerplate) - Creating custom widgets for CNCjs.
