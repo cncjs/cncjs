@@ -21,7 +21,7 @@ import SecondaryWidgets from './SecondaryWidgets';
 import ServerConnectionWatcher from './ServerConnectionWatcher';
 import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
-import ServerDisconnected from './modals/ServerDisconnected';
+import ServerDisconnectedModal from './modals/ServerDisconnectedModal';
 import styles from './index.styl';
 import {
   MODAL_NONE,
@@ -437,7 +437,7 @@ class Workspace extends PureComponent {
             />
           )}
           {serverConnectionStatus === 'disconnected' && <ServerConnectionWatcher />}
-          {serverConnectionStatus === 'disconnected' && <ServerDisconnected />}
+          {serverConnectionStatus === 'disconnected' && <ServerDisconnectedModal />}
           <div
             className={classNames(
               styles.dropzoneOverlay,
