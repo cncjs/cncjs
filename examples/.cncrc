@@ -16,6 +16,9 @@
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
   "controller": "",
+  "connectionRecovery": {
+    "action": "reconnect"
+  },
   "state": {
     "allowAnonymousUsageDataCollection": false,
     "checkForUpdates": true,
@@ -45,8 +48,5 @@
   ],
   "events": [],
   "macros": [],
-  "users": [],
-  "connectionRecovery": {
-    "action": "reconnect"
-  }
+  "users": []
 }
