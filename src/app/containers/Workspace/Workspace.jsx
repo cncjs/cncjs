@@ -51,6 +51,8 @@ class Workspace extends PureComponent {
       mounted: false,
       port: '',
       serverDisconnected: false,
+      feederStatusReceived: false,
+      controllerAttached: false,
       modal: {
         name: MODAL_NONE,
         params: {}
@@ -64,14 +66,6 @@ class Workspace extends PureComponent {
     };
 
     action = {
-      openModal: (name = MODAL_NONE, params = {}) => {
-        this.setState(state => ({
-          modal: {
-            name: name,
-            params: params
-          }
-        }));
-      },
       closeModal: () => {
         this.setState(state => ({
           modal: {
@@ -116,11 +110,9 @@ class Workspace extends PureComponent {
       const serverDisconnected = !controller.connected;
       this.setState({
         serverDisconnected,
-        // Clear feeder prompts on both disconnect and reconnect.
-        modal: {
-          name: MODAL_NONE,
-          params: {}
-        }
+        // Reconnecting the socket does not attach a controller or refresh its feeder.
+        controllerAttached: false,
+        feederStatusReceived: false
       });
     };
 
@@ -128,43 +120,35 @@ class Workspace extends PureComponent {
       'connect': this.updateServerConnection,
       'connect_error': this.updateServerConnection,
       'disconnect': this.updateServerConnection,
-      'serialport:open': (options) => {
-        const { port } = options;
-        this.setState({ port: port });
+      'serialport:open': ({ port }) => {
+        if (!controller.connected) {
+          return;
+        }
+        this.setState(state => ({
+          port,
+          controllerAttached: true,
+          feederStatusReceived: false,
+          modal: state.port === port ? state.modal : { name: MODAL_NONE, params: {} }
+        }));
       },
-      'serialport:close': (options) => {
-        this.setState({ port: '' });
+      'serialport:close': ({ port }) => {
+        if (!controller.connected) {
+          return;
+        }
+        this.setState(state => (state.port === port ? {
+          port: '',
+          controllerAttached: false,
+          feederStatusReceived: false,
+          modal: { name: MODAL_NONE, params: {} }
+        } : null));
       },
-      'feeder:status': (status) => {
-        const { modal } = this.state;
+      'feeder:status': (status, port) => {
+        if (!controller.connected) {
+          return;
+        }
         const { hold, holdReason } = { ...status };
-
-        if (!hold) {
-          if (_.includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], modal.name)) {
-            this.action.closeModal();
-          }
-          return;
-        }
-
         const { err, data, msg } = { ...holdReason };
-
-        if (err) {
-          this.action.openModal(MODAL_FEEDER_PAUSED, {
-            title: i18n._('Error'),
-            message: msg,
-          });
-          return;
-        }
-
-        if (data === WAIT) {
-          this.action.openModal(MODAL_FEEDER_WAIT, {
-            title: '%wait',
-            message: msg,
-          });
-          return;
-        }
-
-        const title = {
+        const title = err ? i18n._('Error') : {
           'M0': i18n._('M0 Program Pause'),
           'M1': i18n._('M1 Program Pause'),
           'M2': i18n._('M2 Program End'),
@@ -174,9 +158,18 @@ class Workspace extends PureComponent {
           'M190': i18n._('M190 Set Heated Bed Temperature')
         }[data] || data;
 
-        this.action.openModal(MODAL_FEEDER_PAUSED, {
-          title: title,
-          message: msg,
+        // Functional updates preserve port-open/status ordering in React 15 batches.
+        this.setState(state => {
+          if (state.serverDisconnected || !state.controllerAttached || state.port !== port) {
+            return null;
+          }
+          return {
+            feederStatusReceived: true,
+            modal: hold ? {
+              name: !err && data === WAIT ? MODAL_FEEDER_WAIT : MODAL_FEEDER_PAUSED,
+              params: { title, message: msg }
+            } : { name: MODAL_NONE, params: {} }
+          };
         });
       }
     };
@@ -417,6 +410,7 @@ class Workspace extends PureComponent {
       const {
         port,
         serverDisconnected,
+        feederStatusReceived,
         modal,
         isDraggingFile,
         isDraggingWidget,
@@ -429,14 +423,14 @@ class Workspace extends PureComponent {
 
       return (
         <div style={style} className={classNames(className, styles.workspace)}>
-          {!serverDisconnected && modal.name === MODAL_FEEDER_PAUSED && (
+          {!serverDisconnected && feederStatusReceived && modal.name === MODAL_FEEDER_PAUSED && (
             <FeederPaused
               title={modal.params.title}
               message={modal.params.message}
               onClose={this.action.closeModal}
             />
           )}
-          {!serverDisconnected && modal.name === MODAL_FEEDER_WAIT && (
+          {!serverDisconnected && feederStatusReceived && modal.name === MODAL_FEEDER_WAIT && (
             <FeederWait
               title={modal.params.title}
               message={modal.params.message}
