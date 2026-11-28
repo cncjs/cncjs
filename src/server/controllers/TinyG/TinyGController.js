@@ -717,6 +717,7 @@ class TinyGController {
       this.probeState = {
         probedPositions: [],
         probePoints,
+        gridUnits: this.runner.getModalGroup().units, // the units the probe G-code is emitted in
         minZ: null,
         maxZ: null,
         config: {
@@ -1332,18 +1333,34 @@ class TinyGController {
           probedPos
         });
         if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
-          // Record the measurement at the intended grid node's XY and keep only the
-          // measured Z. The reported XY is quantised by the motor steps (a commanded
-          // Y60 reads back as 59.999), and mixing quantised readings with exact node
-          // values splits one grid line into two 0.001 mm apart: the detected grid
-          // spacing collapses and the lattice fills with holes, so compensation
-          // subdivides every move into thousands of segments over a broken surface.
+          // Example: probe a grid point at X0.25 Y0.25 inches.
           //
-          // Probe points carry the units the probe G-code was emitted in; probe
-          // data is stored in mm.
+          // g2core                              CNCjs
+          // ------                              -----
+          // G20 (inches)  ---- G20 status ----> modal.units = G20
+          //                                     autolevel:start saves gridUnits = G20
+          //               <--- G0 X0.25 Y0.25 - Move to the intended grid point
+          //               <--- G38.2 ---------- Start probing Z
+          // Probe in mm   ---- G21 status ----> modal.units = G21
+          // Restore G20
+          // Queue G20 status
+          //               ---- bare prb ------> Convert grid X/Y using saved gridUnits.
+          //                                     The last status CNCjs received still says G21.
+          //               ---- G20 status ----> modal.units = G20
+          //
+          // X/Y come from the intended grid point: 0.25 in * 25.4 = 6.35 mm.
+          // Motor-step quantization can make the reported Y look like a separate row:
+          //
+          //   Y6.349 (reported, after offset)  |--- 0.001 mm ---|  Y6.350 (grid)
+          //
+          // Z comes from the probe reading minus the work coordinate offset:
+          //   2.40 mm - 2.50 mm = -0.10 mm
+          // Store the point in work coordinates: (6.35, 6.35, -0.10) mm.
           const gridNode = this.probeState.probePoints[this.probeState.probedPositions.length];
-          probedPos.x = isImperial ? in2mm(gridNode.x) : gridNode.x;
-          probedPos.y = isImperial ? in2mm(gridNode.y) : gridNode.y;
+          const gridUnits = this.probeState.gridUnits || modal.units;
+          const isImperialGrid = gridUnits === 'G20';
+          probedPos.x = isImperialGrid ? in2mm(gridNode.x) : gridNode.x;
+          probedPos.y = isImperialGrid ? in2mm(gridNode.y) : gridNode.y;
 
           const newProbedPositions = [...this.probeState.probedPositions, probedPos];
           const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
@@ -1374,6 +1391,11 @@ class TinyGController {
             log.info('[autolevel] Probing completed');
           }
         }
+      }
+
+      // An unsolicited probe report is not the reply to a line: do not ack the sender or advance the feeder.
+      if (r && r.unsolicited) {
+        return;
       }
 
       const { hold, sent, received } = this.sender.state;

@@ -851,6 +851,120 @@ describe('TinyGController', () => {
       expect(controller.probeState.maxZ).toBe(-1);
     });
 
+    test('a bare g2core probe report is recorded as a probe measurement', () => {
+      const { controller } = setupController();
+      controller.probeState.probePoints = [{ x: 0, y: 0 }];
+      controller.runner.state.sr = {
+        mpos: { x: 10.000, y: 20.000, z: 0.000 },
+        wpos: { x: 0.000, y: 0.000, z: 0.000 },
+      };
+
+      controller.runner.parse('{"prb":{"e":1,"x":10.000,"y":20.000,"z":-1.500}}');
+
+      expect(controller.probeState.probedPositions).toEqual([{ x: 0, y: 0, z: -1.5 }]);
+    });
+
+    test('a G20 grid stays in millimeters when the probe result arrives before the restored-unit status', () => {
+      const { controller, writes } = setupController();
+      const control = createController(TinyGController);
+      controllers.push(control.controller);
+      const parseBoth = (line) => {
+        controller.runner.parse(line);
+        control.controller.runner.parse(line);
+      };
+      parseBoth('{"sr":{"unit":0}}');
+      expect(controller.runner.getModalGroup().units).toBe('G20');
+      const params = {
+        mode: 'full',
+        startX: 0.25,
+        endX: 0.5,
+        stepX: 0.25,
+        startY: 0.25,
+        endY: 0.25,
+        stepY: 0.25,
+        clearanceZ: 0.08,
+        startZ: 0.02,
+        endZ: -0.02,
+        feedrate: 0.8,
+      };
+      controller.command('autolevel:start', params);
+      control.controller.command('autolevel:start', params);
+
+      [
+        { x: 6.35, z: 2.4, approach: ['G90', 'G0 X0.25 Y0.25'], probe: 'G38.2 Z-0.02 F0.4' },
+        { x: 12.7, z: 2.3, approach: ['G90', 'G0 X0.5 Y0.25'], probe: 'G38.2 Z-0.02 F0.8' },
+      ].forEach(({ x, z, approach, probe }, index) => {
+        approach.forEach((line) => {
+          expect(data(writes).slice(-1)).toEqual([line + '\n']);
+          parseBoth('{"r":{},"f":[1,0,4]}');
+        });
+        expect(data(writes).slice(-1)).toEqual([probe + '\n']);
+
+        // While probing, CNCjs sees G21 and a nonzero WCO of (10, 20, 2.5) mm.
+        parseBoth(JSON.stringify({ sr: {
+          unit: 1, mpox: x + 10, mpoy: 26.35, mpoz: 3.5, posx: x, posy: 6.35, posz: 1,
+        } }));
+        const writeCount = writes.length;
+        const queued = controller.feeder.size();
+
+        // Firmware restores G20 and schedules a status update before sending prb;
+        // the result can reach CNCjs while its last received status still says G21.
+        controller.runner.parse(JSON.stringify({ prb: { e: 1, x: x + 10.001, y: 26.349, z } }));
+
+        expect(controller.runner.getModalGroup().units).toBe('G21');
+        expect(controller.probeState.probedPositions).toHaveLength(index + 1);
+        expect(controller.probeState.probedPositions[index]).toEqual({ x, y: 6.35, z: expect.any(Number) });
+        expect(controller.probeState.probedPositions[index].z).toBeCloseTo(z - 2.5, 10);
+        expect(controller.feeder.size()).toBe(queued);
+        expect(writes).toHaveLength(writeCount);
+
+        // Combined r+f replies already advance the idle feeder twice. Compare
+        // with the same reply without prb, rather than attributing that to prb.
+        parseBoth(JSON.stringify({ r: { gc: probe }, f: [1, 0, probe.length + 1] }));
+        const advances = Math.min(queued, 2);
+        expect(writes).toHaveLength(writeCount + advances);
+        expect(controller.feeder.size()).toBe(control.controller.feeder.size());
+        expect(data(writes)).toEqual(data(control.writes));
+
+        parseBoth(JSON.stringify({ sr: {
+          unit: 0, mpox: x + 10, mpoy: 26.35, mpoz: 3.5, posx: x / 25.4, posy: 0.25, posz: 1 / 25.4,
+        } }));
+        expect(controller.runner.getModalGroup().units).toBe('G20');
+        expect(controller.feeder.size()).toBe(control.controller.feeder.size());
+        expect(writes).toHaveLength(writeCount + advances);
+      });
+
+      expect(controller.probeState.minZ).toBeCloseTo(-0.2, 10);
+      expect(controller.probeState.maxZ).toBeCloseTo(-0.1, 10);
+    });
+
+    test('a bare probe report does not acknowledge a program line', () => {
+      const { controller, writes } = setupController();
+      controller.command('sender_load', { name: 'probe.nc', content: 'G21\nG38.2 Z-1 F20\nG0 Z2' });
+      controller.command('sender_start');
+      expect(data(writes)).toEqual(['N1G21\n']);
+
+      controller.runner.parse('{"prb":{"e":1,"x":0.000,"y":0.000,"z":-1.000}}');
+
+      expect(controller.sender.state.received).toBe(0);
+      expect(data(writes)).toEqual(['N1G21\n']);
+
+      // The real reply still acknowledges the line and sends the next one.
+      controller.runner.parse('{"r":{},"f":[1,0,4]}');
+      expect(controller.sender.state.received).toBe(1);
+      expect(data(writes)).toEqual(['N1G21\n', 'N2G38.2Z-1F20\n']);
+    });
+
+    test('a bare probe report does not advance the feeder', () => {
+      const { controller, writes } = setupController();
+      controller.command('gcode', 'G0 X0\nG0 X1');
+      expect(data(writes)).toEqual(['G0 X0\n']);
+
+      controller.runner.parse('{"prb":{"e":1,"x":0.000,"y":0.000,"z":-1.000}}');
+
+      expect(data(writes)).toEqual(['G0 X0\n']);
+    });
+
     test('autolevel:stop resets the board and clears the probe state', () => {
       const { controller, writes } = setupController();
 
